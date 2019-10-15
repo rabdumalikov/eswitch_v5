@@ -549,11 +549,74 @@ namespace eswitch_v4
         TValue return_value_;
     };
 
+    template< typename T >
+    struct anything
+    {
+        using type = T;
+
+        union data
+        {
+            data(){}
+           ~data(){}
+
+            T internals;
+        };
+    
+        data dt;
+        bool was_set = false;
+
+        anything() = default;
+
+        template< typename T_ >
+        anything( std::initializer_list< T_ > && t ) : was_set( true )
+        {
+            new (&dt.internals) std::decay_t< T_ >( std::move( *t.begin() ) );
+        }
+
+       ~anything()
+        {
+            if( was_set ) dt.internals.~T();
+        }
+
+        template< typename T_ >
+        anything( const anything< T_ > & other ) : was_set( other.was_set )
+        {
+            if( other.was_set )
+            {
+                new (&dt.internals) std::decay_t< T_ >( other.dt.internals );
+            }
+        }
+
+        template< typename T_ >
+        anything( anything< T_ > && other ) : was_set( other.was_set )
+        {
+            if( other.was_set )
+            {
+                new (&dt.internals) std::decay_t< T_ >( std::move( other.dt.internals ) );
+            }
+        }
+
+        operator bool() const { return was_set; }
+
+        T reset() 
+        { 
+            was_set = false;
+            return std::move( dt.internals ); 
+        }
+
+        const T& front() const 
+        { 
+            if( !was_set ) throw( std::logic_error( "anything is empty!!!" ) ); 
+
+            return dt.internals; 
+        }
+    };
+
     template< typename R, typename ... TArgs >
     class Eswitch
     {
         std::tuple< TArgs... > pack_;
-        std::array< R, 1 > return_val_;        
+        anything< R > return_val_;        
         bool is_return_value_set_ = false;
         bool was_case_executed = false;
         bool execute_current_case = false;
@@ -566,8 +629,8 @@ namespace eswitch_v4
     public:
         template< typename T, typename ... Ts >
         Eswitch( Eswitch< T, Ts... >&& args ) 
-            : return_val_{ static_cast< R >( std::move( args.return_val_.front() ) ) },
-              pack_( std::move( args.pack_ ) )
+            : return_val_{ static_cast< R >( args.return_val_.reset() ) }
+            , pack_( std::move( args.pack_ ) )
             , is_return_value_set_( true )
             , was_case_executed( args.was_case_executed )
             , execute_current_case( args.execute_current_case )

@@ -677,7 +677,6 @@ TEST(eswitch_v4_return, 2nd_match_to_return_plus_in_place_return_dynamic_int_arr
 {
     using namespace eswitch_v4;
 
-    /// MALFORMED CASE
     std::unique_ptr< int > actual_result( eswitch( washington, new_jersey, new_york )
         >> case_( _1 != washington ) >> to_return( nullptr )
         >> case_( _2 == new_jersey ) >> to_return( new int(10) )
@@ -854,18 +853,46 @@ struct custom
     int i;
 };
 
-TEST(eswitch_v4_return, no_default_ctor )
+TEST(eswitch_v4_return, 1st_match_no_default_ctor_at_return_type )
 {
     using namespace eswitch_v4;
 
-    // auto actual_result( 
-    //     eswitch( washington, new_jersey, new_york )
-    //     >> case_( _1 == washington ) >> to_return( custom( 1 ) )
-    //     >> case_( _2 == new_jersey ) >> to_return( custom( 2 ) )
-    //     >> case_( _3 == new_york )   >> to_return( custom( 3 ) )
-    //     >> in_place_return_ );
+    auto actual_result( 
+        eswitch( washington, new_jersey, new_york )
+        >> case_( _1 == washington ) >> to_return( custom( 1 ) )
+        >> case_( _2 == new_jersey ) >> to_return( custom( 2 ) )
+        >> case_( _3 == new_york )   >> to_return( custom( 3 ) )
+        >> in_place_return_ );
     
-    // ASSERT_EQ( actual_result.i, 1 );
+    ASSERT_EQ( actual_result.i, 1 );
+}
+
+TEST(eswitch_v4_return, 2nd_match_no_default_ctor_at_return_type )
+{
+    using namespace eswitch_v4;
+
+    auto actual_result( 
+        eswitch( washington, new_jersey, new_york )
+        >> case_( _1 != washington ) >> to_return( custom( 1 ) )
+        >> case_( _2 == new_jersey ) >> to_return( custom( 2 ) )
+        >> case_( _3 == new_york )   >> to_return( custom( 3 ) )
+        >> in_place_return_ );
+    
+    ASSERT_EQ( actual_result.i, 2 );
+}
+
+TEST(eswitch_v4_return, 3rd_match_no_default_ctor_at_return_type )
+{
+    using namespace eswitch_v4;
+
+    auto actual_result( 
+        eswitch( washington, new_jersey, new_york )
+        >> case_( _1 != washington ) >> to_return( custom( 1 ) )
+        >> case_( _2 != new_jersey ) >> to_return( custom( 2 ) )
+        >> case_( _3 == new_york )   >> to_return( custom( 3 ) )
+        >> in_place_return_ );
+    
+    ASSERT_EQ( actual_result.i, 3 );
 }
 
 
