@@ -2,8 +2,6 @@
 #include "gtest/gtest.h"
 #include <memory>
 
-//using namespace std;
-
 enum Place { unknown = 0, new_york=5, washington=129, new_jersey=501 };
 
 TEST(eswitch_v4_case, one_condition_1st_param_EQUAL)
@@ -659,6 +657,8 @@ TEST(eswitch_v4_return, 3rd_match_to_return_plus_in_place_return_const_char )
     ASSERT_EQ(actual_result, std::string( "new_york" ) );
 }
 
+
+
 TEST(eswitch_v4_return, 1st_match_to_return_plus_in_place_return_dynamic_int_array )
 {
     using namespace eswitch_v4;
@@ -846,8 +846,63 @@ TEST(eswitch_v4_return, 3rd_match_return_conversion_from_nullptr_to_base )
     EXPECT_TRUE( actual_result == nullptr );
 }
 
+TEST(eswitch_v4_return, 1st_match_return_conversion_from_base_to_base_reverse )
+{
+    using namespace eswitch_v4;
+
+    std::unique_ptr< base > actual_result( 
+        eswitch( washington, new_jersey, new_york )
+        >> case_( _2 == new_jersey ) >> to_return( new derived() )
+        >> case_( _1 == washington ) >> to_return( new base() )
+        >> in_place_return_ );
+    
+    ASSERT_EQ( actual_result->foo(), 20 );
+}
+
+TEST(eswitch_v4_return, 2nd_match_return_conversion_from_derived_to_base_reverse )
+{
+    using namespace eswitch_v4;
+
+    std::unique_ptr< base > actual_result( 
+        eswitch( washington, new_jersey, new_york )
+        >> case_( _2 != new_jersey ) >> to_return( new derived() )
+        >> case_( _1 == washington ) >> to_return( new base() )
+        >> in_place_return_ );
+    
+    ASSERT_EQ( actual_result->foo(), 10 );
+}
+
+TEST(eswitch_v4_return, 3rd_match_return_conversion_from_nullptr_to_base_reverse )
+{
+    using namespace eswitch_v4;
+
+    std::unique_ptr< base > actual_result( 
+        eswitch( washington, new_jersey, new_york )
+        >> case_( _2 != new_jersey ) >> to_return( new derived() )
+        >> case_( _1 != washington ) >> to_return( new base() )
+        >> case_( _3 == new_york )   >> to_return( nullptr )
+        >> in_place_return_ );
+    
+    EXPECT_TRUE( actual_result == nullptr );
+}
+
+TEST(eswitch_v4_return, 23rd_match_return_conversion_from_nullptr_to_base_reverse )
+{
+    using namespace eswitch_v4;
+
+    std::unique_ptr< base > actual_result( 
+        eswitch( washington, new_jersey, new_york )
+        >> case_( _3 != new_york )   >> to_return( nullptr )
+        >> case_( _2 != new_jersey ) >> to_return( new derived() )
+        >> case_( _1 == washington ) >> to_return( new base() )
+        >> in_place_return_ );
+    
+    EXPECT_TRUE( actual_result != nullptr );
+    EXPECT_TRUE( actual_result->foo() == 10 );
+}
 struct custom
 {
+    custom() = default;
     custom( int i ) : i( i ){}
     int i;
 };
@@ -895,7 +950,7 @@ TEST(eswitch_v4_return, 3rd_match_no_default_ctor_at_return_type )
 }
 
 
-TEST(eswitch_v4_return, 1st_match_non_copyable_at_return_type )
+TEST(eswitch_v4_return, 1st_match_non_copyable_at_return_type_unique_ptr )
 {
     using namespace eswitch_v4;
 
@@ -906,8 +961,33 @@ TEST(eswitch_v4_return, 1st_match_non_copyable_at_return_type )
         >> case_( _3 == new_york )   >> to_return( nullptr )
         >> in_place_return_ );
 
-    EXPECT_TRUE( actual_result != nullptr );    
-    EXPECT_TRUE( *actual_result == 10 );
+   EXPECT_TRUE( actual_result != nullptr );    
+   EXPECT_TRUE( *actual_result == 10 );
+}
+
+TEST(eswitch_v4_return, return_just_nullptr )
+{
+    using namespace eswitch_v4;
+
+    auto actual_result( 
+        eswitch( washington, new_jersey, new_york )
+        >> case_( _2 == new_jersey ) >> to_return( nullptr )
+        >> in_place_return_ );
+
+   EXPECT_TRUE( actual_result == nullptr );
+}
+TEST(eswitch_v4_return, 1st_match_non_copyable_at_return_type )
+{
+    using namespace eswitch_v4;
+
+    auto actual_result( 
+        eswitch( washington, new_jersey, new_york )
+        >> case_( _2 == new_jersey ) >> to_return( nullptr )
+        >> case_( _1 == washington ) >> to_return( std::make_unique< int >( 10 ) )
+        >> case_( _3 == new_york )   >> to_return( nullptr )
+        >> in_place_return_ );
+
+   EXPECT_TRUE( actual_result == nullptr );
 }
 
 

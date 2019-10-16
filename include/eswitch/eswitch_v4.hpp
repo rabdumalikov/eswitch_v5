@@ -459,6 +459,7 @@ namespace eswitch_v4
     static Fallthrough fallthrough_;
 
     struct Padding{};
+    struct Filled{};
 
     template< typename T >
     T case_( T && cnd );
@@ -568,14 +569,25 @@ namespace eswitch_v4
         anything() = default;
 
         template< typename T_ >
+        explicit anything( anything< T_ > && t ) : was_set( t.was_set )
+        {
+            printf( "RUSTAM anything2\n" );
+
+            new (&dt.internals) T( t.release() );
+        }
+
+        template< typename T_ >
         explicit anything( T_ && t ) : was_set( true )
-        {         
+        {
+            printf( "RUSTAM anything3\n" );
+
             new (&dt.internals) T( std::forward< T_ >( t ) );
         }
 
         template< typename T_ >
         explicit anything( T_ && t, bool was_set ) : was_set( was_set )
         {
+            printf( "RUSTAM anything\n" );
             if( was_set ) new (&dt.internals) T( std::forward< T_ >( t ) );
         }
 
@@ -628,7 +640,7 @@ namespace eswitch_v4
 
     public:
         template< typename T, typename ... Ts >
-        Eswitch( Eswitch< T, Ts... >&& args )
+        Eswitch( Eswitch< T, Ts... >&& args ) 
             : return_val_( static_cast< R >( args.return_val_.release() ), args.return_val_.was_set )
             , pack_( std::move( args.pack_ ) )
             , is_return_value_set_( return_val_.was_set )
@@ -640,9 +652,22 @@ namespace eswitch_v4
         }
 
         template< typename ... Ts >
-        Eswitch( Eswitch< Padding*, Ts... >&& args ) 
-            : pack_( std::move( args.pack_ ) )
-            , is_return_value_set_( false )
+        Eswitch( Eswitch< Padding*, Ts... >&& args )
+            : //return_val_( static_cast< R >( args.return_val_.release() ), args.return_val_.was_set )
+            pack_( std::move( args.pack_ ) )
+            , is_return_value_set_( false )//args.return_val_.was_set )
+            , was_case_executed( args.was_case_executed )
+            , execute_current_case( args.execute_current_case )
+            , need_fallthrough( args.need_fallthrough )
+            , need_break( args.need_break )
+        {
+        }
+
+        template< typename ... Ts >
+        Eswitch( Eswitch< Filled*, Ts... >&& args )
+            : return_val_( static_cast< R >( nullptr ), args.return_val_.was_set )
+            , pack_( std::move( args.pack_ ) )
+            , is_return_value_set_( args.return_val_.was_set )
             , was_case_executed( args.was_case_executed )
             , execute_current_case( args.execute_current_case )
             , need_fallthrough( args.need_fallthrough )
@@ -657,7 +682,7 @@ namespace eswitch_v4
 
         template< typename TR, typename T, typename ... Ts >
         Eswitch( TR&& return_value, Eswitch< T, Ts... >&& args ) 
-            : return_val_( static_cast< R >( std::forward< TR >( return_value ) ) )
+            : return_val_( std::forward< TR >( return_value ) ) //static_cast< R >( std::forward< TR >( return_value ) ) )
             , pack_( std::move( args.pack_ ) )
             , is_return_value_set_( true )
             , was_case_executed( args.was_case_executed )
@@ -736,31 +761,131 @@ namespace eswitch_v4
         template< typename TReturnValue >
         auto operator>>( Value_to_return< TReturnValue >&& value )
         {
-            return handle_return_value( std::move( value.return_value_ ) );
+           return handle_return_value( std::move( value.return_value_ ) );
         }
 
     private:
+        
+template <typename AlwaysVoid, typename... Ts>
+struct has_common_type_impl : std::false_type {};
 
-        template< typename TReturnValue >
+template <typename... Ts>
+struct has_common_type_impl<std::void_t<std::common_type_t<Ts...>>, Ts...> : std::true_type {};
+
+template <typename... Ts>
+using has_common_type = typename has_common_type_impl<void, Ts...>::type;
+
+        //template< typename TReturnValue >
+        //auto handle_return_value( TReturnValue && value )
+        //{
+        //    return actual_handle_return_value( std::forward< TReturnValue >( value ) );
+        //}
+        
+        // template< typename TReturnValue, typename std::enable_if< 
+        //     !Always_assert< TReturnValue >::value && 
+        //     std::is_same< R, Padding* >::value, 
+        //         int >::type = 0 >
+        // auto handle_return_value( TReturnValue && value )
+        // {
+        //     return actual_handle_return_value( std::forward< TReturnValue >( value ) );
+        // }
+        
+        template< typename TReturnValue, typename std::enable_if< 
+            !Always_assert< TReturnValue >::value &&
+            ( !std::is_same< R, Padding* >::value &&
+            std::is_convertible< R, TReturnValue >::value ) || std::is_same< R, Filled* >::value ||  std::is_same< R, Padding* >::value, int >::type = 0 >
         auto handle_return_value( TReturnValue && value )
         {
-            //static_assert( std::is_same< R, Padding* >::value || std::is_convertible< 
-                //Common_type_t< std::remove_reference_t< TReturnValue > >,
-                //Common_type_t< std::remove_reference_t< TReturnValue >, R > >::value,
-                //"ReturnValue across all CASEs should have same type" );
+            return actual_handle_return_value( std::forward< TReturnValue >( value ) );
+        }
+        
+        template< typename TReturnValue, typename std::enable_if< 
+            !Always_assert< TReturnValue >::value &&
+            !std::is_same< R, Padding* >::value &&
+            std::is_convertible< TReturnValue, R >::value &&
+            !std::is_convertible< R, TReturnValue >::value, int >::type = 0 >
+        auto handle_return_value( TReturnValue && value )
+        {
+            return actual_handle_return_value( static_cast< R&& >( value ) );
+        }
 
-            // static_assert( std::is_same< R, Padding* >::value || std::is_convertible< 
-            //     Common_type_t< std::remove_reference_t< TReturnValue >, R >, R >::value,
-            //     "ReturnValue across all CASEs should have same type" );
 
-            printf( "RUSTAM that operator\n");
+        template< typename TReturnValue, typename std::enable_if<  
+            !Always_assert< TReturnValue >::value &&
+            !std::is_convertible< R, TReturnValue >::value && 
+            !std::is_convertible< TReturnValue, R >::value && 
+            !std::is_same< R, Padding* >::value && 
+            has_common_type< R, TReturnValue >::value, int >::type = 0 >
+        auto handle_return_value( TReturnValue && value )
+        {
+            return actual_handle_return_value( static_cast< std::common_type_t< R, TReturnValue >&& >( value ) );
+        }
 
-            using new_return_type_t = typename std::conditional< 
-                std::is_same< R, Padding* >::value, 
-                Common_type_t< std::remove_reference_t< TReturnValue > >, 
-                    Common_type_t< std::remove_reference_t< TReturnValue >, R > >::type;
+            
+        // template< typename TReturnValue, typename std::enable_if<  
+        //     !Always_assert< TReturnValue >::value &&
+        //     !std::is_convertible< R, TReturnValue >::value && 
+        //     !std::is_convertible< TReturnValue, R >::value && 
+        //     !std::is_same< R, Padding* >::value && 
+        //     !std::is_same< R, Filled* >::value && 
+        //     !has_common_type< R, TReturnValue >::value, int >::type = 0 >
+        // auto handle_return_value( TReturnValue && value )
+        // {
+        //     static_assert( false, "FFFFFFFFFFFFFFFFFFFFF" );
+        //     return actual_handle_return_value( static_cast< std::common_type_t< R, TReturnValue >&& >( value ) );
+        // }
 
-            if( is_return_value_set_ )  return Eswitch< new_return_type_t, TArgs... >( std::move( *this ) );
+        ////// template< typename TReturnValue, typename std::enable_if<  
+        //     !Always_assert< TReturnValue >::value && 
+        //     std::is_same< R, Filled* >::value, int >::type = 0 >
+        // auto handle_return_value( TReturnValue && value )
+        // {
+        //     return actual_handle_return_value( std::forward< TReturnValue >( value ) );
+        // }
+
+        auto handle_return_value( std::nullptr_t && value )
+        {
+            return actual_handle_return_value( static_cast< typename std::conditional< std::is_same< R, Padding* >::value, Filled*, R >::type >( nullptr ) );
+        }
+
+        //template< typename TReturnValue >
+        //auto handle_return_value( TReturnValue && value )
+        //{
+        //    using new_return_type_t = typename std::conditional< 
+        //        std::is_same< R, Padding* >::value, 
+        //        void*, 
+        //            Common_type_t< std::remove_reference_t< TReturnValue >, R > >::type;
+
+        //    new_return_type_t v{};
+
+        //    if( is_return_value_set_ )  return Eswitch< new_return_type_t, TArgs... >( std::move( *this ) );
+
+        //    if( execute_current_case ) 
+        //    {
+        //        printf( "RUSTAM that operator is_same\n" );
+
+        //        was_case_executed = execute_current_case;
+        //        execute_current_case = false;
+
+        //        return Eswitch< new_return_type_t, TArgs... >( std::forward< TReturnValue >( value ), std::move( *this ) );
+        //    }
+        //    else if( need_fallthrough ) 
+        //    {
+        //        printf( "RUSTAM that operator2\n");
+
+        //        need_fallthrough = false;
+        //        need_break = true;
+
+        //        return Eswitch< new_return_type_t, TArgs... >( std::forward< TReturnValue >( value ), std::move( *this ) );
+        //    }
+        //    
+        //    return Eswitch< new_return_type_t, TArgs... >( std::move( *this ) );
+        //}   
+
+        template< typename TReturnValue >
+        auto actual_handle_return_value( TReturnValue && value )
+        {            
+            if( is_return_value_set_ )  return Eswitch< TReturnValue, TArgs... >( std::move( *this ) );
 
             if( execute_current_case ) 
             {
@@ -769,7 +894,7 @@ namespace eswitch_v4
                 was_case_executed = execute_current_case;
                 execute_current_case = false;
 
-                return Eswitch< new_return_type_t, TArgs... >( std::forward< TReturnValue >( value ), std::move( *this ) );
+                return Eswitch< TReturnValue, TArgs... >( std::forward< TReturnValue >( value ), std::move( *this ) );
             }
             else if( need_fallthrough ) 
             {
@@ -778,11 +903,11 @@ namespace eswitch_v4
                 need_fallthrough = false;
                 need_break = true;
 
-                return Eswitch< new_return_type_t, TArgs... >( std::forward< TReturnValue >( value ), std::move( *this ) );
+                return Eswitch< TReturnValue, TArgs... >( std::forward< TReturnValue >( value ), std::move( *this ) );
             }
             
-            return Eswitch< new_return_type_t, TArgs... >( std::move( *this ) );
-        }   
+            return Eswitch< TReturnValue, TArgs... >( std::move( *this ) );
+        } 
 
         template< typename T >
         Eswitch handle_condition( T && cnd )
