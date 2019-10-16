@@ -2,7 +2,7 @@
 #include "gtest/gtest.h"
 #include <memory>
 
-using namespace std;
+//using namespace std;
 
 enum Place { unknown = 0, new_york=5, washington=129, new_jersey=501 };
 
@@ -670,7 +670,7 @@ TEST(eswitch_v4_return, 1st_match_to_return_plus_in_place_return_dynamic_int_arr
         >> default_ >> [](){ FAIL(); }
         >> in_place_return_ );
     
-    ASSERT_NE(actual_result, nullptr );
+    EXPECT_TRUE(actual_result != nullptr );
 }
 
 TEST(eswitch_v4_return, 2nd_match_to_return_plus_in_place_return_dynamic_int_array )
@@ -684,7 +684,7 @@ TEST(eswitch_v4_return, 2nd_match_to_return_plus_in_place_return_dynamic_int_arr
         >> default_ >> [](){ FAIL(); }
         >> in_place_return_ );
     
-    ASSERT_NE(actual_result, nullptr );
+    EXPECT_TRUE(actual_result != nullptr );
 }
 
 TEST(eswitch_v4_return, 3rd_match_to_return_plus_in_place_return_dynamic_int_array )
@@ -699,7 +699,7 @@ TEST(eswitch_v4_return, 3rd_match_to_return_plus_in_place_return_dynamic_int_arr
         >> default_ >> [](){ FAIL(); }
         >> in_place_return_ );
     
-    ASSERT_EQ( actual_result, nullptr );
+    EXPECT_TRUE(actual_result == nullptr );
 }
 
 TEST(eswitch_v4_in_place_return, 1st_match_lambda_return_conversion_from_const_char_ptr_to_std_string )
@@ -725,9 +725,8 @@ TEST(eswitch_v4_in_place_return, 2nd_match_lambda_return_conversion_from_const_c
         >> case_( _2 == new_jersey ) >> []{ return std::string( "world" ); }
         >> in_place_return_ );
     
-    ASSERT_EQ( actual_result, "world" );
+    EXPECT_TRUE(actual_result == "world" );
 }
-
 
 TEST(eswitch_v4_in_place_return, 1st_match_to_lambda_return_plus_in_place_return_dynamic_int_array )
 {
@@ -739,7 +738,7 @@ TEST(eswitch_v4_in_place_return, 1st_match_to_lambda_return_plus_in_place_return
         >> case_( _3 == new_york )   >> []{ return nullptr; }
         >> in_place_return_ );
     
-    ASSERT_NE(actual_result, nullptr );
+    EXPECT_TRUE(actual_result != nullptr );
 }
 
 TEST(eswitch_v4_in_place_return, 2nd_match_to_lambda_return_plus_in_place_return_dynamic_int_array )
@@ -752,7 +751,7 @@ TEST(eswitch_v4_in_place_return, 2nd_match_to_lambda_return_plus_in_place_return
         >> case_( _3 == new_york )   >> []{ return nullptr; }
         >> in_place_return_ );
     
-    ASSERT_NE(actual_result, nullptr );
+    EXPECT_TRUE(actual_result != nullptr );
 }
 
 TEST(eswitch_v4_in_place_return, 3rd_match_to_lambda_return_plus_in_place_return_dynamic_int_array )
@@ -766,7 +765,7 @@ TEST(eswitch_v4_in_place_return, 3rd_match_to_lambda_return_plus_in_place_return
         >> case_( _3 == new_york )   >> []{ return nullptr; }
         >> in_place_return_ );
     
-    ASSERT_EQ( actual_result, nullptr );
+    EXPECT_TRUE(actual_result == nullptr );
 }
 
 TEST(eswitch_v4_in_place_return, 1st_match_return_conversion_from_const_char_ptr_to_std_string )
@@ -779,7 +778,7 @@ TEST(eswitch_v4_in_place_return, 1st_match_return_conversion_from_const_char_ptr
         >> case_( _2 == new_jersey ) >> to_return( std::string( "world" ) )
         >> in_place_return_ );
     
-    ASSERT_EQ( actual_result, "hello" );
+    EXPECT_TRUE(actual_result == "hello" );
 }
 
 TEST(eswitch_v4_in_place_return, 2nd_match_return_conversion_from_const_char_ptr_to_std_string )
@@ -791,8 +790,8 @@ TEST(eswitch_v4_in_place_return, 2nd_match_return_conversion_from_const_char_ptr
         >> case_( _1 != washington ) >> to_return( "hello" )
         >> case_( _2 == new_jersey ) >> to_return( std::string( "world" ) )
         >> in_place_return_ );
-    
-    ASSERT_EQ( actual_result, "world" );
+   
+    EXPECT_TRUE(actual_result == "world" );
 }
 
 
@@ -844,7 +843,7 @@ TEST(eswitch_v4_return, 3rd_match_return_conversion_from_nullptr_to_base )
         >> case_( _3 == new_york )   >> to_return( nullptr )
         >> in_place_return_ );
     
-    ASSERT_EQ( actual_result, nullptr );
+    EXPECT_TRUE( actual_result == nullptr );
 }
 
 struct custom
@@ -896,6 +895,22 @@ TEST(eswitch_v4_return, 3rd_match_no_default_ctor_at_return_type )
 }
 
 
+TEST(eswitch_v4_return, 1st_match_non_copyable_at_return_type )
+{
+    using namespace eswitch_v4;
+
+    auto actual_result( 
+        eswitch( washington, new_jersey, new_york )
+        >> case_( _1 == washington ) >> to_return( std::make_unique< int >( 10 ) )
+        >> case_( _2 == new_jersey ) >> to_return( nullptr )
+        >> case_( _3 == new_york )   >> to_return( nullptr )
+        >> in_place_return_ );
+
+    EXPECT_TRUE( actual_result != nullptr );    
+    EXPECT_TRUE( *actual_result == 10 );
+}
+
+
 TEST(eswitch_v4_in_place_return, 1st_match_lambda_return_conversion_from_base_to_base )
 {
     using namespace eswitch_v4;
@@ -933,7 +948,7 @@ TEST(eswitch_v4_in_place_return, 3rd_match_lambda_return_conversion_from_nullptr
         >> case_( _3 == new_york )   >> []{ return nullptr; }
         >> in_place_return_ );
     
-    ASSERT_EQ( actual_result, nullptr );
+    EXPECT_TRUE( actual_result == nullptr );
 }
 
 

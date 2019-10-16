@@ -568,38 +568,38 @@ namespace eswitch_v4
         anything() = default;
 
         template< typename T_ >
-        anything( std::initializer_list< T_ > && t ) : was_set( true )
-        {
-            new (&dt.internals) std::decay_t< T_ >( std::move( *t.begin() ) );
+        explicit anything( T_ && t ) : was_set( true )
+        {         
+            new (&dt.internals) T( std::forward< T_ >( t ) );
         }
 
+        template< typename T_ >
+        explicit anything( T_ && t, bool was_set ) : was_set( was_set )
+        {
+            if( was_set ) new (&dt.internals) T( std::forward< T_ >( t ) );
+        }
+
+        anything& operator==( anything& ) = delete;
+        anything& operator==( anything&& ) = delete;
+        anything( anything && t ) = delete;
+        
        ~anything()
         {
             if( was_set ) dt.internals.~T();
         }
 
-        template< typename T_ >
-        anything( const anything< T_ > & other ) : was_set( other.was_set )
-        {
-            if( other.was_set )
-            {
-                new (&dt.internals) std::decay_t< T_ >( other.dt.internals );
-            }
-        }
-
-        template< typename T_ >
-        anything( anything< T_ > && other ) : was_set( other.was_set )
-        {
-            if( other.was_set )
-            {
-                new (&dt.internals) std::decay_t< T_ >( std::move( other.dt.internals ) );
-            }
-        }
-
         operator bool() const { return was_set; }
 
-        T reset() 
+        T release() 
         { 
+            //was_set = false;
+            return std::move( dt.internals ); 
+        }
+
+        T release_with_check() 
+        { 
+            if( !was_set ) throw( std::logic_error( "anything is empty!!!" ) ); 
+
             was_set = false;
             return std::move( dt.internals ); 
         }
@@ -628,10 +628,10 @@ namespace eswitch_v4
 
     public:
         template< typename T, typename ... Ts >
-        Eswitch( Eswitch< T, Ts... >&& args ) 
-            : return_val_{ static_cast< R >( args.return_val_.reset() ) }
+        Eswitch( Eswitch< T, Ts... >&& args )
+            : return_val_( static_cast< R >( args.return_val_.release() ), args.return_val_.was_set )
             , pack_( std::move( args.pack_ ) )
-            , is_return_value_set_( true )
+            , is_return_value_set_( return_val_.was_set )
             , was_case_executed( args.was_case_executed )
             , execute_current_case( args.execute_current_case )
             , need_fallthrough( args.need_fallthrough )
@@ -657,7 +657,7 @@ namespace eswitch_v4
 
         template< typename TR, typename T, typename ... Ts >
         Eswitch( TR&& return_value, Eswitch< T, Ts... >&& args ) 
-            : return_val_{ static_cast< R >( std::forward< TR >( return_value ) ) }
+            : return_val_( static_cast< R >( std::forward< TR >( return_value ) ) )
             , pack_( std::move( args.pack_ ) )
             , is_return_value_set_( true )
             , was_case_executed( args.was_case_executed )
@@ -679,13 +679,13 @@ namespace eswitch_v4
         {
             if( !is_return_value_set_ ) throw( std::logic_error( "None of the cases returned anything!" ) );
 
-            return return_val_.front();
+            return return_val_.release_with_check();
         }
 
         template< typename T >
         void operator>>( Return_value_impl< T > && lambda )
         {
-            if( is_return_value_set_ ) lambda.callback( return_val_.front() );
+            if( is_return_value_set_ ) lambda.callback( return_val_.release_with_check() );
         }
 
         auto operator>>( const Default_impl & default_lambda )
@@ -718,31 +718,7 @@ namespace eswitch_v4
         template< typename Tlambda, typename std::enable_if< details::is_callable< std::remove_reference_t< Tlambda > >::value && !std::is_same< other_details::return_type_t< std::remove_reference_t< Tlambda > >, void >::value, int >::type = 0 >
         auto operator>>( Tlambda && lambda )
         {
-            using TReturnValue = other_details::return_type_t< std::remove_reference_t< Tlambda > >;
-
-            using new_return_type_t = typename std::conditional< 
-                std::is_same< R, Padding* >::value, 
-                Common_type_t< std::remove_reference_t< TReturnValue > >, 
-                    Common_type_t< std::remove_reference_t< TReturnValue >, R > >::type;
-
-            if( is_return_value_set_ )  return Eswitch< new_return_type_t, TArgs... >( std::move( *this ) );
-
-            if( execute_current_case ) 
-            {
-                was_case_executed = execute_current_case;
-                execute_current_case = false;
-
-                return Eswitch< new_return_type_t, TArgs... >( lambda(), std::move( *this ) );
-            }
-            else if( need_fallthrough ) 
-            {
-                need_fallthrough = false;
-                need_break = true;
-
-                return Eswitch< new_return_type_t, TArgs... >( lambda(), std::move( *this ) );
-            }
-            
-            return Eswitch< new_return_type_t, TArgs... >( std::move( *this ) );
+            return handle_return_value( lambda() );
         }
 
         template< typename ... Ts >
@@ -759,6 +735,14 @@ namespace eswitch_v4
             
         template< typename TReturnValue >
         auto operator>>( Value_to_return< TReturnValue >&& value )
+        {
+            return handle_return_value( std::move( value.return_value_ ) );
+        }
+
+    private:
+
+        template< typename TReturnValue >
+        auto handle_return_value( TReturnValue && value )
         {
             //static_assert( std::is_same< R, Padding* >::value || std::is_convertible< 
                 //Common_type_t< std::remove_reference_t< TReturnValue > >,
@@ -785,7 +769,7 @@ namespace eswitch_v4
                 was_case_executed = execute_current_case;
                 execute_current_case = false;
 
-                return Eswitch< new_return_type_t, TArgs... >( std::move( value.return_value_ ), std::move( *this ) );
+                return Eswitch< new_return_type_t, TArgs... >( std::forward< TReturnValue >( value ), std::move( *this ) );
             }
             else if( need_fallthrough ) 
             {
@@ -794,13 +778,11 @@ namespace eswitch_v4
                 need_fallthrough = false;
                 need_break = true;
 
-                return Eswitch< new_return_type_t, TArgs... >( std::move( value.return_value_ ), std::move( *this ) );
+                return Eswitch< new_return_type_t, TArgs... >( std::forward< TReturnValue >( value ), std::move( *this ) );
             }
             
             return Eswitch< new_return_type_t, TArgs... >( std::move( *this ) );
-        }
-
-    private:
+        }   
 
         template< typename T >
         Eswitch handle_condition( T && cnd )
@@ -836,16 +818,16 @@ namespace eswitch_v4
     template< typename T >
     auto handle_return( T && lmbd )
     { 
-        return  Return_value_impl< T >{ std::forward< T >( lmbd ) };
+        return Return_value_impl< T >{ std::forward< T >( lmbd ) };
     }
 
     template< typename T >
-    auto dumb( T && value ){ return value; }
+    auto dumb( T && value ){ return std::forward< T >( value ); }
 
     template< typename T >
     auto to_return( T && value )
     { 
-        using new_type = decltype( dumb( value ) );
+        using new_type = decltype( dumb( std::forward< T >( value ) ) );
         return  Value_to_return< new_type >{ std::forward< new_type >( value ) };
     }
  }
