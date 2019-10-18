@@ -1,6 +1,5 @@
 #include "benchmark/benchmark.h"
 #include "eswitch_v4.hpp"
-#include <functional>
 #include <iostream>
 
 const int AMOUNT_ITERATION = 1000000;

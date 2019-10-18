@@ -322,6 +322,48 @@ TEST(eswitch_v4_case, all_source_entries_have_different_type )
 }
 
 
+TEST(eswitch_v4_case, 1st_match_not_equal_any_from )
+{
+    using namespace eswitch_v4;
+
+    bool executed = false;
+
+    eswitch( washington, new_jersey, new_york )
+        >> case_( _1 != any_from( new_jersey, new_york ) ) >> [&](){ executed = true; }
+        >> case_( _2 == any_from( washington, new_jersey, new_york ) ) >> [&](){ FAIL(); }
+        >> case_( _3 == any_from( washington, new_jersey, new_york ) ) >> [&](){ FAIL(); };
+    
+    ASSERT_EQ(executed, true );
+}
+
+TEST(eswitch_v4_case, 2nd_match_not_equal_any_from )
+{
+    using namespace eswitch_v4;
+
+    bool executed = false;
+
+    eswitch( washington, new_jersey, new_york )
+        >> case_( _1 == any_from( new_jersey, new_york ) ) >> [&](){ FAIL(); }
+        >> case_( _2 != any_from( washington, new_york ) ) >> [&](){ executed = true; }
+        >> case_( _3 == any_from( washington, new_jersey, new_york ) ) >> [&](){ FAIL(); };
+    
+    ASSERT_EQ(executed, true );
+}
+
+TEST(eswitch_v4_case, 3rd_match_not_equal_any_from )
+{
+    using namespace eswitch_v4;
+
+    bool executed = false;
+
+    eswitch( washington, new_jersey, new_york )
+        >> case_( _1 == any_from( new_jersey, new_york ) ) >> [&](){ FAIL(); }
+        >> case_( _2 == any_from( washington, new_york ) ) >> [&](){ FAIL(); }
+        >> case_( _3 != any_from( washington, new_jersey ) ) >> [&](){ executed = true; };
+    
+    ASSERT_EQ(executed, true );
+}
+
 TEST(eswitch_v4_case, 1st_match_any_from )
 {
     using namespace eswitch_v4;
@@ -1519,4 +1561,34 @@ TEST(eswitch_v4_predicate, lvalue_lambda_and_return )
     
     ASSERT_EQ( executed, true );
     ASSERT_EQ( result, std::string{ "washington" } );
+}
+
+TEST(eswitch_v4_any, not_equal )
+{
+    using namespace eswitch_v4;
+    
+    EXPECT_TRUE( ( 10 != extension::any() ) == false );
+}
+
+TEST(eswitch_v4_any, equal )
+{
+    using namespace eswitch_v4;
+    
+    EXPECT_TRUE( ( 10 == extension::any() ) == true );
+    EXPECT_TRUE( ( "Hello" == extension::any() ) == true );
+    EXPECT_TRUE( ( 'c' == extension::any() ) == true );
+    EXPECT_TRUE( ( std::string( "" ) == extension::any() ) == true );
+    EXPECT_TRUE( ( std::vector<int>{ 1, 2 } == extension::any() ) == true );
+}
+
+TEST(eswitch_v4_return, return_after_fallthrough )
+{
+    using namespace eswitch_v4;
+
+    auto result = eswitch( washington, new_jersey, new_york ) >> 
+        case_( _1 == washington ) >> []{} >> fallthrough_ >> 
+        case_( _1 == new_jersey ) >> to_return( new_jersey ) >> 
+        in_place_return_;
+    
+    EXPECT_TRUE( result == new_jersey );
 }

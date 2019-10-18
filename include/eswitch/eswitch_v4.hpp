@@ -251,18 +251,8 @@ namespace eswitch_v4
         struct any 
         {
             template < typename T >
-            friend constexpr bool operator==( const any& st, const T& value ) {
-                return true;
-            }
-
-            template < typename T >
             friend constexpr bool operator==( const T& value, const any& st ) {
                 return true;
-            }
-
-            template < typename T >
-            friend constexpr bool operator!=( const any& st, const T& value ) {
-                return false;
             }
 
             template < typename T >
@@ -282,19 +272,9 @@ namespace eswitch_v4
                 static_assert( std::is_same< T, T1 >::value, "T and T1 should be SAME TYPE" );
             }
 
-            friend constexpr bool operator==( const Any_from_impl& st, const T & value )
-            {
-                return is_in_set( value, st.arr );
-            }
-
             friend constexpr bool operator==( const T & value, const Any_from_impl& st )
             {
                 return is_in_set( value, st.arr );
-            }
-
-            friend constexpr bool operator!=( const Any_from_impl& st, const T & value )
-            {
-                return !operator==( value, st );
             }
 
             friend constexpr bool operator!=( const T & value, const Any_from_impl& st )
@@ -304,7 +284,7 @@ namespace eswitch_v4
         };        
     }
 
-    bool non_reachable() { assert( false ); return false; }
+    bool unreachable() { assert( false ); return false; }
 
     template< typename TIndex, typename T >
     class condition
@@ -342,7 +322,7 @@ namespace eswitch_v4
             case Comparison_operators::not_equal_:
                 return t1 != t2;
             default:
-                return non_reachable();
+                return unreachable();
             };
         }
     };
@@ -355,7 +335,7 @@ namespace eswitch_v4
     public:
 
         template< typename ... TVals >
-        conditions( const Logical_operators logical_operator, TVals&&... value ) : logical_operator( logical_operator ), pack_( std::forward< TVals >( value )... )
+        conditions( const Logical_operators logical_operator, TVals&&... value ) : logical_operator( logical_operator ), pack_{ std::forward< TVals >( value )... }
         {}
 
         constexpr int32_t amount_cmp() const 
@@ -387,7 +367,7 @@ namespace eswitch_v4
             case Logical_operators::or_:
                 return t1 || t2;
             default: 
-                return non_reachable();
+                return unreachable();
             };
         }
     };
@@ -455,16 +435,16 @@ namespace eswitch_v4
     }
 
 
-    template< typename T1, typename T2 >
-    auto operator&&( T1 && i, T2 && j )
+    template< typename T1, typename T2, typename T3 >
+    auto operator&&( T1 && i, condition< T2, T3 > && j )
     {
-        return conditions< T1, T2 >( Logical_operators::and_, std::forward< T1 >( i ), std::forward< T2 >( j ) );
+        return conditions< T1, condition< T2, T3 > >( Logical_operators::and_, std::forward< T1 >( i ), std::move( j ) );
     }
 
-    template< typename T1, typename T2 >
-    auto operator||( T1 && i, T2 && j )
+    template< typename T1, typename T2, typename T3 >
+    auto operator||( T1 && i, condition< T2, T3 > && j )
     {
-        return conditions< T1, T2 >( Logical_operators::or_, std::forward< T1 >( i ), std::forward< T2 >( j ) );
+        return conditions< T1, condition< T2, T3 > >( Logical_operators::or_, std::forward< T1 >( i ), std::move( j ) );
     }
 
     template< typename T >
@@ -497,18 +477,18 @@ namespace eswitch_v4
     };
 
     template< typename TEswitch >
-    struct _Eswitch_for_return_only
+    struct Eswitch_for_return_only
     {
         TEswitch eswitch_;
 
         template< typename T >
-        _Eswitch_for_return_only( T && t ) : eswitch_( std::forward< T >( t ) ){}
+        Eswitch_for_return_only( T && t ) : eswitch_( std::forward< T >( t ) ){}
         
         template< typename Tlambda, typename std::enable_if< details::is_callable< Tlambda >::value, int >::type = 0 >
         auto operator>>( Tlambda && lambda )
         {
             /// after handling lambda TEswitch could change, in particular ReturnValue could change
-            return _Eswitch_for_return_only< decltype( eswitch_ >> std::move( lambda ) ) >( std::move( eswitch_ >> std::move( lambda ) ) );            
+            return Eswitch_for_return_only< decltype( eswitch_ >> std::move( lambda ) ) >( std::move( eswitch_ >> std::move( lambda ) ) );            
         }
 
         template< typename T >
@@ -523,13 +503,13 @@ namespace eswitch_v4
         }
 
         template< typename ... Ts >
-        _Eswitch_for_return_only operator>>( const conditions< Ts... >& cnd)
+        Eswitch_for_return_only operator>>( const conditions< Ts... >& cnd)
         {
             static_assert( Always_false< Ts... >::value, "You can't use CASE after DEFAULT, only RETURN must go there!" );
         }
 
         template< typename T1, typename T2 >
-        _Eswitch_for_return_only operator>>( const condition< T1, T2 >& cnd)
+        Eswitch_for_return_only operator>>( const condition< T1, T2 >& cnd)
         {
             static_assert( Always_false< T1, T2 >::value, "You can't use CASE after DEFAULT, only RETURN must go there!" );
         }
@@ -583,7 +563,6 @@ namespace eswitch_v4
 
         T release() 
         { 
-            //was_set = false;
             return std::move( dt.internals ); 
         }
 
@@ -593,13 +572,6 @@ namespace eswitch_v4
 
             was_set = false;
             return std::move( dt.internals ); 
-        }
-
-        const T& front() const 
-        { 
-            if( !was_set ) throw( std::logic_error( "Anything is empty!!!" ) ); 
-
-            return dt.internals; 
         }
     };
 
@@ -668,7 +640,6 @@ namespace eswitch_v4
             , need_fallthrough( args.need_fallthrough )
             , need_break( args.need_break )
         {
-            //printf( "RUSTAM is_return_value_set_=TRUE\n" );
         }
 
         Eswitch operator>>( const Fallthrough& )
@@ -693,7 +664,7 @@ namespace eswitch_v4
 
         auto operator>>( const Default_impl & default_lambda )
         {
-            return _Eswitch_for_return_only< Eswitch >( *this >> default_lambda.case_for_any_match );
+            return Eswitch_for_return_only< Eswitch >( *this >> default_lambda.case_for_any_match );
         }
 
         template< typename Tlambda, typename std::enable_if< details::is_callable< std::remove_reference_t< Tlambda > >::value && std::is_same< other_details::return_type_t< std::remove_reference_t< Tlambda > >, void >::value, int >::type = 0 >
@@ -788,8 +759,6 @@ namespace eswitch_v4
 
             if( execute_current_case ) 
             {
-                //printf( "RUSTAM that operator is_same\n" );
-
                 was_case_executed = execute_current_case;
                 execute_current_case = false;
 
@@ -797,8 +766,6 @@ namespace eswitch_v4
             }
             else if( need_fallthrough ) 
             {
-                //printf( "RUSTAM that operator2\n");
-
                 need_fallthrough = false;
                 need_break = true;
 
@@ -851,4 +818,5 @@ namespace eswitch_v4
         using new_type = decltype( details::Just_find_out_return_type( std::forward< T >( value ) ) );
         return  Value_to_return< new_type >{ std::forward< new_type >( value ) };
     }
- }
+
+ } // namespace eswitch_v4
