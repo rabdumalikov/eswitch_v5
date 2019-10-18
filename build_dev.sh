@@ -1,3 +1,5 @@
+rm -rf build/debug
+
 mkdir build
 cd build
 mkdir debug

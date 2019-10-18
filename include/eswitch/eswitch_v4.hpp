@@ -28,11 +28,41 @@ namespace eswitch_v4
         template< typename T >
         auto Just_find_out_return_type( T && value ){ return std::forward< T >( value ); }
 
+        template< typename T >
+        struct is_determined
+        {
+            struct Yes{};
+            struct No{ Yes no[2]; };
+            
+            template< typename U1, typename U2 > struct check;
+            
+            template< typename T_ >
+            static Yes is_determine( check< T_, typename T_::type > * );
+            
+            template< typename T_ >
+            static No is_determine( ... );
+
+            static constexpr bool value = sizeof( is_determine< T >( 0 ) ) == sizeof( Yes );  
+        };
+
+        template <bool TStatus, typename... Ts>
+        struct has_common_type_impl;
+
+        template <typename... Ts>
+        struct has_common_type_impl< false, Ts... > : std::false_type {};
+
+        template <typename... Ts>
+        struct has_common_type_impl< true, Ts... > : std::true_type {};
+        
+        template <typename... Ts>
+        using has_common_type = typename details::is_determined< std::common_type_t<Ts...> >::type;
+
+
         template <typename T, bool >
         class is_callable_impl;
 
         template< typename T >
-        class is_callable_impl< T, true >
+        class is_callable_impl< T, true > 
         {
             struct Fallback { int operator()() { return 1; } };
             struct Derived : T, Fallback { };
@@ -53,22 +83,18 @@ namespace eswitch_v4
             static Yes has_alternative_callable_operator(...);
 
         public:
-            static constexpr int value = sizeof(has_alternative_callable_operator<Derived>(0)) == sizeof(Yes);
+            static constexpr bool value = sizeof(has_alternative_callable_operator<Derived>(0)) == sizeof(Yes);
         };
 
 
         template <typename T >
-        class is_callable_impl< T, false >
-        {
-        public:
-            static constexpr int value = false;
-        };
+        class is_callable_impl< T, false > : public std::false_type {};
 
         template <typename T >
         class is_callable
         {
         public:
-            static constexpr int value = is_callable_impl< T, std::is_class< T >::value >::value;
+            static constexpr bool value = is_callable_impl< T, std::is_class< T >::value >::value;
         };
 
         template< int Idx, typename ... T, typename TLambda, typename std::enable_if< (  Idx >= sizeof...( T ) ), int >::type = 0 >
@@ -123,20 +149,13 @@ namespace eswitch_v4
         { 
             return Tuple_find_and_call_impl< 0 >( index_to_find, tup, callback );
         }
-    }
+
+        static bool unreachable() { assert( false ); return false; }
+
+    } // namespace details
 
     namespace other_details
     {
-        template <typename AlwaysVoid, typename... Ts>
-        struct has_common_type_impl : std::false_type {};
-
-        template <typename... Ts>
-        struct has_common_type_impl<std::void_t<std::common_type_t<Ts...>>, Ts...> : std::true_type {};
-
-        template <typename... Ts>
-        using has_common_type = typename has_common_type_impl<void, Ts...>::type;
-
-
         template <typename F>
         struct return_type_impl;
     
@@ -232,7 +251,7 @@ namespace eswitch_v4
 
         template <typename T>
         using return_type_t = typename return_type_impl< decltype( &T::operator() ) >::type;
-    }
+    } // namespace other_details
 
     namespace extension
     {
@@ -284,8 +303,6 @@ namespace eswitch_v4
         };        
     }
 
-    bool unreachable() { assert( false ); return false; }
-
     template< typename TIndex, typename T >
     class condition
     {
@@ -322,7 +339,7 @@ namespace eswitch_v4
             case Comparison_operators::not_equal_:
                 return t1 != t2;
             default:
-                return unreachable();
+                return details::unreachable();
             };
         }
     };
@@ -367,7 +384,7 @@ namespace eswitch_v4
             case Logical_operators::or_:
                 return t1 || t2;
             default: 
-                return unreachable();
+                return details::unreachable();
             };
         }
     };
@@ -741,7 +758,7 @@ namespace eswitch_v4
             !std::is_convertible< R, TReturnValue >::value && 
             !std::is_convertible< TReturnValue, R >::value && 
             !std::is_same< R, Padding* >::value && 
-            other_details::has_common_type< R, TReturnValue >::value, int >::type = 0 >
+            details::has_common_type< R, TReturnValue >::value, int >::type = 0 >
         auto handle_return_value( TReturnValue && value )
         {
             return actual_handle_return_value( static_cast< std::common_type_t< R, TReturnValue >&& >( value ) );

@@ -1,3 +1,5 @@
+rm -rf build/release
+
 mkdir build
 cd build
 mkdir release

@@ -3,9 +3,10 @@ cmake_minimum_required(VERSION 2.8.2)
 project(ESWITCH)
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
+    add_compile_options( -std=c++14 )
     message("ESWITCH Debug.build")
 ELSE()
-    add_compile_options( -O3 )
+    add_compile_options( -O3 -std=c++14 )
     message("ESWITCH Release.build")
 ENDIF()
 
