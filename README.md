@@ -1,8 +1,11 @@
 __________
 Motivation:
 ----------
-**eswitch** library implements extension for **native switch**.<br/>
-Main motivation for **eswitch** was to overcome **native switch** limitations:
+**eswitch_v4** library implements extension for **native switch**.<br/>
+**eswitch_v4** based on several crutial concepts of implementation **switch** in **Swift**.<br/>
+i.e. **break** is *implicit*, while **fallthrough** is *explicit*.<br/>
+
+Main motivation for **eswitch_v4** was to overcome **native switch** limitations:
 
 - one parameter per **native switch**
 - the parameter restricted to only primitive types( **int**, **char**, **enum** ... ).
@@ -13,168 +16,31 @@ __________
 Example:
 -------
 ```
-    enum EConnectionStatus { CONNECTING, CONNECTED, DISCONNECTED, FAILED };
 
-    EConnectionStatus connectionStatus = ...;
-    bool clientAlive = true;
-    std::string http_status_line = "...";
-    
-    E_SWITCH( connectionStatus, clientAlive, http_status_line )
-        CASE( CONNECTING) {...} BREAK_
-        CASE( CONNECTED AND true AND "HTTP 200 OK" ) { ... } BREAK_
-        CASE( CONNECTED OR false OR "HTTP 404 Not Found" ) { ... } BREAK_
-        CASE( ANY_FROM( DISCONNECTED, FAILED ) ) {...}
-        DEFAULT_ {...}
-    END_;
+    int Val = 10;
 
-    OR =====================================================================>
+    switch (Val % 100) {                     
+    case 11:                       
+    case 12:                         
+    case 13:
+        return "th";
+    default:
+    switch (Val % 10) {
+        case 1: return "st";
+        case 2: return "nd";
+        case 3: return "rd";
+        default: return "th";
+    }
+    }
 
-    std::unique_ptr< Client > client;
+    using namespace eswitch_v4;
 
-    E_SWITCH( connectionStatus, client, http_status_line )
-        CASE( CONNECTING) {...} BREAK_
-        CASE( CONNECTED AND NOT(nullptr) AND "HTTP 200 OK" ) { ... } BREAK_
-        CASE( CONNECTED AND NOT(nullptr) AND "HTTP 404 Not Found" ) { ... } BREAK_
-        CASE( ANY_FROM( DISCONNECTED, FAILED ) ) {...}
-        DEFAULT_ {...}
-    END_;
-```
-__________
-Comparison:<br/>
-----------
-&nbsp;**===============================================================================**                                               
-
-|          NATIVE SWITCH                  |             EXTENDED SWITCH                                          |
-|-----------------------------------------|:---------------------------------------------------------------------|
-|** =============================  **     | **=================================================**                                               
-|**switch**( *somevalue* )                |          **E_SWITCH**( *somevalue* )				           
-|{                                        |               &nbsp;&nbsp;&nbsp;&nbsp;**CASE**( CONNECTING) ... **BREAK_**	    
-|    **case** CONNECTING: ... **break**;  |               &nbsp;&nbsp;&nbsp;&nbsp;**CASE**( CONNECTED ) ... **BREAK_**	    
-|    **case** CONNECTED: ... **break**;   |               &nbsp;&nbsp;&nbsp;&nbsp;**CASE**( DISCONNECTED ) ... **BREAK_**  
-|    **case** DISCONNECTED: ... **break**;|               &nbsp;&nbsp;&nbsp;&nbsp;**CASE**( FAILED ) ... **BREAK_**		  
-|    **case** FAILED: ... **break**;      |               &nbsp;&nbsp;&nbsp;&nbsp;**DEFAULT_** ...				      
-|    **default**: ...;                    |           **END_**;								  
-|};                                       |												  
-|                                         |												 
-|** =============================  **     | **=================================================**                                    
-|                                         |          **E_SWITCH**( *somevalue* )
-|**switch**( *somevalue* )                |              **CASE**( CONNECTING OR CONNECTED ) **BREAK_**
-|{                                        |              **CASE**( DISCONNECTED OR FAILED ) **BREAK_**
-|    **case** CONNECTING:                 |          **END_**;
-|    **case** CONNECTED:                  |              
-|        **break**;                       |          ==========**OR**==========
-|    **case** DISCONNECTED:               |
-|    **case** FAILED:                     |          **E_SWITCH**( *somevalue* )
-|        **break**;                       |              **CASE**( **ANY_FROM**( CONNECTING, CONNECTED ) ) **BREAK_**
-|};                                       |              **CASE**( **ANY_FROM**( DISCONNECTED, FAILED ) ) **BREAK_**
-|                                         |          **END_**;
-|                                         |
-|** =============================  **     | **=================================================**
-|                                         |                                                                      |
-|**switch**( *somevalue* )                |          **E_SWITCH**( *somevalue* )
-|{                                        |              **CASE**( CONNECTING )
-|    **case** CONNECTING:                 |              {
-|    {                                    |                  &nbsp;&nbsp;&nbsp;&nbsp;//code...
-|&nbsp;&nbsp;&nbsp;&nbsp;//code...        |              } 
-|    }                                    |              **CASE**( CONNECTED ) 
-|    **case** CONNECTED:                  |              {
-|    {                                    |                  &nbsp;&nbsp;&nbsp;&nbsp;//code...
-|&nbsp;&nbsp;&nbsp;&nbsp;//code...        |              } 
-|    }                                    |          **END_**;
-|};                                       |         
-
-&nbsp;**===============================================================================**                                               
-<br>
-_______________
-
-
-E_SWITCH details:
-----------------
-
-* **E_SWITCH** must be closed by macro **END_**, otherwise code won't compile:
-
-```
-    E_SWITCH(...)  CASE( ... ){} END_;  /// OK
-    E_SWITCH(...) CASE( ... ){};        /// ERROR
-```
-
-* **BREAK_** and **DEFAULT_** have identical meaning as for **native switch**:
-
-* **CASE** conditions could be build via operators **AND**/**OR** + <br/>helper functions: **ANY_FROM( ... )** and **NOT( *value* )**:
-```
-    // - AND/OR
-    E_SWITCH( param1, param2 )
-        CASE( true AND CONNECTED ) ... BREAK_
-        CASE( false OR FAILED ) ... BREAK_
-
-    // - ANY_FROM(...)
-    E_SWITCH( param1, param2 )
-        CASE( true AND ANY_FROM( CONNECTING, CONNECTED ) ){...}
-
-    // - NOT( ... )
-    E_SWITCH( param )
-        CASE( NOT( nullptr ) ) {...}
-```
-* **MIXING** of operators **AND**/**OR** per **CASE** is not supported, will yield compilation error:
-```
-    E_SWITCH( param1, param2, param3 )
-        CASE( true AND CONNECTED OR NOT(nullptr) ) ... BREAK_  /// Error
-        CASE( true AND CONNECTED AND NOT(nullptr) ) ... BREAK_ /// OK
-        CASE( true OR CONNECTED OR NOT(nullptr) ) ... BREAK_   /// OK
-```
-* Each _param_ in the **E_SWITCH** is going to be matched only against<br/> 
-   corresponding _param_ in the **CASE** regardless operators you use:
-```
-    E_SWITCH(  param1,     param2,   ...,   param_n)
-                 ^           ^                 ^
-                 |           |                 |                
-        CASE( cparam1 OR  cparam2 OR ... OR cparam_n )
-    END_;
-
-    /// C++ equivalent code
-    if( param1 == cparam1 || param2 == cparam2 || param_n == cparam_n) ...
-```
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-**EXCEPTION:** <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-if you have only one _parameter_ in **E_SWITCH** and many _parameters_ in **CASE** via **OR**,<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-then matching will be performed sequencially until first match is found.
-```
-    E_SWITCH( param )
-        CASE( cparam1 OR cparam2 OR ... OR cparam_n ){...}
-    END_;
-    
-    /// C++ equivalent code
-    i.e. if( param == cparam1 || param == cparam2 || param == ... || param == cparam_n )
-```
-
-* **CASE** - supports *partial matching* of *parameters*:
-```
-    E_SWITCH( param1, param2, ..., param_n )
-        CASE( param1 ){} BREAK_
-        CASE( param1 OR param2 ){} BREAK_
-        CASE( param1 AND param2 ){} BREAK_
-        CASE( param1 OR param2 OR ... OR param_n ){} BREAK_
-    END_;
-```
-
-* **return** statement within **CASE**:
-     - **WILL**  interrupt execution of the current matched **CASE**, but
-     - **WON'T** interrupt execution of another **CASE's**
-```
-        E_SWITCH( param1, param2, ..., param_n )
-           CASE( param1 )
-           {
-               return; /// interrupt current CASE
-    
-               value = ...;
-           }
-           CASE( param1 AND param2 )
-           {
-               /// This case will be executed
-           }
-        END_;
+    eswitch( Val % 100, Val % 10 )  >>
+        case_( _1 == any_from( 11, 12, 13 ) ) >> []{ return "th"; } >>
+        case_( _2 == 1 ) >> []{ return "st"; } >>
+        case_( _2 == 2 ) >> []{ return "nd"; } >>
+        case_( _2 == 3 ) >> []{ return "rd"; } >>
+        default_         >> []{ return "th"; };
 ```
 _______________
 
