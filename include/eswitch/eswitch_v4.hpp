@@ -2,6 +2,7 @@
 
 #include <tuple>
 #include <array>
+#include <cassert>
 
 namespace eswitch_v4
 {
@@ -24,6 +25,9 @@ namespace eswitch_v4
 
     namespace details 
     {
+        template< typename T >
+        auto Just_find_out_return_type( T && value ){ return std::forward< T >( value ); }
+
         template <typename T, bool >
         class is_callable_impl;
 
@@ -68,42 +72,42 @@ namespace eswitch_v4
         };
 
         template< int Idx, typename ... T, typename TLambda, typename std::enable_if< (  Idx >= sizeof...( T ) ), int >::type = 0 >
-        constexpr void tuple_for_each_impl( const std::tuple< T... > & tup, const TLambda & callback ) 
+        constexpr void Tuple_for_each_impl( const std::tuple< T... > & tup, const TLambda & callback ) 
         {
         }
 
         template< int Idx, typename ... T, typename TLambda, typename std::enable_if< ( Idx < sizeof...( T ) ), int >::type = 0 >
-        constexpr void tuple_for_each_impl( const std::tuple< T... > & tup, const TLambda & callback ) 
+        constexpr void Tuple_for_each_impl( const std::tuple< T... > & tup, const TLambda & callback ) 
         { 
-            return callback( std::get< Idx >( tup ) ), tuple_for_each_impl< Idx + 1 >( tup, callback ); 
+            return callback( std::get< Idx >( tup ) ), Tuple_for_each_impl< Idx + 1 >( tup, callback ); 
         }
 
         template< typename ... T, typename TLambda >
-        constexpr void tuple_for_each( const std::tuple< T... > & tup, TLambda && callback ) 
+        constexpr void Tuple_for_each( const std::tuple< T... > & tup, TLambda && callback ) 
         { 
-            return tuple_for_each_impl< 0 >( tup, callback );
+            return Tuple_for_each_impl< 0 >( tup, callback );
         }
 
         template< int Idx, typename ... T, typename TLambda, typename std::enable_if< (  Idx >= sizeof...( T ) ), int >::type = 0 >
-        constexpr void tuple_for_each_with_index_impl( const std::tuple< T... > & tup, const TLambda & callback ) {}
+        constexpr void Tuple_for_each_with_index_impl( const std::tuple< T... > & tup, const TLambda & callback ) {}
 
         template< int Idx, typename ... T, typename TLambda, typename std::enable_if< ( Idx < sizeof...( T ) ), int >::type = 0 >
-        constexpr void tuple_for_each_with_index_impl( const std::tuple< T... > & tup, const TLambda & callback ) 
+        constexpr void Tuple_for_each_with_index_impl( const std::tuple< T... > & tup, const TLambda & callback ) 
         { 
-            return callback( Idx, std::get< Idx >( tup ) ), tuple_for_each_with_index_impl< Idx + 1 >( tup, callback ); 
+            return callback( Idx, std::get< Idx >( tup ) ), Tuple_for_each_with_index_impl< Idx + 1 >( tup, callback ); 
         }
 
         template< typename ... T, typename TLambda >
-        constexpr void tuple_for_each_with_index( const std::tuple< T... > & tup, TLambda && callback ) 
+        constexpr void Tuple_for_each_with_index( const std::tuple< T... > & tup, TLambda && callback ) 
         { 
-            return tuple_for_each_with_index_impl< 0 >( tup, callback );
+            return Tuple_for_each_with_index_impl< 0 >( tup, callback );
         }
 
         template< int Idx, typename ... T, typename TLambda, typename std::enable_if< (  Idx >= sizeof...( T ) ), int >::type = 0 >
-        constexpr void tuple_find_and_call_impl( const int32_t index_to_find, const std::tuple< T... > & tup, const TLambda & callback ) {}
+        constexpr void Tuple_find_and_call_impl( const int32_t index_to_find, const std::tuple< T... > & tup, const TLambda & callback ) {}
 
         template< int Idx, typename ... T, typename TLambda, typename std::enable_if< ( Idx < sizeof...( T ) ), int >::type = 0 >
-        constexpr void tuple_find_and_call_impl( const int32_t index_to_find, const std::tuple< T... > & tup, const TLambda & callback ) 
+        constexpr void Tuple_find_and_call_impl( const int32_t index_to_find, const std::tuple< T... > & tup, const TLambda & callback ) 
         { 
             if( Idx == index_to_find )
             {
@@ -111,18 +115,28 @@ namespace eswitch_v4
                 return;
             }
 
-            tuple_find_and_call_impl< Idx + 1 >( index_to_find, tup, callback ); 
+            Tuple_find_and_call_impl< Idx + 1 >( index_to_find, tup, callback ); 
         }
 
         template< typename ... T, typename TLambda >
-        constexpr void tuple_find_and_call( const int32_t index_to_find, const std::tuple< T... > & tup, TLambda && callback ) 
+        constexpr void Tuple_find_and_call( const int32_t index_to_find, const std::tuple< T... > & tup, TLambda && callback ) 
         { 
-            return tuple_find_and_call_impl< 0 >( index_to_find, tup, callback );
+            return Tuple_find_and_call_impl< 0 >( index_to_find, tup, callback );
         }
     }
 
     namespace other_details
     {
+        template <typename AlwaysVoid, typename... Ts>
+        struct has_common_type_impl : std::false_type {};
+
+        template <typename... Ts>
+        struct has_common_type_impl<std::void_t<std::common_type_t<Ts...>>, Ts...> : std::true_type {};
+
+        template <typename... Ts>
+        using has_common_type = typename has_common_type_impl<void, Ts...>::type;
+
+
         template <typename F>
         struct return_type_impl;
     
@@ -290,6 +304,8 @@ namespace eswitch_v4
         };        
     }
 
+    bool non_reachable() { assert( false ); return false; }
+
     template< typename TIndex, typename T >
     class condition
     {
@@ -315,6 +331,7 @@ namespace eswitch_v4
         int32_t amount_cmp() const { return 1; }       
 
     private:
+        
         template< typename T1, typename T2 >
         static bool compare( const Comparison_operators CmpOper, T1 && t1, T2 && t2 )
         {                
@@ -324,6 +341,8 @@ namespace eswitch_v4
                 return t1 == t2;
             case Comparison_operators::not_equal_:
                 return t1 != t2;
+            default:
+                return non_reachable();
             };
         }
     };
@@ -343,7 +362,7 @@ namespace eswitch_v4
         { 
             int32_t sum_of_cmp = 0;
 
-            details::tuple_for_each( pack_, [&]( const auto & v ) 
+            details::Tuple_for_each( pack_, [&]( const auto & v ) 
                 {
                     sum_of_cmp += v.amount_cmp();
                 } );
@@ -367,6 +386,8 @@ namespace eswitch_v4
                 return t1 && t2;
             case Logical_operators::or_:
                 return t1 || t2;
+            default: 
+                return non_reachable();
             };
         }
     };
@@ -470,40 +491,10 @@ namespace eswitch_v4
     };
 
     template< typename ... Ts >
-    struct Always_assert
+    struct Always_false
     {
  	    static constexpr bool value = false;
     };
-
-
-    template< typename ... Ts >
-    struct Common_type;
-
-    template< typename T >
-    struct Common_type< T >{ using type = T; };
-
-    template< typename T1, typename T2 >
-    struct Common_type< T1, T2 >{ using type = std::common_type_t< T1, T2 >; };
-
-    template<>
-    struct Common_type< std::nullptr_t >{ using type = Padding*; };
-
-    template< typename T >
-    struct Common_type< Padding, T >{ using type = typename Common_type< T >::type; };
-
-    template< typename T >
-    struct Common_type< T, Padding >{ using type = typename Common_type< T >::type; };
-
-    template< typename T >
-    struct Common_type< Padding*, T >{ using type = typename Common_type< T >::type; };
-
-    template< typename T >
-    struct Common_type< T, Padding* >{ using type = typename Common_type< T >::type; };
-
-
-    template< typename ... Ts >
-    using Common_type_t = typename Common_type< Ts... >::type;
-
 
     template< typename TEswitch >
     struct _Eswitch_for_return_only
@@ -534,24 +525,23 @@ namespace eswitch_v4
         template< typename ... Ts >
         _Eswitch_for_return_only operator>>( const conditions< Ts... >& cnd)
         {
-            static_assert( Always_assert< Ts... >::value, "You can't use CASE after DEFAULT, only RETURN must go there!" );
+            static_assert( Always_false< Ts... >::value, "You can't use CASE after DEFAULT, only RETURN must go there!" );
         }
 
         template< typename T1, typename T2 >
         _Eswitch_for_return_only operator>>( const condition< T1, T2 >& cnd)
         {
-            static_assert( Always_assert< T1, T2 >::value, "You can't use CASE after DEFAULT, only RETURN must go there!" );
+            static_assert( Always_false< T1, T2 >::value, "You can't use CASE after DEFAULT, only RETURN must go there!" );
         }
     };
 
     template< typename TValue >
     struct Value_to_return{
-        explicit Value_to_return( TValue && val ) : return_value_( std::move( val ) ){}
         TValue return_value_;
     };
 
     template< typename T >
-    struct anything
+    struct Anything
     {
         using type = T;
 
@@ -566,36 +556,25 @@ namespace eswitch_v4
         data dt;
         bool was_set = false;
 
-        anything() = default;
+        Anything() = default;
 
         template< typename T_ >
-        explicit anything( anything< T_ > && t ) : was_set( t.was_set )
+        explicit Anything( T_ && t ) : was_set( true )
         {
-            printf( "RUSTAM anything2\n" );
-
-            new (&dt.internals) T( t.release() );
-        }
-
-        template< typename T_ >
-        explicit anything( T_ && t ) : was_set( true )
-        {
-            printf( "RUSTAM anything3\n" );
-
             new (&dt.internals) T( std::forward< T_ >( t ) );
         }
 
         template< typename T_ >
-        explicit anything( T_ && t, bool was_set ) : was_set( was_set )
+        explicit Anything( T_ && t, bool was_set ) : was_set( was_set )
         {
-            printf( "RUSTAM anything\n" );
             if( was_set ) new (&dt.internals) T( std::forward< T_ >( t ) );
         }
 
-        anything& operator==( anything& ) = delete;
-        anything& operator==( anything&& ) = delete;
-        anything( anything && t ) = delete;
+        Anything& operator==( Anything& ) = delete;
+        Anything& operator==( Anything&& ) = delete;
+        Anything( Anything && t ) = delete;
         
-       ~anything()
+       ~Anything()
         {
             if( was_set ) dt.internals.~T();
         }
@@ -610,7 +589,7 @@ namespace eswitch_v4
 
         T release_with_check() 
         { 
-            if( !was_set ) throw( std::logic_error( "anything is empty!!!" ) ); 
+            if( !was_set ) throw( std::logic_error( "Anything is empty!!!" ) ); 
 
             was_set = false;
             return std::move( dt.internals ); 
@@ -618,7 +597,7 @@ namespace eswitch_v4
 
         const T& front() const 
         { 
-            if( !was_set ) throw( std::logic_error( "anything is empty!!!" ) ); 
+            if( !was_set ) throw( std::logic_error( "Anything is empty!!!" ) ); 
 
             return dt.internals; 
         }
@@ -628,7 +607,7 @@ namespace eswitch_v4
     class Eswitch
     {
         std::tuple< TArgs... > pack_;
-        anything< R > return_val_;        
+        Anything< R > return_val_;        
         bool is_return_value_set_ = false;
         bool was_case_executed = false;
         bool execute_current_case = false;
@@ -653,9 +632,8 @@ namespace eswitch_v4
 
         template< typename ... Ts >
         Eswitch( Eswitch< Padding*, Ts... >&& args )
-            : //return_val_( static_cast< R >( args.return_val_.release() ), args.return_val_.was_set )
-            pack_( std::move( args.pack_ ) )
-            , is_return_value_set_( false )//args.return_val_.was_set )
+            : pack_( std::move( args.pack_ ) )
+            , is_return_value_set_( false )
             , was_case_executed( args.was_case_executed )
             , execute_current_case( args.execute_current_case )
             , need_fallthrough( args.need_fallthrough )
@@ -682,7 +660,7 @@ namespace eswitch_v4
 
         template< typename TR, typename T, typename ... Ts >
         Eswitch( TR&& return_value, Eswitch< T, Ts... >&& args ) 
-            : return_val_( std::forward< TR >( return_value ) ) //static_cast< R >( std::forward< TR >( return_value ) ) )
+            : return_val_( std::forward< TR >( return_value ) )
             , pack_( std::move( args.pack_ ) )
             , is_return_value_set_( true )
             , was_case_executed( args.was_case_executed )
@@ -690,7 +668,7 @@ namespace eswitch_v4
             , need_fallthrough( args.need_fallthrough )
             , need_break( args.need_break )
         {
-            printf( "RUSTAM is_return_value_set_=TRUE\n" );
+            //printf( "RUSTAM is_return_value_set_=TRUE\n" );
         }
 
         Eswitch operator>>( const Fallthrough& )
@@ -702,7 +680,7 @@ namespace eswitch_v4
         
         auto operator>>( const In_place_return_value& )
         {
-            if( !is_return_value_set_ ) throw( std::logic_error( "None of the cases returned anything!" ) );
+            if( !is_return_value_set_ ) throw( std::logic_error( "None of the cases returned Anything!" ) );
 
             return return_val_.release_with_check();
         }
@@ -766,43 +744,20 @@ namespace eswitch_v4
 
     private:
         
-template <typename AlwaysVoid, typename... Ts>
-struct has_common_type_impl : std::false_type {};
-
-template <typename... Ts>
-struct has_common_type_impl<std::void_t<std::common_type_t<Ts...>>, Ts...> : std::true_type {};
-
-template <typename... Ts>
-using has_common_type = typename has_common_type_impl<void, Ts...>::type;
-
-        //template< typename TReturnValue >
-        //auto handle_return_value( TReturnValue && value )
-        //{
-        //    return actual_handle_return_value( std::forward< TReturnValue >( value ) );
-        //}
-        
-        // template< typename TReturnValue, typename std::enable_if< 
-        //     !Always_assert< TReturnValue >::value && 
-        //     std::is_same< R, Padding* >::value, 
-        //         int >::type = 0 >
-        // auto handle_return_value( TReturnValue && value )
-        // {
-        //     return actual_handle_return_value( std::forward< TReturnValue >( value ) );
-        // }
-        
         template< typename TReturnValue, typename std::enable_if< 
-            !Always_assert< TReturnValue >::value &&
-            ( !std::is_same< R, Padding* >::value &&
-            std::is_convertible< R, TReturnValue >::value ) || std::is_same< R, Filled* >::value ||  std::is_same< R, Padding* >::value, int >::type = 0 >
+            !Always_false< TReturnValue >::value &&
+          ( !std::is_same< R, Padding* >::value && std::is_convertible< R, TReturnValue >::value ) || 
+            std::is_same< R, Filled* >::value ||
+            std::is_same< R, Padding* >::value, int >::type = 0 >
         auto handle_return_value( TReturnValue && value )
         {
             return actual_handle_return_value( std::forward< TReturnValue >( value ) );
         }
         
         template< typename TReturnValue, typename std::enable_if< 
-            !Always_assert< TReturnValue >::value &&
+            !Always_false< TReturnValue >::value &&
             !std::is_same< R, Padding* >::value &&
-            std::is_convertible< TReturnValue, R >::value &&
+             std::is_convertible< TReturnValue, R >::value &&
             !std::is_convertible< R, TReturnValue >::value, int >::type = 0 >
         auto handle_return_value( TReturnValue && value )
         {
@@ -811,76 +766,20 @@ using has_common_type = typename has_common_type_impl<void, Ts...>::type;
 
 
         template< typename TReturnValue, typename std::enable_if<  
-            !Always_assert< TReturnValue >::value &&
+            !Always_false< TReturnValue >::value &&
             !std::is_convertible< R, TReturnValue >::value && 
             !std::is_convertible< TReturnValue, R >::value && 
             !std::is_same< R, Padding* >::value && 
-            has_common_type< R, TReturnValue >::value, int >::type = 0 >
+            other_details::has_common_type< R, TReturnValue >::value, int >::type = 0 >
         auto handle_return_value( TReturnValue && value )
         {
             return actual_handle_return_value( static_cast< std::common_type_t< R, TReturnValue >&& >( value ) );
         }
 
-            
-        // template< typename TReturnValue, typename std::enable_if<  
-        //     !Always_assert< TReturnValue >::value &&
-        //     !std::is_convertible< R, TReturnValue >::value && 
-        //     !std::is_convertible< TReturnValue, R >::value && 
-        //     !std::is_same< R, Padding* >::value && 
-        //     !std::is_same< R, Filled* >::value && 
-        //     !has_common_type< R, TReturnValue >::value, int >::type = 0 >
-        // auto handle_return_value( TReturnValue && value )
-        // {
-        //     static_assert( false, "FFFFFFFFFFFFFFFFFFFFF" );
-        //     return actual_handle_return_value( static_cast< std::common_type_t< R, TReturnValue >&& >( value ) );
-        // }
-
-        ////// template< typename TReturnValue, typename std::enable_if<  
-        //     !Always_assert< TReturnValue >::value && 
-        //     std::is_same< R, Filled* >::value, int >::type = 0 >
-        // auto handle_return_value( TReturnValue && value )
-        // {
-        //     return actual_handle_return_value( std::forward< TReturnValue >( value ) );
-        // }
-
         auto handle_return_value( std::nullptr_t && value )
         {
             return actual_handle_return_value( static_cast< typename std::conditional< std::is_same< R, Padding* >::value, Filled*, R >::type >( nullptr ) );
         }
-
-        //template< typename TReturnValue >
-        //auto handle_return_value( TReturnValue && value )
-        //{
-        //    using new_return_type_t = typename std::conditional< 
-        //        std::is_same< R, Padding* >::value, 
-        //        void*, 
-        //            Common_type_t< std::remove_reference_t< TReturnValue >, R > >::type;
-
-        //    new_return_type_t v{};
-
-        //    if( is_return_value_set_ )  return Eswitch< new_return_type_t, TArgs... >( std::move( *this ) );
-
-        //    if( execute_current_case ) 
-        //    {
-        //        printf( "RUSTAM that operator is_same\n" );
-
-        //        was_case_executed = execute_current_case;
-        //        execute_current_case = false;
-
-        //        return Eswitch< new_return_type_t, TArgs... >( std::forward< TReturnValue >( value ), std::move( *this ) );
-        //    }
-        //    else if( need_fallthrough ) 
-        //    {
-        //        printf( "RUSTAM that operator2\n");
-
-        //        need_fallthrough = false;
-        //        need_break = true;
-
-        //        return Eswitch< new_return_type_t, TArgs... >( std::forward< TReturnValue >( value ), std::move( *this ) );
-        //    }
-        //    
-        //    return Eswitch< new_return_type_t, TArgs... >( std::move( *this ) );
-        //}   
 
         template< typename TReturnValue >
         auto actual_handle_return_value( TReturnValue && value )
@@ -889,7 +788,7 @@ using has_common_type = typename has_common_type_impl<void, Ts...>::type;
 
             if( execute_current_case ) 
             {
-                printf( "RUSTAM that operator is_same\n" );
+                //printf( "RUSTAM that operator is_same\n" );
 
                 was_case_executed = execute_current_case;
                 execute_current_case = false;
@@ -898,7 +797,7 @@ using has_common_type = typename has_common_type_impl<void, Ts...>::type;
             }
             else if( need_fallthrough ) 
             {
-                printf( "RUSTAM that operator2\n");
+                //printf( "RUSTAM that operator2\n");
 
                 need_fallthrough = false;
                 need_break = true;
@@ -947,12 +846,9 @@ using has_common_type = typename has_common_type_impl<void, Ts...>::type;
     }
 
     template< typename T >
-    auto dumb( T && value ){ return std::forward< T >( value ); }
-
-    template< typename T >
     auto to_return( T && value )
     { 
-        using new_type = decltype( dumb( std::forward< T >( value ) ) );
+        using new_type = decltype( details::Just_find_out_return_type( std::forward< T >( value ) ) );
         return  Value_to_return< new_type >{ std::forward< new_type >( value ) };
     }
  }

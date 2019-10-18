@@ -2,19 +2,12 @@ cmake_minimum_required(VERSION 2.8.2)
 
 project(ESWITCH)
 
-include(CTest)
-
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
     message("ESWITCH Debug.build")
 ELSE()
     add_compile_options( -O3 )
     message("ESWITCH Release.build")
 ENDIF()
-
-
-#set( header_path "${ESWITCH_SOURCE_DIR}/include/eswitch" )
-#set( header ${header_path}/eswitch.hpp )
-
 
 if (CMAKE_VERSION VERSION_LESS 3.2)
     set(UPDATE_DISCONNECTED_IF_AVAILABLE "")
@@ -29,11 +22,13 @@ download_project(PROJ                googletest
                  ${UPDATE_DISCONNECTED_IF_AVAILABLE}
 )
 
-
-
 # Prevent GoogleTest from overriding our compiler/linker options
 # when building with Visual Studio
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+# Disable building tests for GoogleTest
+set(gtest_build_tests OFF CACHE BOOL "" FORCE)
+set(gtest_build_samples OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
 
@@ -42,6 +37,9 @@ download_project(PROJ                googlebench
                  GIT_TAG             master
                  ${UPDATE_DISCONNECTED_IF_AVAILABLE}
 )
+
+# Disable building tests for GoogleBenchmark
+set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(${googlebench_SOURCE_DIR} ${googlebench_BINARY_DIR})
 
@@ -59,8 +57,7 @@ endif()
 # Trivial example using gtest and gmock
 
 
-add_executable(eswitch_tests tests/eswitch_v4_tests.cpp)
-
+add_executable(eswitch_tests tests/eswitch_tests.cpp)
 target_include_directories(eswitch_tests PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)
 
 target_link_libraries(eswitch_tests gtest gmock_main)
@@ -73,13 +70,13 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 endif()
 
 
-add_executable(eswitch_benchmark benchmarks/eswitch_v4_benchmark.cpp)
+add_executable(eswitch_benchmark benchmarks/eswitch_benchmark.cpp)
 target_include_directories(eswitch_benchmark PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)
 target_include_directories(eswitch_benchmark PUBLIC $<BUILD_INTERFACE:${googlebench_SOURCE_DIR}/include/>)
-
 target_link_libraries(eswitch_benchmark benchmark)
 
 add_executable(eswitch_example example/example1.cpp)
 target_include_directories(eswitch_example PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)
 
-
+ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/)
+ include (gcovr)
