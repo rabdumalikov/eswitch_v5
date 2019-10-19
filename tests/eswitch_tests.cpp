@@ -10,6 +10,7 @@
 #include "eswitch_v4.hpp"
 #include "gtest/gtest.h"
 #include <memory>
+#include <sstream>
 
 enum Place { unknown = 0, new_york=5, washington=129, new_jersey=501 };
 
@@ -1600,4 +1601,202 @@ TEST(eswitch_v4_return, return_after_fallthrough )
         in_place_return_;
     
     EXPECT_TRUE( result == new_jersey );
+}
+
+
+TEST(eswitch_v4_return, ternary_operator_eval_first )
+{
+    using namespace eswitch_v4;
+
+    bool flag = true;
+
+    auto result = eswitch( washington, new_jersey, new_york ) >> 
+        case_( _1 == washington ) >> [&]{ return flag ? new_york : unknown; } >> 
+        case_( _1 == new_jersey ) >> to_return( new_jersey ) >> 
+        in_place_return_;
+    
+    EXPECT_TRUE( result == new_york );
+}
+
+
+TEST(eswitch_v4_in_place_return, ternary_operator_eval_first )
+{
+    using namespace eswitch_v4;
+
+    bool flag = true;
+
+    auto result = eswitch( washington, new_jersey, new_york ) >> 
+        case_( _1 == washington ) >> to_return( flag ? new_york : unknown ) >> 
+        case_( _1 == new_jersey ) >> to_return( new_jersey ) >> 
+        in_place_return_;
+    
+    EXPECT_TRUE( result == new_york );
+}
+
+
+TEST(eswitch_v4_return, ternary_operator_eval_second )
+{
+    using namespace eswitch_v4;
+
+    bool flag = false;
+
+    auto result = eswitch( washington, new_jersey, new_york ) >> 
+        case_( _1 == washington ) >> [&]{ return flag ? new_jersey : washington; } >> 
+        case_( _1 == new_jersey ) >> to_return( new_jersey ) >> 
+        in_place_return_;
+    
+    EXPECT_TRUE( result == washington );
+}
+
+
+TEST(eswitch_v4_in_place_return, ternary_operator_eval_second )
+{
+    using namespace eswitch_v4;
+
+    bool flag = false;
+
+    auto result = eswitch( washington, new_jersey, new_york ) >> 
+        case_( _1 == washington ) >> to_return( flag ? new_jersey : washington ) >> 
+        case_( _1 == new_jersey ) >> to_return( new_jersey ) >> 
+        in_place_return_;
+    
+    EXPECT_TRUE( result == washington );
+}
+
+bool _isNegative = true;
+bool _isZero = true;
+
+struct cf
+{
+    cf( bool first, bool second )
+    {
+        _isNegative = first;
+        _isZero = second;
+    }
+
+    bool isZero() { return _isZero; }
+    bool isNegative() { return _isNegative; }
+
+};
+
+TEST(eswitch_v4_in_place_return, eval_expression )
+{
+    using namespace eswitch_v4;
+
+    {
+    cf CF( true, true );
+
+    auto result = eswitch( washington, new_jersey, new_york ) >> 
+        case_( _1 == washington ) >> to_return( CF.isNegative() && CF.isZero() ) >> 
+        in_place_return_;
+    
+    EXPECT_TRUE( result == true );
+    }
+
+    {
+    cf CF( false, true );
+
+    auto result = eswitch( washington, new_jersey, new_york ) >> 
+        case_( _1 == washington ) >> to_return( CF.isNegative() && CF.isZero() ) >> 
+        in_place_return_;
+    
+    EXPECT_TRUE( result == false );
+    }
+
+    {
+    cf CF( false, false );
+
+    auto result = eswitch( washington, new_jersey, new_york ) >> 
+        case_( _1 == washington ) >> to_return( !CF.isNegative() && !CF.isZero() ) >> 
+        in_place_return_;
+    
+    EXPECT_TRUE( result == true );
+    }
+
+    {
+    cf CF( true, false );
+
+    auto result = eswitch( washington, new_jersey, new_york ) >> 
+        case_( _1 == washington ) >> to_return( CF.isNegative() && !CF.isZero() ) >> 
+        in_place_return_;
+    
+    EXPECT_TRUE( result == true );
+    }
+
+    {
+    cf CF( true, false );
+
+    auto result = eswitch( washington, new_jersey, new_york ) >> 
+        case_( _1 != washington ) >> to_return( CF.isNegative() && !CF.isZero() ) >> 
+        case_( _2 == new_jersey ) >> to_return( false ) >>         
+        in_place_return_;
+    
+    EXPECT_TRUE( result == false );
+    }
+}
+
+TEST(eswitch_v4_return, stringstream_eval_plus_operator_comma )
+{
+    using namespace eswitch_v4;
+
+    bool flag = false;
+
+    std::stringstream ss;
+    
+    auto result = eswitch( washington, new_jersey, new_york ) >> 
+        case_( _1 == washington ) >> to_return( ( ss << "Hello " << std::to_string( 1 ), ss.str() ) ) >> 
+        in_place_return_;
+    
+    EXPECT_TRUE( result == "Hello 1" );
+}
+
+TEST(eswitch_v4_return, bitwise_operation_right_shift )
+{
+    using namespace eswitch_v4;
+
+    int ch = 0b0000'1111;
+    {
+    auto result = eswitch( washington, new_jersey, new_york ) >> 
+        case_( _1 == washington ) >> to_return( ch >> 1 ) >> 
+        in_place_return_;
+    
+    EXPECT_TRUE( result == 0b0000'0111 );
+    }
+
+    {
+    auto result = eswitch( washington, new_jersey, new_york ) >> 
+        case_( _1 != washington ) >> to_return( ch >> 1 ) >> 
+        case_( _2 == new_jersey ) >> to_return( ch >> 3 ) >> 
+        in_place_return_;
+    
+    EXPECT_TRUE( result == 0b0000'0001 );
+    }
+}
+
+TEST(eswitch_v4_return, bitwise_operation_combination )
+{
+    using namespace eswitch_v4;
+
+    const int ch = 0b11001000;
+
+    auto result = eswitch( washington, new_jersey, new_york ) >> 
+        case_( _1 == washington ) >> to_return( ch ^ 0b10111000 ) >> 
+        in_place_return_;
+    
+    EXPECT_TRUE( result == 0b01110000 );
+}
+
+TEST(eswitch_v4_return, long_expression_evaluation )
+{
+    using namespace eswitch_v4;
+    
+    std::vector< int > v;
+
+    auto result = eswitch( washington, new_jersey, new_york ) >> 
+        case_( _1 == washington ) >> to_return( ( v = std::vector< int >{ 1, 2, 3 }, v.push_back( 4 ), v.push_back( 5 ), v.push_back( 4 ), v ) ) >> 
+            in_place_return_;
+
+    std::vector< int > expected_result{ 1, 2, 3, 4, 5, 4 };
+
+    EXPECT_TRUE( result == expected_result );
 }
