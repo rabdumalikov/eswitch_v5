@@ -1947,4 +1947,11 @@ TEST(eswitch_v4_simple_case, to_string )
 //         case_( 2.001 ) >>
 //         case_( 2.0002 ) >> []{};
 
+        eswitch( text ) >>
+            case_( std::regex("[a-z]+\\.txt") ) >> result_of( []( const auto & result ){ ... } );
+
+        eswitch( val ) >>
+            case_( predicate_is_odd ) >>
+            case_( predicate_id_prime ) >>;
+
 */
