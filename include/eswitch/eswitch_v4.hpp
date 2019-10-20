@@ -488,9 +488,11 @@ namespace eswitch_v4
     struct Padding{};
     struct Filled{};
 
-    template< typename T >
-    T case_( T && cnd );
-
+    template< typename T1, typename T2 >
+    condition< T1, T2 > case_( condition< T1, T2 > && cnd );
+    template< typename ... Ts >
+    conditions< Ts... > case_( conditions< Ts... > && cnds );
+     
     struct Default_impl
     {
         condition< Index_< 0 >, extension::any > case_for_any_match = case_( _1 == extension::any() );
@@ -526,6 +528,12 @@ namespace eswitch_v4
         void operator>>( Return_value_impl< T > && lambda )
         {            
             eswitch_ >> std::move( lambda );
+        }
+    
+        template< typename TReturnValue >
+        auto operator>>( Value_to_return< TReturnValue >&& value )
+        {
+           return eswitch_ >> std::move( value );
         }
 
         auto operator>>( const In_place_return_value& ret_in_place )
@@ -861,10 +869,22 @@ namespace eswitch_v4
         return Eswitch< Padding*, TArgs... >( std::forward< TArgs >( args )... ); 
     }
 
-    template< typename T >
-    T case_( T && cnd )
+    template< typename T1, typename T2 >
+    condition< T1, T2 > case_( condition< T1, T2 > && cnd )
     { 
-        return std::forward< T >( cnd ); 
+        return cnd; 
+    }
+
+    template< typename ... Ts >
+    conditions< Ts... > case_( conditions< Ts... > && cnds )
+    { 
+        return cnds; 
+    }
+
+    template< typename T >
+    auto case_( T && value )
+    { 
+        return _1 == value; 
     }
 
     template< typename ... TArgs >

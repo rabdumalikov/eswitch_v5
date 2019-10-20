@@ -1841,7 +1841,94 @@ TEST(eswitch_v4_case, double_as_param )
     EXPECT_TRUE( executed );
 }
 
-// /*
+TEST(eswitch_v4_simple_case, double_as_param )
+{
+    using namespace eswitch_v4;
+    
+    bool executed = false;
+
+    double d = 2.0002;
+
+    eswitch( d ) >> 
+        case_( 2.0001 ) >> []{ FAIL(); } >>
+        case_( 2.0002 ) >> [&]{ executed = true; };
+
+    EXPECT_TRUE( executed );
+}
+
+TEST(eswitch_v4_simple_case, double_as_param_even_if_second_param_is )
+{
+    using namespace eswitch_v4;
+    
+    bool executed = false;
+
+    double d = 2.0002;
+
+    eswitch( d, std::string( "" ) ) >> 
+        case_( 2.0001 ) >> []{ FAIL(); } >>
+        case_( 2.0002 ) >> [&]{ executed = true; };
+
+    EXPECT_TRUE( executed );
+}
+
+TEST(eswitch_v4_simple_case, to_string )
+{
+    using namespace eswitch_v4;
+    {
+    Place p = washington;
+
+    const std::string stringify_enum = 
+        eswitch( p ) >> 
+            case_( washington ) >> to_return("washington") >>
+            case_( new_jersey ) >> to_return("new_jersey") >>
+            case_( new_york )   >> to_return("new_york") >>
+            default_            >> to_return("unknown") >>
+        in_place_return_;
+
+    EXPECT_TRUE( stringify_enum == "washington" );
+    }
+    {
+    Place p = new_jersey;
+
+    const std::string stringify_enum = 
+        eswitch( p ) >> 
+            case_( washington ) >> to_return("washington") >>
+            case_( new_jersey ) >> to_return("new_jersey") >>
+            case_( new_york )   >> to_return("new_york") >>
+            default_            >> to_return("unknown") >>
+        in_place_return_;
+
+    EXPECT_TRUE( stringify_enum == "new_jersey" );
+    }
+    {
+    Place p = new_york;
+
+    const std::string stringify_enum = 
+        eswitch( p ) >> 
+            case_( washington ) >> to_return("washington") >>
+            case_( new_jersey ) >> to_return("new_jersey") >>
+            case_( new_york )   >> to_return("new_york") >>
+            default_            >> to_return("unknown") >>
+        in_place_return_;
+
+    EXPECT_TRUE( stringify_enum == "new_york" );
+    }
+    {
+    Place p = unknown;
+
+    const std::string stringify_enum = 
+        eswitch( p ) >> 
+            case_( washington ) >> to_return("washington") >>
+            case_( new_jersey ) >> to_return("new_jersey") >>
+            case_( new_york )   >> to_return("new_york") >>
+            default_            >> to_return("unknown") >>
+        in_place_return_;
+
+    EXPECT_TRUE( stringify_enum == "unknown" );
+    }
+}
+
+/*
 //     std::tuple< int, double, std::string > tup;
 
 //     eswitch( tup ) >>
@@ -1854,5 +1941,10 @@ TEST(eswitch_v4_case, double_as_param )
 //         case_( _1 == "addressSearch" ) >>
 //         case_( _1 == "addressSearch" and _2 == "REQUESTED" ) >> []{};
 
+        double d = 2.0002;
 
-// */
+//      eswitch( d ) >>
+//         case_( 2.001 ) >>
+//         case_( 2.0002 ) >> []{};
+
+*/
