@@ -502,6 +502,11 @@ namespace eswitch_v4
  	    static constexpr bool value = false;
     };
 
+    template< typename TValue >
+    struct Value_to_return{
+        TValue return_value_;
+    };
+
     template< typename TEswitch >
     struct Eswitch_for_return_only
     {
@@ -510,7 +515,7 @@ namespace eswitch_v4
         template< typename T >
         Eswitch_for_return_only( T && t ) : eswitch_( std::forward< T >( t ) ){}
         
-        template< typename Tlambda, typename std::enable_if< details::is_callable< Tlambda >::value, int >::type = 0 >
+        template< typename Tlambda, typename std::enable_if< details::is_callable< std::remove_reference_t< Tlambda > >::value, int >::type = 0 >    
         auto operator>>( Tlambda && lambda )
         {
             /// after handling lambda TEswitch could change, in particular ReturnValue could change
@@ -541,9 +546,44 @@ namespace eswitch_v4
         }
     };
 
-    template< typename TValue >
-    struct Value_to_return{
-        TValue return_value_;
+    // to handle match cases but without body, since next cases shouldn't be consider, unless fallthough.
+    template< typename TEswitch >
+    struct Eswitch_for_case_only
+    {
+        TEswitch eswitch_;
+
+        template< typename T >
+        Eswitch_for_case_only( T && t ) : eswitch_( std::forward< T >( t ) ){}
+        
+        template< typename Tlambda, typename std::enable_if< details::is_callable< std::remove_reference_t< Tlambda > >::value, int >::type = 0 >
+        auto operator>>( Tlambda && lambda )
+        {
+            return eswitch_ >> std::forward< Tlambda >( lambda ); 
+        }
+            
+        template< typename TReturnValue >
+        auto operator>>( Value_to_return< TReturnValue >&& value )
+        {
+            return eswitch_ >> std::move( value );
+        }
+        
+        template< typename ... Ts >
+        Eswitch_for_case_only operator>>( const conditions< Ts... >& cnds )
+        {
+            if( eswitch_.execute_current_case && !eswitch_.was_case_executed ) eswitch_ >> []{};
+
+            eswitch_ >> cnds;
+            return std::move( *this );
+        }
+
+        template< typename T1, typename T2 >
+        Eswitch_for_case_only operator>>( const condition< T1, T2 >& cnd )
+        {
+            if( eswitch_.execute_current_case && !eswitch_.was_case_executed ) eswitch_ >> []{};
+
+            eswitch_ >> cnd;
+            return std::move( *this );
+        }
     };
 
     template< typename T >
@@ -614,6 +654,9 @@ namespace eswitch_v4
 
         template< typename T, typename ... Ts >
         friend class Eswitch;
+
+        template< typename TEswitch >
+        friend struct Eswitch_for_case_only;
 
     public:
         template< typename T, typename ... Ts >
@@ -690,7 +733,7 @@ namespace eswitch_v4
 
         auto operator>>( const Default_impl & default_lambda )
         {
-            return Eswitch_for_return_only< Eswitch >( *this >> default_lambda.case_for_any_match );
+            return Eswitch_for_return_only< decltype( *this >> default_lambda.case_for_any_match ) >( *this >> default_lambda.case_for_any_match );
         }
 
         template< typename Tlambda, typename std::enable_if< details::is_callable< std::remove_reference_t< Tlambda > >::value && std::is_same< other_details::return_type_t< std::remove_reference_t< Tlambda > >, void >::value, int >::type = 0 >
@@ -722,15 +765,15 @@ namespace eswitch_v4
         }
 
         template< typename ... Ts >
-        Eswitch operator>>( const conditions< Ts... >& cnd)
+        auto operator>>( const conditions< Ts... >& cnds )
         {
-            return handle_condition( cnd );
+            return Eswitch_for_case_only< decltype( handle_condition( cnds ) ) >( handle_condition( cnds ) );
         }
 
         template< typename T1, typename T2 >
-        Eswitch operator>>( const condition< T1, T2 >& cnd)
+        auto operator>>( const condition< T1, T2 >& cnd)
         {
-            return handle_condition( cnd );
+            return Eswitch_for_case_only< decltype( handle_condition( cnd ) ) >( handle_condition( cnd ) );
         }
             
         template< typename TReturnValue >
@@ -802,7 +845,7 @@ namespace eswitch_v4
         } 
 
         template< typename T >
-        Eswitch handle_condition( T && cnd )
+        auto handle_condition( T && cnd )
         {
             if( was_case_executed && ( need_break || need_fallthrough ) ) return std::move( *this );
 

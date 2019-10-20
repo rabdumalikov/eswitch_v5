@@ -1558,6 +1558,21 @@ TEST(eswitch_v4_predicate, lvalue_lambda )
     ASSERT_EQ(executed, true );
 }
 
+TEST(eswitch_v4_predicate, after_default )
+{
+    using namespace eswitch_v4;
+
+    bool executed = false;
+    
+    auto handler = [&](){ executed = true; };
+
+    eswitch( washington, new_jersey, new_york )
+        >> case_( _1 != washington ) >> []{ FAIL(); } >>
+        default_ >> handler;
+    
+    ASSERT_EQ(executed, true );
+}
+
 TEST(eswitch_v4_predicate, lvalue_lambda_and_return )
 {
     using namespace eswitch_v4;
@@ -1793,10 +1808,36 @@ TEST(eswitch_v4_return, long_expression_evaluation )
     std::vector< int > v;
 
     auto result = eswitch( washington, new_jersey, new_york ) >> 
+        case_( _2 == washington ) >>
         case_( _1 == washington ) >> to_return( ( v = std::vector< int >{ 1, 2, 3 }, v.push_back( 4 ), v.push_back( 5 ), v.push_back( 4 ), v ) ) >> 
             in_place_return_;
-
+    
     std::vector< int > expected_result{ 1, 2, 3, 4, 5, 4 };
 
     EXPECT_TRUE( result == expected_result );
 }
+
+TEST(eswitch_v4_case, match_case_without_body_to_interrupt )
+{
+    using namespace eswitch_v4;
+    
+    eswitch( washington, new_jersey, new_york ) >> 
+        case_( _2 == new_jersey ) >>
+        case_( _1 == washington ) >> []{ FAIL(); };
+}
+
+// /*
+//     std::tuple< int, double, std::string > tup;
+
+//     eswitch( tup ) >>
+//         case_( _1 == 10 and _2 == 5.5 and _3 == "HTTP" ) >> []{};
+
+//     std::string text = "field_name=value";
+//     auto res = tokenize( text, '=' );
+
+//     eswitch( res[0], res[0] ) >>
+//         case_( _1 == "addressSearch" ) >>
+//         case_( _1 == "addressSearch" and _2 == "REQUESTED" ) >> []{};
+
+
+// */
