@@ -1826,6 +1826,21 @@ TEST(eswitch_v4_case, match_case_without_body_to_interrupt )
         case_( _1 == washington ) >> []{ FAIL(); };
 }
 
+TEST(eswitch_v4_case, double_as_param )
+{
+    using namespace eswitch_v4;
+    
+    bool executed = false;
+
+    double d = 2.0002;
+
+    eswitch( d ) >> 
+        case_( _1 == 2.0001 )   >> []{ FAIL(); } >>
+        case_( _1 == 2.0002 ) >> [&]{ executed = true; };
+
+    EXPECT_TRUE( executed );
+}
+
 // /*
 //     std::tuple< int, double, std::string > tup;
 
