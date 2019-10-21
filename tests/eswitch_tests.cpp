@@ -1928,6 +1928,167 @@ TEST(eswitch_v4_simple_case, to_string )
     }
 }
 
+TEST(eswitch_v4_with_predicates, pred_1_true )
+{
+    using namespace eswitch_v4;
+    using namespace experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+
+    auto pred_cnd = ( is_odd, _1 );
+
+    EXPECT_TRUE( pred_cnd( std::make_tuple( 1 ) ) );
+}
+
+TEST(eswitch_v4_with_predicates, pred_1_false )
+{
+    using namespace eswitch_v4;
+    using namespace experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+
+    auto pred_cnd = ( is_odd, _1 );
+
+    EXPECT_TRUE( !pred_cnd( std::make_tuple( 2 ) ) );
+}
+
+
+TEST(eswitch_v4_with_predicates, pred_2_true )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+
+    auto pred_cnd = ( is_non_negative, _2, _1 );
+    
+    EXPECT_TRUE( pred_cnd( std::make_tuple( 1, 2 ) ) );
+}
+
+TEST(eswitch_v4_with_predicates, pred_2_false )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+
+    auto pred_cnd = ( is_non_negative, _2, _1 );
+    
+    EXPECT_TRUE( !pred_cnd( std::make_tuple( -1, 2 ) ) );
+}
+
+TEST(eswitch_v4_with_predicates, ands_true )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+
+    auto pred_cnd = ( is_non_negative, _2, _1 ) && ( is_odd, _1 );
+    
+    EXPECT_TRUE( pred_cnd( std::make_tuple( 11, 2 ) ) );
+}
+
+TEST(eswitch_v4_with_predicates, ands_false_in_1st_condition )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+
+    auto pred_cnd = ( is_non_negative, _2, _1 ) && ( is_odd, _1 );
+    
+    EXPECT_TRUE( !pred_cnd( std::make_tuple( 11, -2 ) ) );
+}
+
+TEST(eswitch_v4_with_predicates, ands_false_in_2nd_condition )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+
+    auto pred_cnd = ( is_non_negative, _2, _1 ) && ( is_odd, _1 );
+    
+    EXPECT_TRUE( !pred_cnd( std::make_tuple( 12, 2 ) ) );
+}
+
+TEST(eswitch_v4_with_predicates, ors_true )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+
+    auto pred_cnd = ( is_non_negative, _2, _1 ) || ( is_odd, _1 );
+    
+    EXPECT_TRUE( pred_cnd( std::make_tuple( 11, 2 ) ) );
+}
+
+TEST(eswitch_v4_with_predicates, ors_false_in_1st_condition )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+
+    auto pred_cnd = ( is_non_negative, _2, _1 ) || ( is_odd, _1 );
+    
+    EXPECT_TRUE( pred_cnd( std::make_tuple( 3, -3 ) ) );
+}
+
+TEST(eswitch_v4_with_predicates, ors_false_in_2nd_condition )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+
+    auto pred_cnd = ( is_non_negative, _2, _1 ) || ( is_odd, _1 );
+    
+    EXPECT_TRUE( pred_cnd( std::make_tuple( 4, 6 ) ) );
+}
+
+TEST(eswitch_v4_with_predicates, ors_false_in_both_conditions )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+
+    auto pred_cnd = ( is_non_negative, _2, _1 ) || ( is_odd, _1 );
+    
+    EXPECT_TRUE( !pred_cnd( std::make_tuple( -4, -4 ) ) );
+}
+
+TEST(eswitch_v4_with_predicates, full_feature )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+  
+    bool executed = false;
+
+    eswitch( 3, 4 ) >>
+        case_( ( is_non_negative, _1, _2 ) && ( is_odd, _1 ) ) >> [&]{ executed = true; } >>
+
+        case_( ( is_odd, _1 ) ) >> [&]{ executed = true; } >>
+
+        case_( ( is_non_negative, _1, _2 ) ) >> [&]{} >>
+        
+        case_( _1 == 3 && _2 == 4 ) >> [&]{};
+
+    EXPECT_TRUE( executed );
+}
 /*
         std::tuple< int, double, std::string > tup;
 

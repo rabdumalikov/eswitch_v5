@@ -422,6 +422,144 @@ namespace eswitch_v4
         return conditions< T1, condition< T2, T3 > >( Logical_operators::or_, std::forward< T1 >( i ), std::move( j ) );
     }
 
+    namespace experimental 
+    {
+        // template< typename TPred, uint32_t AmountArgs >
+        // class predicate_condition
+        // {
+        //     TPred pred_;
+        //     std::array< uint32_t, AmountArgs > indexes_;
+
+        //     public:
+
+        //     template< typename T >
+        //     predicate_condition( T && pred, std::initializer_list< uint32_t > && indexes ) 
+        //         : pred_( std::forward< T >( pred ) ), indexes_{ indexes }
+        //         {                    
+        //         }
+
+        //     template< typename TSrcTuple, typename std::enable_if< ( AmountArgs == 1 ), int >::type = 0 >
+        //     bool operator()( const TSrcTuple & src_tuple )
+        //     {
+        //         return pred_( std::get< 0 >( src_tuple ) );
+        //     }
+        // };
+
+        template< typename TPred, uint32_t ... Is >
+        class predicate_condition
+        {
+            public:
+            TPred pred_;
+
+            //template< typename T, uint32_t ... Indxs >
+            //friend class predicate_condition;
+        
+            //template < typename P, uint32_t ... I, typename T >
+            //friend predicate_condition< P, I..., T::index > operator,( predicate_condition< P, I... > && pred_cnd, const T& t1 );
+
+
+            template< typename T >
+            predicate_condition( T && pred ) 
+                : pred_( std::forward< T >( pred ) )
+                {                    
+                }
+
+            //predicate_condition( predicate_condition& ) = default;
+
+            template< typename TSrcTuple, int I >
+            bool execute( const TSrcTuple & src_tuple ){ return pred_( std::get< I >( src_tuple ) ); }
+
+            template< typename TSrcTuple, int I, int II >
+            bool execute( const TSrcTuple & src_tuple ){ return pred_( std::get< I >( src_tuple ), std::get< II >( src_tuple ) ); }
+
+            template< typename TSrcTuple, int I, int II, int III >
+            bool execute( const TSrcTuple & src_tuple ){ return pred_( std::get< I >( src_tuple ), std::get< II >( src_tuple ), std::get< III >( src_tuple ) ); }
+
+            template< typename TSrcTuple >
+            bool operator()( const TSrcTuple & src_tuple )
+            {
+                return execute< TSrcTuple, Is... >( src_tuple );
+            }
+        };
+
+        template< typename TCnd1, typename TCnd2 >
+        class predicate_conditions
+        {            
+            Logical_operators logical_operator_;
+            TCnd1 cnd1_;
+            TCnd2 cnd2_;
+
+            public:
+
+            template< typename Tcnd1, typename Tcnd2 >
+            predicate_conditions( Logical_operators logic_oper, Tcnd1 && cnd1, Tcnd2 && cnd2 ) 
+                : logical_operator_( logic_oper )
+                , cnd1_( std::forward< Tcnd1 >( cnd1 ) )
+                , cnd2_( std::forward< Tcnd2 >( cnd2 ) )
+                {                    
+                }
+
+            template< typename TSrcTuple >
+            bool operator()( const TSrcTuple & src_tuple )
+            {
+                switch( logical_operator_ )
+                {
+                    case Logical_operators::and_:
+                        return cnd1_( src_tuple ) && cnd2_( src_tuple );
+                    case Logical_operators::or_:
+                        return cnd1_( src_tuple ) || cnd2_( src_tuple );
+                    default:
+                        details::unreachable();
+                        return false;
+                };
+            }
+        };
+
+        template< typename T >
+        struct holder{};
+
+        template < template < typename > class H, typename S >
+        void is_predicate_condition( H<S> && );
+
+        template < template < typename > class H, template< typename, uint32_t ... > class Pr, typename P, uint32_t ... Idxs,
+            typename std::enable_if< std::is_same< holder< predicate_condition< P, Idxs... > >, H< Pr< P, Idxs... > > >::value, int >::type = 0 >
+        bool is_predicate_condition( H< Pr< P, Idxs... > > && );
+
+        template < typename T >
+        struct is_predicate
+        {
+            static constexpr bool value = std::is_same< decltype( is_predicate_condition( holder< T >() ) ), bool >::value;
+        };
+
+        template< typename Pred, typename T, typename std::enable_if< !is_predicate< std::remove_reference_t< Pred > >::value, int >::type = 0 >
+        auto operator,( Pred&& pred, const T& t1 )
+        {
+            return predicate_condition< std::remove_reference_t< Pred >, T::index >( std::forward< Pred >( pred ) );
+        }
+
+        template < typename P, uint32_t ... I, typename T >
+        predicate_condition< P, I..., T::index > compose_new_type( const predicate_condition< P, I... > & pred_cnd, const T& t1 ); 
+
+        template< typename Pred, typename T, typename std::enable_if< is_predicate< std::remove_reference_t< Pred > >::value, int >::type = 0 >
+        auto operator,( Pred&& pred, const T& t1 )
+        {
+            return decltype( compose_new_type( pred, t1 ) )( std::move( pred.pred_ ) );
+        }
+
+        template< typename T1, typename P, uint32_t ... I >
+        auto operator&&( T1 && i, predicate_condition< P, I... > && j )
+        {
+            return predicate_conditions< T1, predicate_condition< P, I... > >( Logical_operators::and_, std::forward< T1 >( i ), std::move( j ) );
+        }
+
+        template< typename T1, typename P, uint32_t ... I >
+        auto operator||( T1 && i, predicate_condition< P, I... > && j )
+        {
+            return predicate_conditions< T1, predicate_condition< P, I... > >( Logical_operators::or_, std::forward< T1 >( i ), std::move( j ) );
+        }
+
+    } // namespace experimental
+
     template< typename T >
     struct Return_value_impl
     {
@@ -714,7 +852,6 @@ namespace eswitch_v4
             return std::move( *this );
         }
 
-
         template< typename Tlambda, typename std::enable_if< details::is_callable< std::remove_reference_t< Tlambda > >::value && !std::is_same< other_details::return_type_t< std::remove_reference_t< Tlambda > >, void >::value, int >::type = 0 >
         auto operator>>( Tlambda && lambda )
         {
@@ -733,10 +870,32 @@ namespace eswitch_v4
             return Eswitch_for_case_only< decltype( handle_condition( cnd ) ) >( handle_condition( cnd ) );
         }
             
+        template< typename TPred, uint32_t ... Is >
+        auto operator>>( experimental::predicate_condition< TPred, Is... > && value )
+        { 
+            // TODO add static_assert for checking range
+            if( was_case_executed && ( need_break || need_fallthrough ) ) return Eswitch_for_case_only< Eswitch >( std::move( *this ) );
+
+            execute_current_case = value( pack_ );
+
+            return Eswitch_for_case_only< Eswitch >( std::move( *this ) ); 
+        }
+
+        template< typename T1, typename T2 >
+        auto operator>>( experimental::predicate_conditions< T1, T2 > && value )
+        {
+            // TODO add static_assert for checking range
+            if( was_case_executed && ( need_break || need_fallthrough ) ) return Eswitch_for_case_only< Eswitch >( std::move( *this ) );
+
+            execute_current_case = value( pack_ );
+
+            return Eswitch_for_case_only< Eswitch >( std::move( *this ) );
+        }
+
         template< typename TReturnValue >
         auto operator>>( Value_to_return< TReturnValue >&& value )
         {
-           return handle_return_value( std::move( value.return_value_ ) );
+           return handle_return_value( std::move( value.return_value_ ) );           
         }
 
     private:
@@ -829,6 +988,18 @@ namespace eswitch_v4
     { 
         return cnds; 
     }
+    
+    template< typename T1, typename T2 >
+    auto case_( experimental::predicate_conditions< T1, T2 > && value )
+    { 
+        return value; 
+    }
+
+    template< typename TPred, uint32_t ... Is >
+    auto case_( experimental::predicate_condition< TPred, Is... > && value )
+    { 
+        return std::move( value ); 
+    }
 
     template< typename T >
     auto case_( T && value )
@@ -853,8 +1024,8 @@ namespace eswitch_v4
     template< typename T >
     auto to_return( T && value )
     { 
-        using new_type = decltype( details::Just_find_out_return_type( std::forward< T >( value ) ) );
-        return  Value_to_return< new_type >{ std::forward< new_type >( value ) };
+        using return_t = decltype( details::Just_find_out_return_type( std::forward< T >( value ) ) );
+        return Value_to_return< return_t >{ std::forward< return_t >( value ) };
     }
 
  } // namespace eswitch_v4
