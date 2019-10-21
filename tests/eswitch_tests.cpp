@@ -1929,29 +1929,36 @@ TEST(eswitch_v4_simple_case, to_string )
 }
 
 /*
-//     std::tuple< int, double, std::string > tup;
+        std::tuple< int, double, std::string > tup;
 
-//     eswitch( tup ) >>
-//         case_( _1 == 10 and _2 == 5.5 and _3 == "HTTP" ) >> []{};
+        eswitch( tup ) >>
+            case_( _1 == 10 and _2 == 5.5 and _3 == "HTTP" ) >> []{};
 
-//     std::string text = "field_name=value";
-//     auto res = tokenize( text, '=' );
+        std::string text = "field_name=value";
+        auto res = tokenize( text, '=' );
 
-//     eswitch( res[0], res[0] ) >>
-//         case_( _1 == "addressSearch" ) >>
-//         case_( _1 == "addressSearch" and _2 == "REQUESTED" ) >> []{};
+        eswitch( res[0], res[0] ) >>
+            case_( _1 == "addressSearch" ) >>
+            case_( _1 == "addressSearch" and _2 == "REQUESTED" ) >> []{};
 
         double d = 2.0002;
 
-//      eswitch( d ) >>
-//         case_( 2.001 ) >>
-//         case_( 2.0002 ) >> []{};
+        
+        eswitch( d ) >>
+            case_( 2.001 ) >>
+            case_( 2.0002 ) >> []{};
 
+        
         eswitch( text ) >>
             case_( std::regex("[a-z]+\\.txt") ) >> result_of( []( const auto & result ){ ... } );
 
+        
         eswitch( val ) >>
-            case_( predicate_is_odd ) >>
-            case_( predicate_id_prime ) >>;
+            case_( ( predicate_is_odd, _1, _2 ) and ( predicate_is_non_negative, _1 ) >>
+            case_( ( predicate_id_prime, _1 ) ) >>;
 
+
+        std::for_each( vec, eswitch( placeholder_1 ) >>
+            case_( predicate_is_odd )   >>   odd_handler
+            case_( predicate_id_prime ) >> prime_handler );
 */

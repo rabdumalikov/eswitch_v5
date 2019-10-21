@@ -398,68 +398,17 @@ namespace eswitch_v4
         }
     };
 
-    template< typename T >
-    auto operator!=( const Index_< 0 >& idx, T && rhv )
+    template< int I, typename T >
+    auto operator!=( const Index_< I >& idx, T && rhv )
     {
-        return condition< Index_< 0 >, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
-    }
-    template< typename T >
-    auto operator!=( const Index_< 1 >& idx, T && rhv )
-    {
-        return condition< Index_< 1 >, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
-    }
-    template< typename T >
-    auto operator!=( const Index_< 2 >& idx, T && rhv )
-    {
-        return condition< Index_< 2 >, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
-    }
-    template< typename T >
-    auto operator!=( const Index_< 3 >& idx, T && rhv )
-    {
-        return condition< Index_< 3 >, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
-    }
-    template< typename T >
-    auto operator!=( const Index_< 4 >& idx, T && rhv )
-    {
-        return condition< Index_< 4 >, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
-    }
-    template< typename T >
-    auto operator!=( const Index_< 5 >& idx, T && rhv )
-    {
-        return condition< Index_< 5 >, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
+        return condition< Index_< I >, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
     }
 
-    template< typename T >
-    auto operator==( const Index_< 0 >& idx, T && rhv )
+    template< int I, typename T >
+    auto operator==( const Index_< I >& idx, T && rhv )
     {
-        return condition< Index_< 0 >, T >( Comparison_operators::equal_, std::forward< T >( rhv ) );
+        return condition< Index_< I >, T >( Comparison_operators::equal_, std::forward< T >( rhv ) );
     }
-    template< typename T >
-    auto operator==( const Index_< 1 >& idx, T && rhv )
-    {
-        return condition< Index_< 1 >, T >( Comparison_operators::equal_, std::forward< T >( rhv ) );
-    }
-    template< typename T >
-    auto operator==( const Index_< 2 >& idx, T && rhv )
-    {
-        return condition< Index_< 2 >, T >( Comparison_operators::equal_, std::forward< T >( rhv ) );
-    }
-    template< typename T >
-    auto operator==( const Index_< 3 >& idx, T && rhv )
-    {
-        return condition< Index_< 3 >, T >( Comparison_operators::equal_, std::forward< T >( rhv ) );
-    }
-    template< typename T >
-    auto operator==( const Index_< 4 >& idx, T && rhv )
-    {
-        return condition< Index_< 4 >, T >( Comparison_operators::equal_, std::forward< T >( rhv ) );
-    }
-    template< typename T >
-    auto operator==( const Index_< 5 >& idx, T && rhv )
-    {
-        return condition< Index_< 5 >, T >( Comparison_operators::equal_, std::forward< T >( rhv ) );
-    }
-
 
     template< typename T1, typename T2, typename T3 >
     auto operator&&( T1 && i, condition< T2, T3 > && j )
