@@ -2352,6 +2352,8 @@ TEST(eswitch_v4_with_predicates, full_feature_with_free_functions_and_fallthroug
     EXPECT_TRUE( result == std::string( "yes" ) );
 }
 
+/// CHECK WHERE WE HAVE FOUR PREDICATES
+/// INDEXES OUT OF ORDER
 /*
         std::tuple< int, double, std::string > tup;
 
