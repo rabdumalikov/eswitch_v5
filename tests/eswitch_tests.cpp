@@ -2352,6 +2352,22 @@ TEST(eswitch_v4_with_predicates, full_feature_with_free_functions_and_fallthroug
     EXPECT_TRUE( result == std::string( "yes" ) );
 }
 
+TEST(eswitch_v4_with_predicates, case_without_body )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+     eswitch( 3, 7 ) >>
+        case_( _1 == 3 ) >>
+        case_( _2 == 7 ) >> []{ FAIL(); } >> fallthrough_ >>
+        default_ >> []{ FAIL(); };
+
+    eswitch( 3, 7 ) >>
+        case_( ( is_non_negative, _1, _2 ) ) >>
+        case_( ( is_odd, _1 ) ) >> []{ FAIL(); } >> fallthrough_ >>
+        default_ >> []{ FAIL(); };        
+}
+
 /// CHECK WHERE WE HAVE FOUR PREDICATES
 /// INDEXES OUT OF ORDER
 /*

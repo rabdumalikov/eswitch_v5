@@ -438,7 +438,7 @@ namespace eswitch_v4
                 }
 
             template< typename TSrcTuple >
-            bool operator()( const TSrcTuple & src_tuple )
+            bool operator()( const TSrcTuple & src_tuple ) const
             {
                 return pred_( std::get< Is >( src_tuple )... );
             }
@@ -474,7 +474,7 @@ namespace eswitch_v4
                 }
 
             template< typename TSrcTuple >
-            bool operator()( const TSrcTuple & src_tuple )
+            bool operator()( const TSrcTuple & src_tuple ) const
             {
                 switch( logical_operator_ )
                 {
@@ -634,9 +634,11 @@ namespace eswitch_v4
         TEswitch eswitch_;
 
         template< typename T >
-        Eswitch_for_case_only( T && t ) : eswitch_( std::forward< T >( t ) ){}
+        Eswitch_for_case_only( T && t ) : eswitch_( std::forward< T >( t ) ){ }
         
-        template< typename Tlambda, typename std::enable_if< details::is_callable< std::remove_reference_t< Tlambda > >::value, int >::type = 0 >
+        template< typename Tlambda, typename std::enable_if< 
+            details::is_callable< std::remove_reference_t< Tlambda > >::value && 
+            !experimental::is_predicate< std::remove_reference_t< Tlambda > >::value, int >::type = 0 >
         auto operator>>( Tlambda && lambda )
         {
             return eswitch_ >> std::forward< Tlambda >( lambda ); 
@@ -649,20 +651,38 @@ namespace eswitch_v4
         }
         
         template< typename ... Ts >
-        Eswitch_for_case_only operator>>( const conditions< Ts... >& cnds )
+        auto operator>>( const conditions< Ts... >& cnds )
         {
-            if( eswitch_.execute_current_case && !eswitch_.was_case_executed ) eswitch_ >> []{};
-
-            eswitch_ >> cnds;
-            return std::move( *this );
+            return handle_condition( cnds );
         }
 
         template< typename T1, typename T2 >
-        Eswitch_for_case_only operator>>( const condition< T1, T2 >& cnd )
+        auto operator>>( const condition< T1, T2 >& cnd )
         {
-            if( eswitch_.execute_current_case && !eswitch_.was_case_executed ) eswitch_ >> []{};
+            return handle_condition( cnd );
+        }
 
-            eswitch_ >> cnd;
+        template< typename TPred, uint32_t ... Is >
+        auto operator>>( const experimental::predicate_condition< TPred, Is... > & value )
+        {
+            return handle_condition( value );
+        }
+
+        template< typename T1, typename T2 >
+        auto operator>>( const experimental::predicate_conditions< T1, T2 > & value )
+        {
+            return handle_condition( value );
+        }
+
+    private:
+        template< typename TCnd >    
+        auto handle_condition( TCnd&& cnd )
+        {
+            if( eswitch_.execute_current_case && !eswitch_.was_case_executed )
+                eswitch_ >> []{};           
+
+            eswitch_ >> std::forward< TCnd >( cnd );
+
             return std::move( *this );
         }
     };
@@ -794,7 +814,7 @@ namespace eswitch_v4
 
         Eswitch operator>>( const Fallthrough& )
         {
-            if( was_case_executed ) { need_fallthrough = true; need_break = false; }
+            if( was_case_executed && execute_current_case ) { need_fallthrough = true; need_break = false; }
 
             return std::move( *this );
         }
@@ -822,11 +842,10 @@ namespace eswitch_v4
         {
             if( is_return_value_set_ ) return std::move( *this );
 
-            if( execute_current_case ) 
+            if( execute_current_case && !was_case_executed ) 
             {
                 lambda();
                 was_case_executed = execute_current_case;
-                execute_current_case = false;
             }
             else if( need_fallthrough ) 
             {
@@ -859,7 +878,7 @@ namespace eswitch_v4
         }
             
         template< typename TPred, uint32_t ... Is >
-        auto operator>>( experimental::predicate_condition< TPred, Is... > && value )
+        auto operator>>( const experimental::predicate_condition< TPred, Is... > & value )
         {
             static_assert( !value.is_out_of_range( sizeof...( TArgs ) ), "Index in 'Predicate' is out of range!!" );
             
@@ -867,7 +886,7 @@ namespace eswitch_v4
         }
 
         template< typename T1, typename T2 >
-        auto operator>>( experimental::predicate_conditions< T1, T2 > && value )
+        auto operator>>( const experimental::predicate_conditions< T1, T2 > & value )
         {
             static_assert( !value.is_out_of_range( sizeof...( TArgs ) ), "Index in 'Predicate' is out of range!!" );
 
@@ -924,10 +943,10 @@ namespace eswitch_v4
         {            
             if( is_return_value_set_ )  return Eswitch< TReturnValue, TArgs... >( std::move( *this ) );
 
-            if( execute_current_case ) 
+            if( execute_current_case && !was_case_executed ) 
             {
                 was_case_executed = execute_current_case;
-                execute_current_case = false;
+                //execute_current_case = false;
 
                 return Eswitch< TReturnValue, TArgs... >( std::forward< TReturnValue >( value ), std::move( *this ) );
             }
@@ -945,10 +964,12 @@ namespace eswitch_v4
         template< typename T >
         auto handle_condition( T && cnd )
         {
+            execute_current_case = false;
+
             if( was_case_executed && ( need_break || need_fallthrough ) ) return std::move( *this );
 
             execute_current_case = cnd( pack_ );
-            
+
             return std::move( *this );
         }
     };
