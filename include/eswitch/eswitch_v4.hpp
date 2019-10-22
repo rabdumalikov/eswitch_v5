@@ -847,25 +847,23 @@ namespace eswitch_v4
         template< typename ... Ts >
         auto operator>>( const conditions< Ts... >& cnds )
         {
-            return Eswitch_for_case_only< decltype( handle_condition( cnds ) ) >( handle_condition( cnds ) );
+            return Eswitch_for_case_only< Eswitch >( handle_condition( 
+                [ &cnds ]( const auto& pack ){ return cnds.handle( pack ); } ) );
         }
 
         template< typename T1, typename T2 >
         auto operator>>( const condition< T1, T2 >& cnd)
         {
-            return Eswitch_for_case_only< decltype( handle_condition( cnd ) ) >( handle_condition( cnd ) );
+            return Eswitch_for_case_only< Eswitch >( handle_condition( 
+                [ &cnd ]( const auto& pack ){ return cnd.handle( pack ); } ) );
         }
             
         template< typename TPred, uint32_t ... Is >
         auto operator>>( experimental::predicate_condition< TPred, Is... > && value )
         {
             static_assert( !value.is_out_of_range( sizeof...( TArgs ) ), "Index in 'Predicate' is out of range!!" );
-
-            if( was_case_executed && ( need_break || need_fallthrough ) ) return Eswitch_for_case_only< Eswitch >( std::move( *this ) );
-
-            execute_current_case = value( pack_ );
-
-            return Eswitch_for_case_only< Eswitch >( std::move( *this ) ); 
+            
+            return Eswitch_for_case_only< Eswitch >( handle_condition( value ) );
         }
 
         template< typename T1, typename T2 >
@@ -873,11 +871,7 @@ namespace eswitch_v4
         {
             static_assert( !value.is_out_of_range( sizeof...( TArgs ) ), "Index in 'Predicate' is out of range!!" );
 
-            if( was_case_executed && ( need_break || need_fallthrough ) ) return Eswitch_for_case_only< Eswitch >( std::move( *this ) );
-
-            execute_current_case = value( pack_ );
-
-            return Eswitch_for_case_only< Eswitch >( std::move( *this ) );
+            return Eswitch_for_case_only< Eswitch >( handle_condition( value ) );
         }
 
         template< typename TReturnValue >
@@ -953,7 +947,7 @@ namespace eswitch_v4
         {
             if( was_case_executed && ( need_break || need_fallthrough ) ) return std::move( *this );
 
-            execute_current_case = cnd.handle( pack_ );
+            execute_current_case = cnd( pack_ );
             
             return std::move( *this );
         }
