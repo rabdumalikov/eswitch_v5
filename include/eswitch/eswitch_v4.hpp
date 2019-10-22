@@ -424,47 +424,17 @@ namespace eswitch_v4
 
     namespace experimental 
     {
-        // template< typename TPred, uint32_t AmountArgs >
-        // class predicate_condition
-        // {
-        //     TPred pred_;
-        //     std::array< uint32_t, AmountArgs > indexes_;
-
-        //     public:
-
-        //     template< typename T >
-        //     predicate_condition( T && pred, std::initializer_list< uint32_t > && indexes ) 
-        //         : pred_( std::forward< T >( pred ) ), indexes_{ indexes }
-        //         {                    
-        //         }
-
-        //     template< typename TSrcTuple, typename std::enable_if< ( AmountArgs == 1 ), int >::type = 0 >
-        //     bool operator()( const TSrcTuple & src_tuple )
-        //     {
-        //         return pred_( std::get< 0 >( src_tuple ) );
-        //     }
-        // };
-
         template< typename TPred, uint32_t ... Is >
         class predicate_condition
         {
             public:
             TPred pred_;
 
-            //template< typename T, uint32_t ... Indxs >
-            //friend class predicate_condition;
-        
-            //template < typename P, uint32_t ... I, typename T >
-            //friend predicate_condition< P, I..., T::index > operator,( predicate_condition< P, I... > && pred_cnd, const T& t1 );
-
-
             template< typename T >
             predicate_condition( T && pred ) 
                 : pred_( std::forward< T >( pred ) )
                 {                    
                 }
-
-            //predicate_condition( predicate_condition& ) = default;
 
             template< typename TSrcTuple, int I >
             bool execute( const TSrcTuple & src_tuple ){ return pred_( std::get< I >( src_tuple ) ); }
@@ -531,6 +501,13 @@ namespace eswitch_v4
             static constexpr bool value = std::is_same< decltype( is_predicate_condition( holder< T >() ) ), bool >::value;
         };
 
+        /// TODO write static_assert to check whether argument contain attribute by name
+        template< typename R, typename... Args, typename T >
+        auto operator,( R(*pred)(Args...), const T& t1 )
+        {
+            return predicate_condition< R(*)(Args...), T::index >( pred );
+        }
+
         template< typename Pred, typename T, typename std::enable_if< !is_predicate< std::remove_reference_t< Pred > >::value, int >::type = 0 >
         auto operator,( Pred&& pred, const T& t1 )
         {
@@ -538,12 +515,12 @@ namespace eswitch_v4
         }
 
         template < typename P, uint32_t ... I, typename T >
-        predicate_condition< P, I..., T::index > compose_new_type( const predicate_condition< P, I... > & pred_cnd, const T& t1 ); 
+        predicate_condition< P, I..., T::index > compose_new_predicate_condition_type( const predicate_condition< P, I... > & pred_cnd, const T& t1 ); 
 
         template< typename Pred, typename T, typename std::enable_if< is_predicate< std::remove_reference_t< Pred > >::value, int >::type = 0 >
         auto operator,( Pred&& pred, const T& t1 )
         {
-            return decltype( compose_new_type( pred, t1 ) )( std::move( pred.pred_ ) );
+            return decltype( compose_new_predicate_condition_type( pred, t1 ) )( std::move( pred.pred_ ) );
         }
 
         template< typename T1, typename P, uint32_t ... I >
@@ -1025,7 +1002,7 @@ namespace eswitch_v4
     auto to_return( T && value )
     { 
         using return_t = decltype( details::Just_find_out_return_type( std::forward< T >( value ) ) );
-        return Value_to_return< return_t >{ std::forward< return_t >( value ) };
+        return Value_to_return< return_t >{ std::forward< T >( value ) };
     }
 
  } // namespace eswitch_v4

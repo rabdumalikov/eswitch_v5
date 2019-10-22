@@ -2068,7 +2068,7 @@ TEST(eswitch_v4_with_predicates, ors_false_in_both_conditions )
     EXPECT_TRUE( !pred_cnd( std::make_tuple( -4, -4 ) ) );
 }
 
-TEST(eswitch_v4_with_predicates, full_feature )
+TEST(eswitch_v4_with_predicates, full_feature_1st_match )
 {
     using namespace eswitch_v4;
     using namespace eswitch_v4::experimental;
@@ -2080,15 +2080,278 @@ TEST(eswitch_v4_with_predicates, full_feature )
 
     eswitch( 3, 4 ) >>
         case_( ( is_non_negative, _1, _2 ) && ( is_odd, _1 ) ) >> [&]{ executed = true; } >>
-
-        case_( ( is_odd, _1 ) ) >> [&]{ executed = true; } >>
-
-        case_( ( is_non_negative, _1, _2 ) ) >> [&]{} >>
-        
-        case_( _1 == 3 && _2 == 4 ) >> [&]{};
+        case_( ( is_odd, _1 ) ) >> [&]{ FAIL(); } >>
+        case_( ( is_non_negative, _1, _2 ) ) >> [&]{ FAIL(); } >>
+        case_( _1 == 3 && _2 == 4 ) >> [&]{ FAIL(); };
 
     EXPECT_TRUE( executed );
 }
+
+TEST(eswitch_v4_with_predicates, full_feature_2nd_match )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+  
+    bool executed = false;
+
+    eswitch( 3, -4 ) >>
+        case_( ( is_non_negative, _1, _2 ) && ( is_odd, _1 ) ) >> [&]{ FAIL(); } >>
+        case_( ( is_odd, _1 ) ) >> [&]{ executed = true; } >>
+        case_( ( is_non_negative, _1, _2 ) ) >> [&]{ FAIL(); } >>    
+        case_( _1 == 3 && _2 == 4 ) >> [&]{ FAIL();};
+
+    EXPECT_TRUE( executed );
+}
+
+TEST(eswitch_v4_with_predicates, full_feature_3rd_match )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+  
+    bool executed = false;
+
+    eswitch( 4, 7 ) >>
+        case_( ( is_non_negative, _1, _2 ) && ( is_odd, _1 ) ) >> [&]{ FAIL(); } >>
+        case_( ( is_odd, _1 ) ) >> [&]{ FAIL(); } >>
+        case_( ( is_non_negative, _1, _2 ) ) >> [&]{ executed = true; } >>    
+        case_( _1 == 3 && _2 == 4 ) >> [&]{ FAIL();};
+
+    EXPECT_TRUE( executed );
+}
+
+TEST(eswitch_v4_with_predicates, full_feature_4th_match )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+  
+    bool executed = false;
+
+    eswitch( -2, 4 ) >>
+        case_( ( is_non_negative, _1, _2 ) && ( is_odd, _1 ) ) >> [&]{ FAIL(); } >>
+        case_( ( is_odd, _1 ) ) >> [&]{ FAIL(); } >>
+        case_( ( is_non_negative, _1, _2 ) ) >> [&]{ FAIL(); } >>    
+        case_( _1 == -2 && _2 == 4 ) >> [&]{ executed = true; };
+        
+    EXPECT_TRUE( executed );
+}
+
+TEST(eswitch_v4_with_predicates, lambda_full_feature_1st_match )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+  
+    bool executed = false;
+
+    eswitch( 3, 4 ) >>
+        case_( ( []( int i, int j ){ return i >= 0 && j >= 0; }, _1, _2 ) && ( []( int i ){ return i % 2 != 0; }, _1 ) ) >> [&]{ executed = true; } >>
+        case_( ( []( int i ){ return i % 2 != 0; }, _1 ) ) >> [&]{ FAIL(); } >>
+        case_( ( []( int i, int j ){ return i >= 0 && j >= 0; }, _1, _2 ) ) >> [&]{ FAIL(); } >>    
+        case_( _1 == -2 && _2 == 4 ) >> [&]{ FAIL(); };
+        
+    EXPECT_TRUE( executed );
+}
+
+TEST(eswitch_v4_with_predicates, lambda_full_feature_2nd_match )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+  
+    bool executed = false;
+
+    eswitch( 3, -4 ) >>
+        case_( ( []( int i, int j ){ return i >= 0 && j >= 0; }, _1, _2 ) && ( []( int i ){ return i % 2 != 0; }, _1 ) ) >> [&]{ FAIL(); } >>
+        case_( ( []( int i ){ return i % 2 != 0; }, _1 ) ) >> [&]{ executed = true; } >>
+        case_( ( []( int i, int j ){ return i >= 0 && j >= 0; }, _1, _2 ) ) >> [&]{ FAIL(); } >>    
+        case_( _1 == -2 && _2 == 4 ) >> [&]{ FAIL(); };
+        
+    EXPECT_TRUE( executed );
+}
+
+TEST(eswitch_v4_with_predicates, to_return_full_feature_1st_match )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+  
+    const auto result = eswitch( 3, 4 ) >>
+        case_( ( is_non_negative, _1, _2 ) && ( is_odd, _1 ) ) >> to_return( true ) >>
+        case_( ( is_odd, _1 ) ) >> to_return( false ) >>
+        case_( ( is_non_negative, _1, _2 ) ) >> to_return( false ) >>    
+        case_( _1 == -2 && _2 == 4 ) >> to_return( false ) >>
+        in_place_return_;
+        
+    EXPECT_TRUE( result );
+}
+
+TEST(eswitch_v4_with_predicates, to_return_full_feature_2nd_match )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+  
+    const auto result = eswitch( 3, -7 ) >>
+        case_( ( is_non_negative, _1, _2 ) && ( is_odd, _1 ) ) >> to_return( false ) >>
+        case_( ( is_odd, _1 ) ) >> to_return( true ) >>
+        case_( ( is_non_negative, _1, _2 ) ) >> to_return( false ) >>    
+        case_( _1 == -2 && _2 == 4 ) >> to_return( false ) >>
+        in_place_return_;
+        
+    EXPECT_TRUE( result );
+}
+
+TEST(eswitch_v4_with_predicates, to_return_full_feature_3rd_match )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+  
+    const auto result = eswitch( 4, 7 ) >>
+        case_( ( is_non_negative, _1, _2 ) && ( is_odd, _1 ) ) >> to_return( false ) >>
+        case_( ( is_odd, _1 ) ) >> to_return( false ) >>
+        case_( ( is_non_negative, _1, _2 ) ) >> to_return( true ) >>    
+        case_( _1 == -2 && _2 == 4 ) >> to_return( false ) >>
+        in_place_return_;
+        
+    EXPECT_TRUE( result );
+}
+
+TEST(eswitch_v4_with_predicates, or_full_feature_1st_part_match )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+  
+    const auto result = eswitch( 4, 7 ) >>
+        case_( ( is_non_negative, _1, _2 ) || ( is_odd, _1 ) ) >> to_return( "yes" ) >>
+        default_ >> to_return( "no" ) >>
+        in_place_return_;
+        
+    EXPECT_TRUE( result == std::string( "yes" ) );
+}
+
+TEST(eswitch_v4_with_predicates, or_full_feature_2nd_part_match )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_odd = []( int i ){ return i % 2 != 0; };
+
+    auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
+  
+    const auto result = eswitch( 3, -7 ) >>
+        case_( ( is_non_negative, _1, _2 ) || ( is_odd, _1 ) ) >> to_return( "yes" ) >>
+        default_ >> to_return( "no" ) >>
+        in_place_return_;
+        
+    EXPECT_TRUE( result == std::string( "yes" ) );
+}
+
+auto is_odd( int i ){ return i % 2 != 0; }
+auto is_non_negative( int i, int j ){ return i >= 0 && j >= 0; }
+
+TEST(eswitch_v4_with_predicates, or_full_feature_1st_part_match_with_free_functions )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    const auto result = eswitch( 4, 7 ) >>
+         case_( ( is_non_negative, _1, _2 ) || ( is_odd, _1 ) ) >> to_return( "yes" ) >>
+         default_ >> to_return( "no" ) >>
+         in_place_return_;
+        
+    EXPECT_TRUE( result == std::string( "yes" ) );
+}
+
+TEST(eswitch_v4_with_predicates, or_full_feature_2nd_part_match_with_free_functions )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    const auto result = eswitch( 3, -7 ) >>
+         case_( ( is_non_negative, _1, _2 ) || ( is_odd, _1 ) ) >> to_return( "yes" ) >>
+         default_ >> to_return( "no" ) >>
+         in_place_return_;
+        
+    EXPECT_TRUE( result == std::string( "yes" ) );
+}
+
+TEST(eswitch_v4_with_predicates, or_full_feature_with_free_functions_and_fallthrough )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    const auto result = eswitch( 3, 7 ) >>
+         case_( ( is_non_negative, _1, _2 ) || ( is_odd, _1 ) ) >> to_return( "yes" ) >> fallthrough_ >>
+         default_ >> to_return( "no" ) >>
+         in_place_return_;
+        
+    EXPECT_TRUE( result == std::string( "yes" ) );
+}
+
+TEST(eswitch_v4_with_predicates, or_full_feature_with_free_functions_and_fallthrough_and_return_in_lmbd )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    const auto result = eswitch( 3, 7 ) >>
+         case_( ( is_non_negative, _1, _2 ) || ( is_odd, _1 ) ) >> []{ return "yes"; } >> fallthrough_ >>
+         default_ >> []{ return "no"; } >>
+         in_place_return_;
+        
+    EXPECT_TRUE( result == std::string( "yes" ) );
+}
+
+TEST(eswitch_v4_with_predicates, or_full_feature_with_free_functions_and_fallthrough_and_return_in_lmbd_default )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    const auto result = eswitch( 4, -7 ) >>
+         case_( ( is_non_negative, _1, _2 ) || ( is_odd, _1 ) ) >> []{ return "yes"; } >> fallthrough_ >>
+         default_ >> []{ return "no"; } >>
+         in_place_return_;
+        
+    EXPECT_TRUE( result == std::string( "no" ) );
+}
+
+TEST(eswitch_v4_with_predicates, full_feature_with_free_functions_and_fallthrough )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    const auto result = eswitch( 3, -7 ) >>
+        case_( ( is_non_negative, _1, _2 ) ) >> []{ return "no"; } >> fallthrough_ >>
+        case_( ( is_odd, _1 ) ) >> []{ return "yes"; } >> fallthrough_ >>
+        default_ >> []{ return "no"; } >>
+        in_place_return_;
+        
+    EXPECT_TRUE( result == std::string( "yes" ) );
+}
+
 /*
         std::tuple< int, double, std::string > tup;
 
