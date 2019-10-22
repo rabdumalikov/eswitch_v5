@@ -2368,8 +2368,111 @@ TEST(eswitch_v4_with_predicates, case_without_body )
         default_ >> []{ FAIL(); };        
 }
 
-/// CHECK WHERE WE HAVE FOUR PREDICATES
-/// INDEXES OUT OF ORDER
+TEST(eswitch_v4_with_predicates, 4_predicate_1st_match )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    auto is_nonzero = []( int i, int j, int k, int d ){ return i > 0 && j > 0 && k > 0 && d > 0; };
+
+    const auto result = eswitch( 1, 7, 5, 10 ) >>
+         case_( ( is_nonzero, _1, _2, _3, _4 ) && ( is_non_negative, _1, _2 ) && ( is_odd, _1 ) ) >> []{ return true; } >>
+         case_( ( is_nonzero, _1, _2, _3, _4 ) || ( is_non_negative, _1, _2 ) || ( is_odd, _1 ) ) >> []{ FAIL(); } >>
+         default_ >> []{ FAIL(); } >>
+         in_place_return_;
+        
+    EXPECT_TRUE( result );
+}
+
+TEST(eswitch_v4_with_predicates, 4_predicate_2nd_match )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    auto is_nonzero = []( int i, int j, int k, int d ){ return i > 0 && j > 0 && k > 0 && d > 0; };
+
+    const auto result = eswitch( 1, -7, 5, 10 ) >>
+         case_( ( is_nonzero, _1, _2, _3, _4 ) && ( is_non_negative, _1, _2 ) && ( is_odd, _1 ) ) >> []{ FAIL(); } >>
+         case_( ( is_nonzero, _1, _2, _3, _4 ) || ( is_non_negative, _4, _3 ) || ( is_odd, _1 ) ) >> []{ return true; } >>
+         default_ >> []{ FAIL(); } >>
+         in_place_return_;
+        
+    EXPECT_TRUE( result );
+}
+
+TEST(eswitch_v4_with_predicates, 4_predicate_default_match )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    auto is_nonzero = []( int i, int j, int k, int d ){ return i > 0 && j > 0 && k > 0 && d > 0; };
+
+    const auto result = eswitch( 2, -7, 0, 10 ) >>
+         case_( ( is_nonzero, _1, _2, _3, _4 ) && ( is_non_negative, _1, _2 ) && ( is_odd, _1 ) ) >> []{ FAIL(); } >>
+         case_( ( is_nonzero, _1, _2, _3, _4 ) || ( is_non_negative, _2, _3 ) || ( is_odd, _1 ) ) >> []{ FAIL(); } >>
+         default_ >> []{ return true; } >>
+         in_place_return_;
+        
+    EXPECT_TRUE( result );
+}
+
+TEST(eswitch_v4_with_predicates, indexes_out_of_order_1st_match )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    auto is_nonzero = []( int i, int j, int k, int d ){ return i > 0 && j > 0 && k > 0 && d > 0; };
+
+    const auto result = eswitch( 1, 7, 0, 10, 15 ) >>
+         case_( ( is_nonzero, _5, _1, _4, _2 ) ) >> []{ return true; } >>
+         case_( ( is_nonzero, _1, _2, _3, _4 ) || ( is_non_negative, _1, _2 ) || ( is_odd, _1 ) ) >> []{ FAIL(); } >>
+         default_ >> []{ FAIL(); } >>
+         in_place_return_;
+        
+    EXPECT_TRUE( result );
+}
+
+TEST(eswitch_v4_with_predicates, indexes_out_of_order_1st_match_less_args )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    auto is_nonzero = []( int i, int j ){ return i > 0 && j > 0; };
+
+    const auto result = eswitch( 0, 7, 0, 10, 0 ) >>
+         case_( ( is_nonzero, _4, _2 ) ) >> []{ return true; } >>
+         default_ >> []{ FAIL(); } >>
+         in_place_return_;
+        
+    EXPECT_TRUE( result );
+}
+
+TEST(eswitch_v4_with_predicates, indexes_out_of_order_1st_match_is_non_negative )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    const auto result = eswitch( 6, -7, -1, -10, 9 ) >>
+         case_( ( is_non_negative, _5, _1 ) ) >> []{ return true; } >>
+         default_ >> []{ FAIL(); } >>
+         in_place_return_;
+        
+    EXPECT_TRUE( result );
+}
+
+TEST(eswitch_v4_with_predicates, indexes_out_of_order_1st_match_is_odd )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    const auto result = eswitch( 2, 4, 6, 1, 12 ) >>
+         case_( ( is_odd, _4 ) ) >> []{ return true; } >>
+         default_ >> []{ FAIL(); } >>
+         in_place_return_;
+        
+    EXPECT_TRUE( result );
+}
+
 /*
         std::tuple< int, double, std::string > tup;
 

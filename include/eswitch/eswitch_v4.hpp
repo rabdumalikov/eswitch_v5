@@ -443,7 +443,7 @@ namespace eswitch_v4
                 return pred_( std::get< Is >( src_tuple )... );
             }
 
-            constexpr bool is_out_of_range( const int MaxIndex ) const noexcept
+            static constexpr bool is_out_of_range( const int MaxIndex )
             {
                 constexpr std::array< int, sizeof...( Is ) > arr{ Is... };
 
@@ -488,9 +488,9 @@ namespace eswitch_v4
                 };
             }
 
-            constexpr bool is_out_of_range( const int MaxIndex ) const noexcept
+            static constexpr bool is_out_of_range( const int MaxIndex )
             {
-                return cnd1_.is_out_of_range( MaxIndex ) && cnd2_.is_out_of_range( MaxIndex );
+                return TCnd1::is_out_of_range( MaxIndex ) || TCnd2::is_out_of_range( MaxIndex );
             }
         };
 
@@ -880,7 +880,7 @@ namespace eswitch_v4
         template< typename TPred, uint32_t ... Is >
         auto operator>>( const experimental::predicate_condition< TPred, Is... > & value )
         {
-            static_assert( !value.is_out_of_range( sizeof...( TArgs ) ), "Index in 'Predicate' is out of range!!" );
+            static_assert( !experimental::predicate_condition< TPred, Is... >::is_out_of_range( sizeof...( TArgs ) ), "Index in 'Predicate' is out of range!!" );
             
             return Eswitch_for_case_only< Eswitch >( handle_condition( value ) );
         }
@@ -888,7 +888,7 @@ namespace eswitch_v4
         template< typename T1, typename T2 >
         auto operator>>( const experimental::predicate_conditions< T1, T2 > & value )
         {
-            static_assert( !value.is_out_of_range( sizeof...( TArgs ) ), "Index in 'Predicate' is out of range!!" );
+            static_assert( !experimental::predicate_conditions< T1, T2 >::is_out_of_range( sizeof...( TArgs ) ), "Index in 'Predicate' is out of range!!" );
 
             return Eswitch_for_case_only< Eswitch >( handle_condition( value ) );
         }
