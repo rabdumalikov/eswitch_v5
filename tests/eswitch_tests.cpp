@@ -2674,25 +2674,27 @@ TEST(eswitch_v4_with_predicates, mixed_2_predicates_and_index_matching )
             in_place_return_;
 
         EXPECT_TRUE( result == 15 );
-    }
-
+    }    
 }
 
-void should_compile()
+TEST(eswitch_v4_operator_comma, should_compile )
 {
     using namespace eswitch_v4;
     using namespace eswitch_v4::experimental;
 
     {
-    auto v = ( is_odd, std::string{} );
+    auto rslt = ( is_odd, std::string{"Hello"} );
+    EXPECT_TRUE( rslt == std::string{"Hello"} );
     }
 
     {
-    auto v = ( is_odd, int(1) );
+    auto rslt = ( is_odd, int(1) );
+    EXPECT_TRUE( rslt == 1 );
     }
 
     {
-    auto v = ( is_odd, fallthrough_ );
+    auto rslt = ( is_odd, fallthrough_ );
+    EXPECT_TRUE( ( std::is_same< decltype( rslt ), decltype( fallthrough_ ) >::value ) );
     }
 }
 

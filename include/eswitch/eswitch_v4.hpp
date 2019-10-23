@@ -347,10 +347,11 @@ namespace eswitch_v4
             return compare( cmp_operator, std::get< TIndex::eswitch_index >( src_tuple ), std::get< 0 >( tup_value_ ) );         
         }
 
-        int32_t amount_cmp() const { return 1; }
-
-        // dummy, to be able to mix different types of conditions
-        static constexpr bool is_out_of_range( const int MaxIndex ) { return false; }
+        template< int MaxIndex >
+        static constexpr bool is_out_of_range() 
+        { 
+            return TIndex::eswitch_index >= MaxIndex; 
+        }
 
     private:
         
@@ -369,6 +370,8 @@ namespace eswitch_v4
         }
     };
 
+
+
     template< typename ... T >
     class conditions
     {
@@ -377,23 +380,16 @@ namespace eswitch_v4
     public:
 
         template< typename ... TVals >
-        conditions( const Logical_operators logical_operator, TVals&&... value ) : logical_operator( logical_operator ), pack_{ std::forward< TVals >( value )... }
-        {}
+        conditions( const Logical_operators logical_operator, TVals&&... value ) 
+            : logical_operator( logical_operator ), pack_{ std::forward< TVals >( value )... }
+            {                
+            }
 
-        constexpr int32_t amount_cmp() const 
-        { 
-            int32_t sum_of_cmp = 0;
-
-            details::Tuple_for_each( pack_, [&]( const auto & v ) 
-                {
-                    sum_of_cmp += v.amount_cmp();
-                } );
-
-            return sum_of_cmp;
+        template< int MaxIndex >
+        static constexpr bool is_out_of_range() 
+        {
+            return is_out_of_range_impl< MaxIndex, T... >(); 
         }
-
-        // dummy, to be able to mix different types of conditions
-        static constexpr bool is_out_of_range( const int MaxIndex ) { return false; }
      
         template< typename TSrcTuple >
         bool operator()( const TSrcTuple & src_tuple ) const
@@ -402,6 +398,7 @@ namespace eswitch_v4
         }
 
     private:
+
         template< typename T1, typename T2 >
         static bool compare( const Logical_operators LogOper, T1 && t1, T2 && t2 )
         {                
@@ -415,6 +412,21 @@ namespace eswitch_v4
                 return details::unreachable();
             };
         }
+
+        template< int MaxIndex, typename TArg >
+        static constexpr bool is_out_of_range_impl()
+        {
+            return TArg::template is_out_of_range< MaxIndex >();
+        }
+
+        template< int MaxIndex, typename TArg1, typename TArg2, typename ... TArgs >
+        static constexpr bool is_out_of_range_impl()
+        {
+            constexpr bool is_out_of_rng = TArg1::template is_out_of_range < MaxIndex >() || 
+                TArg2::template is_out_of_range< MaxIndex >();
+
+            return is_out_of_rng ? true : is_out_of_range_impl< MaxIndex, TArg2, TArgs... >();
+        }        
     };
 
     template< int I, typename T >
@@ -462,7 +474,8 @@ namespace eswitch_v4
                 return pred_( std::get< Is >( src_tuple )... );
             }
 
-            static constexpr bool is_out_of_range( const int MaxIndex )
+            template< int MaxIndex >
+            static constexpr bool is_out_of_range()
             {
                 constexpr std::array< int, sizeof...( Is ) > arr{ Is... };
 
@@ -507,9 +520,10 @@ namespace eswitch_v4
                 };
             }
 
-            static constexpr bool is_out_of_range( const int MaxIndex )
+            template< int MaxIndex >
+            static constexpr bool is_out_of_range( )
             {
-                return TCnd1::is_out_of_range( MaxIndex ) || TCnd2::is_out_of_range( MaxIndex );
+                return TCnd1::template is_out_of_range< MaxIndex >() || TCnd2::template is_out_of_range< MaxIndex >();
             }
         };
 
@@ -894,7 +908,9 @@ namespace eswitch_v4
 
         template< typename ... Ts >
         auto operator>>( const conditions< Ts... >& cnds )
-        {
+        {            
+            static_assert( !conditions< Ts... >::template is_out_of_range< sizeof...( TArgs ) >(), "Index in 'Predicate' is out of range!!" );
+
             return Eswitch_for_case_only< Eswitch >( handle_condition( cnds ) );
         }
 
@@ -907,7 +923,7 @@ namespace eswitch_v4
         template< typename TPred, uint32_t ... Is >
         auto operator>>( const experimental::predicate_condition< TPred, Is... > & value )
         {
-            static_assert( !experimental::predicate_condition< TPred, Is... >::is_out_of_range( sizeof...( TArgs ) ), "Index in 'Predicate' is out of range!!" );
+            static_assert( !experimental::predicate_condition< TPred, Is... >::template is_out_of_range< sizeof...( TArgs ) >(), "Index in 'Predicate' is out of range!!" );
             
             return Eswitch_for_case_only< Eswitch >( handle_condition( value ) );
         }
@@ -915,7 +931,7 @@ namespace eswitch_v4
         template< typename T1, typename T2 >
         auto operator>>( const experimental::predicate_conditions< T1, T2 > & value )
         {
-            static_assert( !experimental::predicate_conditions< T1, T2 >::is_out_of_range( sizeof...( TArgs ) ), "Index in 'Predicate' is out of range!!" );
+            static_assert( !experimental::predicate_conditions< T1, T2 >::template is_out_of_range< sizeof...( TArgs ) >(), "Index in 'Predicate' is out of range!!" );
 
             return Eswitch_for_case_only< Eswitch >( handle_condition( value ) );
         }
