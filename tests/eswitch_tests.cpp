@@ -2675,6 +2675,25 @@ TEST(eswitch_v4_with_predicates, mixed_2_predicates_and_index_matching )
 
         EXPECT_TRUE( result == 15 );
     }
+
+}
+
+void should_compile()
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    {
+    auto v = ( is_odd, std::string{} );
+    }
+
+    {
+    auto v = ( is_odd, int(1) );
+    }
+
+    {
+    auto v = ( is_odd, fallthrough_ );
+    }
 }
 
 /*

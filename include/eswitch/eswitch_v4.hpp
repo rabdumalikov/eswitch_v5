@@ -16,7 +16,7 @@
 namespace eswitch_v4
 {
     template< int32_t Idx >
-    struct Index_{ static constexpr int32_t index = Idx; };
+    struct Index_{ static constexpr int32_t eswitch_index = Idx; };
 
     const Index_< 0 > _1;
     const Index_< 1 > _2;
@@ -37,12 +37,32 @@ namespace eswitch_v4
         template< typename T >
         auto Just_find_out_return_type( T && value ){ return std::forward< T >( value ); }
 
-        template< typename T >
-        struct is_determined
+        struct base 
         {
             struct Yes{};
             struct No{ Yes no[2]; };
+        };
+
+        template< typename T >
+        struct has_static_member_index : private base
+        {            
+            template< typename U1, int U2 > struct check;
             
+            template< typename T_ >
+            static Yes is_determine( check< T_, T_::eswitch_index > * );
+            
+            template< typename T_ >
+            static No is_determine( ... );
+
+            static constexpr bool value = sizeof( is_determine< T >( 0 ) ) == sizeof( Yes );  
+        };
+
+        template< typename T >
+        using has_static_member_index_t = has_static_member_index< T >;
+
+        template< typename T >
+        struct is_determined : private base
+        {           
             template< typename U1, typename U2 > struct check;
             
             template< typename T_ >
@@ -71,19 +91,12 @@ namespace eswitch_v4
         class is_callable_impl;
 
         template< typename T >
-        class is_callable_impl< T, true > 
+        class is_callable_impl< T, true >  : private base
         {
             struct Fallback { int operator()() { return 1; } };
             struct Derived : T, Fallback { };
 
             template<typename U, U> struct Check;
-
-            struct Yes{};
-
-            struct No
-            {
-                Yes no[2];
-            };
 
             template<typename U>
             static No has_alternative_callable_operator(Check< int(Fallback::*)(), &U::operator()> *);
@@ -331,7 +344,7 @@ namespace eswitch_v4
         template< typename TSrcTuple >
         bool operator()( const TSrcTuple & src_tuple ) const
         {
-            return compare( cmp_operator, std::get< TIndex::index >( src_tuple ), std::get< 0 >( tup_value_ ) );         
+            return compare( cmp_operator, std::get< TIndex::eswitch_index >( src_tuple ), std::get< 0 >( tup_value_ ) );         
         }
 
         int32_t amount_cmp() const { return 1; }
@@ -525,21 +538,21 @@ namespace eswitch_v4
             static constexpr bool value = std::is_same< decltype( is_predicate_condition( holder< T >() ) ), bool >::value;
         };
 
-        /// TODO write static_assert to check whether argument contain attribute by name
-        template< typename R, typename... Args, typename T >
+        template< typename R, typename... Args, typename T, typename std::enable_if< details::has_static_member_index_t< T >::value, int >::type = 0 >
         auto operator,( R(*pred)(Args...), const T& t1 )
         {
-            return predicate_condition< R(*)(Args...), T::index >( pred );
+            return predicate_condition< R(*)(Args...), T::eswitch_index >( pred );
         }
 
-        template< typename Pred, typename T, typename std::enable_if< !is_predicate< std::remove_reference_t< Pred > >::value, int >::type = 0 >
+        template< typename Pred, typename T, typename std::enable_if< !is_predicate< std::remove_reference_t< Pred > >::value && 
+            details::has_static_member_index_t< T >::value, int >::type = 0 >
         auto operator,( Pred&& pred, const T& t1 )
         {
-            return predicate_condition< std::remove_reference_t< Pred >, T::index >( std::forward< Pred >( pred ) );
+            return predicate_condition< std::remove_reference_t< Pred >, T::eswitch_index >( std::forward< Pred >( pred ) );
         }
 
-        template < typename P, uint32_t ... I, typename T >
-        predicate_condition< P, I..., T::index > compose_new_predicate_condition_type( const predicate_condition< P, I... > & pred_cnd, const T& t1 ); 
+        template < typename P, uint32_t ... I, typename T, typename std::enable_if< details::has_static_member_index_t< T >::value, int >::type = 0 >
+        predicate_condition< P, I..., T::eswitch_index > compose_new_predicate_condition_type( const predicate_condition< P, I... > & pred_cnd, const T& t1 ); 
 
         template< typename Pred, typename T, typename std::enable_if< is_predicate< std::remove_reference_t< Pred > >::value, int >::type = 0 >
         auto operator,( Pred&& pred, const T& t1 )
@@ -642,7 +655,7 @@ namespace eswitch_v4
         }
     };
 
-    // to handle match cases but without body, since next cases shouldn't be consider, unless fallthough.
+    // to handle match cases without body, since next cases shouldn't be consider.
     template< typename TEswitch >
     struct Eswitch_for_case_only
     {
