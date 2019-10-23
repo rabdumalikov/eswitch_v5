@@ -1931,7 +1931,6 @@ TEST(eswitch_v4_simple_case, to_string )
 TEST(eswitch_v4_with_predicates, pred_1_true )
 {
     using namespace eswitch_v4;
-    using namespace experimental;
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
 
@@ -1943,7 +1942,6 @@ TEST(eswitch_v4_with_predicates, pred_1_true )
 TEST(eswitch_v4_with_predicates, pred_1_false )
 {
     using namespace eswitch_v4;
-    using namespace experimental;
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
 
@@ -1956,7 +1954,7 @@ TEST(eswitch_v4_with_predicates, pred_1_false )
 TEST(eswitch_v4_with_predicates, pred_2_true )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
 
@@ -1968,7 +1966,7 @@ TEST(eswitch_v4_with_predicates, pred_2_true )
 TEST(eswitch_v4_with_predicates, pred_2_false )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
 
@@ -1980,7 +1978,7 @@ TEST(eswitch_v4_with_predicates, pred_2_false )
 TEST(eswitch_v4_with_predicates, ands_true )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
@@ -1993,7 +1991,7 @@ TEST(eswitch_v4_with_predicates, ands_true )
 TEST(eswitch_v4_with_predicates, ands_false_in_1st_condition )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
@@ -2006,7 +2004,7 @@ TEST(eswitch_v4_with_predicates, ands_false_in_1st_condition )
 TEST(eswitch_v4_with_predicates, ands_false_in_2nd_condition )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
@@ -2019,7 +2017,7 @@ TEST(eswitch_v4_with_predicates, ands_false_in_2nd_condition )
 TEST(eswitch_v4_with_predicates, ors_true )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
@@ -2032,7 +2030,7 @@ TEST(eswitch_v4_with_predicates, ors_true )
 TEST(eswitch_v4_with_predicates, ors_false_in_1st_condition )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
@@ -2045,7 +2043,7 @@ TEST(eswitch_v4_with_predicates, ors_false_in_1st_condition )
 TEST(eswitch_v4_with_predicates, ors_false_in_2nd_condition )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
@@ -2058,7 +2056,7 @@ TEST(eswitch_v4_with_predicates, ors_false_in_2nd_condition )
 TEST(eswitch_v4_with_predicates, ors_false_in_both_conditions )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
@@ -2071,7 +2069,7 @@ TEST(eswitch_v4_with_predicates, ors_false_in_both_conditions )
 TEST(eswitch_v4_with_predicates, full_feature_1st_match )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
@@ -2090,7 +2088,7 @@ TEST(eswitch_v4_with_predicates, full_feature_1st_match )
 TEST(eswitch_v4_with_predicates, full_feature_2nd_match )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
@@ -2109,7 +2107,7 @@ TEST(eswitch_v4_with_predicates, full_feature_2nd_match )
 TEST(eswitch_v4_with_predicates, full_feature_3rd_match )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
@@ -2128,7 +2126,7 @@ TEST(eswitch_v4_with_predicates, full_feature_3rd_match )
 TEST(eswitch_v4_with_predicates, full_feature_4th_match )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
@@ -2147,7 +2145,7 @@ TEST(eswitch_v4_with_predicates, full_feature_4th_match )
 TEST(eswitch_v4_with_predicates, lambda_full_feature_1st_match )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
@@ -2166,7 +2164,7 @@ TEST(eswitch_v4_with_predicates, lambda_full_feature_1st_match )
 TEST(eswitch_v4_with_predicates, lambda_full_feature_2nd_match )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
@@ -2185,7 +2183,7 @@ TEST(eswitch_v4_with_predicates, lambda_full_feature_2nd_match )
 TEST(eswitch_v4_with_predicates, to_return_full_feature_1st_match )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
@@ -2203,7 +2201,7 @@ TEST(eswitch_v4_with_predicates, to_return_full_feature_1st_match )
 TEST(eswitch_v4_with_predicates, to_return_full_feature_2nd_match )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
@@ -2221,7 +2219,7 @@ TEST(eswitch_v4_with_predicates, to_return_full_feature_2nd_match )
 TEST(eswitch_v4_with_predicates, to_return_full_feature_3rd_match )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
     auto is_non_negative = []( int i, int j ){ return i >= 0 && j >= 0; };
@@ -2239,7 +2237,7 @@ TEST(eswitch_v4_with_predicates, to_return_full_feature_3rd_match )
 TEST(eswitch_v4_with_predicates, or_full_feature_1st_part_match )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
 
@@ -2256,7 +2254,7 @@ TEST(eswitch_v4_with_predicates, or_full_feature_1st_part_match )
 TEST(eswitch_v4_with_predicates, or_full_feature_2nd_part_match )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_odd = []( int i ){ return i % 2 != 0; };
 
@@ -2276,7 +2274,7 @@ auto is_non_negative( int i, int j ){ return i >= 0 && j >= 0; }
 TEST(eswitch_v4_with_predicates, or_full_feature_1st_part_match_with_free_functions )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     const auto result = eswitch( 4, 7 ) >>
          case_( ( is_non_negative, _1, _2 ) || ( is_odd, _1 ) ) >> to_return( "yes" ) >>
@@ -2289,7 +2287,7 @@ TEST(eswitch_v4_with_predicates, or_full_feature_1st_part_match_with_free_functi
 TEST(eswitch_v4_with_predicates, or_full_feature_2nd_part_match_with_free_functions )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     const auto result = eswitch( 3, -7 ) >>
          case_( ( is_non_negative, _1, _2 ) || ( is_odd, _1 ) ) >> to_return( "yes" ) >>
@@ -2302,7 +2300,7 @@ TEST(eswitch_v4_with_predicates, or_full_feature_2nd_part_match_with_free_functi
 TEST(eswitch_v4_with_predicates, or_full_feature_with_free_functions_and_fallthrough )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     const auto result = eswitch( 3, 7 ) >>
          case_( ( is_non_negative, _1, _2 ) || ( is_odd, _1 ) ) >> to_return( "yes" ) >> fallthrough_ >>
@@ -2315,7 +2313,7 @@ TEST(eswitch_v4_with_predicates, or_full_feature_with_free_functions_and_fallthr
 TEST(eswitch_v4_with_predicates, or_full_feature_with_free_functions_and_fallthrough_and_return_in_lmbd )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     const auto result = eswitch( 3, 7 ) >>
          case_( ( is_non_negative, _1, _2 ) || ( is_odd, _1 ) ) >> []{ return "yes"; } >> fallthrough_ >>
@@ -2328,7 +2326,7 @@ TEST(eswitch_v4_with_predicates, or_full_feature_with_free_functions_and_fallthr
 TEST(eswitch_v4_with_predicates, or_full_feature_with_free_functions_and_fallthrough_and_return_in_lmbd_default )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     const auto result = eswitch( 4, -7 ) >>
          case_( ( is_non_negative, _1, _2 ) || ( is_odd, _1 ) ) >> []{ return "yes"; } >> fallthrough_ >>
@@ -2341,7 +2339,7 @@ TEST(eswitch_v4_with_predicates, or_full_feature_with_free_functions_and_fallthr
 TEST(eswitch_v4_with_predicates, full_feature_with_free_functions_and_fallthrough )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     const auto result = eswitch( 3, -7 ) >>
         case_( ( is_non_negative, _1, _2 ) ) >> []{ return "no"; } >> fallthrough_ >>
@@ -2355,7 +2353,7 @@ TEST(eswitch_v4_with_predicates, full_feature_with_free_functions_and_fallthroug
 TEST(eswitch_v4_with_predicates, case_without_body )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
      eswitch( 3, 7 ) >>
         case_( _1 == 3 ) >>
@@ -2371,7 +2369,7 @@ TEST(eswitch_v4_with_predicates, case_without_body )
 TEST(eswitch_v4_with_predicates, 4_predicate_1st_match )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     auto is_nonzero = []( int i, int j, int k, int d ){ return i > 0 && j > 0 && k > 0 && d > 0; };
 
@@ -2387,7 +2385,7 @@ TEST(eswitch_v4_with_predicates, 4_predicate_1st_match )
 TEST(eswitch_v4_with_predicates, 4_predicate_2nd_match )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     auto is_nonzero = []( int i, int j, int k, int d ){ return i > 0 && j > 0 && k > 0 && d > 0; };
 
@@ -2403,7 +2401,7 @@ TEST(eswitch_v4_with_predicates, 4_predicate_2nd_match )
 TEST(eswitch_v4_with_predicates, 4_predicate_default_match )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     auto is_nonzero = []( int i, int j, int k, int d ){ return i > 0 && j > 0 && k > 0 && d > 0; };
 
@@ -2419,7 +2417,7 @@ TEST(eswitch_v4_with_predicates, 4_predicate_default_match )
 TEST(eswitch_v4_with_predicates, indexes_out_of_order_1st_match )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     auto is_nonzero = []( int i, int j, int k, int d ){ return i > 0 && j > 0 && k > 0 && d > 0; };
 
@@ -2435,7 +2433,7 @@ TEST(eswitch_v4_with_predicates, indexes_out_of_order_1st_match )
 TEST(eswitch_v4_with_predicates, indexes_out_of_order_1st_match_less_args )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     auto is_nonzero = []( int i, int j ){ return i > 0 && j > 0; };
 
@@ -2450,7 +2448,7 @@ TEST(eswitch_v4_with_predicates, indexes_out_of_order_1st_match_less_args )
 TEST(eswitch_v4_with_predicates, indexes_out_of_order_1st_match_is_non_negative )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     const auto result = eswitch( 6, -7, -1, -10, 9 ) >>
          case_( ( is_non_negative, _5, _1 ) ) >> []{ return true; } >>
@@ -2463,7 +2461,7 @@ TEST(eswitch_v4_with_predicates, indexes_out_of_order_1st_match_is_non_negative 
 TEST(eswitch_v4_with_predicates, indexes_out_of_order_1st_match_is_odd )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     const auto result = eswitch( 2, 4, 6, 1, 12 ) >>
          case_( ( is_odd, _4 ) ) >> []{ return true; } >>
@@ -2476,7 +2474,7 @@ TEST(eswitch_v4_with_predicates, indexes_out_of_order_1st_match_is_odd )
 TEST(eswitch_v4_with_predicates, mixed_predicates_and_indexed_matching )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     const auto result = eswitch( 2, 4, 6, 1, 12 ) >>
          case_( ( is_odd, _4 ) && _1 == 2 && _2 == 4 ) >> []{ return true; } >>
@@ -2489,7 +2487,7 @@ TEST(eswitch_v4_with_predicates, mixed_predicates_and_indexed_matching )
 TEST(eswitch_v4_with_predicates, mixed_indexed_matching_and_predicates )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     const auto result = eswitch( 2, 4, 6, 1, 12 ) >>
          case_( _1 == 2 && _2 == 4 && ( is_odd, _4 ) ) >> []{ return true; } >>
@@ -2502,7 +2500,7 @@ TEST(eswitch_v4_with_predicates, mixed_indexed_matching_and_predicates )
 TEST(eswitch_v4_with_predicates, mixed_predicates_in_the_middle )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     const auto result = eswitch( 2, 4, 6, 1, 12 ) >>
          case_( _1 == 2 && ( is_odd, _4 ) && _2 == 4 ) >> []{ return true; } >>
@@ -2515,7 +2513,7 @@ TEST(eswitch_v4_with_predicates, mixed_predicates_in_the_middle )
 TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_empty_body )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     eswitch( 2, 4, 6, 1, 12 ) >>
          case_( _1 == 2 && ( is_odd, _4 ) && _2 == 4 ) >>
@@ -2525,7 +2523,7 @@ TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_empty_body 
 TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_in_separate_cases )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     const bool result = eswitch( 2, 4, 6, 1, 12 ) >>
         case_( _1 == 2 && ( is_odd, _4 ) && _2 == 4 ) >> to_return( true ) >>
@@ -2540,7 +2538,7 @@ TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_in_separate
 TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_in_separate_cases_FALLTHROUGH_till_2nd )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     const int result = eswitch( 2, 4, 6, 1, 12 ) >>
         case_( _1 == 2 && ( is_odd, _4 ) && _2 == 4 ) >> []{} >> fallthrough_ >>
@@ -2555,7 +2553,7 @@ TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_in_separate
 TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_in_separate_cases_FALLTHROUGH_till_3rd )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     const int result = eswitch( 2, 4, 6, 1, 12 ) >>
         case_( _1 == 2 && ( is_odd, _4 ) && _2 == 4 ) >> []{} >> fallthrough_ >>
@@ -2570,7 +2568,7 @@ TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_in_separate
 TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_in_separate_cases_FALLTHROUGH_till_4th )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
  
     const int result = eswitch( 2, 4, 6, 1, 12 ) >>
         case_( _1 == 2 && ( is_odd, _4 ) && _2 == 4 ) >> []{} >> fallthrough_ >>
@@ -2585,7 +2583,7 @@ TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_in_separate
 TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_in_separate_cases_FALLTHROUGH_till_default )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
    
     const int result = eswitch( 2, 4, 6, 1, 12 ) >>
         case_( _1 == 2 && ( is_odd, _4 ) && _2 == 4 ) >> []{} >> fallthrough_ >>
@@ -2601,7 +2599,7 @@ TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_in_separate
 TEST(eswitch_v4_with_predicates, mixed_2_predicates_and_index_matching )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     auto is_nonzero = []( int i ) { return i > 0; };
 
@@ -2680,7 +2678,7 @@ TEST(eswitch_v4_with_predicates, mixed_2_predicates_and_index_matching )
 TEST(eswitch_v4_operator_comma, should_compile )
 {
     using namespace eswitch_v4;
-    using namespace eswitch_v4::experimental;
+    
 
     {
     auto rslt = ( is_odd, std::string{"Hello"} );

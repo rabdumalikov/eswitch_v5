@@ -32,6 +32,19 @@ namespace eswitch_v4
     enum class Logical_operators{ and_, or_ };
     enum class Comparison_operators{ equal_, not_equal_ };
 
+    /// forward declarations
+    template< typename TCnd1, typename TCnd2 >
+    class predicate_conditions;
+
+    template< typename TPred, uint32_t ... Is >
+    class predicate_condition;
+
+    template< typename ... T >
+    class conditions;
+    
+    template< typename TIndex, typename T >
+    class condition;
+
     namespace details 
     {
         template< typename T >
@@ -173,6 +186,31 @@ namespace eswitch_v4
         }
 
         static bool unreachable() { assert( false ); return false; }
+
+        template< typename T >
+        struct holder{};
+
+        template < template < typename > class H, typename S >
+        void is_predicate_condition( H<S> && );
+
+        template < template < typename > class H, template< typename, uint32_t ... > class Pr, typename P, uint32_t ... Idxs,
+            typename std::enable_if< std::is_same< holder< predicate_condition< P, Idxs... > >, H< Pr< P, Idxs... > > >::value, int >::type = 0 >
+        bool is_predicate_condition( H< Pr< P, Idxs... > > && );
+
+        template < template < typename > class H, template< typename, typename > class Cnd, typename T1, typename T2,
+            typename std::enable_if< std::is_same< holder< condition< T1, T2 > >, H< Cnd< T1, T2 > > >::value, int >::type = 0 >
+        bool is_predicate_condition( H< Cnd< T1, T2 > > && );
+
+        template < template < typename > class H, template< typename... > class Cnds, typename ... T,
+            typename std::enable_if< std::is_same< holder< conditions< T... > >, H< Cnds< T... > > >::value, int >::type = 0 >
+        bool is_predicate_condition( H< Cnds< T... > > && );
+
+
+        template < typename T >
+        struct is_predicate
+        {
+            static constexpr bool value = std::is_same< decltype( is_predicate_condition( holder< T >() ) ), bool >::value;
+        };
 
     } // namespace details
 
@@ -323,7 +361,7 @@ namespace eswitch_v4
                 return !operator==( value, st );
             }
         };        
-    }
+    } // namespace extension
 
     template< typename TIndex, typename T >
     class condition
@@ -453,140 +491,111 @@ namespace eswitch_v4
         return conditions< T1, condition< T2, T3 > >( Logical_operators::or_, std::forward< T1 >( i ), std::move( j ) );
     }
 
-    namespace experimental 
+    template< typename TPred, uint32_t ... Is >
+    class predicate_condition
     {
-        template< typename TPred, uint32_t ... Is >
-        class predicate_condition
-        {
-            public:
-            // TODO move to private scope
-            TPred pred_;
-
-            template< typename T >
-            predicate_condition( T && pred ) 
-                : pred_( std::forward< T >( pred ) )
-                {                    
-                }
-
-            template< typename TSrcTuple >
-            bool operator()( const TSrcTuple & src_tuple ) const
-            {
-                return pred_( std::get< Is >( src_tuple )... );
-            }
-
-            template< int MaxIndex >
-            static constexpr bool is_out_of_range()
-            {
-                constexpr std::array< int, sizeof...( Is ) > arr{ Is... };
-
-                for( int32_t i = 0; i < arr.size(); ++i )
-                {
-                    if( arr[ i ] >= MaxIndex ) return true;
-                }
-
-                return false;
-            }
-        };
-
-        template< typename TCnd1, typename TCnd2 >
-        class predicate_conditions
-        {            
-            Logical_operators logical_operator_;
-            TCnd1 cnd1_;
-            TCnd2 cnd2_;
-
-            public:
-
-            template< typename Tcnd1, typename Tcnd2 >
-            predicate_conditions( Logical_operators logic_oper, Tcnd1 && cnd1, Tcnd2 && cnd2 ) 
-                : logical_operator_( logic_oper )
-                , cnd1_( std::forward< Tcnd1 >( cnd1 ) )
-                , cnd2_( std::forward< Tcnd2 >( cnd2 ) )
-                {                    
-                }
-
-            template< typename TSrcTuple >
-            bool operator()( const TSrcTuple & src_tuple ) const
-            {
-                switch( logical_operator_ )
-                {
-                    case Logical_operators::and_:
-                        return cnd1_( src_tuple ) && cnd2_( src_tuple );
-                    case Logical_operators::or_:
-                        return cnd1_( src_tuple ) || cnd2_( src_tuple );
-                    default:
-                        details::unreachable();
-                        return false;
-                };
-            }
-
-            template< int MaxIndex >
-            static constexpr bool is_out_of_range( )
-            {
-                return TCnd1::template is_out_of_range< MaxIndex >() || TCnd2::template is_out_of_range< MaxIndex >();
-            }
-        };
+        public:
+        // TODO move to private scope
+        TPred pred_;
 
         template< typename T >
-        struct holder{};
+        predicate_condition( T && pred ) 
+            : pred_( std::forward< T >( pred ) )
+            {                    
+            }
 
-        template < template < typename > class H, typename S >
-        void is_predicate_condition( H<S> && );
-
-        template < template < typename > class H, template< typename, uint32_t ... > class Pr, typename P, uint32_t ... Idxs,
-            typename std::enable_if< std::is_same< holder< predicate_condition< P, Idxs... > >, H< Pr< P, Idxs... > > >::value, int >::type = 0 >
-        bool is_predicate_condition( H< Pr< P, Idxs... > > && );
-
-        template < template < typename > class H, template< typename, typename > class Cnd, typename T1, typename T2,
-            typename std::enable_if< std::is_same< holder< condition< T1, T2 > >, H< Cnd< T1, T2 > > >::value, int >::type = 0 >
-        bool is_predicate_condition( H< Cnd< T1, T2 > > && );
-
-        template < template < typename > class H, template< typename... > class Cnds, typename ... T,
-            typename std::enable_if< std::is_same< holder< conditions< T... > >, H< Cnds< T... > > >::value, int >::type = 0 >
-        bool is_predicate_condition( H< Cnds< T... > > && );
-
-
-        template < typename T >
-        struct is_predicate
+        template< typename TSrcTuple >
+        bool operator()( const TSrcTuple & src_tuple ) const
         {
-            static constexpr bool value = std::is_same< decltype( is_predicate_condition( holder< T >() ) ), bool >::value;
-        };
-
-        template< typename R, typename... Args, typename T, typename std::enable_if< details::has_static_member_index_t< T >::value, int >::type = 0 >
-        auto operator,( R(*pred)(Args...), const T& t1 )
-        {
-            return predicate_condition< R(*)(Args...), T::eswitch_index >( pred );
+            return pred_( std::get< Is >( src_tuple )... );
         }
 
-        template< typename Pred, typename T, typename std::enable_if< !is_predicate< std::remove_reference_t< Pred > >::value && 
-            details::has_static_member_index_t< T >::value, int >::type = 0 >
-        auto operator,( Pred&& pred, const T& t1 )
+        template< int MaxIndex >
+        static constexpr bool is_out_of_range()
         {
-            return predicate_condition< std::remove_reference_t< Pred >, T::eswitch_index >( std::forward< Pred >( pred ) );
+            constexpr std::array< int, sizeof...( Is ) > arr{ Is... };
+
+            for( int32_t i = 0; i < arr.size(); ++i )
+            {
+                if( arr[ i ] >= MaxIndex ) return true;
+            }
+
+            return false;
+        }
+    };
+
+    template< typename TCnd1, typename TCnd2 >
+    class predicate_conditions
+    {            
+        Logical_operators logical_operator_;
+        TCnd1 cnd1_;
+        TCnd2 cnd2_;
+
+        public:
+
+        template< typename Tcnd1, typename Tcnd2 >
+        predicate_conditions( Logical_operators logic_oper, Tcnd1 && cnd1, Tcnd2 && cnd2 ) 
+            : logical_operator_( logic_oper )
+            , cnd1_( std::forward< Tcnd1 >( cnd1 ) )
+            , cnd2_( std::forward< Tcnd2 >( cnd2 ) )
+            {                    
+            }
+
+        template< typename TSrcTuple >
+        bool operator()( const TSrcTuple & src_tuple ) const
+        {
+            switch( logical_operator_ )
+            {
+                case Logical_operators::and_:
+                    return cnd1_( src_tuple ) && cnd2_( src_tuple );
+                case Logical_operators::or_:
+                    return cnd1_( src_tuple ) || cnd2_( src_tuple );
+                default:
+                    details::unreachable();
+                    return false;
+            };
         }
 
-        template < typename P, uint32_t ... I, typename T, typename std::enable_if< details::has_static_member_index_t< T >::value, int >::type = 0 >
-        predicate_condition< P, I..., T::eswitch_index > compose_new_predicate_condition_type( const predicate_condition< P, I... > & pred_cnd, const T& t1 ); 
-
-        template< typename Pred, typename T, typename std::enable_if< is_predicate< std::remove_reference_t< Pred > >::value, int >::type = 0 >
-        auto operator,( Pred&& pred, const T& t1 )
+        template< int MaxIndex >
+        static constexpr bool is_out_of_range()
         {
-            return decltype( compose_new_predicate_condition_type( pred, t1 ) )( std::move( pred.pred_ ) );
+            return TCnd1::template is_out_of_range< MaxIndex >() || TCnd2::template is_out_of_range< MaxIndex >();
         }
+    };
 
-        template< typename T1, typename P, uint32_t ... I >
-        auto operator&&( T1 && i, predicate_condition< P, I... > && j )
-        {
-            return predicate_conditions< T1, predicate_condition< P, I... > >( Logical_operators::and_, std::forward< T1 >( i ), std::move( j ) );
-        }
+    template< typename R, typename... Args, typename T, typename std::enable_if< details::has_static_member_index_t< T >::value, int >::type = 0 >
+    auto operator,( R(*pred)(Args...), const T& t1 )
+    {
+        return predicate_condition< R(*)(Args...), T::eswitch_index >( pred );
+    }
 
-        template< typename T1, typename P, uint32_t ... I >
-        auto operator||( T1 && i, predicate_condition< P, I... > && j )
-        {
-            return predicate_conditions< T1, predicate_condition< P, I... > >( Logical_operators::or_, std::forward< T1 >( i ), std::move( j ) );
-        }
+    template< typename Pred, typename T, typename std::enable_if< !details::is_predicate< std::remove_reference_t< Pred > >::value && 
+        details::has_static_member_index_t< T >::value, int >::type = 0 >
+    auto operator,( Pred&& pred, const T& t1 )
+    {
+        return predicate_condition< std::remove_reference_t< Pred >, T::eswitch_index >( std::forward< Pred >( pred ) );
+    }
 
-    } // namespace experimental
+    template < typename P, uint32_t ... I, typename T, typename std::enable_if< details::has_static_member_index_t< T >::value, int >::type = 0 >
+    predicate_condition< P, I..., T::eswitch_index > compose_new_predicate_condition_type( const predicate_condition< P, I... > & pred_cnd, const T& t1 ); 
+
+    template< typename Pred, typename T, typename std::enable_if< details::is_predicate< std::remove_reference_t< Pred > >::value, int >::type = 0 >
+    auto operator,( Pred&& pred, const T& t1 )
+    {
+        return decltype( compose_new_predicate_condition_type( pred, t1 ) )( std::move( pred.pred_ ) );
+    }
+
+    template< typename T1, typename P, uint32_t ... I >
+    auto operator&&( T1 && i, predicate_condition< P, I... > && j )
+    {
+        return predicate_conditions< T1, predicate_condition< P, I... > >( Logical_operators::and_, std::forward< T1 >( i ), std::move( j ) );
+    }
+
+    template< typename T1, typename P, uint32_t ... I >
+    auto operator||( T1 && i, predicate_condition< P, I... > && j )
+    {
+        return predicate_conditions< T1, predicate_condition< P, I... > >( Logical_operators::or_, std::forward< T1 >( i ), std::move( j ) );
+    }
 
     template< typename T >
     struct Return_value_impl
@@ -679,8 +688,8 @@ namespace eswitch_v4
         Eswitch_for_case_only( T && t ) : eswitch_( std::forward< T >( t ) ){ }
         
         template< typename Tlambda, typename std::enable_if< 
-            details::is_callable< std::remove_reference_t< Tlambda > >::value && 
-            !experimental::is_predicate< std::remove_reference_t< Tlambda > >::value, int >::type = 0 >
+             details::is_callable< std::remove_reference_t< Tlambda > >::value && 
+            !details::is_predicate< std::remove_reference_t< Tlambda > >::value, int >::type = 0 >
         auto operator>>( Tlambda && lambda )
         {
             return eswitch_ >> std::forward< Tlambda >( lambda ); 
@@ -705,13 +714,13 @@ namespace eswitch_v4
         }
 
         template< typename TPred, uint32_t ... Is >
-        auto operator>>( const experimental::predicate_condition< TPred, Is... > & value )
+        auto operator>>( const predicate_condition< TPred, Is... > & value )
         {
             return handle_condition( value );
         }
 
         template< typename T1, typename T2 >
-        auto operator>>( const experimental::predicate_conditions< T1, T2 > & value )
+        auto operator>>( const predicate_conditions< T1, T2 > & value )
         {
             return handle_condition( value );
         }
@@ -921,17 +930,17 @@ namespace eswitch_v4
         }
             
         template< typename TPred, uint32_t ... Is >
-        auto operator>>( const experimental::predicate_condition< TPred, Is... > & value )
+        auto operator>>( const predicate_condition< TPred, Is... > & value )
         {
-            static_assert( !experimental::predicate_condition< TPred, Is... >::template is_out_of_range< sizeof...( TArgs ) >(), "Index in 'Predicate' is out of range!!" );
+            static_assert( !predicate_condition< TPred, Is... >::template is_out_of_range< sizeof...( TArgs ) >(), "Index in 'Predicate' is out of range!!" );
             
             return Eswitch_for_case_only< Eswitch >( handle_condition( value ) );
         }
 
         template< typename T1, typename T2 >
-        auto operator>>( const experimental::predicate_conditions< T1, T2 > & value )
+        auto operator>>( const predicate_conditions< T1, T2 > & value )
         {
-            static_assert( !experimental::predicate_conditions< T1, T2 >::template is_out_of_range< sizeof...( TArgs ) >(), "Index in 'Predicate' is out of range!!" );
+            static_assert( !predicate_conditions< T1, T2 >::template is_out_of_range< sizeof...( TArgs ) >(), "Index in 'Predicate' is out of range!!" );
 
             return Eswitch_for_case_only< Eswitch >( handle_condition( value ) );
         }
@@ -989,7 +998,6 @@ namespace eswitch_v4
             if( execute_current_case && !was_case_executed ) 
             {
                 was_case_executed = execute_current_case;
-                //execute_current_case = false;
 
                 return Eswitch< TReturnValue, TArgs... >( std::forward< TReturnValue >( value ), std::move( *this ) );
             }
@@ -1036,13 +1044,13 @@ namespace eswitch_v4
     }
     
     template< typename T1, typename T2 >
-    auto case_( experimental::predicate_conditions< T1, T2 > && value )
+    auto case_( predicate_conditions< T1, T2 > && value )
     { 
         return value; 
     }
 
     template< typename TPred, uint32_t ... Is >
-    auto case_( experimental::predicate_condition< TPred, Is... > && value )
+    auto case_( predicate_condition< TPred, Is... > && value )
     { 
         return std::move( value ); 
     }
