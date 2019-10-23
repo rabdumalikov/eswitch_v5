@@ -2473,6 +2473,210 @@ TEST(eswitch_v4_with_predicates, indexes_out_of_order_1st_match_is_odd )
     EXPECT_TRUE( result );
 }
 
+TEST(eswitch_v4_with_predicates, mixed_predicates_and_indexed_matching )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    const auto result = eswitch( 2, 4, 6, 1, 12 ) >>
+         case_( ( is_odd, _4 ) && _1 == 2 && _2 == 4 ) >> []{ return true; } >>
+         default_ >> []{ FAIL(); } >>
+         in_place_return_;
+        
+    EXPECT_TRUE( result );
+}
+
+TEST(eswitch_v4_with_predicates, mixed_indexed_matching_and_predicates )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    const auto result = eswitch( 2, 4, 6, 1, 12 ) >>
+         case_( _1 == 2 && _2 == 4 && ( is_odd, _4 ) ) >> []{ return true; } >>
+         default_ >> []{ FAIL(); } >>
+         in_place_return_;
+        
+    EXPECT_TRUE( result );
+}
+
+TEST(eswitch_v4_with_predicates, mixed_predicates_in_the_middle )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    const auto result = eswitch( 2, 4, 6, 1, 12 ) >>
+         case_( _1 == 2 && ( is_odd, _4 ) && _2 == 4 ) >> []{ return true; } >>
+         default_ >> []{ FAIL(); } >>
+         in_place_return_;
+        
+    EXPECT_TRUE( result );
+}
+
+TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_empty_body )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    eswitch( 2, 4, 6, 1, 12 ) >>
+         case_( _1 == 2 && ( is_odd, _4 ) && _2 == 4 ) >>
+         case_( _1 == 2 ) >> []{ FAIL(); };
+}
+
+TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_in_separate_cases )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    const bool result = eswitch( 2, 4, 6, 1, 12 ) >>
+        case_( _1 == 2 && ( is_odd, _4 ) && _2 == 4 ) >> to_return( true ) >>
+        case_( _1 == 2 )  >> to_return( false ) >>
+        case_( ( is_odd, _4 ) ) >> to_return( false ) >>
+        case_( _5 == 12 ) >> to_return( false ) >>
+        in_place_return_;
+
+    EXPECT_TRUE( result );
+}
+
+TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_in_separate_cases_FALLTHROUGH_till_2nd )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    const int result = eswitch( 2, 4, 6, 1, 12 ) >>
+        case_( _1 == 2 && ( is_odd, _4 ) && _2 == 4 ) >> []{} >> fallthrough_ >>
+        case_( _1 == 2 )  >> to_return( 2 ) >>
+        case_( ( is_odd, _4 ) ) >> to_return( 3 ) >> 
+        case_( _5 == 12 ) >> to_return( 4 ) >>
+        in_place_return_;
+
+    EXPECT_TRUE( result == 2 );
+}
+
+TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_in_separate_cases_FALLTHROUGH_till_3rd )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    const int result = eswitch( 2, 4, 6, 1, 12 ) >>
+        case_( _1 == 2 && ( is_odd, _4 ) && _2 == 4 ) >> []{} >> fallthrough_ >>
+        case_( _1 == 2 )  >> []{} >> fallthrough_ >>
+        case_( ( is_odd, _4 ) ) >> to_return( 3 ) >> 
+        case_( _5 == 12 ) >> to_return( 4 ) >>
+        in_place_return_;
+
+    EXPECT_TRUE( result == 3 );
+}
+
+TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_in_separate_cases_FALLTHROUGH_till_4th )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+ 
+    const int result = eswitch( 2, 4, 6, 1, 12 ) >>
+        case_( _1 == 2 && ( is_odd, _4 ) && _2 == 4 ) >> []{} >> fallthrough_ >>
+        case_( _1 == 2 )  >> []{} >> fallthrough_ >>
+        case_( ( is_odd, _4 ) ) >> []{} >> fallthrough_ >>
+        case_( _5 == 12 ) >> to_return( 4 ) >>
+        in_place_return_;
+
+    EXPECT_TRUE( result == 4 );
+}
+
+TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_in_separate_cases_FALLTHROUGH_till_default )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+   
+    const int result = eswitch( 2, 4, 6, 1, 12 ) >>
+        case_( _1 == 2 && ( is_odd, _4 ) && _2 == 4 ) >> []{} >> fallthrough_ >>
+        case_( _1 == 2 )  >> []{} >> fallthrough_ >>
+        case_( ( is_odd, _4 ) ) >> []{} >> fallthrough_ >>
+        case_( _5 == 12 ) >> []{} >> fallthrough_ >>
+        default_ >> to_return( 5 ) >>
+        in_place_return_;
+
+    EXPECT_TRUE( result == 5 );
+}
+
+TEST(eswitch_v4_with_predicates, mixed_2_predicates_and_index_matching )
+{
+    using namespace eswitch_v4;
+    using namespace eswitch_v4::experimental;
+
+    auto is_nonzero = []( int i ) { return i > 0; };
+
+    {
+        const int result = eswitch( 2, 4, 6, 1, 12 ) >>
+            case_( _1 == 2 && ( is_odd, _4 ) && ( is_nonzero, _2 ) && _2 == 4 ) >> []{ return 10; } >> fallthrough_ >>
+            case_( _1 == 2 )  >> []{} >> fallthrough_ >>
+            case_( ( is_odd, _4 ) ) >> []{} >> fallthrough_ >>
+            case_( _5 == 12 ) >> []{} >> fallthrough_ >>
+            default_ >> to_return( 5 ) >>
+            in_place_return_;
+
+        EXPECT_TRUE( result == 10 );
+    }
+    {
+        const int result = eswitch( 2, 4, 6, 1, 12 ) >>
+            case_( ( is_odd, _4 ) && _1 == 2 && ( is_nonzero, _2 ) && _2 == 4 ) >> []{ return 11; } >> fallthrough_ >>
+            case_( _1 == 2 )  >> []{} >> fallthrough_ >>
+            case_( ( is_odd, _4 ) ) >> []{} >> fallthrough_ >>
+            case_( _5 == 12 ) >> []{} >> fallthrough_ >>
+            default_ >> to_return( 5 ) >>
+            in_place_return_;
+
+        EXPECT_TRUE( result == 11 );
+    }
+    {
+        const int result = eswitch( 2, 4, 6, 1, 12 ) >>
+            case_( ( is_odd, _4 ) && ( is_nonzero, _2 ) && _1 == 2 && _2 == 4 ) >> []{ return 12; } >> fallthrough_ >>
+            case_( _1 == 2 )  >> []{} >> fallthrough_ >>
+            case_( ( is_odd, _4 ) ) >> []{} >> fallthrough_ >>
+            case_( _5 == 12 ) >> []{} >> fallthrough_ >>
+            default_ >> to_return( 5 ) >>
+            in_place_return_;
+
+        EXPECT_TRUE( result == 12 );
+    }
+
+    {
+        const int result = eswitch( 2, 4, 6, 1, 12 ) >>
+            case_( ( is_odd, _4 ) && ( is_nonzero, _2 ) && _2 == 4 && _1 == 2 ) >> []{ return 13; } >> fallthrough_ >>
+            case_( _1 == 2 )  >> []{} >> fallthrough_ >>
+            case_( ( is_odd, _4 ) ) >> []{} >> fallthrough_ >>
+            case_( _5 == 12 ) >> []{} >> fallthrough_ >>
+            default_ >> to_return( 5 ) >>
+            in_place_return_;
+
+        EXPECT_TRUE( result == 13 );
+    }
+
+    {
+        const int result = eswitch( 2, 4, 6, 1, 12 ) >>
+            case_( _2 == 4 && _1 == 2 && ( is_odd, _4 ) && ( is_nonzero, _2 ) ) >> []{ return 14; } >> fallthrough_ >>
+            case_( _1 == 2 )  >> []{} >> fallthrough_ >>
+            case_( ( is_odd, _4 ) ) >> []{} >> fallthrough_ >>
+            case_( _5 == 12 ) >> []{} >> fallthrough_ >>
+            default_ >> to_return( 5 ) >>
+            in_place_return_;
+
+        EXPECT_TRUE( result == 14 );
+    }
+
+    
+    {
+        const int result = eswitch( 2, 4, 6, 1, 12 ) >>
+            case_( _2 == 4 && ( is_odd, _4 ) && _1 == 2 && ( is_nonzero, _2 ) ) >> []{ return 15; } >> fallthrough_ >>
+            case_( _1 == 2 )  >> []{} >> fallthrough_ >>
+            case_( ( is_odd, _4 ) ) >> []{} >> fallthrough_ >>
+            case_( _5 == 12 ) >> []{} >> fallthrough_ >>
+            default_ >> to_return( 5 ) >>
+            in_place_return_;
+
+        EXPECT_TRUE( result == 15 );
+    }
+}
+
 /*
         std::tuple< int, double, std::string > tup;
 

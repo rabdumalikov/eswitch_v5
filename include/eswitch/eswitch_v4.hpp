@@ -329,12 +329,15 @@ namespace eswitch_v4
         }
 
         template< typename TSrcTuple >
-        bool handle( const TSrcTuple & src_tuple ) const
+        bool operator()( const TSrcTuple & src_tuple ) const
         {
             return compare( cmp_operator, std::get< TIndex::index >( src_tuple ), std::get< 0 >( tup_value_ ) );         
         }
 
-        int32_t amount_cmp() const { return 1; }       
+        int32_t amount_cmp() const { return 1; }
+
+        // dummy, to be able to mix different types of conditions
+        static constexpr bool is_out_of_range( const int MaxIndex ) { return false; }
 
     private:
         
@@ -375,11 +378,14 @@ namespace eswitch_v4
 
             return sum_of_cmp;
         }
+
+        // dummy, to be able to mix different types of conditions
+        static constexpr bool is_out_of_range( const int MaxIndex ) { return false; }
      
         template< typename TSrcTuple >
-        bool handle( const TSrcTuple & src_tuple ) const
+        bool operator()( const TSrcTuple & src_tuple ) const
         {
-            return compare( logical_operator, std::get< 0 >( pack_ ).handle( src_tuple ),  std::get< 1 >( pack_ ).handle( src_tuple ) );            
+            return compare( logical_operator, std::get< 0 >( pack_ )( src_tuple ),  std::get< 1 >( pack_ )( src_tuple ) );            
         }
 
     private:
@@ -503,6 +509,15 @@ namespace eswitch_v4
         template < template < typename > class H, template< typename, uint32_t ... > class Pr, typename P, uint32_t ... Idxs,
             typename std::enable_if< std::is_same< holder< predicate_condition< P, Idxs... > >, H< Pr< P, Idxs... > > >::value, int >::type = 0 >
         bool is_predicate_condition( H< Pr< P, Idxs... > > && );
+
+        template < template < typename > class H, template< typename, typename > class Cnd, typename T1, typename T2,
+            typename std::enable_if< std::is_same< holder< condition< T1, T2 > >, H< Cnd< T1, T2 > > >::value, int >::type = 0 >
+        bool is_predicate_condition( H< Cnd< T1, T2 > > && );
+
+        template < template < typename > class H, template< typename... > class Cnds, typename ... T,
+            typename std::enable_if< std::is_same< holder< conditions< T... > >, H< Cnds< T... > > >::value, int >::type = 0 >
+        bool is_predicate_condition( H< Cnds< T... > > && );
+
 
         template < typename T >
         struct is_predicate
@@ -852,6 +867,7 @@ namespace eswitch_v4
                 lambda();
                 need_fallthrough = false;
                 need_break = true;
+                execute_current_case = true;
             }
 
             return std::move( *this );
@@ -866,15 +882,13 @@ namespace eswitch_v4
         template< typename ... Ts >
         auto operator>>( const conditions< Ts... >& cnds )
         {
-            return Eswitch_for_case_only< Eswitch >( handle_condition( 
-                [ &cnds ]( const auto& pack ){ return cnds.handle( pack ); } ) );
+            return Eswitch_for_case_only< Eswitch >( handle_condition( cnds ) );
         }
 
         template< typename T1, typename T2 >
         auto operator>>( const condition< T1, T2 >& cnd)
         {
-            return Eswitch_for_case_only< Eswitch >( handle_condition( 
-                [ &cnd ]( const auto& pack ){ return cnd.handle( pack ); } ) );
+            return Eswitch_for_case_only< Eswitch >( handle_condition( cnd ) );
         }
             
         template< typename TPred, uint32_t ... Is >
