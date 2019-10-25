@@ -198,9 +198,9 @@ namespace eswitch_v4
             typename std::enable_if< std::is_same< holder< condition< T1, T2 > >, H< Cnd< T1, T2 > > >::value, int >::type = 0 >
         bool is_predicate_condition( H< Cnd< T1, T2 > > && );
 
-        template < template < typename > class H, template< typename... > class Cnds, typename ... T,
-            typename std::enable_if< std::is_same< holder< conditions< T... > >, H< Cnds< T... > > >::value, int >::type = 0 >
-        bool is_predicate_condition( H< Cnds< T... > > && );
+        template < template < typename > class H, template< typename T1, typename T2 > class Cnds, typename T1, typename T2,
+            typename std::enable_if< std::is_same< holder< conditions< T1, T2 > >, H< Cnds< T1, T2 > > >::value, int >::type = 0 >
+        bool is_predicate_condition( H< Cnds< T1, T2 > > && );
 
 
         template < typename T >
@@ -348,7 +348,7 @@ namespace eswitch_v4
                 static_assert( std::is_same< T, T1 >::value, "T and T1 should be SAME TYPE" );
             }
 
-            friend constexpr bool operator==( const T & value, const Any_from_impl& st )
+            friend constexpr bool operator==( const T & value, const Any_from_impl& st ) 
             {
                 return is_in_set( value, st.arr );
             }
@@ -545,11 +545,7 @@ namespace eswitch_v4
     };
 
     struct In_place_return_value{};
-    static In_place_return_value in_place_return_;
-
     struct Fallthrough {};
-    static Fallthrough fallthrough_;
-
     struct Padding{};
     struct Filled{};
 
@@ -884,9 +880,10 @@ namespace eswitch_v4
         
         template< typename TReturnValue, typename std::enable_if< 
             !Always_false< TReturnValue >::value &&
-          ( !std::is_same< R, Padding* >::value && std::is_convertible< R, TReturnValue >::value ) || 
-            std::is_same< R, Filled* >::value ||
-            std::is_same< R, Padding* >::value, int >::type = 0 >
+          ( !std::is_same< R, Padding* >::value && 
+             std::is_convertible< R, TReturnValue >::value ) || 
+             std::is_same< R, Filled* >::value ||
+             std::is_same< R, Padding* >::value, int >::type = 0 >
         inline auto handle_return_value( TReturnValue && value )
         {
             return actual_handle_return_value( std::forward< TReturnValue >( value ) );
@@ -981,7 +978,7 @@ namespace eswitch_v4
     template< typename T >
     inline auto case_( T && value )
     { 
-        return _1 == value; 
+        return _1 == std::forward< T >( value ); 
     }
 
     template< typename ... TArgs >
@@ -989,8 +986,6 @@ namespace eswitch_v4
     {
         return extension::Any_from_impl< TArgs... >( std::forward< TArgs >( args )... );
     }
-
-    static auto default_ = Default_impl{};
     
     template< typename T >
     inline auto handle_return( T && lmbd )
@@ -1002,7 +997,13 @@ namespace eswitch_v4
     inline auto to_return( T && value )
     { 
         using return_t = decltype( details::Just_find_out_return_type( std::forward< T >( value ) ) );
+
         return Value_to_return< return_t >{ std::forward< T >( value ) };
     }
+
+    /// static declarations
+    static const In_place_return_value in_place_return_; //return_in_place_;
+    static const Default_impl default_;
+    static const Fallthrough fallthrough_;
 
  } // namespace eswitch_v4

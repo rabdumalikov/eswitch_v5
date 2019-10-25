@@ -2692,7 +2692,7 @@ TEST(eswitch_v4_operator_comma, should_compile )
 
     {
     auto rslt = ( is_odd, fallthrough_ );
-    EXPECT_TRUE( ( std::is_same< decltype( rslt ), decltype( fallthrough_ ) >::value ) );
+    EXPECT_TRUE( ( std::is_same< decltype( rslt ), std::remove_const_t< decltype( fallthrough_ ) > >::value ) );
     }
 }
 
@@ -2726,7 +2726,8 @@ TEST(eswitch_v4_operator_comma, should_compile )
             case_( ( predicate_id_prime, _1 ) ) >>;
 
 
-        std::for_each( vec, eswitch( placeholder_1 ) >>
-            case_( predicate_is_odd )   >>   odd_handler
-            case_( predicate_id_prime ) >> prime_handler );
+        std::for_each( vec, 
+            eswitch( placeholder_1 ) >>
+                case_( _1 == 5 ) >> first_match_handler
+                case_( _1 == 6 ) >> second_match_handler );
 */
