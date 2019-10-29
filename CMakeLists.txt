@@ -76,8 +76,14 @@ target_include_directories(eswitch_benchmark PUBLIC $<BUILD_INTERFACE:${ESWITCH_
 target_include_directories(eswitch_benchmark PUBLIC $<BUILD_INTERFACE:${googlebench_SOURCE_DIR}/include/>)
 target_link_libraries(eswitch_benchmark benchmark)
 
-add_executable(eswitch_example example/example1.cpp)
-target_include_directories(eswitch_example PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)
+function(build_source_file base_name )
+  message(STATUS ${base_name})
+  add_executable(${base_name} ${base_name}.cpp)
+  target_include_directories(${base_name} PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)
+endfunction(build_source_file)
+
 
  list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/)
  include (gcovr)
+
+ add_subdirectory("example")
