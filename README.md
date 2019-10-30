@@ -1,66 +1,141 @@
 __________
-Motivation:
-----------
-**eswitch_v4** library implements extension for **native switch**.<br/>
-**eswitch_v4** based on several crutial concepts of implementation **switch** in **Swift**.<br/>
-i.e. **break** is *implicit*, while **fallthrough** is *explicit*.<br/>
+##About:
 
-Main motivation for **eswitch_v4** was to overcome **native switch** limitations:
+**eswitch** library implements extension for **native switch**.<br/>
+__________
+##Motivation:
+
+Main motivation for **eswitch** was to overcome **native switch** limitations:
 
 - one parameter per **native switch**
-- the parameter restricted to only primitive types( **int**, **char**, **enum** ... ).
+- the parameter restricted to only _integral_ types( **int**, **char**, **enum** ... ).
 
 **eswitch** supports any number of _parameters_ and almost without restriction on their _type_,<br/>
- except that _type_ has to be **comparable**( i.e. must have **operator==** ).
+ except that _type_ has to be **comparable**( i.e. must have **operator==** and  **operator!=** ).
 __________
-Example:
--------
+##Based on:
+implementation of **switch** in **Swift**, in particular:
+
+- **break** is *implicit*, while
+-  **fallthrough** is *explicit*.<br/>
+____________________________________________________
+##Feature comparison:
+
+</br>
+
+| Feature | eswitch | native switch |
+| :---: | :---: | :---: | :---: | :---: |
+| *fallthrough* | yes | yes |
+| *break* | yes | yes |
+| *default*| yes | yes |
+| *return* | yes | yes |
+| _**or** cmp_ | yes| yes |
+| _**and** cmp_ | yes | no |
+| _(conditions > 1) per **case**_ | yes | no |
+
+</br>
+
+____________________________________________________
+##Example1: _implicit break_
 ```
-
-    int Val = 10;
-
-    switch (Val % 100) {                     
-    case 11:                       
-    case 12:                         
-    case 13:
-        return "th";
-    default:
-    switch (Val % 10) {
-        case 1: return "st";
-        case 2: return "nd";
-        case 3: return "rd";
-        default: return "th";
-    }
-    }
-
     using namespace eswitch_v4;
 
-    eswitch( Val % 100, Val % 10 )  >>
-        case_( _1 == any_from( 11, 12, 13 ) ) >> []{ return "th"; } >>
-        case_( _2 == 1 ) >> []{ return "st"; } >>
-        case_( _2 == 2 ) >> []{ return "nd"; } >>
-        case_( _2 == 3 ) >> []{ return "rd"; } >>
-        default_         >> []{ return "th"; };
+    enum Place { washington, california, ... };
+    Place place = washington;
+    ...
+    eswitch( place )  >>
+        case_( washington ) >> []{ printf( "w"  "\n" ); } >>
+        case_( california ) >> []{ printf( "c"  "\n" ); } >>
+        default_            >> []{ printf( "?"  "\n" ); };
+```
+-  ####Output:
+    ```
+    w
+    ```
+##Example2: _explicit fallthrough_
+```
+    using namespace eswitch_v4;
+
+    enum Place { washington, california, ... };
+    Place place = washington;
+    ...
+    eswitch( place )  >>
+        case_( washington ) >> []{ printf( "w"  "\n" ); } >> fallthrough >>
+        case_( california ) >> []{ printf( "c"  "\n" ); } >>
+        default_            >> []{ printf( "?"  "\n" ); };
+```
+-  ####Output:
+```
+    w
+    c
+```
+##Example3: _stringify enum_
+```
+    using namespace eswitch_v4;
+
+    enum Place { washington, california, new_york, ... };
+    Place place = new_york;
+    ...
+    const auto enum_to_str = eswitch( place )  >>
+        case_( washington ) >> to_return( "washington" ) >>
+        case_( california ) >> to_return( "california" ) >>
+        case_( new_york )   >> to_return( "new_york" ) >>
+        default_            >> to_return( "???" ) >>
+        in_place_return_;
+
+    printf( "State=%s" "\n", enum_to_str );
+```
+-  ####Output:
+```
+    State=new_york
+```
+
+##Example3: _several conditions_
+```
+    using namespace eswitch_v4;
+
+    enum payload_type { xml, json, ... };
+    
+    payload_type payload = ...;
+    XmlJsonParser * parser = ...;
+    ...
+    eswitch( payload, parser )  >>
+        case_( _1 == xml  && _2 != nullptr ) >> [&]
+        { 
+            auto result = parser->parse_xml( ... );
+            ...
+        } >>
+        case_( _2 != nullptr && _1 == json ) >> [&]
+        {
+            auto result = parser->parse_json( ... );
+            ...
+        } >>
+        case_( _2 == nullptr ) >> [&]
+        { 
+            PrintError(...); 
+        } >>
+        default_ >> []
+        { 
+            unreachable(); 
+        };
 ```
 _______________
 
-Minimum C++ standard:
--------------------
-C++11
+##Minimum C++ standard:
+C++14
 _______________
 
 Supported Compilers:
 -------------------
-Should work on all major compilers which support **C++11**.<br/>
+Should work on all major compilers which support **C++14**.<br/>
 I personally tested on following:
 
 - **clang** 8 (or later)
 - **GCC** 6.3.0 (or later)
-- **Visual Studio** **2017** and **2019** (or later).
+- **Visual Studio** **2019**.
 
 _______________
-Performance:
-------------
+##Performance:
 
 **TOOL TO MEASURE:** google benchmark
 
@@ -80,14 +155,14 @@ Performance:
 - **visual studio 2019** - *slower*, but **not critical**.
 _______________
 
-How to build:
-------------
-cmake ..  -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-6 -DCMAKE_CROSSCOMPILING=1 -DRUN_HAVE_STD_REGEX=0 -DRUN_HAVE_POSIX_REGEX=0<br/>
-make
+##How to build:
+
+**release:** *./build.sh < compiler_name >* // where compiler_name=**clang++|g++|...**, but *not* **clang|gcc**.
+
+**debug:**  *./build_dev.sh < compiler_name >*
 _______________
 
-License:
---------
+##License:
 Boost Software License( Version 1.0 )
 
 _______________
