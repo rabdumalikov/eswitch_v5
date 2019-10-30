@@ -24,7 +24,7 @@ ____________________________________________________
 </br>
 
 | Feature | eswitch | native switch |
-| :---: | :---: | :---: | :---: | :---: |
+| :---: | :---: | :---: |
 | *fallthrough* | yes | yes |
 | *break* | yes | yes |
 | *default*| yes | yes |
@@ -146,7 +146,7 @@ _______________
 **BUILD FLAGS:**
 
 - **clang-8** and **gcc-6.3.0** => **"-O3"**
-- **visual studio 2019 **=> **"/Ox"**.
+- **visual studio 2019** => **"/Ox"**.
 	
 **RESULTS:**
 
