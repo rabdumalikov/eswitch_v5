@@ -1,8 +1,4 @@
 __________
-## About:
-
-**eswitch** library implements extension for **native switch**.<br/>
-__________
 ## Motivation:
 
 Main motivation for **eswitch** was to overcome **native switch** limitations:
