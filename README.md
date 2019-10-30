@@ -35,7 +35,7 @@ ____________________________________________________
 # Example:
 
 ## _implicit break_
-```
+``` cpp
     using namespace eswitch_v4;
 
     enum Place { washington, california, ... };
@@ -51,14 +51,14 @@ ____________________________________________________
     w
     ```
 ## _explicit fallthrough_
-```
+``` cpp
     using namespace eswitch_v4;
 
     enum Place { washington, california, ... };
     Place place = washington;
     ...
     eswitch( place )  >>
-        case_( washington ) >> []{ printf( "w"  "\n" ); } >> fallthrough >>
+        case_( washington ) >> []{ printf( "w"  "\n" ); } >> fallthrough_ >>
         case_( california ) >> []{ printf( "c"  "\n" ); } >>
         default_            >> []{ printf( "?"  "\n" ); };
 ```
@@ -68,7 +68,7 @@ ____________________________________________________
     c
 ```
 ## _stringify enum_
-```
+``` cpp
     using namespace eswitch_v4;
 
     enum Place { washington, california, new_york, ... };
@@ -89,7 +89,7 @@ ____________________________________________________
 ```
 
 ## _several conditions_
-```
+``` cpp
     using namespace eswitch_v4;
 
     enum payload_type { xml, json, ... };
