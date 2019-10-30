@@ -1,9 +1,9 @@
 __________
-##About:
+## About:
 
 **eswitch** library implements extension for **native switch**.<br/>
 __________
-##Motivation:
+## Motivation:
 
 Main motivation for **eswitch** was to overcome **native switch** limitations:
 
@@ -13,13 +13,13 @@ Main motivation for **eswitch** was to overcome **native switch** limitations:
 **eswitch** supports any number of _parameters_ and almost without restriction on their _type_,<br/>
  except that _type_ has to be **comparable**( i.e. must have **operator==** and  **operator!=** ).
 __________
-##Based on:
+## Based on:
 implementation of **switch** in **Swift**, in particular:
 
 - **break** is *implicit*, while
 -  **fallthrough** is *explicit*.<br/>
 ____________________________________________________
-##Feature comparison:
+## Feature comparison:
 
 </br>
 
@@ -36,7 +36,7 @@ ____________________________________________________
 </br>
 
 ____________________________________________________
-##Example1: _implicit break_
+## Example1: _implicit break_
 ```
     using namespace eswitch_v4;
 
@@ -48,11 +48,11 @@ ____________________________________________________
         case_( california ) >> []{ printf( "c"  "\n" ); } >>
         default_            >> []{ printf( "?"  "\n" ); };
 ```
--  ####Output:
+-  #### Output:
     ```
     w
     ```
-##Example2: _explicit fallthrough_
+## Example2: _explicit fallthrough_
 ```
     using namespace eswitch_v4;
 
@@ -64,12 +64,12 @@ ____________________________________________________
         case_( california ) >> []{ printf( "c"  "\n" ); } >>
         default_            >> []{ printf( "?"  "\n" ); };
 ```
--  ####Output:
+-  #### Output:
 ```
     w
     c
 ```
-##Example3: _stringify enum_
+## Example3: _stringify enum_
 ```
     using namespace eswitch_v4;
 
@@ -85,12 +85,12 @@ ____________________________________________________
 
     printf( "State=%s" "\n", enum_to_str );
 ```
--  ####Output:
+-  #### Output:
 ```
     State=new_york
 ```
 
-##Example3: _several conditions_
+## Example3: _several conditions_
 ```
     using namespace eswitch_v4;
 
@@ -121,12 +121,12 @@ ____________________________________________________
 ```
 _______________
 
-##Minimum C++ standard:
+## Minimum C++ standard:
 C++14
 _______________
 
-Supported Compilers:
--------------------
+## Supported Compilers:
+
 Should work on all major compilers which support **C++14**.<br/>
 I personally tested on following:
 
@@ -135,7 +135,7 @@ I personally tested on following:
 - **Visual Studio** **2019**.
 
 _______________
-##Performance:
+## Performance:
 
 **TOOL TO MEASURE:** google benchmark
 
@@ -155,14 +155,14 @@ _______________
 - **visual studio 2019** - *slower*, but **not critical**.
 _______________
 
-##How to build:
+## How to build:
 
 **release:** *./build.sh < compiler_name >* // where compiler_name=**clang++|g++|...**, but *not* **clang|gcc**.
 
 **debug:**  *./build_dev.sh < compiler_name >*
 _______________
 
-##License:
+## License:
 Boost Software License( Version 1.0 )
 
 _______________
