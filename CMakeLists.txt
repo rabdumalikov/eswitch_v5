@@ -45,30 +45,10 @@ set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
 add_subdirectory(${googlebench_SOURCE_DIR} ${googlebench_BINARY_DIR})
 
 
-# When using CMake 2.8.11 or later, header path dependencies
-# are automatically added to the gtest and gmock targets.
-# For earlier CMake versions, we have to explicitly add the
-# required directories to the header search path ourselves.
-if (CMAKE_VERSION VERSION_LESS 2.8.11)
-    include_directories("${gtest_SOURCE_DIR}/include"
-                        "${gmock_SOURCE_DIR}/include"
-			"${gbench_SOURCE_DIR}/include")
-endif()
-
-# Trivial example using gtest and gmock
-
-
 add_executable(eswitch_tests tests/eswitch_tests.cpp)
 target_include_directories(eswitch_tests PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)
-
 target_link_libraries(eswitch_tests gtest gmock_main)
-
 add_test(NAME eswitch_tests COMMAND eswitch_tests)
-
-
-if (CMAKE_VERSION VERSION_LESS 2.8.11)
-    include_directories("${gbench_SOURCE_DIR}/include")
-endif()
 
 
 add_executable(eswitch_benchmark benchmarks/eswitch_benchmark.cpp)

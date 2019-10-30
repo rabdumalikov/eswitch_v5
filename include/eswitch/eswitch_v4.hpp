@@ -1006,4 +1006,44 @@ namespace eswitch_v4
     static const Default_impl default_;
     static const Fallthrough fallthrough_;
 
- } // namespace eswitch_v4
+} // namespace eswitch_v4
+
+#define CUSTOM_EXTENTION( TCase, TCmp ) \
+namespace eswitch_v4 \
+{\
+    template< int I >\
+    auto operator==( const eswitch_v4::Index_< I > & val, const TCase & rgx )\
+    {\
+        return val == TCmp( rgx );\
+    }\
+\
+    template< int I >\
+    auto operator==( const eswitch_v4::Index_< I > & val, TCase & rgx )\
+    {\
+        return val == TCmp( rgx );\
+    }\
+\
+    template< int I >\
+    auto operator==( const eswitch_v4::Index_< I > & val, TCase && rgx )\
+    {\
+        return val == TCmp( std::move( rgx ) );\
+    }\
+\
+    template< int I >\
+    auto operator!=( const eswitch_v4::Index_< I > & val, TCase & rgx )\
+    {\
+        return val != TCmp( rgx );\
+    }\
+\
+    template< int I >\
+    auto operator!=( const eswitch_v4::Index_< I > & val, const TCase & rgx )\
+    {\
+        return val != TCmp( rgx );\
+    }\
+\
+    template< int I >\
+    auto operator!=( const eswitch_v4::Index_< I > & val, TCase && rgx )\
+    {\
+        return val != TCmp( std::move( rgx ) );\
+    }\
+}

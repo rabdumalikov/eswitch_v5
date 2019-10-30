@@ -1826,6 +1826,27 @@ TEST(eswitch_v4_case, match_case_without_body_to_interrupt )
         case_( _1 == washington ) >> []{ FAIL(); };
 }
 
+#include <cmath>
+
+struct fcmp
+{
+    double value;
+    explicit fcmp( const double input ) : value( input ) {}
+
+    friend bool operator==( const double v, const fcmp cf )
+    {
+        const double epsilon = 0.0001f;
+        return fabs( cf.value - v ) < epsilon;
+    }
+
+    friend bool operator!=( const double v, const fcmp cf )
+    {
+        return !( v == cf );
+    }
+};
+
+CUSTOM_EXTENTION( double, fcmp );
+
 TEST(eswitch_v4_case, double_as_param )
 {
     using namespace eswitch_v4;
@@ -1850,7 +1871,7 @@ TEST(eswitch_v4_simple_case, double_as_param )
     double d = 2.0002;
 
     eswitch( d ) >> 
-        case_( 2.0001 ) >> []{ FAIL(); } >>
+        case_( 2.0007 ) >> []{ FAIL(); } >>
         case_( 2.0002 ) >> [&]{ executed = true; };
 
     EXPECT_TRUE( executed );
@@ -1865,7 +1886,7 @@ TEST(eswitch_v4_simple_case, double_as_param_even_if_second_param_is )
     double d = 2.0002;
 
     eswitch( d, std::string( "" ) ) >> 
-        case_( 2.0001 ) >> []{ FAIL(); } >>
+        case_( 2.0007 ) >> []{ FAIL(); } >>
         case_( 2.0002 ) >> [&]{ executed = true; };
 
     EXPECT_TRUE( executed );
@@ -2696,6 +2717,141 @@ TEST(eswitch_v4_operator_comma, should_compile )
     }
 }
 
+#include <regex>
+
+struct RegexMatcher
+{
+    std::regex rgx_;
+
+    RegexMatcher( const std::regex & rgx ) : rgx_( rgx ){}
+
+    friend bool operator==( const std::string & v, const RegexMatcher & rm )
+    {
+        return std::regex_match( v, rm.rgx_ );
+    }
+
+    friend bool operator!=( const std::string & v, const RegexMatcher & rm )
+    {
+        return !( v == rm );
+    }
+};
+
+CUSTOM_EXTENTION( std::regex, RegexMatcher );
+
+std::regex operator "" _r( const char* rgx, size_t ){
+  return std::regex( rgx );
+}
+
+TEST(eswitch_v4_custom_extention, regex )
+{
+     using namespace eswitch_v4;
+
+    const auto phone_number( "^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$"_r );
+    const auto email( "[\\w-]+@([\\w-]+\\.)+[\\w-]+"_r );
+
+    {
+        bool executed = false;
+
+        std::string text{ "joe@aol.com" };
+
+        eswitch( text ) >> 
+            case_( _1 == phone_number ) >> []{ FAIL(); } >>
+            case_( _1 == email )        >> [&]{ executed = true; };
+
+        EXPECT_TRUE( executed );
+    }
+
+    {
+        auto phone_number( "^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$"_r );
+        auto email( "[\\w-]+@([\\w-]+\\.)+[\\w-]+"_r );
+
+        bool executed = false;
+
+        std::string text{ "joe@aol.com" };
+
+        eswitch( text ) >> 
+            case_( _1 == phone_number ) >> []{ FAIL(); } >>
+            case_( _1 == email )        >> [&]{ executed = true; };
+
+        EXPECT_TRUE( executed );
+    }
+
+    {
+        auto phone_number( "^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$"_r );
+        auto email( "[\\w-]+@([\\w-]+\\.)+[\\w-]+"_r );
+
+        bool executed = false;
+
+        std::string text{ "joe@aol.com" };
+
+        eswitch( text ) >> 
+            case_( phone_number ) >> []{ FAIL(); } >>
+            case_( email )        >> [&]{ executed = true; };
+
+        EXPECT_TRUE( executed );
+    }
+
+    {
+        bool executed = false;
+
+        std::string text{ "joe@aol.com" };
+
+        eswitch( text ) >> 
+            case_( _1 == "^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$"_r ) >> []{ FAIL(); } >>
+            case_( _1 == "[\\w-]+@([\\w-]+\\.)+[\\w-]+"_r )        >> [&]{ executed = true; };
+
+        EXPECT_TRUE( executed );
+    }
+
+    {
+        bool executed = false;
+
+        std::string text{ "joe@aol.com" };
+
+        eswitch( text ) >> 
+            case_( "^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$"_r ) >> []{ FAIL(); } >>
+            case_( "[\\w-]+@([\\w-]+\\.)+[\\w-]+"_r )        >> [&]{ executed = true; };
+
+        EXPECT_TRUE( executed );
+    }
+
+    {
+        bool executed = false;
+
+        std::string text{ "joe@aol.com" };
+
+        eswitch( text ) >> 
+            case_( phone_number ) >> []{ FAIL(); } >>
+            case_( email )        >> [&]{ executed = true; };
+
+        EXPECT_TRUE( executed );
+    }
+
+    {
+        bool executed = false;
+
+        std::string text{ "+(123)-456-78-90" };
+
+        eswitch( text ) >> 
+            case_( _1 == phone_number ) >> [&]{ executed = true; } >>
+            case_( _1 == email )        >> [&]{ FAIL(); };
+
+        EXPECT_TRUE( executed );
+    }
+
+    {
+        bool executed = false;
+
+        std::string text{ "+(123)-456-78-90" };
+
+        eswitch( text ) >> 
+            case_( phone_number ) >> [&]{ executed = true; } >>
+            case_( email )        >> [&]{ FAIL(); };
+
+        EXPECT_TRUE( executed );
+    }
+}
+
 /*
         std::tuple< int, double, std::string > tup;
 
@@ -2727,7 +2883,24 @@ TEST(eswitch_v4_operator_comma, should_compile )
 
 
         std::for_each( vec, 
-            eswitch( placeholder_1 ) >>
+            eswitch( amount_args< 2 > ) >>
                 case_( _1 == 5 ) >> first_match_handler
                 case_( _1 == 6 ) >> second_match_handler );
+
+        std::for_each( vec, 
+            eswitch( placeholder, placeholder ) >>
+                case_( _1 == 5 ) >> first_match_handler
+                case_( _1 == 6 ) >> second_match_handler );
+
+                
+        std::find_if( vec, 
+            eswitch( placeholder ) >>
+                case_( _1 == 5 ) >> to_return( true ) >>
+                default_ >> to_return( false ) );
+
+
+        std::find_if( vec, []( const int value ){ return value == 5 ? true : false; } );
+        
+        std::find_if( vec, case_( arg1 == 5 ) >> to_return( true ) );
+
 */
