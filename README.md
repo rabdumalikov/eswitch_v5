@@ -36,7 +36,9 @@ ____________________________________________________
 </br>
 
 ____________________________________________________
-## Example1: _implicit break_
+# Example:
+
+## _implicit break_
 ```
     using namespace eswitch_v4;
 
@@ -52,7 +54,7 @@ ____________________________________________________
     ```
     w
     ```
-## Example2: _explicit fallthrough_
+## _explicit fallthrough_
 ```
     using namespace eswitch_v4;
 
@@ -69,7 +71,7 @@ ____________________________________________________
     w
     c
 ```
-## Example3: _stringify enum_
+## _stringify enum_
 ```
     using namespace eswitch_v4;
 
@@ -90,7 +92,7 @@ ____________________________________________________
     State=new_york
 ```
 
-## Example3: _several conditions_
+## _several conditions_
 ```
     using namespace eswitch_v4;
 
