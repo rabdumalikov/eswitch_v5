@@ -2852,6 +2852,78 @@ TEST(eswitch_v4_custom_extention, regex )
     }
 }
 
+TEST(eswitch_v4_bug, 1st_match_executed_next_case_after_return )
+{
+    using namespace eswitch_v4;
+
+    auto actual = eswitch( 1 ) >>
+        case_( 1 ) >> to_return( true ) >>
+        case_( 2 ) >> []{ throw( "FAILED" ); return false; } >>
+        case_( 3 ) >> []{ throw( "FAILED" ); return false; } >>
+        default_ >> []{ throw( "FAILED" ); return false; } >>
+        in_place_return_;
+
+    EXPECT_TRUE( actual );
+}
+    
+
+TEST(eswitch_v4_bug, 2nd_match_executed_next_case_after_return )
+{
+    using namespace eswitch_v4;
+
+    auto actual = eswitch( 2 ) >>
+        case_( 1 ) >> []{ throw( "FAILED" ); return false; } >>
+        case_( 2 ) >> to_return( true ) >>
+        case_( 3 ) >> []{ throw( "FAILED" ); return false; } >>
+        default_ >> []{ throw( "FAILED" ); return false; } >>
+        in_place_return_;
+
+    EXPECT_TRUE( actual );
+}
+
+
+TEST(eswitch_v4_bug, 3rd_match_executed_next_case_after_return )
+{
+    using namespace eswitch_v4;
+
+    auto actual = eswitch( 3 ) >>
+        case_( 1 ) >> []{ throw( "FAILED" ); return false; } >>
+        case_( 2 ) >> []{ throw( "FAILED" ); return false; } >>
+        case_( 3 ) >> to_return( true ) >>
+        default_ >> []{ throw( "FAILED" ); return false; } >>
+        in_place_return_;
+
+    EXPECT_TRUE( actual );
+}
+
+TEST(eswitch_v4_bug, 4th_match_executed_next_case_after_return )
+{
+    using namespace eswitch_v4;
+
+    auto actual = eswitch( 4 ) >>
+        case_( 1 ) >> []{ throw( "FAILED" ); return false; } >>
+        case_( 2 ) >> []{ throw( "FAILED" ); return false; } >>
+        case_( 3 ) >> []{ throw( "FAILED" ); return false; } >>
+        default_ >> to_return( true ) >>
+        in_place_return_;
+
+    EXPECT_TRUE( actual );
+}
+
+TEST(eswitch_v4_bug, fallthrough_match_executed_next_case )
+{
+    using namespace eswitch_v4;
+
+    auto actual = eswitch( 1 ) >>
+        case_( 1 ) >> []{} >> fallthrough_ >>
+        case_( 2 ) >> []{ return true; } >>
+        case_( 3 ) >> []{ throw( "FAILED" ); return false; } >>
+        default_ >> []{ throw( "FAILED" ); return false; } >>
+        in_place_return_;
+
+    EXPECT_TRUE( actual );
+}
+
 /*
         std::tuple< int, double, std::string > tup;
 

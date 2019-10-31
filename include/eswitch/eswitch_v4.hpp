@@ -845,7 +845,13 @@ namespace eswitch_v4
         template< typename Tlambda, typename std::enable_if< details::is_callable< std::remove_reference_t< Tlambda > >::value && !std::is_same< other_details::return_type_t< std::remove_reference_t< Tlambda > >, void >::value, int >::type = 0 >
         inline auto operator>>( Tlambda && lambda )
         {
-            return handle_return_value( lambda() );
+            if( is_return_value_set_ ) 
+                return decltype( handle_return_value( lambda() ) )( std::move( *this ) );
+
+            if( execute_current_case || need_fallthrough )
+                return handle_return_value( lambda() );
+            else
+                return decltype( handle_return_value( lambda() ) )( std::move( *this ) );
         }
 
         template< typename T1, typename T2 >
@@ -873,7 +879,9 @@ namespace eswitch_v4
         template< typename TReturnValue >
         inline auto operator>>( Value_to_return< TReturnValue >&& value )
         {
-           return handle_return_value( std::move( value.return_value_ ) );           
+            if( is_return_value_set_ ) return decltype( handle_return_value( std::move( value.return_value_ ) ) )( std::move( *this ) );
+
+            return handle_return_value( std::move( value.return_value_ ) );           
         }
 
     private:
@@ -919,8 +927,6 @@ namespace eswitch_v4
         template< typename TReturnValue >
         inline auto actual_handle_return_value( TReturnValue && value )
         {            
-            if( is_return_value_set_ )  return Eswitch< TReturnValue, TArgs... >( std::move( *this ) );
-
             if( execute_current_case && !was_case_executed ) 
             {
                 was_case_executed = execute_current_case;
@@ -942,7 +948,7 @@ namespace eswitch_v4
         inline auto handle_condition( const T & cnd )
         {
             execute_current_case = false;
-
+            
             if( was_case_executed && ( need_break || need_fallthrough ) ) return std::move( *this );
 
             execute_current_case = cnd( pack_ );

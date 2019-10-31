@@ -142,6 +142,48 @@ ____________________________________________________
 ```
     amountAlphas=6, amountDigits=4, amountOthers=2
 ```
+
+## _Customized cases_
+``` cpp
+
+    // RegexMatcher defined in example/example17.cpp
+    CUSTOM_EXTENTION( std::regex, RegexMatcher );
+    ...
+    std::string http_response =
+        "HTTP/1.1 200 OK" "\r\n"
+        "Content-Lenght: 88" "\r\n"
+        "Content-Type: text/html" "\r\n";
+
+    using namespace eswitch_v4;
+    
+    std::map< std::string, std::string > fields;
+
+    for( const auto & line : tokenize( http_response, "\r\n" ) )
+    {       
+        const bool to_continue = eswitch( line ) >>
+            case_( "^.+ 200 .+$"_r ) >> 
+                to_return( true ) >>
+            case_( "^.+: .+$"_r )    >> [&]
+            { 
+                auto splitted = split( line, ':' );                     
+                fields[ splitted[ 0 ] ] = splitted[ 1 ];
+                return true; 
+            } >>
+            default_ >> to_return( false ) >>
+            in_place_return_;
+
+        if( !to_continue ) break;
+    }
+
+    printf( "ContentLength=%s, ContentType=%s", 
+        fields[ std::string{"Content-Lenght"} ].c_str(),
+        fields[ std::string{"Content-Type"} ].c_str() );
+
+```
+-  #### Output:
+```
+    ContentLength=88, ContentType=text/html
+```
 _______________
 
 ## Minimum C++ standard:
