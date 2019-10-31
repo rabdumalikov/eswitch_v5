@@ -115,7 +115,7 @@ ____________________________________________________
             unreachable(); 
         };
 ```
-## _Params check with predicate_
+## _Params match by predicate_
 ``` cpp
     int isalpha( int ){...}
     int isdigit( int ){...}
@@ -146,7 +146,7 @@ ____________________________________________________
 ## _Customized cases_
 ``` cpp
 
-    // RegexMatcher defined in example/example17.cpp
+    // "_r" and "RegexMatcher" defined in example/example17.cpp
     CUSTOM_EXTENTION( std::regex, RegexMatcher );
     ...
     std::string http_response =
@@ -161,9 +161,9 @@ ____________________________________________________
     for( const auto & line : tokenize( http_response, "\r\n" ) )
     {       
         const bool to_continue = eswitch( line ) >>
-            case_( "^.+ 200 .+$"_r ) >> 
+            case_( "^.+ 200 .+$"_r ) >>  // match for status line
                 to_return( true ) >>
-            case_( "^.+: .+$"_r )    >> [&]
+            case_( "^.+: .+$"_r ) >> [&] // match for http field
             { 
                 auto splitted = split( line, ':' );                     
                 fields[ splitted[ 0 ] ] = splitted[ 1 ];
