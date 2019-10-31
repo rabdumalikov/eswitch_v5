@@ -74,7 +74,7 @@ ____________________________________________________
     enum Place { washington, california, new_york, ... };
     Place place = new_york;
     ...
-    const auto enum_to_str = eswitch( place )  >>
+    const char * enum_to_str = eswitch( place )  >>
         case_( washington ) >> to_return( "washington" ) >>
         case_( california ) >> to_return( "california" ) >>
         case_( new_york )   >> to_return( "new_york" ) >>
@@ -116,6 +116,33 @@ ____________________________________________________
         { 
             unreachable(); 
         };
+```
+## _predicate_
+``` cpp
+    int isalpha( int ){...}
+    int isdigit( int ){...}
+    ...
+    using namespace eswitch_v4;
+    
+    int amountAlphas = 0;
+    int amountDigits = 0;
+    int amountOthers = 0;
+
+    for( const char ch : std::string{ "Nimbus 2000!" } ) 
+    {    
+        eswitch( ch )  >>
+            case_( ( isalpha, _1 ) ) >> [&]{ ++amountAlphas; } >>
+            case_( ( isdigit, _1 ) ) >> [&]{ ++amountDigits; } >>
+            default_                 >> [&]{ ++amountOthers; };
+    }
+
+    printf( "amountAlphas=%d, amountDigits=%d, amountOthers=%d", 
+        amountAlphas, amountDigits, amountOthers );
+
+```
+-  #### Output:
+```
+    amountAlphas=6, amountDigits=4, amountOthers=2
 ```
 _______________
 
