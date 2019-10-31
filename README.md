@@ -27,12 +27,13 @@ ____________________________________________________
 | *return* | yes | yes |
 | _**or** cmp_ | yes| yes |
 | _**and** cmp_ | yes | no |
+| _(params > 1) per **eswitch**_ | yes | no |
 | _(conditions > 1) per **case**_ | yes | no |
 
 </br>
 
 ____________________________________________________
-# Example:
+# Examples:
 
 ## _implicit break_
 ``` cpp
@@ -40,8 +41,8 @@ ____________________________________________________
 
     enum Place { washington, california, ... };
     Place place = washington;
-    ...
-    eswitch( place )  >>
+
+    eswitch( place ) >>
         case_( washington ) >> []{ printf( "w"  "\n" ); } >>
         case_( california ) >> []{ printf( "c"  "\n" ); } >>
         default_            >> []{ printf( "?"  "\n" ); };
@@ -56,8 +57,8 @@ ____________________________________________________
 
     enum Place { washington, california, ... };
     Place place = washington;
-    ...
-    eswitch( place )  >>
+
+    eswitch( place ) >>
         case_( washington ) >> []{ printf( "w"  "\n" ); } >> fallthrough_ >>
         case_( california ) >> []{ printf( "c"  "\n" ); } >>
         default_            >> []{ printf( "?"  "\n" ); };
@@ -73,13 +74,14 @@ ____________________________________________________
 
     enum Place { washington, california, new_york, ... };
     Place place = new_york;
-    ...
-    const char * enum_to_str = eswitch( place )  >>
-        case_( washington ) >> to_return( "washington" ) >>
-        case_( california ) >> to_return( "california" ) >>
-        case_( new_york )   >> to_return( "new_york" ) >>
-        default_            >> to_return( "???" ) >>
-        in_place_return_;
+
+    const char * enum_to_str = 
+        eswitch( place ) >>
+            case_( washington ) >> to_return( "washington" ) >>
+            case_( california ) >> to_return( "california" ) >>
+            case_( new_york )   >> to_return( "new_york" ) >>
+            default_            >> to_return( "???" ) >>
+            in_place_return_;
 
     printf( "State=%s" "\n", enum_to_str );
 ```
@@ -88,36 +90,32 @@ ____________________________________________________
     State=new_york
 ```
 
-## _several conditions_
+## _multiple conditions and params_
 ``` cpp
     using namespace eswitch_v4;
 
     enum payload_type { xml, json, ... };
-    
+    ...
     payload_type payload = ...;
     XmlJsonParser * parser = ...;
-    ...
-    eswitch( payload, parser )  >>
-        case_( _1 == xml  && _2 != nullptr ) >> [&]
-        { 
+
+    eswitch( payload, parser ) >>
+        case_( _1 == xml && _2 != nullptr ) >> [&] { 
             auto result = parser->parse_xml( ... );
             ...
         } >>
-        case_( _2 != nullptr && _1 == json ) >> [&]
-        {
+        case_( _2 != nullptr && _1 == json ) >> [&] {
             auto result = parser->parse_json( ... );
             ...
         } >>
-        case_( _2 == nullptr ) >> [&]
-        { 
+        case_( _2 == nullptr ) >> [&] { 
             PrintError(...); 
         } >>
-        default_ >> []
-        { 
+        default_ >> [] { 
             unreachable(); 
         };
 ```
-## _predicate_
+## _Params check with predicate_
 ``` cpp
     int isalpha( int ){...}
     int isdigit( int ){...}
@@ -186,9 +184,7 @@ _______________
 
 **debug:**  *./build_dev.sh < compiler_name >*
 _______________
-
 ## License:
 Boost Software License( Version 1.0 )
-
 _______________
 
