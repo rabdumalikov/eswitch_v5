@@ -111,7 +111,7 @@ eswitch( __params__ ) >>
 	struct double_cmp;
 	CASE_OVERLOAD( double, double_cmp );
         
-        class double_cmp
+        struct double_cmp
         {
             double value;
             
