@@ -35,6 +35,7 @@ eswitch( __params__ ) >>
 - **fallthrough** - is *explicit*
 
 - **composing condition** with '&&','||','==','!=' :
+-
      - **index param matching**:
 ``` cpp
         eswitch( p1, p2 ) >> 
@@ -45,13 +46,14 @@ eswitch( __params__ ) >>
                 if( p1 == true && p2 == true ) {...}
    		else if( p1 == true || p2 == true ) {...}
 ```
+-
      - **index is not required if CASE contains just one param**:
 ``` cpp
         eswitch( p1, p2 )  >> 
         	case_( true )  >> []{...} >> // same as "case_( _1 == true )" 
             case_( false ) >> []{...};
 ```
-
+-
      - **predicate param matching**, it could be lambda or free_function:
 ``` cpp
         eswitch( p1, p2 ) >> 
@@ -75,6 +77,7 @@ eswitch( __params__ ) >>
             default_ >> []{...};
 ```
 - **return value**:
+-
     - in **lambda** or **free function**:
 ``` cpp
         eswitch( p1 ) >> case_( 1 ) >> []{ return true; };
@@ -83,23 +86,26 @@ eswitch( __params__ ) >>
 		bool foo(){ return true; }
         eswitch( p1 ) >> case_( 1 ) >> foo;
 ```
-
+-
 	- via helper function **to_return**:
 ``` cpp
         eswitch( p1 ) >> case_( 1 ) >> to_return( true );
 ```
 - **retrieve return value**:
+-
      - use **in\_place\_return_**, if nothing to return => **THROW** exception:
 ``` cpp
         bool result = eswitch( p1 ) >> case_( 1 ) >> []{ return true; } >> 
         	in_place_return_;
 ```
+-
      - **handle_return**, executes if there is return value:
 ``` cpp
         eswitch( p1 ) >> case_( 1 ) >> []{ return true; } >> 
         	handle_return( []( const bool val ){ ... } );
 ```
 - **customize CASE** - you could specify custom logic for some types:
+-
  	- **CASE\_OVERLOAD( type\_to\_overload, accept_1st_arg_and_make_custom_cmp )**:
 ``` cpp
 		struct double_cmp;
