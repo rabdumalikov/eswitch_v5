@@ -105,6 +105,7 @@ eswitch( __params__ ) >>
         	handle_return( []( const bool val ){ ... } );
 ```
 - **customize CASE** - you could specify custom logic for some types:
+-
  	- **CASE\_OVERLOAD( type\_to\_overload, accept_1st_arg_and_make_custom_cmp )**:
 ``` cpp
 		struct double_cmp;
