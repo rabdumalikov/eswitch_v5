@@ -155,14 +155,13 @@ ____________________________________________________
     for( const auto & line : tokenize( response, "\r\n" ) )
     {       
         eswitch( line ) >>
-            case_( "^.+ 200 .+$"_r ) >> // match for "HTTP/1.1 200 OK"
-            case_( "^.+: .+$"_r ) >> [&] // match for "key: value"
+            case_( "^.+ 200 .+$"_r ) >>     // match for "HTTP/1.1 200 OK"
+            case_( "^.+: .+$"_r )    >> [&] // match for "key: value"
             { 
                 auto splitted = split( line, ':' );                     
                 fields[ splitted[ 0 ] ] = splitted[ 1 ];
             } >>
-            default_ >> []{ terminate(); } >>
-            in_place_return_;
+            default_ >> []{ terminate(); };
         ...
     }
     ...
