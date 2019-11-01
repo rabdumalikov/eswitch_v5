@@ -633,7 +633,12 @@ namespace eswitch_v4
         {
             return eswitch_ >> std::forward< Tlambda >( lambda ); 
         }
-            
+
+        inline auto operator>>( const Default_impl & default_lambda )
+        {
+            return eswitch_ >> default_lambda; 
+        }
+
         template< typename TReturnValue >
         inline auto operator>>( Value_to_return< TReturnValue >&& value )
         {
@@ -1014,7 +1019,7 @@ namespace eswitch_v4
 
 } // namespace eswitch_v4
 
-#define CUSTOM_EXTENTION( TCase, TCmp ) \
+#define CASE_OVERLOAD( TCase, TCmp ) \
 namespace eswitch_v4 \
 {\
     template< int I >\

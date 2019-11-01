@@ -1,23 +1,15 @@
 __________
 ## Motivation:
 
-Main motivation for **eswitch** was to overcome **native switch** limitations:
+To overcome **native switch** limitations:
 
 - one parameter per **native switch**
 - the parameter restricted to only _integral_ types( **int**, **char**, **enum** ... ).
 
 **eswitch** supports any number of _parameters_ and almost without restriction on their _type_,<br/>
- except that _type_ has to be **comparable**( i.e. must have **operator==** and  **operator!=** ).
-__________
-## Based on:
-implementation of **switch** in **Swift**, in particular:
-
-- **break** is *implicit*, while
--  **fallthrough** is *explicit*.<br/>
+ if the _type_ is **comparable**( i.e. must have **operator==** and  **operator!=** ).
 ____________________________________________________
 ## Feature comparison:
-
-</br>
 
 | Feature | eswitch | native switch |
 | :---: | :---: | :---: |
@@ -29,9 +21,6 @@ ____________________________________________________
 | _**and** cmp_ | yes | no |
 | _(params > 1) per **eswitch**_ | yes | no |
 | _(conditions > 1) per **case**_ | yes | no |
-
-</br>
-
 ____________________________________________________
 # Examples:
 
@@ -143,7 +132,7 @@ ____________________________________________________
     regex operator "" _r( const char* rgx, size_t ){...}
 
     // "RegexMatcher" defined in example/example17.cpp
-    CUSTOM_EXTENTION( regex, RegexMatcher );
+    CASE_OVERLOAD( regex, RegexMatcher );
     ...
     string response =
         "HTTP/1.1 200 OK" "\r\n"
@@ -185,8 +174,8 @@ _______________
 Should work on all major compilers which support **C++14**.<br/>
 I personally tested on following:
 
-- **clang** 8 (or later)
-- **GCC** 6.3.0 (or later)
+- **clang++-8**  (or later)
+- **g++-6.3.0** (or later)
 - **Visual Studio** **2019**.
 
 _______________
@@ -196,24 +185,26 @@ _______________
 
 **FILE:** */benchmarks/eswitch_benchmark.cpp*
 
-**COMPILERS:** clang-8, gcc-6.3.0 and visual studio 2019.
+**COMPILERS:** clang\+\+, g\+\+ and visual studio 2019.
 
 **BUILD FLAGS:**
 
-- **clang-8** and **gcc-6.3.0** => **"-O3"**
+- **clang++** and **g++** => **"-O3"**
 - **visual studio 2019** => **"/Ox"**.
 	
 **RESULTS:**
 
-- **clang-8**   - no performance difference. 
-- **gcc-6.3.0** - no performance difference.
-- **visual studio 2019** - *slower*, but **not critical**.
+| Compiler | eswitch VS native switch |
+| :---: | :---: |
+| *clang++* | no performance difference |
+| *g++* | no performance difference |
+| *visual studio 2019*| *slower*, but **not critical** |
+
 _______________
 
 ## How to build:
 
-**release:** *./build.sh < compiler_name >* // where compiler_name=**clang++|g++|...**, but *not* **clang|gcc**.
-
+**release:** *./build.sh < compiler_name >* // where compiler_name=**clang\+\+ | g\+\+ | ...**, but *not* **clang | gcc**.
 **debug:**  *./build_dev.sh < compiler_name >*
 _______________
 ## License:

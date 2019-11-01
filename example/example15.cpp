@@ -22,7 +22,7 @@ struct RegexMatcher
     }
 };
 
-CUSTOM_EXTENTION( std::regex, RegexMatcher );
+CASE_OVERLOAD( std::regex, RegexMatcher );
 
 std::regex operator "" _r( const char* rgx, size_t )
 {

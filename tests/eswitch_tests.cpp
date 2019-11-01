@@ -1845,7 +1845,7 @@ struct fcmp
     }
 };
 
-CUSTOM_EXTENTION( double, fcmp );
+CASE_OVERLOAD( double, fcmp );
 
 TEST(eswitch_v4_case, double_as_param )
 {
@@ -2535,7 +2535,6 @@ TEST(eswitch_v4_with_predicates, mixed_predicates_and_index_matching_empty_body 
 {
     using namespace eswitch_v4;
     
- 
     eswitch( 2, 4, 6, 1, 12 ) >>
          case_( _1 == 2 && ( is_odd, _4 ) && _2 == 4 ) >>
          case_( _1 == 2 ) >> []{ FAIL(); };
@@ -2736,7 +2735,7 @@ struct RegexMatcher
     }
 };
 
-CUSTOM_EXTENTION( std::regex, RegexMatcher );
+CASE_OVERLOAD( std::regex, RegexMatcher );
 
 std::regex operator "" _r( const char* rgx, size_t ){
   return std::regex( rgx );

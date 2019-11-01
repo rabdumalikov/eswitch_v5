@@ -22,7 +22,7 @@ struct fcmp
     }
 };
 
-CUSTOM_EXTENTION( double, fcmp );
+CASE_OVERLOAD( double, fcmp );
 
 int main( /* EXAMPLE NAME: CUSTOM EXTENTION( FOR DOUBLE ) */ )
 {
