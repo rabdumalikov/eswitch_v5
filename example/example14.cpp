@@ -33,7 +33,7 @@ int main( /* EXAMPLE NAME: CUSTOM EXTENTION( FOR DOUBLE ) */ )
     double d = 2.0002;
 
     eswitch( d ) >> 
-        case_( _1 == 2.0001 )   >> []{ assert( false ); } >>
+        case_( _1 == 2.0001 ) >> []{ assert( false ); } >>
         case_( _1 == 2.0002 ) >> [&]{ executed = true; };
     assert( executed );
 }

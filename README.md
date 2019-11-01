@@ -37,15 +37,14 @@ ____________________________________________________
 
 ## _implicit break_
 ``` cpp
-    using namespace eswitch_v4;
-
+    ...
     enum Place { washington, california, ... };
     Place place = washington;
 
     eswitch( place ) >>
-        case_( washington ) >> []{ printf( "w"  "\n" ); } >>
-        case_( california ) >> []{ printf( "c"  "\n" ); } >>
-        default_            >> []{ printf( "?"  "\n" ); };
+        case_( washington ) >> []{ Print('w'); } >>
+        case_( california ) >> []{ Print('c'); } >>
+        default_            >> []{ Print('?'); };
 ```
 -  #### Output:
     ```
@@ -53,15 +52,14 @@ ____________________________________________________
     ```
 ## _explicit fallthrough_
 ``` cpp
-    using namespace eswitch_v4;
-
+    ...
     enum Place { washington, california, ... };
     Place place = washington;
 
     eswitch( place ) >>
-        case_( washington ) >> []{ printf( "w"  "\n" ); } >> fallthrough_ >>
-        case_( california ) >> []{ printf( "c"  "\n" ); } >>
-        default_            >> []{ printf( "?"  "\n" ); };
+        case_( washington ) >> []{ Print('w'); } >> fallthrough_ >>
+        case_( california ) >> []{ Print('c'); } >>
+        default_            >> []{ Print('?'); };
 ```
 -  #### Output:
 ```
@@ -70,8 +68,7 @@ ____________________________________________________
 ```
 ## _stringify enum_
 ``` cpp
-    using namespace eswitch_v4;
-
+    ...
     enum Place { washington, california, new_york, ... };
     Place place = new_york;
 
@@ -92,19 +89,18 @@ ____________________________________________________
 
 ## _multiple conditions and params_
 ``` cpp
-    using namespace eswitch_v4;
-
-    enum payload_type { xml, json, ... };
+    ...
+    enum payload_type { XML, JSON, ... };
     ...
     payload_type payload = ...;
     XmlJsonParser * parser = ...;
 
     eswitch( payload, parser ) >>
-        case_( _1 == xml && _2 != nullptr ) >> [&] { 
+        case_( _1 == XML && _2 != nullptr ) >> [&] { 
             auto result = parser->parse_xml( ... );
             ...
         } >>
-        case_( _2 != nullptr && _1 == json ) >> [&] {
+        case_( _1 == JSON && _2 != nullptr ) >> [&] {
             auto result = parser->parse_json( ... );
             ...
         } >>
@@ -120,15 +116,13 @@ ____________________________________________________
     int isalpha( int ){...}
     int isdigit( int ){...}
     ...
-    using namespace eswitch_v4;
-    
     int amountAlphas = 0;
     int amountDigits = 0;
     int amountOthers = 0;
 
-    for( const char ch : std::string{ "Nimbus 2000!" } ) 
+    for( const char ch : "Nimbus 2000!"_s ) 
     {    
-        eswitch( ch )  >>
+        eswitch( ch ) >>
             case_( ( isalpha, _1 ) ) >> [&]{ ++amountAlphas; } >>
             case_( ( isdigit, _1 ) ) >> [&]{ ++amountDigits; } >>
             default_                 >> [&]{ ++amountOthers; };
@@ -146,38 +140,35 @@ ____________________________________________________
 ## _Customized cases_
 ``` cpp
 
-    // "_r" and "RegexMatcher" defined in example/example17.cpp
-    CUSTOM_EXTENTION( std::regex, RegexMatcher );
+    regex operator "" _r( const char* rgx, size_t ){...}
+
+    // "RegexMatcher" defined in example/example17.cpp
+    CUSTOM_EXTENTION( regex, RegexMatcher );
     ...
-    std::string http_response =
+    string response =
         "HTTP/1.1 200 OK" "\r\n"
         "Content-Lenght: 88" "\r\n"
         "Content-Type: text/html" "\r\n";
 
-    using namespace eswitch_v4;
-    
-    std::map< std::string, std::string > fields;
+    map< string, string > fields;
 
-    for( const auto & line : tokenize( http_response, "\r\n" ) )
+    for( const auto & line : tokenize( response, "\r\n" ) )
     {       
-        const bool to_continue = eswitch( line ) >>
-            case_( "^.+ 200 .+$"_r ) >>  // match for status line
-                to_return( true ) >>
-            case_( "^.+: .+$"_r ) >> [&] // match for http field
+        eswitch( line ) >>
+            case_( "^.+ 200 .+$"_r ) >> // match for "HTTP/1.1 200 OK"
+            case_( "^.+: .+$"_r ) >> [&] // match for "key: value"
             { 
                 auto splitted = split( line, ':' );                     
                 fields[ splitted[ 0 ] ] = splitted[ 1 ];
-                return true; 
             } >>
-            default_ >> to_return( false ) >>
+            default_ >> []{ terminate(); } >>
             in_place_return_;
-
-        if( !to_continue ) break;
+        ...
     }
-
-    printf( "ContentLength=%s, ContentType=%s", 
-        fields[ std::string{"Content-Lenght"} ].c_str(),
-        fields[ std::string{"Content-Type"} ].c_str() );
+    ...
+    Print( "ContentLength=%s, ContentType=%s", 
+        fields[ "Content-Lenght"_s ].c_str(),
+        fields[ "Content-Type"_s ].c_str() );
 
 ```
 -  #### Output:

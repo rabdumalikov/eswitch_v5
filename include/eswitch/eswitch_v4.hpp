@@ -1008,7 +1008,7 @@ namespace eswitch_v4
     }
 
     /// static declarations
-    static const In_place_return_value in_place_return_; //return_in_place_;
+    static const In_place_return_value in_place_return_; // return_in_place_;
     static const Default_impl default_;
     static const Fallthrough fallthrough_;
 
