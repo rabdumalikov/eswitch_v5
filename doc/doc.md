@@ -39,25 +39,25 @@ eswitch( __params__ ) >>
      - **index param matching**:
 ``` cpp
         eswitch( p1, p2 ) >> 
-        	case_( _1 == true && _2 == true ) >> []{...} >>
+            case_( _1 == true && _2 == true ) >> []{...} >>
             case_( _1 == true || _2 == true ) >> []{...};
             
         // i.e.
                 if( p1 == true && p2 == true ) {...}
-   		else if( p1 == true || p2 == true ) {...}
+   	   else if( p1 == true || p2 == true ) {...}
 ```
 -
      - **index is not required if CASE contains just one param**:
 ``` cpp
         eswitch( p1, p2 )  >> 
-        	case_( true )  >> []{...} >> // same as "case_( _1 == true )" 
+            case_( true )  >> []{...} >> // same as "case_( _1 == true )" 
             case_( false ) >> []{...};
 ```
 -
      - **predicate param matching**, it could be lambda or free_function:
 ``` cpp
         eswitch( p1, p2 ) >> 
-        	case_( ( is_odd, _1 ) && ( is_odd, _2 ) ) >> []{...} >> 
+            case_( ( is_odd, _1 ) && ( is_odd, _2 ) ) >> []{...} >> 
             case_( ( is_negative( _1, _2 ) ) >> []{...};
             
         // i.e.
@@ -67,13 +67,13 @@ eswitch( __params__ ) >>
 - **CASE omit body**, in case you have nothing to do on match:
 ``` cpp
         eswitch( p1, p2 ) >>
-        	case_( _1 == true && _2 == true ) >>
+            case_( _1 == true && _2 == true ) >>
             case_( _1 == true || _2 == true ) >> []{...};
 ```
 - **default case**:
 ``` cpp
         eswitch( p1 ) >>
-        	case_( false ) >> []{...} >>
+            case_( false ) >> []{...} >>
             default_ >> []{...};
 ```
 - **return value**:
@@ -83,7 +83,7 @@ eswitch( __params__ ) >>
         eswitch( p1 ) >> case_( 1 ) >> []{ return true; };
 ```
 ``` cpp
-		bool foo(){ return true; }
+	bool foo(){ return true; }
         eswitch( p1 ) >> case_( 1 ) >> foo;
 ```
 -
@@ -96,20 +96,20 @@ eswitch( __params__ ) >>
      - use **in\_place\_return_**, if nothing to return => **THROW** exception:
 ``` cpp
         bool result = eswitch( p1 ) >> case_( 1 ) >> []{ return true; } >> 
-        	in_place_return_;
+            in_place_return_;
 ```
 -
      - **handle_return**, executes if there is return value:
 ``` cpp
         eswitch( p1 ) >> case_( 1 ) >> []{ return true; } >> 
-        	handle_return( []( const bool val ){ ... } );
+	    handle_return( []( const bool val ){ ... } );
 ```
 - **customize CASE** - you could specify custom logic for some types:
 -
  	- **CASE\_OVERLOAD( type\_to\_overload, accept_1st_arg_and_make_custom_cmp )**:
 ``` cpp
-		struct double_cmp;
-		CASE_OVERLOAD( double, double_cmp );
+	struct double_cmp;
+	CASE_OVERLOAD( double, double_cmp );
         
         class double_cmp
         {
@@ -129,7 +129,7 @@ eswitch( __params__ ) >>
         double d = 2.0001;
         
         eswitch( d ) >>
-        	case_( 2.0001 ) >> []{...}
+	    case_( 2.0001 ) >> []{...}
             case_( 2.0002 ) >> []{...};
 ```
 ____________________________________________________
