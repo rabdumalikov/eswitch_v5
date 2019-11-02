@@ -6,7 +6,7 @@ __________
 | ***case_*** | *accepts condition to check* |
 | ***default_*** | *body next to it will be executed if nothing else matched* |
 | ***fallthrough_*** | *next body will be executed without condition checking* |
-| ***in\_place\_return_*** | *returns value if it exists, otherwise throw exception* |
+| ***in\_place\_return_*** | *returns value if it exists, otherwise throws exception* |
 | ***handle_return*** | *accepts lambda to be called if return value exists* |
 | ***to_return*** | *accepts value to return* |
 
@@ -20,7 +20,7 @@ eswitch( __params__ ) >>
 
 // __param__            - list of parameters( i.e. param1, param2, ..., param_n )
 // __condition__        - it could be specific order match( i.e. _1 == smth1 || _2 == smth2 || ... ),
-//				        or it could be a predicate match( i.e. ( pred1, _1 ) && ( pred2, _2 ) && ... )
+//		          or it could be a predicate match( i.e. ( pred1, _1 ) && ( pred2, _2 ) && ... )
 // __body__             - lambda or free_function to execute in case of match or it could be EMPTY.
 // __falling_settings__ - [left emply => break ] or [ fallthrough_ => execute body of the following case]
 // __return__           - "in_place_return_" return value in place or throw exception, 
