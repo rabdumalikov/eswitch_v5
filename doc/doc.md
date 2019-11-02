@@ -14,17 +14,17 @@ __________
 
 ``` cpp
 eswitch( __params__ ) >>
-    case_( __condition__ ) >> __body__ >> __falling_settings__ >>
+    case_( __condition__ ) >> __body__ >> __falling_options__ >>
     default_ >> __body__ >> 
-    __return__;
+    __return_options__;
 
 // __param__            - list of parameters( i.e. param1, param2, ..., param_n )
 // __condition__        - it could be specific order match( i.e. _1 == smth1 || _2 == smth2 || ... ),
 //		          or it could be a predicate match( i.e. ( pred1, _1 ) && ( pred2, _2 ) && ... )
 // __body__             - lambda or free_function to execute in case of match or it could be EMPTY.
-// __falling_settings__ - [left emply => break ] or [ fallthrough_ => execute body of the following case]
-// __return__           - "in_place_return_" return value in place or throw exception, 
-//    					"handle_return" return value via lambda call.
+// __falling_options__  - [left empty => break ] or [ fallthrough_ => execute body of the following case]
+// __return_options__   - "in_place_return_" returns value in place or throws exception, 
+//                        "handle_return" returns value via lambda call.
 
 ```
 
