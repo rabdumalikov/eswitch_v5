@@ -1020,7 +1020,7 @@ namespace eswitch_v4
 } // namespace eswitch_v4
 
 #define CASE_OVERLOAD( TCase, TCmp ) \
-namespace eswitch_v4 \
+namespace eswitch_v4\
 {\
     template< int I >\
     auto operator==( const eswitch_v4::Index_< I > & val, const TCase & rgx )\
@@ -1058,3 +1058,4 @@ namespace eswitch_v4 \
         return val != TCmp( std::move( rgx ) );\
     }\
 }
+

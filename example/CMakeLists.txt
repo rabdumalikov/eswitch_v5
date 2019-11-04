@@ -21,6 +21,7 @@ set(run_examples_list
   example15
   example16
   example17
+  example18
 )
 
 foreach(example_name ${run_examples_list})

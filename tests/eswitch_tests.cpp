@@ -2922,6 +2922,45 @@ TEST(eswitch_v4_bug, fallthrough_match_executed_next_case )
     EXPECT_TRUE( actual );
 }
 
+
+template< int From, int To >
+bool in_range( const int value )
+{
+    return value >= From && value <= To;
+}
+
+TEST(eswitch_v4_, in_range_1_10 )
+{
+    using namespace eswitch_v4;
+
+    int someVal = 9;
+
+    bool executed = false;
+
+    eswitch( someVal ) >>
+        case_( ( in_range< 11, 15 >, _1 ) ) >> []{ FAIL(); } >>
+        case_( ( in_range< 1, 10 >, _1 ) )  >> [&]{ executed = true; } >>
+        default_ >> []{ FAIL(); };
+
+    EXPECT_TRUE( executed );
+}
+
+TEST(eswitch_v4_, in_range_2_4 )
+{
+    using namespace eswitch_v4;
+
+    int someVal = 3;
+
+    bool executed = false;
+
+    eswitch( someVal ) >>
+        case_( ( in_range< 2, 4 >, _1 ) ) >> [&]{ executed = true; } >>
+        case_( ( in_range< 1, 10 >, _1 ) ) >> [&]{ FAIL(); } >>
+        default_ >> []{ FAIL(); };
+
+    EXPECT_TRUE( executed );
+}
+
 /*
         std::tuple< int, double, std::string > tup;
 
