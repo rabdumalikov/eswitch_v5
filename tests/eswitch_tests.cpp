@@ -2922,13 +2922,6 @@ TEST(eswitch_v4_bug, fallthrough_match_executed_next_case )
     EXPECT_TRUE( actual );
 }
 
-
-template< int From, int To >
-bool in_range( const int value )
-{
-    return value >= From && value <= To;
-}
-
 TEST(eswitch_v4_, in_range_1_10 )
 {
     using namespace eswitch_v4;
@@ -3011,5 +3004,7 @@ TEST(eswitch_v4_, in_range_2_4 )
         std::find_if( vec, []( const int value ){ return value == 5 ? true : false; } );
         
         std::find_if( vec, case_( arg1 == 5 ) >> to_return( true ) );
+
+        case( _1 in_ {1, 2} )
 
 */

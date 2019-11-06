@@ -1012,6 +1012,12 @@ namespace eswitch_v4
         return Value_to_return< return_t >{ std::forward< T >( value ) };
     }
 
+    template< int64_t From, int64_t To >
+    bool in_range( const int64_t value )
+    {
+        return value >= From && value <= To;
+    }
+    
     /// static declarations
     static const In_place_return_value in_place_return_; // return_in_place_;
     static const Default_impl default_;

@@ -11,13 +11,7 @@
 
 #include "eswitch_v4.hpp"
 
-template< int From, int To >
-bool in_range( const int value )
-{
-    return value >= From && value <= To;
-}
-
-int main( /* EXAMPLE NAME: CUSTOM EXTENTION( FOR REGEX ) */ )
+int main( /* EXAMPLE NAME: CASE IN RANGE MATCH */ )
 {
     using namespace eswitch_v4;
 
