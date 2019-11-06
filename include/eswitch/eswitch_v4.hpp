@@ -15,8 +15,50 @@
 
 namespace eswitch_v4
 {
+    template< typename TPred, uint32_t ... Is >
+    class predicate_condition;
+
+    template< typename TIndex, typename T >
+    class condition;
+
+    template< typename TCnd1, typename TCnd2 >
+    class conditions;
+
+    enum class Logical_operators{ and_, or_ };
+    enum class Comparison_operators{ equal_, not_equal_ };
+
+    class Range
+    {
+        int32_t start_;
+        int32_t end_;
+
+        public:
+        Range( const int32_t start, const int32_t end ) 
+            : start_( start ), end_( end )
+            {                
+            }
+
+        friend bool operator==( const int32_t val, const Range & rm )
+        {
+            return val >= rm.start_ && val <= rm.end_;
+        }
+
+        friend bool operator!=( const int32_t val, const Range & rm )
+        {
+            return !( val == rm );
+        }
+    };
+
     template< int32_t Idx >
-    struct Index_{ static constexpr int32_t eswitch_index = Idx; };
+    struct Index_
+    { 
+        static constexpr int32_t eswitch_index = Idx;
+
+        auto in( const int32_t start, const int32_t end ) const
+        {
+            return condition< Index_< Idx >, Range >( Comparison_operators::equal_, Range( start, end ) );
+        }
+    };
 
     const Index_< 0 > _1;
     const Index_< 1 > _2;
@@ -28,19 +70,7 @@ namespace eswitch_v4
     const Index_< 7 > _8;
     const Index_< 8 > _9;
     const Index_< 9 > _10;
-     
-    enum class Logical_operators{ and_, or_ };
-    enum class Comparison_operators{ equal_, not_equal_ };
-
-    template< typename TPred, uint32_t ... Is >
-    class predicate_condition;
-
-    template< typename TIndex, typename T >
-    class condition;
-
-    template< typename TCnd1, typename TCnd2 >
-    class conditions;
-    
+         
 
     namespace details 
     {
@@ -1017,7 +1047,7 @@ namespace eswitch_v4
     {
         return value >= From && value <= To;
     }
-    
+
     /// static declarations
     static const In_place_return_value in_place_return_; // return_in_place_;
     static const Default_impl default_;

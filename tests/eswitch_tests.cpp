@@ -2954,6 +2954,137 @@ TEST(eswitch_v4_, in_range_2_4 )
     EXPECT_TRUE( executed );
 }
 
+TEST(eswitch_v4_case, in_1_10 )
+{
+    using namespace eswitch_v4;
+
+    int someVal = 9;
+
+    bool executed = false;
+
+    eswitch( someVal ) >>
+        case_( _1.in( 11, 15 ) ) >> []{ FAIL(); } >>
+        case_( _1.in( 1, 10 ) )  >> [&]{ executed = true; } >>
+        default_ >> []{ FAIL(); };
+
+    EXPECT_TRUE( executed );
+}
+
+
+TEST(eswitch_v4_case, in_a_z )
+{
+    using namespace eswitch_v4;
+
+    char someVal = 'v';
+
+    bool executed = false;
+
+    eswitch( someVal ) >>
+        case_( _1.in( 'A', 'Z' ) ) >> [&]{ FAIL(); } >>
+        case_( _1.in( 'a', 'z' ) ) >> [&]{ executed = true; } >>
+        default_ >> []{ FAIL(); };
+
+    EXPECT_TRUE( executed );
+}
+
+TEST(eswitch_v4_case, in_A_Z )
+{
+    using namespace eswitch_v4;
+
+    char someVal = 'T';
+
+    bool executed = false;
+
+    eswitch( someVal ) >>
+        case_( _1.in( 'A', 'Z' ) ) >> [&]{ executed = true; } >>
+        case_( _1.in( 'a', 'z' ) ) >> [&]{ FAIL(); } >>
+        default_ >> []{ FAIL(); };
+
+    EXPECT_TRUE( executed );
+}
+
+TEST(eswitch_v4_case, in_for_each_a_z_and_A_Z )
+{
+    using namespace eswitch_v4;
+
+    for( char ch = 'a'; ch <= 'Z'; ++ch )
+    {
+        bool executed = false;
+
+        eswitch( ch ) >>
+            case_( _1.in( 'a', 'z' ) || _1.in( 'A', 'Z' ) ) >> [&]{ executed = true; } >>
+            default_ >> []{ FAIL(); };
+
+        EXPECT_TRUE( executed );
+    }
+}
+
+TEST(eswitch_v4_case, in_1_10_lvalue )
+{
+    using namespace eswitch_v4;
+
+    int someVal = 9;
+
+    bool executed = false;
+
+    int i = 1;
+    int j = 10;
+    eswitch( someVal ) >>
+        case_( _1.in( 11, 15 ) ) >> []{ FAIL(); } >>
+        case_( _1.in( i, j ) )  >> [&]{ executed = true; } >>
+        default_ >> []{ FAIL(); };
+
+    EXPECT_TRUE( executed );
+}
+
+TEST(eswitch_v4_case, in_1_200_several_values_via_and )
+{
+    using namespace eswitch_v4;
+
+    int Val1 = 9;
+    int Val2 = 110;
+
+    bool executed = false;
+
+    eswitch( Val1, Val2 ) >>
+        case_( _1.in( 1, 10 ) && _2.in( 100, 110 ) ) >> [&]{ executed = true; } >>
+        default_ >> []{ FAIL(); };
+
+    EXPECT_TRUE( executed );
+}
+
+TEST(eswitch_v4_case, in_1_200_several_values_via_or_1st_match )
+{
+    using namespace eswitch_v4;
+
+    int Val1 = 9;
+    int Val2 = 110;
+
+    bool executed = false;
+
+    eswitch( Val1, Val2 ) >>
+        case_( _1.in( 1, 10 ) || _2.in( 111, 112 ) ) >> [&]{ executed = true; } >>
+        default_ >> []{ FAIL(); };
+
+    EXPECT_TRUE( executed );
+}
+
+TEST(eswitch_v4_case, in_1_200_several_values_via_or_2nd_match )
+{
+    using namespace eswitch_v4;
+
+    int Val1 = 9;
+    int Val2 = 110;
+
+    bool executed = false;
+
+    eswitch( Val1, Val2 ) >>
+        case_( _1.in( 11, 12 ) || _2.in( 1, 110 ) ) >> [&]{ executed = true; } >>
+        default_ >> []{ FAIL(); };
+
+    EXPECT_TRUE( executed );
+}
+
 /*
         std::tuple< int, double, std::string > tup;
 
