@@ -19,7 +19,8 @@ eswitch( __params__ ) >>
     __return_options__;
 
 // __param__            - list of parameters( i.e. param1, param2, ..., param_n )
-// __condition__        - it could be specific order match( i.e. _1 == smth1 || _2 == smth2 || ... ),
+// __condition__        - it could be specific order match( i.e. _1 == smth1 || _2 == smth2 || ... )
+//			  or it could be match via any_from( i.e. _1 == any_from( smth1, smth1, ... ) )
 //		          or it could be a predicate match( i.e. ( pred1, _1 ) && ( pred2, _2 ) && ... )
 // __body__             - lambda or free_function to execute in case of match or it could be EMPTY.
 // __falling_options__  - [left empty => break ] or [ fallthrough_ => execute body of the following case]
@@ -74,7 +75,7 @@ eswitch( __params__ ) >>
             
         // i.e.
                 if( p1 >= 1  || p1 <= 10 ) {...}
-   	    else if( p1 >= 11 || p1 <= 20 ) {...}
+   	   else if( p1 >= 11 || p1 <= 20 ) {...}
 ```
 -
      - **check in range via special index construction**:
@@ -85,7 +86,8 @@ eswitch( __params__ ) >>
             
         // i.e.
                 if( p1 >= 1  || p1 <= 10 ) {...}
-   	    else if( p1 >= 11 || p1 <= 20 ) {...}```
+   	   else if( p1 >= 11 || p1 <= 20 ) {...}
+```
 - **any_from helper function**:
 ``` cpp
     eswitch( file_extention ) >>
