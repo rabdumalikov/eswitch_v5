@@ -336,11 +336,6 @@ namespace eswitch_v4
             {
                 return val >= rm.start_ && val <= rm.end_;
             }
-
-            friend bool operator!=( const int32_t val, const Range & rm )
-            {
-                return !( val == rm );
-            }
         };
         
         template< typename T, typename TArray >
@@ -386,11 +381,6 @@ namespace eswitch_v4
             {
                 return is_in_set( value, st.arr );
             }
-            template< typename T_ >
-            friend constexpr bool operator!=( const T_ & value, const Any_from_impl& st )
-            {
-                return !( operator==( value, st ) );
-            }
         };        
     } // namespace extension
 
@@ -429,7 +419,7 @@ namespace eswitch_v4
             case Comparison_operators::equal_:
                 return t1 == t2;
             case Comparison_operators::not_equal_:
-                return t1 != t2;
+                return !( t1 == t2 );
             default:
                 return details::unreachable();
             };
@@ -740,8 +730,8 @@ namespace eswitch_v4
             if( was_set ) new (&dt.internals) T( std::forward< T_ >( t ) );
         }
 
-        Anything& operator==( Anything& ) = delete;
-        Anything& operator==( Anything&& ) = delete;
+        Anything& operator=( Anything& ) = delete;
+        Anything& operator=( Anything&& ) = delete;
         Anything( Anything && t ) = delete;
         
        ~Anything()
@@ -1081,24 +1071,6 @@ namespace eswitch_v4\
     auto operator==( const eswitch_v4::Index_< I > & val, TCase && rgx )\
     {\
         return val == TCmp( std::move( rgx ) );\
-    }\
-\
-    template< int I >\
-    auto operator!=( const eswitch_v4::Index_< I > & val, TCase & rgx )\
-    {\
-        return val != TCmp( rgx );\
-    }\
-\
-    template< int I >\
-    auto operator!=( const eswitch_v4::Index_< I > & val, const TCase & rgx )\
-    {\
-        return val != TCmp( rgx );\
-    }\
-\
-    template< int I >\
-    auto operator!=( const eswitch_v4::Index_< I > & val, TCase && rgx )\
-    {\
-        return val != TCmp( std::move( rgx ) );\
     }\
 }
 

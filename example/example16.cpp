@@ -19,11 +19,6 @@ namespace eswitch_v4
     {
         return std::regex_match( v, rm );
     }
-
-    bool operator!=( const std::string & v, const std::regex & rm )
-    {
-        return !( v == rm );
-    }
 }
 
 #include "eswitch_v4.hpp"
@@ -60,31 +55,6 @@ namespace eswitch_v4
     {
         return make_condition< eswitch_v4::Comparison_operators::equal_ >( val, rgx );
     }
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-
-    template< int I >
-    auto operator!=( const eswitch_v4::Index_< I > & val, std::regex & rgx )
-    {
-        return make_condition< eswitch_v4::Comparison_operators::not_equal_ >( val, rgx );
-    }
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-
-    template< int I >
-    auto operator!=( const eswitch_v4::Index_< I > & val, const std::regex & rgx )
-    {
-        return make_condition< eswitch_v4::Comparison_operators::not_equal_ >( val, rgx );
-    }
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-
-    template< int I >
-    auto operator!=( const eswitch_v4::Index_< I > & val, std::regex && rgx )
-    {
-        return make_condition< eswitch_v4::Comparison_operators::not_equal_ >( val, rgx );
-    }
-
 /////////////////////////////////////////////////////////////////////////////////////////////
 }
 

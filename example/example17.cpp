@@ -23,11 +23,6 @@ struct RegexMatcher
     {
         return std::regex_match( v, rm.rgx_ );
     }
-
-    friend bool operator!=( const std::string & v, const RegexMatcher & rm )
-    {
-        return !( v == rm );
-    }
 };
 
 CASE_OVERLOAD( std::regex, RegexMatcher );
