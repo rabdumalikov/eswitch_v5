@@ -27,27 +27,7 @@ namespace eswitch_v4
     enum class Logical_operators{ and_, or_ };
     enum class Comparison_operators{ equal_, not_equal_ };
 
-    class Range
-    {
-        int32_t start_;
-        int32_t end_;
-
-        public:
-        Range( const int32_t start, const int32_t end ) 
-            : start_( start ), end_( end )
-            {                
-            }
-
-        friend bool operator==( const int32_t val, const Range & rm )
-        {
-            return val >= rm.start_ && val <= rm.end_;
-        }
-
-        friend bool operator!=( const int32_t val, const Range & rm )
-        {
-            return !( val == rm );
-        }
-    };
+    namespace extension{ class Range; }
 
     template< int32_t Idx >
     struct Index_
@@ -56,22 +36,21 @@ namespace eswitch_v4
 
         auto in( const int32_t start, const int32_t end ) const
         {
-            return condition< Index_< Idx >, Range >( Comparison_operators::equal_, Range( start, end ) );
+            return condition< Index_< Idx >, extension::Range >( Comparison_operators::equal_, extension::Range( start, end ) );
         }
     };
 
-    const Index_< 0 > _1;
-    const Index_< 1 > _2;
-    const Index_< 2 > _3;
-    const Index_< 3 > _4;
-    const Index_< 4 > _5;
-    const Index_< 5 > _6;
-    const Index_< 6 > _7;
-    const Index_< 7 > _8;
-    const Index_< 8 > _9;
-    const Index_< 9 > _10;
+    const Index_< 0 > _1;    const Index_< 10 > _11;    const Index_< 20 > _21;  
+    const Index_< 1 > _2;    const Index_< 11 > _12;    const Index_< 21 > _22;
+    const Index_< 2 > _3;    const Index_< 12 > _13;    const Index_< 22 > _23;
+    const Index_< 3 > _4;    const Index_< 13 > _14;    const Index_< 23 > _24;
+    const Index_< 4 > _5;    const Index_< 14 > _15;    const Index_< 24 > _25;
+    const Index_< 5 > _6;    const Index_< 15 > _16;    const Index_< 25 > _26;
+    const Index_< 6 > _7;    const Index_< 16 > _17;    const Index_< 26 > _27;
+    const Index_< 7 > _8;    const Index_< 17 > _18;    const Index_< 27 > _28;
+    const Index_< 8 > _9;    const Index_< 18 > _19;    const Index_< 28 > _29;
+    const Index_< 9 > _10;   const Index_< 19 > _20;    const Index_< 29 > _30;           
          
-
     namespace details 
     {
         template< typename T >
@@ -341,7 +320,29 @@ namespace eswitch_v4
     } // namespace other_details
 
     namespace extension
-    {
+    {       
+        class Range
+        {
+            int32_t start_;
+            int32_t end_;
+
+            public:
+            Range( const int32_t start, const int32_t end ) 
+                : start_( start ), end_( end )
+                {                
+                }
+
+            friend bool operator==( const int32_t val, const Range & rm )
+            {
+                return val >= rm.start_ && val <= rm.end_;
+            }
+
+            friend bool operator!=( const int32_t val, const Range & rm )
+            {
+                return !( val == rm );
+            }
+        };
+        
         template< typename T, typename TArray >
         constexpr bool is_in_set( const T & to_check, const TArray & arr )
         {
