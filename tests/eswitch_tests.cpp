@@ -330,6 +330,51 @@ TEST(eswitch_v4_case, all_source_entries_have_different_type )
     ASSERT_EQ(executed, true );
 }
 
+TEST(eswitch_v4_case, any_from )
+{
+    using namespace eswitch_v4;
+
+    bool executed = false;
+
+    eswitch( washington ) >> 
+        case_( any_from( washington, new_jersey, new_york ) ) >> [&](){ executed = true; } >>
+        default_ >> []{ FAIL(); };
+
+    ASSERT_EQ(executed, true );
+}
+
+TEST(eswitch_v4_case, any_from_with_string )
+{
+    using namespace eswitch_v4;
+
+    bool executed = false;
+
+    eswitch( std::string{"h++"} ) >> 
+        case_( any_from( "cpp", "cc", "c++", "cxx", "C" ) ) >> [&]{ FAIL(); } >>
+        case_( any_from( "h", "hpp", "hh", "h++", "hxx", "H" ) ) >> [&]{ executed = true; } >>
+        default_ >> []{ FAIL(); };
+
+    ASSERT_EQ(executed, true );
+}
+
+TEST(eswitch_v4_case, any_from_with_lvalue_int )
+{
+    using namespace eswitch_v4;
+
+    bool executed = false;
+
+    int i = 10;
+    int j = 20;
+    int k = 26;
+    int d = 155;
+
+    eswitch( 20 ) >> 
+        case_( any_from( i, j ) ) >> [&]{ executed = true; } >>
+        case_( any_from( k, d ) ) >> [&]{ FAIL(); } >>
+        default_ >> []{ FAIL(); };
+
+    ASSERT_EQ(executed, true );
+}
 
 TEST(eswitch_v4_case, 1st_match_not_equal_any_from )
 {

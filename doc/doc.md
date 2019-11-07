@@ -9,7 +9,7 @@ __________
 | ***in\_place\_return_*** | *returns value if it exists, otherwise throws exception* |
 | ***handle_return*** | *accepts lambda to be called if return value exists* |
 | ***to_return*** | *accepts value to return* |
-
+| ***any_from*** | *accepts values to choose from* |
 ## Syntax:
 
 ``` cpp
@@ -64,23 +64,52 @@ eswitch( __params__ ) >>
              if( is_odd( p1 ) && is_odd( p2) ) {...}
         else if( is_negative( p1, p2 ) ) {...}
 ```
+- **ranges**:
+-
+     - **check in range via predicate**:
+``` cpp
+        eswitch( p1, p2 ) >> 
+            case_( ( in_range<  1, 10 >, _1 ) ) >> []{...} >>
+            case_( ( in_range< 11, 20 >, _2 ) ) >> []{...};
+            
+        // i.e.
+                if( p1 >= 1  || p1 <= 10 ) {...}
+   	    else if( p1 >= 11 || p1 <= 20 ) {...}
+```
+-
+     - **check in range via special index construction**:
+``` cpp
+        eswitch( p1, p2 ) >> 
+            case_( _1.in(  1, 10 ) ) >> []{...} >>
+            case_( _2.in( 11, 20 ) ) >> []{...};
+            
+        // i.e.
+                if( p1 >= 1  || p1 <= 10 ) {...}
+   	    else if( p1 >= 11 || p1 <= 20 ) {...}```
+- **any_from helper function**:
+``` cpp
+    eswitch( file_extention ) >>
+        case_( any_from( "cpp", "cc", "c++", "cxx", "C" ) ) >> [&]{...} >>
+        case_( any_from( "h", "hpp", "hh", "h++", "hxx", "H" ) ) >> [&]{...} >>
+        default_ >> []{...};
+```
 - **CASE omit body**, in case you have nothing to do on match:
 ``` cpp
-        eswitch( p1, p2 ) >>
-            case_( _1 == true && _2 == true ) >>
-            case_( _1 == true || _2 == true ) >> []{...};
+    eswitch( p1, p2 ) >>
+        case_( _1 == true && _2 == true ) >>
+        case_( _1 == true || _2 == true ) >> []{...};
 ```
 - **default case**:
 ``` cpp
-        eswitch( p1 ) >>
-            case_( false ) >> []{...} >>
-            default_ >> []{...};
+    eswitch( p1 ) >>
+        case_( false ) >> []{...} >>
+        default_ >> []{...};
 ```
 - **return value**:
 -
     - in **lambda** or **free function**:
 ``` cpp
-        eswitch( p1 ) >> case_( 1 ) >> []{ return true; };
+    eswitch( p1 ) >> case_( 1 ) >> []{ return true; };
 ```
 ``` cpp
 	bool foo(){ return true; }
@@ -134,7 +163,54 @@ eswitch( __params__ ) >>
 ```
 ____________________________________________________
 # Examples:
+## _String as a param_
+``` cpp
+    ...
+    std::string value{ "gt" };
+    
+    eswitch( value ) >>
+        case_( "amp" )  >> []{ Print('&'); } >>
+        case_( "lt" )   >> []{ Print('<'); } >>
+        case_( "gt" )   >> []{ Print('>'); } >>
+        case_( "quot" ) >> []{ Print('\"'); } >>
+        case_( "apos" ) >> []{ Print('\''); } >>
+        default_            >> []{ Print('?'); };
+```
+-  #### Output:
+    ```
+    >
+	```
 
+## _Case Ranges_
+``` cpp
+    ...
+    int value = 15;
+    
+    eswitch( value ) >>
+        case_( _1.in( 1, 10 ) )  >> []{ Print("Value in a range[1,10]"); } >>
+        case_( _1.in( 11, 20 ) ) >> []{ Print("Value in a range[11,20]"); } >>
+        default_                 >> []{ Print('?'); };
+```
+-  #### Output:
+    ```
+    Value in a range[11,20]
+	```
+    
+## _Case Ranges via predicate_
+``` cpp
+    ...
+    int value = 9;
+    
+    eswitch( value ) >>
+        case_( ( in_range< 1,  10 >, _1 ) ) >> []{ Print("Value in a range[1,10]"); } >>
+        case_( ( in_range< 11, 20 >, _1 ) ) >> []{ Print("Value in a range[11,20]"); } >>
+        default_                 >> []{ Print('?'); };
+```
+-  #### Output:
+    ```
+    Value in a range[1,10]
+	```
+    
 ## _implicit break_
 ``` cpp
     ...
@@ -150,6 +226,7 @@ ____________________________________________________
     ```
     w
     ```
+    
 ## _explicit fallthrough_
 ``` cpp
     ...
@@ -166,6 +243,7 @@ ____________________________________________________
     w
     c
 ```
+
 ## _stringify enum_
 ``` cpp
     ...
@@ -211,6 +289,7 @@ ____________________________________________________
             unreachable(); 
         };
 ```
+
 ## _Params match by predicate_
 ``` cpp
     int isalpha( int ){...}

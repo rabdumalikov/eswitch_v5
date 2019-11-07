@@ -374,17 +374,20 @@ namespace eswitch_v4
             std::array< T, sizeof...(TArgs) + 1 > arr;
 
             template< typename T1, typename ... TOthers >
-            constexpr Any_from_impl( T1 && arg, TOthers && ... args ) : arr{ std::forward< T1 >( arg ), std::forward< TOthers >( args )... }
-            {
-                static_assert( std::is_same< T, T1 >::value, "T and T1 should be SAME TYPE" );
-            }
+            constexpr Any_from_impl( T1 && arg, TOthers && ... args )
+                : arr{ std::forward< T1 >( arg ), std::forward< TOthers >( args )... }
+                {
+                    // types could not match
+                    // static_assert( std::is_same< T, T1 >::value, "T and T1 should be SAME TYPE" );
+                }
 
-            friend constexpr bool operator==( const T & value, const Any_from_impl& st ) 
+            template< typename T_ >
+            friend constexpr bool operator==( const T_ & value, const Any_from_impl& st ) 
             {
                 return is_in_set( value, st.arr );
             }
-
-            friend constexpr bool operator!=( const T & value, const Any_from_impl& st )
+            template< typename T_ >
+            friend constexpr bool operator!=( const T_ & value, const Any_from_impl& st )
             {
                 return !( operator==( value, st ) );
             }
@@ -1023,10 +1026,13 @@ namespace eswitch_v4
         return _1 == std::forward< T >( value ); 
     }
 
-    template< typename ... TArgs >
-    inline auto any_from( TArgs&& ... args )
+    template< typename T, typename ... TArgs >
+    inline auto any_from( T && arg1, TArgs&& ... args )
     {
-        return extension::Any_from_impl< TArgs... >( std::forward< TArgs >( args )... );
+        using return_t = decltype( details::Just_find_out_return_type( std::forward< T >( arg1 ) ) );
+
+        return extension::Any_from_impl< return_t, TArgs... >( 
+            std::forward< T >( arg1 ), std::forward< TArgs >( args )... );
     }
     
     template< typename T >

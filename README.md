@@ -19,11 +19,44 @@ ____________________________________________________
 | *return* | yes | yes |
 | _**or** cmp_ | yes| yes |
 | _**and** cmp_ | yes | no |
-| _(params > 1) per **eswitch**_ | yes | no |
+| _(params > 1) per **switch**_ | yes | no |
 | _(conditions > 1) per **case**_ | yes | no |
 ____________________________________________________
 # Examples:
 
+## _String as a param_
+``` cpp
+    ...
+    std::string value{ "gt" };
+    
+    eswitch( value ) >>
+        case_( "amp" )  >> []{ Print('&'); } >>
+        case_( "lt" )   >> []{ Print('<'); } >>
+        case_( "gt" )   >> []{ Print('>'); } >>
+        case_( "quot" ) >> []{ Print('\"'); } >>
+        case_( "apos" ) >> []{ Print('\''); } >>
+        default_            >> []{ Print('?'); };
+```
+-  #### Output:
+    ```
+    >
+	```
+
+## _Case Ranges_
+``` cpp
+    ...
+    int value = 15;
+    
+    eswitch( value ) >>
+        case_( _1.in( 1, 10 ) )  >> []{ Print("Value in a range[1,10]"); } >>
+        case_( _1.in( 11, 20 ) ) >> []{ Print("Value in a range[11,20]"); } >>
+        default_                 >> []{ Print('?'); };
+```
+-  #### Output:
+    ```
+    Value in a range[11,20]
+	```
+    
 ## _implicit break_
 ``` cpp
     ...
@@ -39,6 +72,7 @@ ____________________________________________________
     ```
     w
     ```
+    
 ## _explicit fallthrough_
 ``` cpp
     ...
@@ -55,6 +89,7 @@ ____________________________________________________
     w
     c
 ```
+
 ## _stringify enum_
 ``` cpp
     ...
@@ -100,6 +135,7 @@ ____________________________________________________
             unreachable(); 
         };
 ```
+
 ## _Params match by predicate_
 ``` cpp
     int isalpha( int ){...}
