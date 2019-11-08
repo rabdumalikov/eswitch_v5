@@ -240,7 +240,7 @@ _______________
 
 _______________
 ## TODO:
-implement support for ( **>, >=, <, <=** ) and  *bitwise* operators( **&, |, ^, ~** )
+implement support for ( **>, >=, <, <=** ) and _bitwise_ operators( **\&, \|, \^, \~** )
 _______________
 
 
