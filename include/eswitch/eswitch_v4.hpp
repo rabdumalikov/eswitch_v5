@@ -8,7 +8,6 @@
 
 #pragma once
 
-
 #include <tuple>
 #include <array>
 #include <cassert>
@@ -156,59 +155,6 @@ namespace eswitch_v4
         public:
             static constexpr bool value = is_callable_impl< T, std::is_class< T >::value >::value;
         };
-
-        template< int Idx, typename ... T, typename TLambda, typename std::enable_if< (  Idx >= sizeof...( T ) ), int >::type = 0 >
-        constexpr void Tuple_for_each_impl( const std::tuple< T... > & tup, const TLambda & callback ) 
-        {
-        }
-
-        template< int Idx, typename ... T, typename TLambda, typename std::enable_if< ( Idx < sizeof...( T ) ), int >::type = 0 >
-        constexpr void Tuple_for_each_impl( const std::tuple< T... > & tup, const TLambda & callback ) 
-        { 
-            return callback( std::get< Idx >( tup ) ), Tuple_for_each_impl< Idx + 1 >( tup, callback ); 
-        }
-
-        template< typename ... T, typename TLambda >
-        constexpr void Tuple_for_each( const std::tuple< T... > & tup, TLambda && callback ) 
-        { 
-            return Tuple_for_each_impl< 0 >( tup, callback );
-        }
-
-        template< int Idx, typename ... T, typename TLambda, typename std::enable_if< (  Idx >= sizeof...( T ) ), int >::type = 0 >
-        constexpr void Tuple_for_each_with_index_impl( const std::tuple< T... > & tup, const TLambda & callback ) {}
-
-        template< int Idx, typename ... T, typename TLambda, typename std::enable_if< ( Idx < sizeof...( T ) ), int >::type = 0 >
-        constexpr void Tuple_for_each_with_index_impl( const std::tuple< T... > & tup, const TLambda & callback ) 
-        { 
-            return callback( Idx, std::get< Idx >( tup ) ), Tuple_for_each_with_index_impl< Idx + 1 >( tup, callback ); 
-        }
-
-        template< typename ... T, typename TLambda >
-        constexpr void Tuple_for_each_with_index( const std::tuple< T... > & tup, TLambda && callback ) 
-        { 
-            return Tuple_for_each_with_index_impl< 0 >( tup, callback );
-        }
-
-        template< int Idx, typename ... T, typename TLambda, typename std::enable_if< (  Idx >= sizeof...( T ) ), int >::type = 0 >
-        constexpr void Tuple_find_and_call_impl( const int32_t index_to_find, const std::tuple< T... > & tup, const TLambda & callback ) {}
-
-        template< int Idx, typename ... T, typename TLambda, typename std::enable_if< ( Idx < sizeof...( T ) ), int >::type = 0 >
-        constexpr void Tuple_find_and_call_impl( const int32_t index_to_find, const std::tuple< T... > & tup, const TLambda & callback ) 
-        { 
-            if( Idx == index_to_find )
-            {
-                callback( std::get< Idx >( tup ) );
-                return;
-            }
-
-            Tuple_find_and_call_impl< Idx + 1 >( index_to_find, tup, callback ); 
-        }
-
-        template< typename ... T, typename TLambda >
-        constexpr void Tuple_find_and_call( const int32_t index_to_find, const std::tuple< T... > & tup, TLambda && callback ) 
-        { 
-            return Tuple_find_and_call_impl< 0 >( index_to_find, tup, callback );
-        }
 
         static bool unreachable() { assert( false ); return false; }
 
