@@ -6,8 +6,8 @@ To overcome **native switch** limitations:
 - one parameter per **native switch**
 - the parameter restricted to only _integral_ types( **int**, **char**, **enum** ... ).
 
-**eswitch** supports any number of _parameters_ and almost without restriction on their _type_,<br/>
- if the _type_ is **comparable**( i.e. must have **operator==** ).
+**eswitch** supports any number of _parameters_ and almost without restriction on their _type_,
+ as long as the _type_ is **comparable**( i.e. has **operator==** ).
 ____________________________________________________
 ## Feature comparison:
 
@@ -232,11 +232,17 @@ _______________
 
 | Compiler | eswitch VS native switch |
 | :---: | :---: |
-| *clang++* | no performance difference |
+| *clang++* | *slower*, but **not critical** |
 | *g++* | no performance difference |
 | *visual studio 2019*| *slower*, but **not critical** |
 
 _______________
+
+_______________
+## TODO:
+implement support for ( **>, >=, <, <=** ) and  *bitwise* operators( **&, |, ^, ~** )
+_______________
+
 
 ## How to build:
 
