@@ -1,4 +1,4 @@
-//  Copyright (c) 2019 Rustam Abdumalikov
+//  Copyright (c) 2019-2020 Rustam Abdumalikov
 //
 //  "eswitch_v4" library
 //
@@ -74,86 +74,32 @@ namespace eswitch_v4
         template< typename T >
         auto Just_find_out_return_type( T && value ){ return std::forward< T >( value ); }
 
-        struct base 
-        {
-            struct Yes{};
-            struct No{ Yes no[2]; };
-        };
+        template< typename ... Args >
+        struct void_t { using type = void; };
+
+        template< typename T, typename = void >
+        struct has_static_member_index : std::false_type {};
 
         template< typename T >
-        struct has_static_member_index : private base
-        {            
-            template< typename U1, int U2 > struct check;
-            
-            template< typename T_ >
-            static Yes is_determine( check< T_, T_::eswitch_index > * );
-            
-            template< typename T_ >
-            static No is_determine( ... );
+        struct has_static_member_index< T, typename void_t< decltype( T::eswitch_index ) >::type > 
+            : std::true_type {};
 
-            static constexpr bool value = sizeof( is_determine< T >( 0 ) ) == sizeof( Yes );  
-        };
+        template< typename T, typename = void >
+        struct is_determined : std::false_type {};
 
         template< typename T >
-        using has_static_member_index_t = has_static_member_index< T >;
-
-        template< typename T >
-        struct is_determined : private base
-        {           
-            template< typename U1, typename U2 > struct check;
-            
-            template< typename T_ >
-            static Yes is_determine( check< T_, typename T_::type > * );
-            
-            template< typename T_ >
-            static No is_determine( ... );
-
-            static constexpr bool value = sizeof( is_determine< T >( 0 ) ) == sizeof( Yes );  
-        };
-
-        template <bool TStatus, typename... Ts>
-        struct has_common_type_impl;
-
-        template <typename... Ts>
-        struct has_common_type_impl< false, Ts... > : std::false_type {};
-
-        template <typename... Ts>
-        struct has_common_type_impl< true, Ts... > : std::true_type {};
+        struct is_determined< T, typename void_t< decltype( T::type ) >::type > 
+            : std::true_type {};
         
         template <typename... Ts>
         using has_common_type = typename details::is_determined< std::common_type_t<Ts...> >::type;
 
-
-        template <typename T, bool >
-        class is_callable_impl;
+        template< typename T, typename = void >
+        struct is_callable : std::false_type {};
 
         template< typename T >
-        class is_callable_impl< T, true >  : private base
-        {
-            struct Fallback { int operator()() { return 1; } };
-            struct Derived : T, Fallback { };
-
-            template<typename U, U> struct Check;
-
-            template<typename U>
-            static No has_alternative_callable_operator(Check< int(Fallback::*)(), &U::operator()> *);
-
-            template<typename U>
-            static Yes has_alternative_callable_operator(...);
-
-        public:
-            static constexpr bool value = sizeof(has_alternative_callable_operator<Derived>(0)) == sizeof(Yes);
-        };
-
-
-        template <typename T >
-        class is_callable_impl< T, false > : public std::false_type {};
-
-        template <typename T >
-        struct is_callable
-        {
-            static constexpr bool value = is_callable_impl< T, std::is_class< T >::value >::value;
-        };
+        struct is_callable< T, typename void_t< decltype( std::declval< T >()() ) >::type > 
+            : std::true_type {};
 
         static bool unreachable() { assert( false ); return false; }
 
@@ -164,15 +110,15 @@ namespace eswitch_v4
         void is_predicate_condition( H<S> && );
 
         template < template < typename > class H, template< typename, uint32_t ... > class Pr, typename P, uint32_t ... Idxs,
-            typename std::enable_if< std::is_same< holder< predicate_condition< P, Idxs... > >, H< Pr< P, Idxs... > > >::value, int >::type = 0 >
+            typename std::enable_if_t< std::is_same< holder< predicate_condition< P, Idxs... > >, H< Pr< P, Idxs... > > >::value, int > = 0 >
         bool is_predicate_condition( H< Pr< P, Idxs... > > && );
 
         template < template < typename > class H, template< typename, typename > class Cnd, typename T1, typename T2,
-            typename std::enable_if< std::is_same< holder< condition< T1, T2 > >, H< Cnd< T1, T2 > > >::value, int >::type = 0 >
+            typename std::enable_if_t< std::is_same< holder< condition< T1, T2 > >, H< Cnd< T1, T2 > > >::value, int > = 0 >
         bool is_predicate_condition( H< Cnd< T1, T2 > > && );
 
         template < template < typename > class H, template< typename T1, typename T2 > class Cnds, typename T1, typename T2,
-            typename std::enable_if< std::is_same< holder< conditions< T1, T2 > >, H< Cnds< T1, T2 > > >::value, int >::type = 0 >
+            typename std::enable_if_t< std::is_same< holder< conditions< T1, T2 > >, H< Cnds< T1, T2 > > >::value, int > = 0 >
         bool is_predicate_condition( H< Cnds< T1, T2 > > && );
 
 
@@ -472,23 +418,23 @@ namespace eswitch_v4
         }
     };
 
-    template< typename R, typename... Args, typename T, typename std::enable_if< details::has_static_member_index_t< T >::value, int >::type = 0 >
+    template< typename R, typename... Args, typename T, typename std::enable_if_t< details::has_static_member_index< T >::value, int > = 0 >
     auto operator,( R(*pred)(Args...), const T& t1 )
     {
         return predicate_condition< R(*)(Args...), T::eswitch_index >( pred );
     }
 
-    template< typename Pred, typename T, typename std::enable_if< !details::is_predicate< std::remove_reference_t< Pred > >::value && 
-        details::has_static_member_index_t< T >::value, int >::type = 0 >
+    template< typename Pred, typename T, typename std::enable_if_t< !details::is_predicate< std::remove_reference_t< Pred > >::value && 
+        details::has_static_member_index< T >::value, int > = 0 >
     auto operator,( Pred&& pred, const T& t1 )
     {
         return predicate_condition< std::remove_reference_t< Pred >, T::eswitch_index >( std::forward< Pred >( pred ) );
     }
 
-    template < typename P, uint32_t ... I, typename T, typename std::enable_if< details::has_static_member_index_t< T >::value, int >::type = 0 >
+    template < typename P, uint32_t ... I, typename T, typename std::enable_if_t< details::has_static_member_index< T >::value, int > = 0 >
     predicate_condition< P, I..., T::eswitch_index > compose_new_predicate_condition_type( const predicate_condition< P, I... > & pred_cnd, const T& t1 ); 
 
-    template< typename Pred, typename T, typename std::enable_if< details::is_predicate< std::remove_reference_t< Pred > >::value, int >::type = 0 >
+    template< typename Pred, typename T, typename std::enable_if_t< details::is_predicate< std::remove_reference_t< Pred > >::value, int > = 0 >
     auto operator,( Pred&& pred, const T& t1 )
     {
         return decltype( compose_new_predicate_condition_type( pred, t1 ) )( std::move( pred.pred_ ) );
@@ -547,7 +493,7 @@ namespace eswitch_v4
         template< typename T >
         Eswitch_for_return_only( T && t ) : eswitch_( std::forward< T >( t ) ){}
         
-        template< typename Tlambda, typename std::enable_if< details::is_callable< std::remove_reference_t< Tlambda > >::value, int >::type = 0 >    
+        template< typename Tlambda, typename std::enable_if_t< details::is_callable< std::remove_reference_t< Tlambda > >::value, int > = 0 >    
         auto operator>>( Tlambda && lambda )
         {
             /// after handling lambda TEswitch could change, in particular ReturnValue could change
@@ -594,9 +540,9 @@ namespace eswitch_v4
         template< typename T >
         Eswitch_for_case_only( T && t ) : eswitch_( std::forward< T >( t ) ){ }
         
-        template< typename Tlambda, typename std::enable_if< 
+        template< typename Tlambda, typename std::enable_if_t< 
              details::is_callable< std::remove_reference_t< Tlambda > >::value && 
-            !details::is_predicate< std::remove_reference_t< Tlambda > >::value, int >::type = 0 >
+            !details::is_predicate< std::remove_reference_t< Tlambda > >::value, int > = 0 >
         auto operator>>( Tlambda && lambda )
         {
             return eswitch_ >> std::forward< Tlambda >( lambda ); 
@@ -796,7 +742,7 @@ namespace eswitch_v4
             return Eswitch_for_return_only< decltype( *this >> default_lambda.case_for_any_match ) >( *this >> default_lambda.case_for_any_match );
         }
 
-        template< typename Tlambda, typename std::enable_if< details::is_callable< std::remove_reference_t< Tlambda > >::value && std::is_same< other_details::return_type_t< std::remove_reference_t< Tlambda > >, void >::value, int >::type = 0 >
+        template< typename Tlambda, typename std::enable_if_t< details::is_callable< std::remove_reference_t< Tlambda > >::value && std::is_same< other_details::return_type_t< std::remove_reference_t< Tlambda > >, void >::value, int > = 0 >
         Eswitch operator>>( Tlambda && lambda )
         {
             if( return_val_ ) return std::move( *this );
@@ -817,7 +763,7 @@ namespace eswitch_v4
             return std::move( *this );
         }
 
-        template< typename Tlambda, typename std::enable_if< details::is_callable< std::remove_reference_t< Tlambda > >::value && !std::is_same< other_details::return_type_t< std::remove_reference_t< Tlambda > >, void >::value, int >::type = 0 >
+        template< typename Tlambda, typename std::enable_if_t< details::is_callable< std::remove_reference_t< Tlambda > >::value && !std::is_same< other_details::return_type_t< std::remove_reference_t< Tlambda > >, void >::value, int > = 0 >
         auto operator>>( Tlambda && lambda )
         {
             if( return_val_ ) 
@@ -861,34 +807,34 @@ namespace eswitch_v4
 
     private:
         
-        template< typename TReturnValue, typename std::enable_if< 
+        template< typename TReturnValue, typename std::enable_if_t< 
             !Always_false< TReturnValue >::value &&
           ( !std::is_same< R, Padding* >::value && 
              std::is_convertible< R, TReturnValue >::value ) || 
              std::is_same< R, Filled* >::value ||
-             std::is_same< R, Padding* >::value, int >::type = 0 >
+             std::is_same< R, Padding* >::value, int > = 0 >
         auto handle_return_value( TReturnValue && value )
         {
             return handle_case_with_return( std::forward< TReturnValue >( value ) );
         }
         
-        template< typename TReturnValue, typename std::enable_if< 
+        template< typename TReturnValue, typename std::enable_if_t< 
             !Always_false< TReturnValue >::value &&
             !std::is_same< R, Padding* >::value &&
              std::is_convertible< TReturnValue, R >::value &&
-            !std::is_convertible< R, TReturnValue >::value, int >::type = 0 >
+            !std::is_convertible< R, TReturnValue >::value, int > = 0 >
         auto handle_return_value( TReturnValue && value )
         {
             return handle_case_with_return( static_cast< R&& >( value ) );
         }
 
 
-        template< typename TReturnValue, typename std::enable_if<  
+        template< typename TReturnValue, typename std::enable_if_t<  
             !Always_false< TReturnValue >::value &&
             !std::is_convertible< R, TReturnValue >::value && 
             !std::is_convertible< TReturnValue, R >::value && 
             !std::is_same< R, Padding* >::value && 
-            details::has_common_type< R, TReturnValue >::value, int >::type = 0 >
+            details::has_common_type< R, TReturnValue >::value, int > = 0 >
         auto handle_return_value( TReturnValue && value )
         {
             return handle_case_with_return( static_cast< std::common_type_t< R, TReturnValue >&& >( value ) );
