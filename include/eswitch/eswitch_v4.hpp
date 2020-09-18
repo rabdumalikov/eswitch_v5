@@ -9,8 +9,11 @@
 #pragma once
 
 #include <tuple>
+#include <experimental/tuple>
 #include <array>
 #include <cassert>
+
+//namespace std = std::experimental;
 
 namespace eswitch_v4
 {
@@ -362,16 +365,105 @@ namespace eswitch_v4
         }
     };
 
-    template< int I, typename T >
-    auto operator!=( const Index_< I >& idx, T && rhv )
+    template< typename Cnd, typename Func >
+    struct condition_with_predicate
     {
-        return condition< Index_< I >, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
-    }
+        template< typename TSrcTuple >
+        void operator()( const TSrcTuple & src_tuple ) const
+        {
+            if( cnd( src_tuple ) ) func();
+        }
+
+        Cnd  cnd;
+        Func func;
+        bool fallthrough = false;
+    };
+
+    template< typename T, typename F >
+    condition_with_predicate( T, F ) -> condition_with_predicate< T, F >;
+
+
+    template< typename ... Cnds >
+    struct conditions_with_predicate
+    {    
+        template< typename ... Args >
+        conditions_with_predicate( Args && ... args ) : cnds_{ std::forward< Args >( args )... } {}
+        
+        template< typename TSrcTuple >
+        void operator()( const TSrcTuple & src_tuple ) const
+        {
+            std::experimental::apply( [&]( auto && ... args ) { ( args( src_tuple ), ... ); }, cnds_ );
+        }
+
+        using conditions_t = std::tuple< Cnds... >;
+    private:
+        conditions_t  cnds_;
+    };    
+    
+    template< class ... Ts > 
+    conditions_with_predicate( Ts && ... ) -> conditions_with_predicate< Ts... >;
+
 
     template< int I, typename T >
     auto operator==( const Index_< I >& idx, T && rhv )
     {
         return condition< Index_< I >, T >( Comparison_operators::equal_, std::forward< T >( rhv ) );
+    }
+
+    template< typename TIndex, typename T, typename Func >
+    auto operator>>( condition< TIndex, T > && cnd, Func && f )
+    {
+        return condition_with_predicate{ std::move( cnd ), std::move( f ) };
+    }
+
+    template< typename TCnd1, typename TCnd2, typename Func >
+    auto operator>>( conditions< TCnd1, TCnd2 > && cnds, Func && f )
+    {
+        return condition_with_predicate{ std::move( cnds ), std::move( f ) };
+    }
+
+    struct Fallthrough {};
+
+    /// TODO change to CONCEPTS 
+    template< typename Cnd, typename Func, 
+        std::enable_if_t< 
+            std::is_same< 
+                other_details::return_type_t< std::remove_reference_t< Func > >, 
+                void 
+            >::value, int > = 0 >
+    auto operator^( condition_with_predicate< Cnd, Func >&& cp, const Fallthrough & )
+    {
+        cp.fallthrough = true;
+
+        return std::move( cp );
+    }
+
+    template< typename Cnd1, typename Func1, typename Cnd2, typename Func2 >
+    auto operator,( condition_with_predicate< Cnd1, Func1 >&& cp1, condition_with_predicate< Cnd2, Func2 > && cp2 )
+    {
+        return conditions_with_predicate{ std::move( cp1 ), std::move( cp2 ) };
+    }
+
+    template< typename ... Cnds, typename Cnd2, typename Func2 >
+    auto operator,( conditions_with_predicate< Cnds... >&& cp1, condition_with_predicate< Cnd2, Func2 > && cp2 )
+    {
+        using tup = typename conditions_with_predicate< Cnds... >::conditions_t;
+
+        static constexpr auto N = std::tuple_size< tup >::value;
+
+        //std::make_index_sequence< N >{};
+
+        // return conditions_with_predicate{ std::get< N >( )} 
+
+        //     condition_with_predicate< Cnd1, Func1 >,
+        //     condition_with_predicate< Cnd2, Func2 > >{ std::move( cp1 ), std::move( cp2 ) };
+    }    
+
+
+    template< int I, typename T >
+    auto operator!=( const Index_< I >& idx, T && rhv )
+    {
+        return condition< Index_< I >, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
     }
 
     template< typename T1, typename T2, typename T3 >
@@ -459,7 +551,7 @@ namespace eswitch_v4
     };
 
     struct In_place_return_value{};
-    struct Fallthrough {};
+
     struct Padding{};
     struct Filled{};
 
@@ -483,111 +575,6 @@ namespace eswitch_v4
     template< typename TValue >
     struct Value_to_return{
         TValue return_value_;
-    };
-
-    template< typename TEswitch >
-    struct Eswitch_for_return_only
-    {
-        TEswitch eswitch_;
-
-        template< typename T >
-        Eswitch_for_return_only( T && t ) : eswitch_( std::forward< T >( t ) ){}
-        
-        template< typename Tlambda, typename std::enable_if_t< details::is_callable< std::remove_reference_t< Tlambda > >::value, int > = 0 >    
-        auto operator>>( Tlambda && lambda )
-        {
-            /// after handling lambda TEswitch could change, in particular ReturnValue could change
-            return Eswitch_for_return_only< decltype( eswitch_ >> std::forward< Tlambda >( lambda ) ) >( 
-                eswitch_ >> std::forward< Tlambda >( lambda ) );            
-        }
-
-        template< typename T >
-        void operator>>( Return_value_impl< T > && lambda )
-        {            
-            eswitch_ >> std::move( lambda );
-        }
-    
-        template< typename TReturnValue >
-        auto operator>>( Value_to_return< TReturnValue >&& value )
-        {
-           return eswitch_ >> std::move( value );
-        }
-
-        auto operator>>( const In_place_return_value& ret_in_place )
-        {
-            return eswitch_ >> ret_in_place;            
-        }
-        
-        template< typename T1, typename T2 >
-        Eswitch_for_return_only operator>>( const conditions< T1, T2 >& cnd)
-        {
-            static_assert( Always_false< T1, T2 >::value, "You can't use CASE after DEFAULT, only RETURN must go there!" );
-        }
-
-        template< typename T1, typename T2 >
-        Eswitch_for_return_only operator>>( const condition< T1, T2 >& cnd)
-        {
-            static_assert( Always_false< T1, T2 >::value, "You can't use CASE after DEFAULT, only RETURN must go there!" );
-        }
-    };
-
-    // to handle match cases without body, since next cases shouldn't be consider.
-    template< typename TEswitch >
-    struct Eswitch_for_case_only
-    {
-        TEswitch eswitch_;
-
-        template< typename T >
-        Eswitch_for_case_only( T && t ) : eswitch_( std::forward< T >( t ) ){ }
-        
-        template< typename Tlambda, typename std::enable_if_t< 
-             details::is_callable< std::remove_reference_t< Tlambda > >::value && 
-            !details::is_predicate< std::remove_reference_t< Tlambda > >::value, int > = 0 >
-        auto operator>>( Tlambda && lambda )
-        {
-            return eswitch_ >> std::forward< Tlambda >( lambda ); 
-        }
-
-        auto operator>>( const Default_impl & default_lambda )
-        {
-            return eswitch_ >> default_lambda; 
-        }
-
-        template< typename TReturnValue >
-        auto operator>>( Value_to_return< TReturnValue >&& value )
-        {
-            return eswitch_ >> std::move( value );
-        }
-        
-        template< typename T1, typename T2 >
-        auto operator>>( const conditions< T1, T2 >& cnds )
-        {
-            return handle_case( cnds );
-        }
-
-        template< typename T1, typename T2 >
-        auto operator>>( const condition< T1, T2 >& cnd )
-        {
-            return handle_case( cnd );
-        }
-
-        template< typename TPred, uint32_t ... Is >
-        auto operator>>( const predicate_condition< TPred, Is... > & value )
-        {
-            return handle_case( value );
-        }
-
-    private:
-        template< typename TCnd >    
-        auto handle_case( const TCnd& cnd )
-        {
-            if( eswitch_.states_.execute_current_case && !eswitch_.states_.was_case_executed )
-                eswitch_ >> []{};           
-
-            eswitch_ >> cnd;
-
-            return std::move( *this );
-        }
     };
 
     // return value is obtained lazy, thus we need mechanism to construct on demand
@@ -737,10 +724,10 @@ namespace eswitch_v4
             if( return_val_ ) lambda.callback( return_val_.release_with_check() );
         }
 
-        auto operator>>( const Default_impl & default_lambda )
-        {
-            return Eswitch_for_return_only< decltype( *this >> default_lambda.case_for_any_match ) >( *this >> default_lambda.case_for_any_match );
-        }
+        // auto operator>>( const Default_impl & default_lambda )
+        // {
+        //     return Eswitch_for_return_only< decltype( *this >> default_lambda.case_for_any_match ) >( *this >> default_lambda.case_for_any_match );
+        // }
 
         template< typename Tlambda, typename std::enable_if_t< details::is_callable< std::remove_reference_t< Tlambda > >::value && std::is_same< other_details::return_type_t< std::remove_reference_t< Tlambda > >, void >::value, int > = 0 >
         Eswitch operator>>( Tlambda && lambda )
@@ -775,27 +762,27 @@ namespace eswitch_v4
                 return decltype( handle_return_value( lambda() ) )( std::move( *this ) );
         }
 
-        template< typename T1, typename T2 >
-        auto operator>>( const conditions< T1, T2 >& cnds )
-        {            
-            static_assert( !conditions< T1, T2 >::template is_out_of_range< sizeof...( TArgs ) >(), "Index in 'Predicate' is out of range!!" );
+        // template< typename T1, typename T2 >
+        // auto operator>>( const conditions< T1, T2 >& cnds )
+        // {            
+        //     static_assert( !conditions< T1, T2 >::template is_out_of_range< sizeof...( TArgs ) >(), "Index in 'Predicate' is out of range!!" );
 
-            return Eswitch_for_case_only< Eswitch >( handle_case( cnds ) );
-        }
+        //     return Eswitch_for_case_only< Eswitch >( handle_case( cnds ) );
+        // }
 
-        template< typename T1, typename T2 >
-        auto operator>>( const condition< T1, T2 >& cnd)
-        {
-            return Eswitch_for_case_only< Eswitch >( handle_case( cnd ) );
-        }
+        // template< typename T1, typename T2 >
+        // auto operator>>( const condition< T1, T2 >& cnd)
+        // {
+        //     return Eswitch_for_case_only< Eswitch >( handle_case( cnd ) );
+        // }
             
-        template< typename TPred, uint32_t ... Is >
-        auto operator>>( const predicate_condition< TPred, Is... > & value )
-        {
-            static_assert( !predicate_condition< TPred, Is... >::template is_out_of_range< sizeof...( TArgs ) >(), "Index in 'Predicate' is out of range!!" );
+        // template< typename TPred, uint32_t ... Is >
+        // auto operator>>( const predicate_condition< TPred, Is... > & value )
+        // {
+        //     static_assert( !predicate_condition< TPred, Is... >::template is_out_of_range< sizeof...( TArgs ) >(), "Index in 'Predicate' is out of range!!" );
             
-            return Eswitch_for_case_only< Eswitch >( handle_case( value ) );
-        }
+        //     return Eswitch_for_case_only< Eswitch >( handle_case( value ) );
+        // }
 
         template< typename TReturnValue >
         auto operator>>( Value_to_return< TReturnValue >&& value )
