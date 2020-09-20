@@ -59,16 +59,24 @@ struct potential_switch
     }
 };
 
+TEST_CASE( "Factorials are computed2", "[factorial]2" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+    
+}
+
 
 TEST_CASE( "Factorials are computed", "[factorial]" ) 
 {
     using namespace eswitch_v4;
     using namespace std;
     
-    auto r = eswitch2( new_york )
+    auto r = 
+    eswitch2( new_york )
     (
-        Case( _1 == washington || _1 == new_york ) { std::cout << "Hi1\n"; return 1; },
-        Case( _1 == washington ) { std::cout << "Hi2\n"; return 0.0; }, 
+        Case( _1 == washington || _1 == new_york ) { std::cout << "Hi1\n"; return 0.0; },
+        Case( _1 == washington ) { std::cout << "Hi2\n"; return 1; }, 
         Case( _1 == new_york ) { std::cout << "Hi3\n"; return 'c'; } 
     );
     
