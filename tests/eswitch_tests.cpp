@@ -52,12 +52,6 @@ enum Place { unknown = 0, new_york=5, washington=129, new_jersey=501 };
 */
 struct potential_switch
 {
-    template< typename T >
-    auto operator[]( T && t )
-    {
-        return std::move( t );
-    }
-
     template< typename ... Ts >
     auto operator()( Ts &&... t )
     {
@@ -66,40 +60,17 @@ struct potential_switch
 };
 
 
-TEST_CASE( "Factorials are computed", "[factorial]" ) {
-    // REQUIRE( Factorial(1) == 1 );
-    // REQUIRE( Factorial(2) == 2 );
+TEST_CASE( "Factorials are computed", "[factorial]" ) 
+{
     using namespace eswitch_v4;
-    //using namespace std;
-
-    potential_switch ps;
-
-    auto r = ps[
-        Case( _1 == washington || _1 == new_york ) { std::cout << "Hi1\n"; } ^ fallthrough_,
-        Case( _1 == washington ) { std::cout << "Hi2\n"; }//, 
-        //Case( _1 == new_york ) { std::cout << "Hi3\n"; } 
-        ];
-
-    auto r2 = ps(
-        Case( _1 == washington || _1 == new_york ) { std::cout << "Hi1\n"; } ^ fallthrough_,
-        Case( _1 == washington ) { std::cout << "Hi2\n"; }, 
-        Case( _1 == new_york ) { std::cout << "Hi3\n"; } 
-    );
-
-
-    // auto rr = {
-    //     Case( _1 == washington || _1 == new_york ) { std::cout << "Hi1\n"; } ^ fallthrough_,
-    //     Case( _1 == washington ) { std::cout << "Hi2\n"; }//, 
-    //     //Case( _1 == new_york ) { std::cout << "Hi3\n"; } 
-    // };
-    r( std::make_tuple( washington ) );
-
-
-    bool executed = false;
-
-    //eswitch( washington, new_jersey, new_york )
-      //  >> case_( _1 == washington ) >> [&](){ executed = true; };
+    using namespace std;
     
-    //ASSERT_EQ(executed, true );
-
+    auto r = eswitch2( new_york )
+    (
+        Case( _1 == washington || _1 == new_york ) { std::cout << "Hi1\n"; return 1; },
+        Case( _1 == washington ) { std::cout << "Hi2\n"; return 0.0; }, 
+        Case( _1 == new_york ) { std::cout << "Hi3\n"; return 'c'; } 
+    );
+    
+    std::cout << "R=" << r << std::endl;
 }

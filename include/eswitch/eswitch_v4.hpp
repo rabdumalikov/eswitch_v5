@@ -12,6 +12,7 @@
 #include <experimental/tuple>
 #include <array>
 #include <cassert>
+#include <type_traits>
 
 //namespace std = std::experimental;
 
@@ -374,6 +375,8 @@ namespace eswitch_v4
             if( cnd( src_tuple ) ) func();
         }
 
+        using F = Func;
+
         Cnd  cnd;
         Func func;
         bool fallthrough = false;
@@ -438,26 +441,153 @@ namespace eswitch_v4
         return std::move( cp );
     }
 
-    template< typename Cnd1, typename Func1, typename Cnd2, typename Func2 >
-    auto operator,( condition_with_predicate< Cnd1, Func1 >&& cp1, condition_with_predicate< Cnd2, Func2 > && cp2 )
+    // return value is obtained lazy, thus we need mechanism to construct on demand
+    template< typename T >
+    class Ondemand_construction
     {
-        return conditions_with_predicate{ std::move( cp1 ), std::move( cp2 ) };
+        union data
+        {
+            data(){}
+           ~data(){}
+
+            T internals;
+        };
+
+        template< typename T__, typename T_ >
+        static void construct( Ondemand_construction< T__ > & lazy_one, T_ && value )
+        {
+            new (&lazy_one.dt.internals) T__( std::forward< T_ >( value ) );
+            lazy_one.was_set_ = true;
+        }
+    
+        data dt;
+        bool was_set_ = false;
+
+    public:
+
+        Ondemand_construction() = default;
+        Ondemand_construction( Ondemand_construction && t ) = delete;
+        Ondemand_construction& operator=( Ondemand_construction& ) = delete;
+        Ondemand_construction& operator=( Ondemand_construction&& ) = delete;
+        
+       ~Ondemand_construction()
+        {
+            if( was_set_ ) dt.internals.~T();
+        }
+
+        template< typename T_ >
+        explicit Ondemand_construction( T_ && t )
+        {
+            construct( *this, std::forward< T >( t ) );
+        }
+
+        Ondemand_construction& operator=( const T & t ) 
+        {
+            construct( *this, t );
+            return *this;
+        }
+
+        template< typename T_ >
+        Ondemand_construction( T_ && t, bool was_set )
+        {
+            if( was_set ) construct( *this, std::forward< T >( t ) );
+        }
+
+        operator bool() const { return was_set_; }
+
+        T release() 
+        { 
+            return std::move( dt.internals ); 
+        }
+
+        T release_with_check() 
+        { 
+            if( !was_set_ ) throw( std::logic_error( "Ondemand_construction is empty!!!" ) ); 
+
+            auto tmp = release();
+            was_set_ = false;
+
+            return tmp; 
+        }
+    };
+
+    template<>
+    class Ondemand_construction< void >
+    {
+    public:
+
+        Ondemand_construction() = default;
+        Ondemand_construction( Ondemand_construction && t ) = delete;
+        Ondemand_construction& operator=( Ondemand_construction& ) = delete;
+        Ondemand_construction& operator=( Ondemand_construction&& ) = delete;
+        
+       ~Ondemand_construction() = default;
+
+        template< typename T_ >
+        explicit Ondemand_construction( T_ && t )
+        {
+        }
+
+        template< typename T_ >
+        Ondemand_construction( T_ && t, bool was_set )
+        {
+        }
+
+        constexpr operator bool() const { return false; }
+    };
+
+    template< typename ... Args >
+    class eswitch2_impl
+    {
+        std::tuple< Args... > tup_;
+    public:
+        eswitch2_impl( Args ... ts ) : tup_{ ts... }
+        {            
+        }
+
+        template< typename T >
+        using underlying_t = other_details:: return_type_t< typename T::F >;
+
+        template< typename ... Cnds >
+        std::common_type_t< underlying_t< Cnds >... > operator()( Cnds && ... cnds )
+        {
+            constexpr auto generic_lambda = []< typename T, T... ints >
+                ( std::index_sequence< ints... > && int_seq, auto && tup, auto && f )
+                {
+                    ( f( std::get< ints >( tup ) ), ... );
+                };
+
+            using return_t = std::common_type_t< underlying_t< Cnds >... >;
+
+            Ondemand_construction< return_t > return_val;
+
+            generic_lambda( 
+                std::make_index_sequence< sizeof...( Cnds ) >{}, 
+                std::make_tuple( std::forward< Cnds >( cnds )... ), 
+                [ this, &return_val, break_ = false ]( const auto & cnd ) mutable
+                {
+                    if( !break_ && cnd.cnd( tup_ ) ) 
+                    {
+                        if constexpr( std::is_same< return_t, void >::value )
+                            cnd.func();
+                        else
+                        {
+                            return_val = cnd.func();
+                        }
+
+                        break_ = !cnd.fallthrough;
+                    }
+                });
+
+            if constexpr( !std::is_same< return_t, void >::value ) return return_val.release_with_check();
+        }
+    };
+
+    template< typename ... Ts >
+    auto eswitch2( Ts && ... ts )
+    {
+        return eswitch2_impl( std::forward< Ts >( ts )... );
     }
-
-    template< typename ... Cnds, typename Cnd2, typename Func2 >
-    auto operator,( conditions_with_predicate< Cnds... >&& cp1, condition_with_predicate< Cnd2, Func2 > && cp2 )
-    {
-        using tup = typename conditions_with_predicate< Cnds... >::conditions_t;
-
-        static constexpr auto N = std::tuple_size< tup >::value;
-
-        //std::make_index_sequence< N >{};
-
-        // return conditions_with_predicate{ std::get< N >( )} 
-
-        //     condition_with_predicate< Cnd1, Func1 >,
-        //     condition_with_predicate< Cnd2, Func2 > >{ std::move( cp1 ), std::move( cp2 ) };
-    }    
 
 
     template< int I, typename T >
@@ -575,70 +705,6 @@ namespace eswitch_v4
     template< typename TValue >
     struct Value_to_return{
         TValue return_value_;
-    };
-
-    // return value is obtained lazy, thus we need mechanism to construct on demand
-    template< typename T >
-    class Ondemand_construction
-    {
-        union data
-        {
-            data(){}
-           ~data(){}
-
-            T internals;
-        };
-
-        template< typename T__, typename T_ >
-        static void construct( Ondemand_construction< T__ > & lazy_one, T_ && value )
-        {
-            new (&lazy_one.dt.internals) T__( std::forward< T_ >( value ) );
-            lazy_one.was_set_ = true;
-        }
-    
-        data dt;
-        bool was_set_ = false;
-
-    public:
-
-        Ondemand_construction() = default;
-        Ondemand_construction( Ondemand_construction && t ) = delete;
-        Ondemand_construction& operator=( Ondemand_construction& ) = delete;
-        Ondemand_construction& operator=( Ondemand_construction&& ) = delete;
-        
-       ~Ondemand_construction()
-        {
-            if( was_set_ ) dt.internals.~T();
-        }
-
-        template< typename T_ >
-        explicit Ondemand_construction( T_ && t )
-        {
-            construct( *this, std::forward< T >( t ) );
-        }
-
-        template< typename T_ >
-        Ondemand_construction( T_ && t, bool was_set )
-        {
-            if( was_set ) construct( *this, std::forward< T >( t ) );
-        }
-
-        operator bool() const { return was_set_; }
-
-        T release() 
-        { 
-            return std::move( dt.internals ); 
-        }
-
-        T release_with_check() 
-        { 
-            if( !was_set_ ) throw( std::logic_error( "Ondemand_construction is empty!!!" ) ); 
-
-            auto tmp = release();
-            was_set_ = false;
-
-            return tmp; 
-        }
     };
 
     struct Switch_states
