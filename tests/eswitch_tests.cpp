@@ -17,6 +17,7 @@
 enum Place { unknown = 0, new_york=5, washington=129, new_jersey=501 };
 
 #define Case( cnds ) ( cnds ) >> [&]
+#define Default  ( _1 == extension::any{} ) >> [&]
 
 /*
     eswitch( param1, param2 )
@@ -49,33 +50,8 @@ enum Place { unknown = 0, new_york=5, washington=129, new_jersey=501 };
         Default { return false; }
     );
 */
-struct potential_switch
-{
-    template< typename ... Ts >
-    auto operator()( Ts &&... t )
-    {
-        return eswitch_v4::conditions_with_predicate{ std::forward< Ts >( t )... };
-    }
-};
 
-TEST_CASE( "Factorials are computed2", "[factorial]2" ) 
-{
-    using namespace eswitch_v4;
-    using namespace std;
-    
-}
-
-
-#include <string>
-#include <cstddef>
-#include <concepts>
-
-// concept
-template <class T, class U>
-concept Derived = std::is_base_of<U, T>::value;
- 
-
-TEST_CASE( "eswitch_v5::_equal_match", "" ) 
+TEST_CASE( "eswitch_v5::equal_match", "" ) 
 {
     using namespace eswitch_v4;
     using namespace std;
@@ -104,6 +80,53 @@ TEST_CASE( "eswitch_v5::_equal_match", "" )
         REQUIRE( r == 'c' );    
     }
 }
+
+TEST_CASE( "eswitch_v5::fallthrough", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    SECTION( "match_1st_and_2nd_case" )
+    {
+        int i = 0;
+
+        eswitch2( washington )
+        (
+            Case( _1 == washington ) { i += 1; } ^ fallthrough_,
+            Case( _1 != new_york )   { i += 2; } 
+        );
+
+        REQUIRE( i == 3 );    
+    }
+
+    SECTION( "no_match" )
+    {
+        int i = 0;
+
+        eswitch2( washington )
+        (
+            Case( _1 != washington ) { i += 1; } ^ fallthrough_,
+            Case( _1 == new_york )   { i += 2; } 
+        );
+
+        REQUIRE( i == 0 );    
+    }
+
+    SECTION( "no_match" )
+    {
+        int i = 0;
+
+        eswitch2( washington )
+        (
+            Case( _1 != washington ) { i += 1; } ^ fallthrough_,
+            Case( _1 == new_york )   { i += 2; },
+            Default { i += 6; }
+        );
+
+        REQUIRE( i == 6 );    
+    }
+}
+
 
 TEST_CASE( "eswitch_v5::not_equal_match", "" ) 
 {
@@ -135,6 +158,37 @@ TEST_CASE( "eswitch_v5::not_equal_match", "" )
     }
 }
 
+TEST_CASE( "eswitch_v5::default_match", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    SECTION( "match_default_case" )
+    {
+        auto r = 
+        eswitch2( new_jersey )
+        (
+            Case( _1 != new_jersey ) { return 123; },
+            Default { return 5.1; }
+        );
+
+        REQUIRE( r == 5.1 );    
+    }
+
+    SECTION( "match_default_case" )
+    {
+        auto r = 
+        eswitch2( new_jersey )
+        (
+            Case( _1 == washington ) { return 123; },
+            Case( _1 == new_york )   { return 'c'; },
+            Default { return 57.5; }
+        );
+
+        REQUIRE( r == 57.5 );    
+    }
+
+}
 
 TEST_CASE( "eswitch_v5::not_equal_match2", "" ) 
 {

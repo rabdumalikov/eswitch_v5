@@ -13,6 +13,7 @@
 #include <cassert>
 #include <type_traits>
 #include <optional>
+#include <concepts>
 
 namespace eswitch_v4
 {
@@ -78,24 +79,7 @@ namespace eswitch_v4
 
         template< typename ... Args >
         struct void_t { using type = void; };
-
-        template< typename T, typename = void >
-        struct has_static_member_index : std::false_type {};
-
-        template< typename T >
-        struct has_static_member_index< T, typename void_t< decltype( T::eswitch_index ) >::type > 
-            : std::true_type {};
-
-        template< typename T, typename = void >
-        struct is_determined : std::false_type {};
-
-        template< typename T >
-        struct is_determined< T, typename void_t< decltype( T::type ) >::type > 
-            : std::true_type {};
         
-        template <typename... Ts>
-        using has_common_type = typename details::is_determined< std::common_type_t<Ts...> >::type;
-
         template< typename T, typename = void >
         struct is_callable : std::false_type {};
 
@@ -107,6 +91,7 @@ namespace eswitch_v4
 
         template< typename T >
         struct holder{};
+
 
         template < template < typename > class H, typename S >
         void is_predicate_condition( H<S> && );
@@ -131,6 +116,9 @@ namespace eswitch_v4
         };
 
     } // namespace details
+
+    template< typename T >
+    concept IsCndPredicate = details::is_predicate< T >::value;
     
     namespace extension
     {             
@@ -284,33 +272,8 @@ namespace eswitch_v4
     template< typename T, typename F >
     condition_with_predicate( T, F ) -> condition_with_predicate< T, F >;
 
-
-    template< typename ... Cnds >
-    struct conditions_with_predicate
-    {    
-        template< typename ... Args >
-        conditions_with_predicate( Args && ... args ) : cnds_{ std::forward< Args >( args )... } {}
-        
-        template< typename TSrcTuple >
-        void operator()( const TSrcTuple & src_tuple ) const
-        {
-            std::apply( [&]( auto && ... args ) { ( args( src_tuple ), ... ); }, cnds_ );
-        }
-
-        using conditions_t = std::tuple< Cnds... >;
-    private:
-        conditions_t  cnds_;
-    };    
-    
-    template< class ... Ts > 
-    conditions_with_predicate( Ts && ... ) -> conditions_with_predicate< Ts... >;
-
-
-    template< int I, typename T >
-    auto operator==( const Index_< I >& idx, T && rhv )
-    {
-        return condition< Index_< I >, T >( Comparison_operators::equal_, std::forward< T >( rhv ) );
-    }
+    template< typename T >
+    concept Index = requires( T ){ T::eswitch_index; };
 
     template< typename T >
     concept Condition = requires( T t )
@@ -319,6 +282,19 @@ namespace eswitch_v4
         T::template is_out_of_range<int{}>(); 
     };
 
+    template< typename T >
+    concept ReturnValueNoneVoid = std::is_same_v< 
+        std::invoke_result_t< std::remove_reference_t< T > >,
+        void 
+    >;
+
+
+    template< Index Idx, typename T >
+    auto operator==( Idx idx, T && rhv )
+    {
+        return condition< Idx, T >( Comparison_operators::equal_, std::forward< T >( rhv ) );
+    }
+
     template< Condition T, typename Func >
     auto operator>>( T && cnd, Func && f ) requires details::is_callable< Func >::value
     {
@@ -326,14 +302,8 @@ namespace eswitch_v4
     }
     
     struct Fallthrough {};
+    struct Padding{};
 
-    template< typename T >
-    concept ReturnValueNoneVoid = std::is_same_v< 
-            std::invoke_result_t< std::remove_reference_t< T > >,
-            void 
-        >;
-
-    /// TODO change to CONCEPTS 
     template< typename Cnd, ReturnValueNoneVoid Func >
     auto operator^( condition_with_predicate< Cnd, Func >&& cp, const Fallthrough & )
     {
@@ -355,7 +325,7 @@ namespace eswitch_v4
         using underlying_t = std::invoke_result_t< typename T::F >;
         
         template< typename ... Cnds >
-        std::common_type_t< underlying_t< Cnds >... > operator()( Cnds && ... cnds )
+        auto operator()( Cnds && ... cnds )
         {
             constexpr auto generic_lambda = []< typename T, T... ints >
                 ( std::index_sequence< ints... > && int_seq, auto && tup, auto && f )
@@ -365,7 +335,8 @@ namespace eswitch_v4
 
             using return_t = std::common_type_t< underlying_t< Cnds >... >;
 
-            std::optional< return_t > return_value;
+            std::optional< std::conditional_t< std::is_same_v< return_t, void >, Padding, return_t >
+                > return_value;
 
             generic_lambda( 
                 std::make_index_sequence< sizeof...( Cnds ) >{}, 
@@ -374,7 +345,7 @@ namespace eswitch_v4
                 {
                     if( !break_ && cnd.cnd( tup_ ) ) 
                     {
-                        if constexpr( std::is_same< return_t, void >::value )
+                        if constexpr( std::is_same_v< return_t, void > )
                             cnd.func();
                         else
                             return_value = cnd.func();
@@ -383,7 +354,7 @@ namespace eswitch_v4
                     }
                 });
 
-            if constexpr( !std::is_same< return_t, void >::value ) 
+            if constexpr( !std::is_same_v< return_t, void > ) 
             {
                 if( return_value ) return return_value.value();
             }
@@ -396,15 +367,13 @@ namespace eswitch_v4
         return eswitch2_impl( std::forward< Ts >( ts )... );
     }
 
-
-
     template< typename T1, typename T2 >
     conditions( Logical_operators, T1, T2 ) -> conditions< T1, T2 >;
 
-    template< int32_t I, typename T >
-    auto operator!=( const Index_< I > idx, T && rhv )
+    template< Index Idx, typename T >
+    auto operator!=( Idx idx, T && rhv )
     {
-        return condition< Index_< I >, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
+        return condition< Idx, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
     }
 
     template< typename T1, typename T2, typename T3 >
@@ -451,38 +420,40 @@ namespace eswitch_v4
         }
     };
 
-    template< typename R, typename... Args, typename T, typename std::enable_if_t< details::has_static_member_index< T >::value, int > = 0 >
-    auto operator,( R(*pred)(Args...), const T& t1 )
+    template< typename R, typename... Args, Index Idx >
+    auto operator,( R(*pred)(Args...), Idx idx )
     {
-        return predicate_condition< R(*)(Args...), T::eswitch_index >( pred );
+        return predicate_condition< R(*)(Args...), Idx::eswitch_index >( pred );
     }
 
-    template< typename Pred, typename T, typename std::enable_if_t< !details::is_predicate< std::remove_reference_t< Pred > >::value && 
-        details::has_static_member_index< T >::value, int > = 0 >
-    auto operator,( Pred&& pred, const T& t1 )
+    template< typename Pred, Index Idx >
+        requires ( details::is_predicate< std::remove_reference_t< Pred > >::value == false )
+    auto operator,( Pred && pred, Idx t1 ) 
     {
-        return predicate_condition< std::remove_reference_t< Pred >, T::eswitch_index >( std::forward< Pred >( pred ) );
+        return predicate_condition< std::remove_reference_t< Pred >, Idx::eswitch_index >( 
+            std::forward< Pred >( pred ) );
     }
 
-    template < typename P, uint32_t ... I, typename T, typename std::enable_if_t< details::has_static_member_index< T >::value, int > = 0 >
-    predicate_condition< P, I..., T::eswitch_index > compose_new_predicate_condition_type( const predicate_condition< P, I... > & pred_cnd, const T& t1 ); 
-
-    template< typename Pred, typename T, typename std::enable_if_t< details::is_predicate< std::remove_reference_t< Pred > >::value, int > = 0 >
-    auto operator,( Pred&& pred, const T& t1 )
+    template < typename P, uint32_t ... I, Index Idx >
+    predicate_condition< P, I..., Idx::eswitch_index > 
+        compose_new_predicate_condition_type( const predicate_condition< P, I... > & pred_cnd, Idx idx );
+         
+    template< IsCndPredicate Pred, Index Idx >
+    auto operator,( Pred && pred, Idx idx )
     {
-        return decltype( compose_new_predicate_condition_type( pred, t1 ) )( std::move( pred.pred_ ) );
+        return decltype( compose_new_predicate_condition_type( pred, idx ) )( std::move( pred.pred_ ) );
     }
 
-    template< typename T1, typename P, uint32_t ... I >
-    auto operator&&( T1 && i, predicate_condition< P, I... > && j )
+    template< typename T1, Condition Cnd >
+    auto operator&&( T1 && i, Cnd && cnd )
     {
-        return conditions< T1, predicate_condition< P, I... > >( Logical_operators::and_, std::forward< T1 >( i ), std::move( j ) );
+        return conditions( Logical_operators::and_, std::forward< T1 >( i ), std::move( cnd ) );
     }
 
-    template< typename T1, typename P, uint32_t ... I >
-    auto operator||( T1 && i, predicate_condition< P, I... > && j )
+    template< typename T1, Condition Cnd >
+    auto operator||( T1 && i, Cnd && cnd )
     {
-        return conditions< T1, predicate_condition< P, I... > >( Logical_operators::or_, std::forward< T1 >( i ), std::move( j ) );
+        return conditions( Logical_operators::or_, std::forward< T1 >( i ), std::move( cnd ) );
     }
 
     template< typename T1, typename T2 >
@@ -491,33 +462,16 @@ namespace eswitch_v4
     template< typename T1, typename T2 >
     conditions< T1, T2 > case_( conditions< T1, T2 > && cnds );
      
-    struct Default_impl
-    {
-        condition< Index_< 0 >, extension::any > case_for_any_match = case_( _1 == extension::any{} );
-    };
-
     template< typename ... Ts >
     struct Always_false
     {
  	    static constexpr bool value = false;
     };
 
-    template< typename T1, typename T2 >
-    condition< T1, T2 > case_( condition< T1, T2 > && cnd )
+    template< Condition Cnd >
+    Cnd case_( Cnd && cnd )
     { 
         return std::move( cnd ); 
-    }
-
-    template< typename T1, typename T2 >
-    conditions< T1, T2 > case_( conditions< T1, T2 > && cnds )
-    { 
-        return std::move( cnds ); 
-    }
-
-    template< typename TPred, uint32_t ... Is >
-    auto case_( predicate_condition< TPred, Is... > && value )
-    { 
-        return std::move( value );  
     }
 
     template< typename T >
