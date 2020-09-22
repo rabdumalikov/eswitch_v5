@@ -3,10 +3,10 @@ cmake_minimum_required(VERSION 2.8.2)
 project(ESWITCH)
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
-    add_compile_options( -std=c++20 )
+    add_compile_options( -std=c++20 -stdlib=libc++ )
     message("ESWITCH Debug.build")
 ELSE()
-    add_compile_options( -O3 -std=c++20 )
+    add_compile_options( -O3 -std=c++20 -stdlib=libc++ )
     message("ESWITCH Release.build")
 ENDIF()
 
@@ -44,6 +44,7 @@ set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(${googlebench_SOURCE_DIR} ${googlebench_BINARY_DIR})
 
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 
 add_executable(eswitch_tests tests/eswitch_tests.cpp)
 target_include_directories(eswitch_tests PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)

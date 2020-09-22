@@ -7,7 +7,6 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include "eswitch_v4.hpp"
-//#include "gtest/gtest.h"
 #include <memory>
 #include <sstream>
 #include <iostream>
@@ -67,18 +66,107 @@ TEST_CASE( "Factorials are computed2", "[factorial]2" )
 }
 
 
-TEST_CASE( "Factorials are computed", "[factorial]" ) 
+#include <string>
+#include <cstddef>
+#include <concepts>
+
+// concept
+template <class T, class U>
+concept Derived = std::is_base_of<U, T>::value;
+ 
+
+TEST_CASE( "eswitch_v5::_equal_match", "" ) 
 {
     using namespace eswitch_v4;
     using namespace std;
-    
-    auto r = 
-    eswitch2( new_york )
-    (
-        Case( _1 == washington || _1 == new_york ) { std::cout << "Hi1\n"; return 0.0; },
-        Case( _1 == washington ) { std::cout << "Hi2\n"; return 1; }, 
-        Case( _1 == new_york ) { std::cout << "Hi3\n"; return 'c'; } 
-    );
-    
-    std::cout << "R=" << r << std::endl;
+
+    SECTION( "match_first_case" )
+    {
+        auto r = 
+        eswitch2( washington )
+        (
+            Case( _1 == washington ) { return 123; },
+            Case( _1 == new_york )   { return 'c'; } 
+        );
+
+        REQUIRE( r == 123 );    
+    }
+
+    SECTION( "match_second_case" )
+    {
+        auto r = 
+        eswitch2( new_york )
+        (
+            Case( _1 == washington ) { return 123; },
+            Case( _1 == new_york )   { return 'c'; } 
+        );
+
+        REQUIRE( r == 'c' );    
+    }
+}
+
+TEST_CASE( "eswitch_v5::not_equal_match", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    SECTION( "match_first_case" )
+    {
+        auto r = 
+        eswitch2( washington )
+        (
+            Case( _1 != washington ) { return 123; },
+            Case( _1 != new_york )   { return 'c'; } 
+        );
+
+        REQUIRE( r == 'c' );    
+    }
+
+    SECTION( "match_second_case" )
+    {
+        auto r = 
+        eswitch2( new_york )
+        (
+            Case( _1 != washington ) { return 123; },
+            Case( _1 != new_york )   { return 'c'; } 
+        );
+
+        REQUIRE( r == 123 );    
+    }
+}
+
+
+TEST_CASE( "eswitch_v5::not_equal_match2", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    auto is_even = []( auto v ) { return v % 2 == 0; };
+    auto is_odd  = []( auto v ) { return !(v % 2 == 0); };
+
+    SECTION( "match_first_case" )
+    {
+        auto r = 
+        eswitch2( 2 )
+        (
+            Case( ( is_even, _1 ) ) { return true; },
+            Case( ( is_odd, _1 ) ) { return false; } 
+
+        );
+
+        REQUIRE( r == true );    
+    }
+
+    SECTION( "match_second_case" )
+    {
+        auto r = 
+        eswitch2( 3 )
+        (
+            Case( ( is_even, _1 ) ) { return true; },
+            Case( ( is_odd, _1 ) ) { return false; } 
+
+        );
+
+        REQUIRE( r == false );    
+    }
 }

@@ -9,13 +9,10 @@
 #pragma once
 
 #include <tuple>
-#include <experimental/tuple>
 #include <array>
 #include <cassert>
 #include <type_traits>
-#include <experimental/optional>
-
-//namespace std = std::experimental;
+#include <optional>
 
 namespace eswitch_v4
 {
@@ -134,106 +131,7 @@ namespace eswitch_v4
         };
 
     } // namespace details
-
-    namespace other_details
-    {
-        template <typename F>
-        struct return_type_impl;
     
-        template <typename R, typename... Args>
-        struct return_type_impl<R(Args...)> { using type = R; };
-
-        template <typename R, typename... Args>
-        struct return_type_impl<R(Args..., ...)> { using type = R; };
-
-        template <typename R, typename... Args>
-        struct return_type_impl<R(*)(Args...)> { using type = R; };
-
-        template <typename R, typename... Args>
-        struct return_type_impl<R(*)(Args..., ...)> { using type = R; };
-
-        template <typename R, typename... Args>
-        struct return_type_impl<R(&)(Args...)> { using type = R; };
-
-        template <typename R, typename... Args>
-        struct return_type_impl<R(&)(Args..., ...)> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args...)> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args..., ...)> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args...) &> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args..., ...) &> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args...) &&> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args..., ...) &&> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args...) const> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args..., ...) const> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args...) const&> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args..., ...) const&> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args...) const&&> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args..., ...) const&&> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args...) volatile> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args..., ...) volatile> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args...) volatile&> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args..., ...) volatile&> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args...) volatile&&> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args..., ...) volatile&&> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args...) const volatile> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args..., ...) const volatile> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args...) const volatile&> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args..., ...) const volatile&> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args...) const volatile&&> { using type = R; };
-
-        template <typename R, typename C, typename... Args>
-        struct return_type_impl<R(C::*)(Args..., ...) const volatile&&> { using type = R; };
-
-        template <typename T>
-        using return_type_t = typename return_type_impl< decltype( &T::operator() ) >::type;
-    } // namespace other_details
-
     namespace extension
     {             
         template< typename T, typename TArray >
@@ -396,7 +294,7 @@ namespace eswitch_v4
         template< typename TSrcTuple >
         void operator()( const TSrcTuple & src_tuple ) const
         {
-            std::experimental::apply( [&]( auto && ... args ) { ( args( src_tuple ), ... ); }, cnds_ );
+            std::apply( [&]( auto && ... args ) { ( args( src_tuple ), ... ); }, cnds_ );
         }
 
         using conditions_t = std::tuple< Cnds... >;
@@ -414,27 +312,29 @@ namespace eswitch_v4
         return condition< Index_< I >, T >( Comparison_operators::equal_, std::forward< T >( rhv ) );
     }
 
-    template< typename TIndex, typename T, typename Func >
-    auto operator>>( condition< TIndex, T > && cnd, Func && f )
+    template< typename T >
+    concept Condition = requires( T t )
+    { 
+        t( std::make_tuple() ); 
+        T::template is_out_of_range<int{}>(); 
+    };
+
+    template< Condition T, typename Func >
+    auto operator>>( T && cnd, Func && f ) requires details::is_callable< Func >::value
     {
         return condition_with_predicate{ std::move( cnd ), std::move( f ) };
     }
-
-    template< typename TCnd1, typename TCnd2, typename Func >
-    auto operator>>( conditions< TCnd1, TCnd2 > && cnds, Func && f )
-    {
-        return condition_with_predicate{ std::move( cnds ), std::move( f ) };
-    }
-
+    
     struct Fallthrough {};
 
+    template< typename T >
+    concept ReturnValueNoneVoid = std::is_same_v< 
+            std::invoke_result_t< std::remove_reference_t< T > >,
+            void 
+        >;
+
     /// TODO change to CONCEPTS 
-    template< typename Cnd, typename Func, 
-        std::enable_if_t< 
-            std::is_same< 
-                other_details::return_type_t< std::remove_reference_t< Func > >, 
-                void 
-            >::value, int > = 0 >
+    template< typename Cnd, ReturnValueNoneVoid Func >
     auto operator^( condition_with_predicate< Cnd, Func >&& cp, const Fallthrough & )
     {
         cp.fallthrough = true;
@@ -452,8 +352,8 @@ namespace eswitch_v4
         }
 
         template< typename T >
-        using underlying_t = other_details:: return_type_t< typename T::F >;
-
+        using underlying_t = std::invoke_result_t< typename T::F >;
+        
         template< typename ... Cnds >
         std::common_type_t< underlying_t< Cnds >... > operator()( Cnds && ... cnds )
         {
@@ -465,7 +365,7 @@ namespace eswitch_v4
 
             using return_t = std::common_type_t< underlying_t< Cnds >... >;
 
-            std::experimental::optional< return_t > return_value;
+            std::optional< return_t > return_value;
 
             generic_lambda( 
                 std::make_index_sequence< sizeof...( Cnds ) >{}, 
@@ -497,8 +397,12 @@ namespace eswitch_v4
     }
 
 
-    template< int I, typename T >
-    auto operator!=( const Index_< I >& idx, T && rhv )
+
+    template< typename T1, typename T2 >
+    conditions( Logical_operators, T1, T2 ) -> conditions< T1, T2 >;
+
+    template< int32_t I, typename T >
+    auto operator!=( const Index_< I > idx, T && rhv )
     {
         return condition< Index_< I >, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
     }
@@ -506,13 +410,13 @@ namespace eswitch_v4
     template< typename T1, typename T2, typename T3 >
     auto operator&&( T1 && i, condition< T2, T3 > && j )
     {
-        return conditions< T1, condition< T2, T3 > >( Logical_operators::and_, std::forward< T1 >( i ), std::move( j ) );
+        return conditions( Logical_operators::and_, std::forward< T1 >( i ), std::move( j ) );
     }
 
     template< typename T1, typename T2, typename T3 >
     auto operator||( T1 && i, condition< T2, T3 > && j )
     {
-        return conditions< T1, condition< T2, T3 > >( Logical_operators::or_, std::forward< T1 >( i ), std::move( j ) );
+        return conditions( Logical_operators::or_, std::forward< T1 >( i ), std::move( j ) );
     }
 
     template< typename TPred, uint32_t ... Is >
