@@ -14,6 +14,7 @@
 #include <type_traits>
 #include <optional>
 #include <concepts>
+#include <any>
 
 namespace eswitch_v4
 {
@@ -165,6 +166,19 @@ namespace eswitch_v4
             }
         };        
     } // namespace extension
+
+
+    template< typename T >
+    struct my_type
+    {
+        using type = T;
+    };
+
+    template< typename T2 >
+    static bool operator==( const std::any & t1, my_type< T2 > )
+    {
+        return std::any_cast< T2 >(&t1) != nullptr;        
+    }
 
     template< typename TIndex, typename T >
     class condition
@@ -356,7 +370,7 @@ namespace eswitch_v4
 
             if constexpr( !std::is_same_v< return_t, void > ) 
             {
-                if( return_value ) return return_value.value();
+                return return_value.value();
             }
         }
     };

@@ -224,3 +224,84 @@ TEST_CASE( "eswitch_v5::not_equal_match2", "" )
         REQUIRE( r == false );    
     }
 }
+
+
+
+TEST_CASE( "eswitch_v5::std_any_failure", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    std::any a = 10;
+
+    REQUIRE_THROWS_AS( eswitch2( a )
+    (
+        Case( _1 == my_type< float >{} ) { return true; }
+    ), std::bad_optional_access );    
+}
+
+TEST_CASE( "eswitch_v5::std_any_default", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    std::any a = 10;
+
+    REQUIRE_FALSE( 
+        eswitch2( a )
+        (
+            Case( _1 == my_type< float >{} ) { return true; },
+            Default { return false; }
+        ) 
+    );    
+}
+
+TEST_CASE( "eswitch_v5::std_any_success", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    SECTION( "match_2nd_case" )
+    {
+        std::any a = 10;
+
+        REQUIRE( 
+            eswitch2( a )
+            (
+                Case( _1 == my_type< float >{} ) { return false; },
+                Case( _1 == my_type< int >{} ) { return true; },
+                Default { return false; }
+            ) 
+        );    
+    }
+
+    SECTION( "match_1st_case" )
+    {
+        float f = .7;
+        std::any a = f;
+
+        REQUIRE( 
+            eswitch2( a )
+            (
+                Case( _1 == my_type< float >{} ) { return true; },
+                Case( _1 == my_type< int >{} ) { return false; },
+                Default { return false; }
+            ) 
+        );    
+    }
+
+    SECTION( "match_complex_type" )
+    {
+        std::any a = std::string{ "Hello" };
+
+        REQUIRE( 
+            eswitch2( a )
+            (
+                Case( _1 == my_type< float >{} ) { return false; },
+                Case( _1 == my_type< std::string >{} ) { return true; },
+                Default { return false; }
+            ) 
+        );    
+    }
+
+}
