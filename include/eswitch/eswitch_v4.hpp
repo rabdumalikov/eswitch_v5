@@ -16,15 +16,35 @@
 #include <concepts>
 #include <any>
 
+/// TODO
+// move Default case to the END
+
 namespace eswitch_v4
 {
+        
+    template< typename T >
+    concept Index = requires( T ){ T::eswitch_index; };
+
+    template< typename T >
+    concept Condition = requires( T t )
+    { 
+        t( std::make_tuple() ); 
+        T::template is_out_of_range<int{}>(); 
+    };
+
+    template< typename T >
+    concept ReturnValueNoneVoid = std::is_same_v< 
+        std::invoke_result_t< std::remove_reference_t< T > >,
+        void 
+    >;
+
     template< typename TPred, uint32_t ... Is >
     class predicate_condition;
 
-    template< typename TIndex, typename T >
+    template< Index TIndex, typename T >
     class condition;
 
-    template< typename TCnd1, typename TCnd2 >
+    template< Condition TCnd1, Condition TCnd2 >
     class conditions;
 
     enum class Logical_operators{ and_, or_ };
@@ -180,7 +200,13 @@ namespace eswitch_v4
         return std::any_cast< T2 >(&t1) != nullptr;        
     }
 
-    template< typename TIndex, typename T >
+    template< typename T2 >
+    static auto get_value( const std::any & t1, my_type< T2 > )
+    {
+        return std::any_cast< T2 >(t1);        
+    }
+
+    template< Index TIndex, typename T >
     class condition
     {
         Comparison_operators cmp_operator;        
@@ -197,6 +223,12 @@ namespace eswitch_v4
         bool operator()( const TSrcTuple & src_tuple ) const
         {
             return compare( cmp_operator, std::get< TIndex::eswitch_index >( src_tuple ), value_ );         
+        }
+
+        template< typename TSrcTuple >
+        bool value( const TSrcTuple & src_tuple ) const
+        {
+            return get_value( std::get< TIndex::eswitch_index >( src_tuple ), value_ );
         }
 
         template< int MaxIndex >
@@ -222,7 +254,7 @@ namespace eswitch_v4
         }
     };
 
-    template< typename TCnd1, typename TCnd2 >
+    template< Condition TCnd1, Condition TCnd2 >
     class conditions
     {
         Logical_operators logical_operator;
@@ -231,18 +263,19 @@ namespace eswitch_v4
 
     public:
 
-        template< typename T_1, typename T_2 >
-        conditions( const Logical_operators logical_operator, T_1 && cnd1, T_2 && cnd2 ) 
+        template< Condition Cnd1, Condition Cnd2 >
+        conditions( const Logical_operators logical_operator, Cnd1 && cnd1, Cnd2 && cnd2 ) 
             : logical_operator( logical_operator )
-            , cnd1_( std::forward< T_1 >( cnd1 ) )
-            , cnd2_( std::forward< T_2 >( cnd2 ) )
+            , cnd1_( std::forward< Cnd1 >( cnd1 ) )
+            , cnd2_( std::forward< Cnd2 >( cnd2 ) )
             {                
             }
 
         template< int MaxIndex >
         static constexpr bool is_out_of_range() 
         {
-            return TCnd1::template is_out_of_range< MaxIndex >() || TCnd2::template is_out_of_range< MaxIndex >();
+            return TCnd1::template is_out_of_range< MaxIndex >() || 
+                   TCnd2::template is_out_of_range< MaxIndex >();
         }
      
         template< typename TSrcTuple >
@@ -286,22 +319,6 @@ namespace eswitch_v4
     template< typename T, typename F >
     condition_with_predicate( T, F ) -> condition_with_predicate< T, F >;
 
-    template< typename T >
-    concept Index = requires( T ){ T::eswitch_index; };
-
-    template< typename T >
-    concept Condition = requires( T t )
-    { 
-        t( std::make_tuple() ); 
-        T::template is_out_of_range<int{}>(); 
-    };
-
-    template< typename T >
-    concept ReturnValueNoneVoid = std::is_same_v< 
-        std::invoke_result_t< std::remove_reference_t< T > >,
-        void 
-    >;
-
 
     template< Index Idx, typename T >
     auto operator==( Idx idx, T && rhv )
@@ -327,11 +344,11 @@ namespace eswitch_v4
     }
 
     template< typename ... Args >
-    class eswitch2_impl
+    class eswitch_impl
     {
         std::tuple< Args... > tup_;
     public:
-        eswitch2_impl( Args ... ts ) : tup_{ ts... }
+        eswitch_impl( Args ... ts ) : tup_{ ts... }
         {            
         }
 
@@ -359,6 +376,7 @@ namespace eswitch_v4
                 {
                     if( !break_ && cnd.cnd( tup_ ) ) 
                     {
+                        
                         if constexpr( std::is_same_v< return_t, void > )
                             cnd.func();
                         else
@@ -378,11 +396,11 @@ namespace eswitch_v4
     template< typename ... Ts >
     auto eswitch2( Ts && ... ts )
     {
-        return eswitch2_impl( std::forward< Ts >( ts )... );
+        return eswitch_impl( std::forward< Ts >( ts )... );
     }
 
-    template< typename T1, typename T2 >
-    conditions( Logical_operators, T1, T2 ) -> conditions< T1, T2 >;
+    template< Condition Cnd1, Condition Cnd2 >
+    conditions( Logical_operators, Cnd1, Cnd2 ) -> conditions< Cnd1, Cnd2 >;
 
     template< Index Idx, typename T >
     auto operator!=( Idx idx, T && rhv )

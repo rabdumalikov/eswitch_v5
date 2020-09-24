@@ -290,6 +290,20 @@ TEST_CASE( "eswitch_v5::std_any_success", "" )
         );    
     }
 
+    SECTION( "match_1st_case" )
+    {
+        float f = .7;
+        std::any a = f;
+
+        REQUIRE( 
+            eswitch2( a )
+            (
+                Case( _1 == my_type< float >{} || _1 == my_type< int >{} ) { return true; },
+                Default { return false; }
+            ) 
+        );    
+    }
+
     SECTION( "match_complex_type" )
     {
         std::any a = std::string{ "Hello" };
