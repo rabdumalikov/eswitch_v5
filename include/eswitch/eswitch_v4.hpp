@@ -15,6 +15,7 @@
 #include <optional>
 #include <concepts>
 #include <any>
+#include <variant>
 
 /// TODO
 // move Default case to the END
@@ -105,10 +106,16 @@ namespace eswitch_v4
         auto Just_find_out_return_type( T && value ){ return std::forward< T >( value ); }
         
         template< typename T >
-        struct has_value : std::false_type {};
+        struct is_condition : std::false_type {};
         
         template< Index I, typename T >
-        struct has_value< condition< I, T > > : std::true_type {};
+        struct is_condition< condition< I, T > > : std::true_type {};
+        
+        template< typename T >
+        struct is_std_variant : std::false_type {};
+        
+        template< typename ... T >
+        struct is_std_variant< std::variant< T... > > : std::true_type {};
         
         template< typename T, typename = void >
         struct is_callable : std::false_type {};
@@ -236,10 +243,22 @@ namespace eswitch_v4
         return std::any_cast< T2 >(&t1) != nullptr;        
     }
 
+    template< typename ... Args, typename T2 >
+    static bool operator==( const std::variant< Args... > & t1, my_type< T2 > )
+    {
+        return std::get_if< T2 >(&t1) != nullptr;        
+    }
+
     template< typename T2 >
     static auto get_value( const std::any & t1, my_type< T2 > )
     {
         return std::any_cast< T2 >(t1);        
+    }
+
+    template< typename ... Args, typename T2 >
+    static auto get_value( const std::variant< Args... > & t1, my_type< T2 > )
+    {
+        return std::get< T2 >(t1);        
     }
 
     template< Index TIndex, typename T >
@@ -402,10 +421,10 @@ namespace eswitch_v4
 
             using return_t = std::common_type_t< underlying_t< Cnds >... >;
 
-            std::optional< std::conditional_t< std::is_same_v< return_t, void >, Padding, return_t >
-                > return_value;
-
             constexpr auto has_return_value = !std::is_same_v< return_t, void >;
+
+            std::optional< std::conditional_t< has_return_value, return_t, Padding >
+                > return_value;
 
             generic_lambda( 
                 std::make_index_sequence< sizeof...( Cnds ) >{}, 
@@ -417,8 +436,9 @@ namespace eswitch_v4
                     constexpr auto amount_args = details::amount_args_v< decltype(cnd.func) >;
 
                     if constexpr( sizeof...( Args ) == 1 && amount_args == 1 &&
-                        details::has_value< decltype( cnd.cnd ) >::value &&
-                        std::is_same_v< std::decay_t< decltype( std::get< 0 >( tup_ ) ) >, std::any >)
+                        details::is_condition< decltype( cnd.cnd ) >::value &&
+                        ( std::is_same_v< std::decay_t< decltype( std::get< 0 >( tup_ ) ) >, std::any > || 
+                          details::is_std_variant< std::decay_t< decltype( std::get< 0 >( tup_ ) ) > >::value ))
                     {
                         if constexpr( !has_return_value )
                             cnd.func( cnd.cnd.value( tup_ ) );

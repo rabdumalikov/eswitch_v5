@@ -354,3 +354,53 @@ TEST_CASE( "eswitch_v5::std_any_only", "" )
         REQUIRE( r == "STRhello" ); 
     }
 }
+
+TEST_CASE( "eswitch_v5::std_variant_only", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    SECTION( "match_2nd_case" )
+    {
+        std::variant< int, double > a = 19.9;
+
+        auto r = eswitch2( a )
+        (
+            Case( _1 == my_type< double >{} )( const double val ) { return val - 1; },
+            Case( _1 == my_type< int >{} )  { return 0; },
+            Default { return 0; }
+        );
+
+        REQUIRE( r == 18.9 ); 
+    }
+
+    SECTION( "match_3rd_case" )
+    {
+        std::variant< int, float, std::string > a = std::string{"STR"};
+
+        auto r = eswitch2( a )
+        (
+            Case( _1 == my_type< float >{} ) { return ""; },
+            Case( _1 == my_type< int >{} )( const int val ) { return ""; },
+            Case( _1 == my_type< std::string >{} )( const std::string & val ) { return val + "hello"; },
+            Default { return ""; }
+        );
+
+        REQUIRE( r == "STRhello" ); 
+    }
+
+    SECTION( "match_Default_case" )
+    {
+        std::variant< int, double, std::string > a = 16.7;
+
+        auto r = eswitch2( a )
+        (
+            //Case( _1 == my_type< float >{} ) { return ""; },
+            Case( _1 == my_type< int >{} )( const int val ) { return ""; },
+            Case( _1 == my_type< std::string >{} )( const std::string & val ) { return val + "hello"; },
+            Default { return "Default"; }
+        );
+
+        REQUIRE( r == "Default" ); 
+    }
+}
