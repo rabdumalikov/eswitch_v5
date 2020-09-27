@@ -16,8 +16,8 @@
 
 enum Place { unknown = 0, new_york=5, washington=129, new_jersey=501 };
 
-#define Case( cnds ) ( cnds ) >> [&]
-#define Default  ( _1 == extension::any{} ) >> [&]
+#define Case( cnds ) ( cnds ) % [&]
+#define Default  ( _1 == extension::any{} ) % [&]
 
 /*
     eswitch( param1, param2 )
@@ -318,4 +318,39 @@ TEST_CASE( "eswitch_v5::std_any_success", "" )
         );    
     }
 
+}
+
+TEST_CASE( "eswitch_v5::std_any_only", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    SECTION( "match_2nd_case" )
+    {
+        std::any a = 10;
+
+        auto r = eswitch2( a )
+        (
+            Case( _1 == my_type< float >{} )  { return 0; },
+            Case( _1 == my_type< int >{} )( const int val ) { return val + 11; },
+            Default { return 0; }
+        );
+
+        REQUIRE( r == 21 ); 
+    }
+
+    SECTION( "match_3rd_case" )
+    {
+        std::any a = std::string{"STR"};
+
+        auto r = eswitch2( a )
+        (
+            Case( _1 == my_type< float >{} ) { return ""; },
+            Case( _1 == my_type< int >{} )( const int val ) { return ""; },
+            Case( _1 == my_type< std::string >{} )( const std::string & val ) { return val + "hello"; },
+            Default { return ""; }
+        );
+
+        REQUIRE( r == "STRhello" ); 
+    }
 }

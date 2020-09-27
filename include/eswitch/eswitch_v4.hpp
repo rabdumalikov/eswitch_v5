@@ -33,6 +33,12 @@ namespace eswitch_v4
     };
 
     template< typename T >
+    concept ConditionClass = requires( T t )
+    { 
+        t.value();
+    };
+
+    template< typename T >
     concept ReturnValueNoneVoid = std::is_same_v< 
         std::invoke_result_t< std::remove_reference_t< T > >,
         void 
@@ -97,15 +103,18 @@ namespace eswitch_v4
     {
         template< typename T >
         auto Just_find_out_return_type( T && value ){ return std::forward< T >( value ); }
-
-        template< typename ... Args >
-        struct void_t { using type = void; };
+        
+        template< typename T >
+        struct has_value : std::false_type {};
+        
+        template< Index I, typename T >
+        struct has_value< condition< I, T > > : std::true_type {};
         
         template< typename T, typename = void >
         struct is_callable : std::false_type {};
 
         template< typename T >
-        struct is_callable< T, typename void_t< decltype( std::declval< T >()() ) >::type > 
+        struct is_callable< T, std::void_t< decltype( std::declval< T >()() ) > > 
             : std::true_type {};
 
         static bool unreachable() { assert( false ); return false; }
@@ -135,6 +144,33 @@ namespace eswitch_v4
         {
             static constexpr bool value = std::is_same< decltype( is_predicate_condition( holder< T >() ) ), bool >::value;
         };
+
+
+        template< typename T >
+        struct amount_args_function_has
+        {
+            static constexpr int value = 0;
+        };
+
+        template< typename R, typename C, typename ... Args >
+        struct amount_args_function_has< R(C::*)(Args...) const >
+        {
+            static constexpr int value = sizeof...(Args);
+            using type = R;
+        };
+
+        template< typename R, typename C, typename ... Args >
+        struct amount_args_function_has< R(C::*)(Args...) >
+        {
+            static constexpr int value = sizeof...(Args);
+            using type = R;
+        };
+
+        template< typename T >
+        constexpr bool amount_args_v = amount_args_function_has< decltype( &T::operator() ) >::value;
+
+        template< typename T >
+        using invoke_result_t = typename amount_args_function_has< decltype( &T::operator() ) >::type;
 
     } // namespace details
 
@@ -226,7 +262,7 @@ namespace eswitch_v4
         }
 
         template< typename TSrcTuple >
-        bool value( const TSrcTuple & src_tuple ) const
+        auto value( const TSrcTuple & src_tuple ) const
         {
             return get_value( std::get< TIndex::eswitch_index >( src_tuple ), value_ );
         }
@@ -327,7 +363,7 @@ namespace eswitch_v4
     }
 
     template< Condition T, typename Func >
-    auto operator>>( T && cnd, Func && f ) requires details::is_callable< Func >::value
+    auto operator%( T && cnd, Func && f ) //requires details::is_callable< Func >::value
     {
         return condition_with_predicate{ std::move( cnd ), std::move( f ) };
     }
@@ -353,7 +389,7 @@ namespace eswitch_v4
         }
 
         template< typename T >
-        using underlying_t = std::invoke_result_t< typename T::F >;
+        using underlying_t = details::invoke_result_t< typename T::F >;
         
         template< typename ... Cnds >
         auto operator()( Cnds && ... cnds )
@@ -369,29 +405,49 @@ namespace eswitch_v4
             std::optional< std::conditional_t< std::is_same_v< return_t, void >, Padding, return_t >
                 > return_value;
 
+            constexpr auto has_return_value = !std::is_same_v< return_t, void >;
+
             generic_lambda( 
                 std::make_index_sequence< sizeof...( Cnds ) >{}, 
                 std::make_tuple( std::forward< Cnds >( cnds )... ), 
                 [ this, &return_value, break_ = false ]( const auto & cnd ) mutable
                 {
-                    if( !break_ && cnd.cnd( tup_ ) ) 
-                    {
-                        
-                        if constexpr( std::is_same_v< return_t, void > )
-                            cnd.func();
-                        else
-                            return_value = cnd.func();
+                    if( break_ || !cnd.cnd( tup_ ) ) return;
 
-                        break_ = !cnd.fallthrough;
+                    constexpr auto amount_args = details::amount_args_v< decltype(cnd.func) >;
+
+                    if constexpr( sizeof...( Args ) == 1 && amount_args == 1 &&
+                        details::has_value< decltype( cnd.cnd ) >::value &&
+                        std::is_same_v< std::decay_t< decltype( std::get< 0 >( tup_ ) ) >, std::any >)
+                    {
+                        if constexpr( !has_return_value )
+                            cnd.func( cnd.cnd.value( tup_ ) );
+                        else
+                            return_value = cnd.func( cnd.cnd.value( tup_ ) );
+                            
                     }
+                    else if constexpr( amount_args == 0 )
+                    {
+                        if constexpr( !has_return_value )
+                        {
+                            cnd.func();
+                        }
+                        else
+                        { 
+                            return_value = cnd.func();
+                        }
+                    }
+
+                    break_ = !cnd.fallthrough;
                 });
 
-            if constexpr( !std::is_same_v< return_t, void > ) 
+            if constexpr( has_return_value ) 
             {
                 return return_value.value();
             }
         }
     };
+
 
     template< typename ... Ts >
     auto eswitch2( Ts && ... ts )
