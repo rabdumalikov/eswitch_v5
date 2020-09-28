@@ -110,13 +110,22 @@ namespace eswitch_v4
         
         template< Index I, typename T >
         struct is_condition< condition< I, T > > : std::true_type {};
-        
+
+        template< typename T >
+        constexpr bool is_condition_v = is_condition< T >::value;
+
         template< typename T >
         struct is_std_variant : std::false_type {};
         
         template< typename ... T >
         struct is_std_variant< std::variant< T... > > : std::true_type {};
-        
+
+        template< typename ... T >
+        constexpr bool is_std_variant_v = is_std_variant< T... >::value;
+
+        template< typename T >
+        constexpr bool is_std_any_v = std::is_same_v< T, std::any >;
+
         template< typename T, typename = void >
         struct is_callable : std::false_type {};
 
@@ -156,7 +165,6 @@ namespace eswitch_v4
         template< typename T >
         struct amount_args_function_has
         {
-            static constexpr int value = 0;
         };
 
         template< typename R, typename C, typename ... Args >
@@ -173,17 +181,62 @@ namespace eswitch_v4
             using type = R;
         };
 
-        template< typename T >
-        constexpr bool amount_args_v = amount_args_function_has< decltype( &T::operator() ) >::value;
+        template< typename T, typename = void >
+        struct amount_args{};
 
         template< typename T >
-        using invoke_result_t = typename amount_args_function_has< decltype( &T::operator() ) >::type;
+        struct amount_args< T, std::void_t< decltype( &T::operator() ) > >
+        { 
+            constexpr static auto value = amount_args_function_has< decltype( &T::operator() ) >::value;
+        };
+
+        template< typename T >
+        constexpr bool amount_args_v = amount_args< T >::value;
+
+        template< typename T, typename = void >
+        struct invoke_result {};
+        
+        template< typename T >
+        struct invoke_result< T, std::void_t< decltype( &T::operator() ) > >
+        {
+            using type = typename amount_args_function_has< decltype( &T::operator() ) >::type;
+        };
+
+        template< typename T >
+        using invoke_result_t = typename invoke_result< T >::type;
+
+        template< typename ... Ts >
+        struct Always_false
+        {
+            static constexpr bool value = false;
+        };
+
+        template< typename T, typename = void >
+        struct has_type : std::false_type{};
+
+        template< typename T >
+        struct has_type< T, std::void_t< typename T::type > > : std::true_type{};
+
+        template< typename T >
+        constexpr bool has_type_v = has_type< T >::value;
+
+        template< typename T, typename = void >
+        struct has_value : std::false_type{};
+
+        template< typename T >
+        struct has_value< T, std::void_t< decltype( T::value ) > > : std::true_type{};
+
+        template< typename T >
+        constexpr bool has_value_v = has_value< T >::value;
+
+        template< typename T >
+        constexpr bool has_not_value_v = !has_value< T >::value;
 
     } // namespace details
-
+    
     template< typename T >
     concept IsCndPredicate = details::is_predicate< T >::value;
-    
+
     namespace extension
     {             
         template< typename T, typename TArray >
@@ -277,6 +330,9 @@ namespace eswitch_v4
         template< typename TSrcTuple >
         bool operator()( const TSrcTuple & src_tuple ) const
         {
+            static_assert( !is_out_of_range< std::tuple_size_v< TSrcTuple > >(), 
+                "Case Index is OUT OF RANGE" ); 
+
             return compare( cmp_operator, std::get< TIndex::eswitch_index >( src_tuple ), value_ );         
         }
 
@@ -408,10 +464,32 @@ namespace eswitch_v4
         }
 
         template< typename T >
+        using underlying = details::invoke_result< typename T::F >;
+
+        template< typename T >
         using underlying_t = details::invoke_result_t< typename T::F >;
-        
+
+        template< typename T >
+        using args_t = details::amount_args< typename T::F >;
+
         template< typename ... Cnds >
         auto operator()( Cnds && ... cnds )
+        {
+            if constexpr( ( details::has_not_value_v< args_t< Cnds > > || ... ) )
+            {
+                static_assert( !( details::has_not_value_v< args_t< Cnds > > || ... ), 
+                    "Predicate with 'auto' argument aren't ALLOWED!" );
+
+            }        
+            else if constexpr( ( details::has_type_v< underlying< Cnds > > && ... ) )
+            {
+                static_assert( details::has_type_v< std::common_type< underlying_t< Cnds >... > >, 
+                    "Inconsistent 'Return type'!" );
+            }
+        }
+
+        template< typename ... Cnds >
+        auto operator()( Cnds && ... cnds ) requires details::has_type_v< std::common_type< underlying_t< Cnds >... > >
         {
             constexpr auto generic_lambda = []< typename T, T... ints >
                 ( std::index_sequence< ints... > && int_seq, auto && tup, auto && f )
@@ -431,20 +509,26 @@ namespace eswitch_v4
                 std::make_tuple( std::forward< Cnds >( cnds )... ), 
                 [ this, &return_value, break_ = false ]( const auto & cnd ) mutable
                 {
+                    using namespace details;
+
                     if( break_ || !cnd.cnd( tup_ ) ) return;
 
-                    constexpr auto amount_args = details::amount_args_v< decltype(cnd.func) >;
+                    constexpr auto amount_args = amount_args_v< decltype(cnd.func) >;
+
+                    using first_type_t = std::decay_t< decltype( std::get< 0 >( tup_ ) ) >;
 
                     if constexpr( sizeof...( Args ) == 1 && amount_args == 1 &&
-                        details::is_condition< decltype( cnd.cnd ) >::value &&
-                        ( std::is_same_v< std::decay_t< decltype( std::get< 0 >( tup_ ) ) >, std::any > || 
-                          details::is_std_variant< std::decay_t< decltype( std::get< 0 >( tup_ ) ) > >::value ))
+                                  is_condition_v< decltype( cnd.cnd ) > &&
+                                ( is_std_any_v< first_type_t > || is_std_variant_v< first_type_t > ) )
                     {
                         if constexpr( !has_return_value )
+                        {
                             cnd.func( cnd.cnd.value( tup_ ) );
+                        }
                         else
+                        {
                             return_value = cnd.func( cnd.cnd.value( tup_ ) );
-                            
+                        }                            
                     }
                     else if constexpr( amount_args == 0 )
                     {
@@ -511,6 +595,9 @@ namespace eswitch_v4
         template< typename TSrcTuple >
         bool operator()( const TSrcTuple & src_tuple ) const
         {
+            static_assert( !is_out_of_range< std::tuple_size_v< TSrcTuple > >(), 
+                "Case Index is OUT OF RANGE" ); 
+
             return pred_( std::get< Is >( src_tuple )... );
         }
 
@@ -570,12 +657,6 @@ namespace eswitch_v4
     template< typename T1, typename T2 >
     conditions< T1, T2 > case_( conditions< T1, T2 > && cnds );
      
-    template< typename ... Ts >
-    struct Always_false
-    {
- 	    static constexpr bool value = false;
-    };
-
     template< Condition Cnd >
     Cnd case_( Cnd && cnd )
     { 
@@ -607,26 +688,3 @@ namespace eswitch_v4
     static const Fallthrough fallthrough_;
 
 } // namespace eswitch_v4
-
-#define CASE_OVERLOAD( TCase, TCmp ) \
-namespace eswitch_v4\
-{\
-    template< int I >\
-    auto operator==( const eswitch_v4::Index_< I > & val, const TCase & rgx )\
-    {\
-        return val == TCmp( rgx );\
-    }\
-\
-    template< int I >\
-    auto operator==( const eswitch_v4::Index_< I > & val, TCase & rgx )\
-    {\
-        return val == TCmp( rgx );\
-    }\
-\
-    template< int I >\
-    auto operator==( const eswitch_v4::Index_< I > & val, TCase && rgx )\
-    {\
-        return val == TCmp( std::move( rgx ) );\
-    }\
-}
-

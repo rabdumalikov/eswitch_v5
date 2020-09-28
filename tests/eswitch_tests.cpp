@@ -404,3 +404,65 @@ TEST_CASE( "eswitch_v5::std_variant_only", "" )
         REQUIRE( r == "Default" ); 
     }
 }
+
+TEST_CASE( "eswitch_v5::std_variant_plus_std_any", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    SECTION( "match_2nd_case" )
+    {
+        std::any a = std::string{ "S" };
+        std::variant< int, double > v = 19.9;
+
+        auto r = eswitch2( a, v )
+        (
+            Case( _1 == my_type< std::string >{} && _2 == my_type< double >{} ) { return true; },
+            Case( _1 == my_type< int >{} && _2 == my_type< int >{} ) { return false; },
+            Default { return false; }
+        );
+
+        REQUIRE( r ); 
+    }
+
+    SECTION( "match_2nd_case" )
+    {
+        std::any a = std::string{ "S" };
+        std::variant< int, double > v = 19.9;
+
+        auto r = eswitch2( a )
+        (
+            Case( _1 == my_type< std::string >{} )( const std::string & val ) { return val; },
+            Case( _1 == my_type< int >{} ) { return ""; },
+            Default { return ""; }
+        );
+        
+        REQUIRE( r == "S" ); 
+    }
+    
+}
+
+TEST_CASE( "eswitch_v5::not_compiled", "" ) 
+{
+    SECTION( "match_2nd_case" )
+    {
+        std::any a = std::string{ "S" };
+
+        // eswitch2( a )
+        // (
+        //     Case( _1 == my_type< std::string >{} )( const auto & val ) { return val; }
+        // );
+        
+        // eswitch2( a )
+        // (
+        //     Case( _1 == my_type< std::string >{} )( const std::string & val ) { return val; },
+        //     Case( _1 == my_type< int >{} ) { return true; },
+        //     Default { return 1; }
+        // );
+
+        // eswitch2( a )
+        // (
+        //     Case( _1 == my_type< int >{} && _2 == my_type< int >{} ) { return ""; },
+        // );
+    }
+}
