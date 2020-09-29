@@ -114,9 +114,12 @@ namespace eswitch_v4
 
         template< typename T >
         struct is_default_case : std::false_type {};
-        
+
         template< Index I >
         struct is_default_case< condition< I, extension::any > > : std::true_type {};
+
+        template< typename T >
+        constexpr bool is_default_case_v = is_default_case< T >::value;
 
         template< typename T >
         constexpr bool is_condition_v = is_condition< T >::value;
@@ -239,48 +242,35 @@ namespace eswitch_v4
         template< typename T >
         constexpr bool has_not_value_v = !has_value< T >::value;
 
-        template< typename ... TupleCnds >
-        auto move_default_cast_to_the_end_impl( std::tuple< TupleCnds... > && tup )
-        {
-            return std::move( tup );
-        }
-
-        template< typename ... TupleCnds, typename Cnd >
-        auto move_default_cast_to_the_end_impl( std::tuple< TupleCnds... > && tup, Cnd && cnd )
-        {
-            return std::tuple_cat( tup, std::make_tuple( std::forward< Cnd >( cnd ) ) );
-        }
-
         template< typename ... TupleCnds, typename Cnd, typename ... Cnds >
-        auto move_default_cast_to_the_end_impl( std::tuple< TupleCnds... > && tup, Cnd && cnd, Cnds &&...cnds )
+        constexpr auto move_default_case_to_the_end_impl( std::tuple< TupleCnds... > && tup, Cnd && cnd, Cnds &&...cnds )
         {
-            if constexpr( is_default_case< decltype( std::declval< Cnd >().cnd ) >::value )
+            if constexpr( is_default_case_v< decltype( std::declval< Cnd >().cnd ) > )
             {
                 return std::tuple_cat( std::move( tup ), 
-                    std::make_tuple( std::forward< Cnds >( cnds )... ), 
-                    std::make_tuple( std::forward< Cnd >( cnd ) ) );
+                    std::make_tuple( 
+                        std::forward< Cnds >( cnds )..., 
+                        std::forward< Cnd >( cnd ) ) );
+            }
+            else if constexpr( sizeof...( Cnds ) > 0 )
+            {
+                return move_default_case_to_the_end_impl( 
+                    std::tuple_cat( std::move( tup ), std::make_tuple( std::forward< Cnd >( cnd ) ) ), 
+                    std::forward< Cnds >( cnds )... );
             }
             else
             {
-                return move_default_cast_to_the_end_impl( 
-                    std::tuple_cat( tup, std::make_tuple( std::forward< Cnd >( cnd ) ) ), 
-                    std::forward< Cnds >( cnds )... );
-            }            
+                return std::tuple_cat( std::move( tup ), std::make_tuple( std::forward< Cnd >( cnd ) ) );
+            }                        
         }
 
-        template< typename Cnd, typename ... Cnds >
-        auto move_default_cast_to_the_end( Cnd && cnd, Cnds &&...cnds ) requires ( !is_default_case< decltype( std::declval< Cnd >().cnd ) >::value )
+        template< typename ... Cnds >
+        constexpr auto move_default_case_to_the_end( Cnds &&... cnds )
         {
-            return move_default_cast_to_the_end_impl( std::make_tuple( std::forward< Cnd >( cnd ) ), std::forward< Cnds >( cnds )... );
+            return move_default_case_to_the_end_impl( std::make_tuple(),
+                std::forward< Cnds >( cnds )... );
         }
 
-        template< typename Cnd, typename ... Cnds >
-        auto move_default_cast_to_the_end( Cnd && cnd, Cnds &&...cnds ) requires is_default_case< decltype( std::declval< Cnd >().cnd ) >::value
-        {
-            return std::make_tuple( 
-                std::forward< Cnds >( cnds )..., 
-                std::forward< Cnd >( cnd ) );
-        }
     } // namespace details
     
     template< typename T >
@@ -555,7 +545,7 @@ namespace eswitch_v4
 
             generic_lambda( 
                 std::make_index_sequence< sizeof...( Cnds ) >{}, 
-                details::move_default_cast_to_the_end( std::forward< Cnds >( cnds )... ), 
+                details::move_default_case_to_the_end( std::forward< Cnds >( cnds )... ), 
                 [ this, &return_value, break_ = false ]( const auto & cnd ) mutable
                 {
                     using namespace details;
