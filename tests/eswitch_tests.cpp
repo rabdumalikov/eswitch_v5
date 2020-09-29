@@ -59,7 +59,7 @@ TEST_CASE( "eswitch_v5::equal_match", "" )
     SECTION( "match_first_case" )
     {
         auto r = 
-        eswitch2( washington )
+        eswitch( washington )
         (
             Case( _1 == washington ) { return 123; },
             Case( _1 == new_york )   { return 'c'; } 
@@ -71,7 +71,7 @@ TEST_CASE( "eswitch_v5::equal_match", "" )
     SECTION( "match_second_case" )
     {
         auto r = 
-        eswitch2( new_york )
+        eswitch( new_york )
         (
             Case( _1 == washington ) { return 123; },
             Case( _1 == new_york )   { return 'c'; } 
@@ -90,7 +90,7 @@ TEST_CASE( "eswitch_v5::fallthrough", "" )
     {
         int i = 0;
 
-        eswitch2( washington )
+        eswitch( washington )
         (
             Case( _1 == washington ) { i += 1; } ^ fallthrough_,
             Case( _1 != new_york )   { i += 2; } 
@@ -103,7 +103,7 @@ TEST_CASE( "eswitch_v5::fallthrough", "" )
     {
         int i = 0;
 
-        eswitch2( washington )
+        eswitch( washington )
         (
             Case( _1 != washington ) { i += 1; } ^ fallthrough_,
             Case( _1 == new_york )   { i += 2; } 
@@ -116,7 +116,7 @@ TEST_CASE( "eswitch_v5::fallthrough", "" )
     {
         int i = 0;
 
-        eswitch2( washington )
+        eswitch( washington )
         (
             Case( _1 != washington ) { i += 1; } ^ fallthrough_,
             Case( _1 == new_york )   { i += 2; },
@@ -136,7 +136,7 @@ TEST_CASE( "eswitch_v5::not_equal_match", "" )
     SECTION( "match_first_case" )
     {
         auto r = 
-        eswitch2( washington )
+        eswitch( washington )
         (
             Case( _1 != washington ) { return 123; },
             Case( _1 != new_york )   { return 'c'; } 
@@ -148,7 +148,7 @@ TEST_CASE( "eswitch_v5::not_equal_match", "" )
     SECTION( "match_second_case" )
     {
         auto r = 
-        eswitch2( new_york )
+        eswitch( new_york )
         (
             Case( _1 != washington ) { return 123; },
             Case( _1 != new_york )   { return 'c'; } 
@@ -166,7 +166,7 @@ TEST_CASE( "eswitch_v5::default_match", "" )
     SECTION( "match_default_case" )
     {
         auto r = 
-        eswitch2( new_jersey )
+        eswitch( new_jersey )
         (
             Case( _1 != new_jersey ) { return 123; },
             Default { return 5.1; }
@@ -178,7 +178,7 @@ TEST_CASE( "eswitch_v5::default_match", "" )
     SECTION( "match_default_case" )
     {
         auto r = 
-        eswitch2( new_jersey )
+        eswitch( new_jersey )
         (
             Case( _1 == washington ) { return 123; },
             Case( _1 == new_york )   { return 'c'; },
@@ -201,7 +201,7 @@ TEST_CASE( "eswitch_v5::not_equal_match2", "" )
     SECTION( "match_first_case" )
     {
         auto r = 
-        eswitch2( 2 )
+        eswitch( 2 )
         (
             Case( ( is_even, _1 ) ) { return true; },
             Case( ( is_odd, _1 ) ) { return false; } 
@@ -214,7 +214,7 @@ TEST_CASE( "eswitch_v5::not_equal_match2", "" )
     SECTION( "match_second_case" )
     {
         auto r = 
-        eswitch2( 3 )
+        eswitch( 3 )
         (
             Case( ( is_even, _1 ) ) { return true; },
             Case( ( is_odd, _1 ) ) { return false; } 
@@ -234,7 +234,7 @@ TEST_CASE( "eswitch_v5::std_any_failure", "" )
 
     std::any a = 10;
 
-    REQUIRE_THROWS_AS( eswitch2( a )
+    REQUIRE_THROWS_AS( eswitch( a )
     (
         Case( _1 == my_type< float >{} ) { return true; }
     ), std::bad_optional_access );    
@@ -248,7 +248,7 @@ TEST_CASE( "eswitch_v5::std_any_default", "" )
     std::any a = 10;
 
     REQUIRE_FALSE( 
-        eswitch2( a )
+        eswitch( a )
         (
             Case( _1 == my_type< float >{} ) { return true; },
             Default { return false; }
@@ -266,7 +266,7 @@ TEST_CASE( "eswitch_v5::std_any_success", "" )
         std::any a = 10;
 
         REQUIRE( 
-            eswitch2( a )
+            eswitch( a )
             (
                 Case( _1 == my_type< float >{} ) { return false; },
                 Case( _1 == my_type< int >{} ) { return true; },
@@ -281,7 +281,7 @@ TEST_CASE( "eswitch_v5::std_any_success", "" )
         std::any a = f;
 
         REQUIRE( 
-            eswitch2( a )
+            eswitch( a )
             (
                 Case( _1 == my_type< float >{} ) { return true; },
                 Case( _1 == my_type< int >{} ) { return false; },
@@ -296,7 +296,7 @@ TEST_CASE( "eswitch_v5::std_any_success", "" )
         std::any a = f;
 
         REQUIRE( 
-            eswitch2( a )
+            eswitch( a )
             (
                 Case( _1 == my_type< float >{} || _1 == my_type< int >{} ) { return true; },
                 Default { return false; }
@@ -309,7 +309,7 @@ TEST_CASE( "eswitch_v5::std_any_success", "" )
         std::any a = std::string{ "Hello" };
 
         REQUIRE( 
-            eswitch2( a )
+            eswitch( a )
             (
                 Case( _1 == my_type< float >{} ) { return false; },
                 Case( _1 == my_type< std::string >{} ) { return true; },
@@ -329,7 +329,7 @@ TEST_CASE( "eswitch_v5::std_any_only", "" )
     {
         std::any a = 10;
 
-        auto r = eswitch2( a )
+        auto r = eswitch( a )
         (
             Case( _1 == my_type< float >{} )  { return 0; },
             Case( _1 == my_type< int >{} )( const int val ) { return val + 11; },
@@ -343,7 +343,7 @@ TEST_CASE( "eswitch_v5::std_any_only", "" )
     {
         std::any a = std::string{"STR"};
 
-        auto r = eswitch2( a )
+        auto r = eswitch( a )
         (
             Case( _1 == my_type< float >{} ) { return ""; },
             Case( _1 == my_type< int >{} )( const int val ) { return ""; },
@@ -364,7 +364,7 @@ TEST_CASE( "eswitch_v5::std_variant_only", "" )
     {
         std::variant< int, double > a = 19.9;
 
-        auto r = eswitch2( a )
+        auto r = eswitch( a )
         (
             Case( _1 == my_type< double >{} )( const double val ) { return val - 1; },
             Case( _1 == my_type< int >{} )  { return 0; },
@@ -378,7 +378,7 @@ TEST_CASE( "eswitch_v5::std_variant_only", "" )
     {
         std::variant< int, float, std::string > a = std::string{"STR"};
 
-        auto r = eswitch2( a )
+        auto r = eswitch( a )
         (
             Case( _1 == my_type< float >{} ) { return ""; },
             Case( _1 == my_type< int >{} )( const int val ) { return ""; },
@@ -393,7 +393,7 @@ TEST_CASE( "eswitch_v5::std_variant_only", "" )
     {
         std::variant< int, double, std::string > a = 16.7;
 
-        auto r = eswitch2( a )
+        auto r = eswitch( a )
         (
             //Case( _1 == my_type< float >{} ) { return ""; },
             Case( _1 == my_type< int >{} )( const int val ) { return ""; },
@@ -415,7 +415,7 @@ TEST_CASE( "eswitch_v5::std_variant_plus_std_any", "" )
         std::any a = std::string{ "S" };
         std::variant< int, double > v = 19.9;
 
-        auto r = eswitch2( a, v )
+        auto r = eswitch( a, v )
         (
             Case( _1 == my_type< std::string >{} && _2 == my_type< double >{} ) { return true; },
             Case( _1 == my_type< int >{} && _2 == my_type< int >{} ) { return false; },
@@ -430,7 +430,7 @@ TEST_CASE( "eswitch_v5::std_variant_plus_std_any", "" )
         std::any a = std::string{ "S" };
         std::variant< int, double > v = 19.9;
 
-        auto r = eswitch2( a )
+        auto r = eswitch( a )
         (
             Case( _1 == my_type< std::string >{} )( const std::string & val ) { return val; },
             Case( _1 == my_type< int >{} ) { return ""; },
@@ -439,7 +439,66 @@ TEST_CASE( "eswitch_v5::std_variant_plus_std_any", "" )
         
         REQUIRE( r == "S" ); 
     }
-    
+}
+
+TEST_CASE( "eswitch_v5::default_cast_at_any_position", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    SECTION( "default_at_1st_position" )
+    {
+        int i = 10;
+        auto r = eswitch( i )
+        (
+            Default { return false; },
+            Case( _1 == 10 ) { return true; }
+        );
+
+        REQUIRE( r ); 
+    }
+
+    SECTION( "default_at_2nd_position" )
+    {
+        int i = 10;
+        auto r = eswitch( i )
+        (
+            Case( _1 == 14 ) { return 1; },
+            Default { return 2; },
+            Case( _1 == 10 ) { return 3; }
+        );
+
+        REQUIRE( r == 3 ); 
+    }
+
+    SECTION( "default_at_3rd_position" )
+    {
+        int i = 10;
+        auto r = eswitch( i )
+        (
+            Case( _1 == 14 ) { return 1; },
+            Case( _1 == 12 ) { return 2; },
+            Default { return 3; },
+            Case( _1 == 10 ) { return 4; }
+        );
+
+        REQUIRE( r == 4 ); 
+    }
+
+    SECTION( "default_at_3rd_2_position" )
+    {
+        int i = 10;
+        auto r = eswitch( i )
+        (
+            Case( _1 == 14 ) { return 1; },
+            Case( _1 == 10 ) { return 4; },
+            Default { return 3; },
+            Case( _1 == 12 ) { return 2; }
+        );
+
+        REQUIRE( r == 4 ); 
+    }
+
 }
 
 TEST_CASE( "eswitch_v5::not_compiled", "" ) 
@@ -448,19 +507,19 @@ TEST_CASE( "eswitch_v5::not_compiled", "" )
     {
         std::any a = std::string{ "S" };
 
-        // eswitch2( a )
+        // eswitch( a )
         // (
         //     Case( _1 == my_type< std::string >{} )( const auto & val ) { return val; }
         // );
         
-        // eswitch2( a )
+        // eswitch( a )
         // (
         //     Case( _1 == my_type< std::string >{} )( const std::string & val ) { return val; },
         //     Case( _1 == my_type< int >{} ) { return true; },
         //     Default { return 1; }
         // );
 
-        // eswitch2( a )
+        // eswitch( a )
         // (
         //     Case( _1 == my_type< int >{} && _2 == my_type< int >{} ) { return ""; },
         // );
