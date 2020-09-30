@@ -498,6 +498,66 @@ TEST_CASE( "eswitch_v5::default_cast_at_any_position", "" )
 
         REQUIRE( r == 4 ); 
     }
+}
+
+TEST_CASE( "eswitch_v5::std_pair", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    std::pair pr{ 10, std::string{"Hello" } };
+
+    SECTION( "1st_position" )
+    {
+        auto r = eswitch( pr )
+        (
+           Case( _1 == 10 && _2 == "Hello" ) { return true; },
+           Default { return false; }
+        );
+
+        REQUIRE( r ); 
+    }
+
+    SECTION( "no_match" )
+    {
+        auto r = eswitch( pr )
+        (
+           Case( _1 == 19 && _2 == "H" ) { return true; },
+           Default { return false; }
+        );
+
+        REQUIRE( !r ); 
+    }
+}
+
+TEST_CASE( "eswitch_v5::std_tuple", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    std::tuple pr{ 7, std::string{ "Hope" }, true };
+
+    SECTION( "match" )
+    {
+        auto r = eswitch( pr )
+        (
+            Default { return false; },
+            Case( _1 == 7 && _2 == "Hope" && _3 == true ) { return true; }
+        );
+
+        REQUIRE( r ); 
+    }
+
+    SECTION( "no_match" )
+    {
+        auto r = eswitch( pr )
+        (
+            Default { return false; },
+            Case( _1 == 7 && _2 == "pe" && _3 == true ) { return true; }
+        );
+
+        REQUIRE( !r ); 
+    }
 
 }
 

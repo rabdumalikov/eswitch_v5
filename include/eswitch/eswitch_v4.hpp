@@ -18,8 +18,33 @@
 #include <variant>
 
 /// TODO
-// move Default case to the END
+// move Default case to the END - DONE
+// lazy_eswitch
+// tuple+pair handle
 
+/*
+   auto swtch = 
+        lazy_eswitch (
+            Case( _1 == 1 && _2 == 0 && _3 == 1 )
+        );
+
+   swtch( 10, 15 );
+
+   std::tuple< int, int, int > tup;
+   eswitch( tup )
+   (
+       Case( _1 == 1 && _2 == 0 && _3 == 1 )
+   );
+
+
+   eswitch( pair )
+   (
+       Case( _1 == true && _2 == "buu" )
+   );
+
+    auto [f,s] = some_pair;
+    if( f == true && s == "buu" )
+ */
 namespace eswitch_v4
 {
     template< typename T >
@@ -132,6 +157,30 @@ namespace eswitch_v4
 
         template< typename ... T >
         constexpr bool is_std_variant_v = is_std_variant< T... >::value;
+
+        template< typename T >
+        struct is_std_pair : std::false_type {};
+        
+        template< template< typename T1, typename T2 > class Pair, typename T1, typename T2 >
+        struct is_std_pair< Pair< T1, T2 > > :
+            std::conditional_t< std::is_same_v< Pair< T1, T2 >, std::pair< T1, T2 > >, 
+                std::true_type, std::false_type >
+         {};
+
+        template< typename T >
+        constexpr bool is_std_pair_v = is_std_pair< std::decay_t< T > >::value;
+
+        template< typename T >
+        struct is_std_tuple : std::false_type {};
+        
+        template< template< typename ... Ts > class Tuple, typename ... Ts >
+        struct is_std_tuple< Tuple< Ts... > > :
+            std::conditional_t< std::is_same_v< Tuple< Ts... >, std::tuple< Ts... > >, 
+                std::true_type, std::false_type >
+         {};
+
+        template< typename T >
+        constexpr bool is_std_tuple_v = is_std_tuple< std::decay_t< T > >::value;
 
         template< typename T >
         constexpr bool is_std_any_v = std::is_same_v< T, std::any >;
@@ -596,6 +645,31 @@ namespace eswitch_v4
     auto eswitch( Ts && ... ts )
     {
         return eswitch_impl( std::forward< Ts >( ts )... );
+    }
+
+    template< typename T >
+    auto eswitch( T && pair ) requires details::is_std_pair_v< T >
+    {
+        if constexpr( std::is_rvalue_reference_v< T&& > )
+        {
+            return eswitch_impl( std::move( pair.first ), std::move( pair.second ) );
+        }
+        else
+        {
+            return eswitch_impl( pair.first, pair.second );
+        }
+    }
+
+    template< typename T >
+    auto eswitch( T && tup ) requires details::is_std_tuple_v< T >
+    {
+        auto expand_tuple = [] < typename _T, _T ... ints >
+            ( std::index_sequence< ints... > &&, const auto & tup )
+        {
+            return eswitch_impl( std::get< ints >( tup )... );
+        };
+
+        return expand_tuple( std::make_index_sequence< std::tuple_size_v< std::decay_t< T > > >{}, tup );
     }
 
     template< Condition Cnd1, Condition Cnd2 >
