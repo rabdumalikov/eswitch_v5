@@ -330,12 +330,7 @@ namespace eswitch_v4
         template< typename T, typename TArray >
         constexpr bool is_in_set( const T & to_check, const TArray & arr )
         {
-            for( uint32_t i = 0; i < arr.size(); ++i )
-            {
-                if (to_check == arr[ i ]) return true;
-            }
-
-            return false;
+            return std::find( std::begin( arr ), std::end( arr ), to_check ) != std::end( arr );
         }
 
         // any
