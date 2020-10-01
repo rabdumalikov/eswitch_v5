@@ -20,7 +20,8 @@
 /// TODO
 // move Default case to the END - DONE
 // lazy_eswitch
-// tuple+pair handle
+// tuple+pair handle - DONE
+// write concept Comparable( or maybe stl has one )
 
 /*
    auto swtch = 
@@ -185,41 +186,33 @@ namespace eswitch_v4
         template< typename T >
         constexpr bool is_std_any_v = std::is_same_v< T, std::any >;
 
-        template< typename T, typename = void >
-        struct is_callable : std::false_type {};
+        template< typename T >
+        struct is_callable_impl : std::false_type {};
+
+        template< typename R, typename C, typename ... Args >
+        struct is_callable_impl< R(C::*)(Args...) const > : std::true_type {};
+
+        template< typename R, typename C, typename ... Args >
+        struct is_callable_impl< R(C::*)(Args...) > : std::true_type {};
 
         template< typename T >
-        struct is_callable< T, std::void_t< decltype( std::declval< T >()() ) > > 
-            : std::true_type {};
+        constexpr bool is_callable_v = is_callable_impl< decltype( &T::operator() ) >::value;
 
         static bool unreachable() { assert( false ); return false; }
 
         template< typename T >
-        struct holder{};
+        struct is_predicate : std::false_type {};
 
-
-        template < template < typename > class H, typename S >
-        void is_predicate_condition( H<S> && );
-
-        template < template < typename > class H, template< typename, uint32_t ... > class Pr, typename P, uint32_t ... Idxs,
-            typename std::enable_if_t< std::is_same< holder< predicate_condition< P, Idxs... > >, H< Pr< P, Idxs... > > >::value, int > = 0 >
-        bool is_predicate_condition( H< Pr< P, Idxs... > > && );
-
-        template < template < typename > class H, template< typename, typename > class Cnd, typename T1, typename T2,
-            typename std::enable_if_t< std::is_same< holder< condition< T1, T2 > >, H< Cnd< T1, T2 > > >::value, int > = 0 >
-        bool is_predicate_condition( H< Cnd< T1, T2 > > && );
-
-        template < template < typename > class H, template< typename T1, typename T2 > class Cnds, typename T1, typename T2,
-            typename std::enable_if_t< std::is_same< holder< conditions< T1, T2 > >, H< Cnds< T1, T2 > > >::value, int > = 0 >
-        bool is_predicate_condition( H< Cnds< T1, T2 > > && );
-
-
-        template < typename T >
-        struct is_predicate
-        {
-            static constexpr bool value = std::is_same< decltype( is_predicate_condition( holder< T >() ) ), bool >::value;
+        template< template< typename, uint32_t ... > class C, typename T, uint32_t ... Is >
+        struct is_predicate< C< T, Is... > >
+            : std::conditional_t< 
+                std::is_same_v< C<T, Is... >, predicate_condition< T, Is... > >, 
+                std::true_type, std::false_type > 
+        {            
         };
 
+        template< typename T >
+        constexpr bool is_predicate_v = is_predicate< T >::value;
 
         template< typename T >
         struct amount_args_function_has
@@ -323,7 +316,16 @@ namespace eswitch_v4
     } // namespace details
     
     template< typename T >
-    concept IsCndPredicate = details::is_predicate< T >::value;
+    concept IsCndPredicate = details::is_predicate_v< T >;
+
+    template< typename T >
+    concept Callable = details::is_callable_v< T >;
+
+    template< typename T >
+    concept StdTuple = details::is_std_tuple_v< T >;
+
+    template< typename T >
+    concept StdPair = details::is_std_pair_v< T >;
 
     namespace extension
     {             
@@ -373,28 +375,28 @@ namespace eswitch_v4
         using type = T;
     };
 
-    template< typename T2 >
-    static bool operator==( const std::any & t1, my_type< T2 > )
+    template< typename T >
+    static bool operator==( const std::any & t1, my_type< T > )
     {
-        return std::any_cast< T2 >(&t1) != nullptr;        
+        return std::any_cast< T >(&t1) != nullptr;        
     }
 
-    template< typename ... Args, typename T2 >
-    static bool operator==( const std::variant< Args... > & t1, my_type< T2 > )
+    template< typename ... Args, typename T >
+    static bool operator==( const std::variant< Args... > & t1, my_type< T > )
     {
-        return std::get_if< T2 >(&t1) != nullptr;        
+        return std::get_if< T >(&t1) != nullptr;        
     }
 
-    template< typename T2 >
-    static auto get_value( const std::any & t1, my_type< T2 > )
+    template< typename T >
+    static auto get_value( const std::any & t1, my_type< T > )
     {
-        return std::any_cast< T2 >(t1);        
+        return std::any_cast< T >(t1);        
     }
 
-    template< typename ... Args, typename T2 >
-    static auto get_value( const std::variant< Args... > & t1, my_type< T2 > )
+    template< typename ... Args, typename T >
+    static auto get_value( const std::variant< Args... > & t1, my_type< T > )
     {
-        return std::get< T2 >(t1);        
+        return std::get< T >(t1);        
     }
 
     template< Index TIndex, typename T >
@@ -410,7 +412,7 @@ namespace eswitch_v4
             { 
             }
 
-        template< typename TSrcTuple >
+        template< StdTuple TSrcTuple >
         bool operator()( const TSrcTuple & src_tuple ) const
         {
             static_assert( !is_out_of_range< std::tuple_size_v< TSrcTuple > >(), 
@@ -419,13 +421,13 @@ namespace eswitch_v4
             return compare( cmp_operator, std::get< TIndex::eswitch_index >( src_tuple ), value_ );         
         }
 
-        template< typename TSrcTuple >
+        template< StdTuple TSrcTuple >
         auto value( const TSrcTuple & src_tuple ) const
         {
             return get_value( std::get< TIndex::eswitch_index >( src_tuple ), value_ );
         }
 
-        template< int MaxIndex >
+        template< uint32_t MaxIndex >
         static constexpr bool is_out_of_range() 
         { 
             return TIndex::eswitch_index >= MaxIndex; 
@@ -465,14 +467,14 @@ namespace eswitch_v4
             {                
             }
 
-        template< int MaxIndex >
+        template< uint32_t MaxIndex >
         static constexpr bool is_out_of_range() 
         {
             return TCnd1::template is_out_of_range< MaxIndex >() || 
                    TCnd2::template is_out_of_range< MaxIndex >();
         }
      
-        template< typename TSrcTuple >
+        template< StdTuple TSrcTuple >
         bool operator()( const TSrcTuple & src_tuple ) const
         {
             return compare( logical_operator, cnd1_( src_tuple ),  cnd2_( src_tuple ) );            
@@ -494,7 +496,7 @@ namespace eswitch_v4
         }
     };
 
-    template< typename Cnd, typename Func >
+    template< Condition Cnd, Callable Func >
     struct condition_with_predicate
     {
         template< typename TSrcTuple >
@@ -520,8 +522,8 @@ namespace eswitch_v4
         return condition< Idx, T >( Comparison_operators::equal_, std::forward< T >( rhv ) );
     }
 
-    template< Condition T, typename Func >
-    auto operator%( T && cnd, Func && f ) //requires details::is_callable< Func >::value
+    template< Condition T, Callable Func >
+    auto operator%( T && cnd, Func && f )
     {
         return condition_with_predicate{ std::move( cnd ), std::move( f ) };
     }
@@ -642,8 +644,8 @@ namespace eswitch_v4
         return eswitch_impl( std::forward< Ts >( ts )... );
     }
 
-    template< typename T >
-    auto eswitch( T && pair ) requires details::is_std_pair_v< T >
+    template< StdPair T >
+    auto eswitch( T && pair )
     {
         if constexpr( std::is_rvalue_reference_v< T&& > )
         {
@@ -655,8 +657,8 @@ namespace eswitch_v4
         }
     }
 
-    template< typename T >
-    auto eswitch( T && tup ) requires details::is_std_tuple_v< T >
+    template< StdTuple T >
+    auto eswitch( T && tup )
     {
         auto expand_tuple = [] < typename _T, _T ... ints >
             ( std::index_sequence< ints... > &&, const auto & tup )
@@ -709,29 +711,24 @@ namespace eswitch_v4
             return pred_( std::get< Is >( src_tuple )... );
         }
 
-        template< int MaxIndex >
+        template< uint32_t MaxIndex >
         static constexpr bool is_out_of_range()
         {
-            constexpr std::array< int, sizeof...( Is ) > arr{ Is... };
+            constexpr std::array< bool, sizeof...( Is ) > list{ ( Is >= MaxIndex )... };
 
-            for( int32_t i = 0; i < arr.size(); ++i )
-            {
-                if( arr[ i ] >= MaxIndex ) return true;
-            }
-
-            return false;
+            return std::find( std::begin( list ), std::end( list ), true ) != std::end( list );
         }
     };
 
     template< typename R, typename... Args, Index Idx >
-    auto operator,( R(*pred)(Args...), Idx idx )
+    auto operator,( R(*pred)(Args...), Idx )
     {
         return predicate_condition< R(*)(Args...), Idx::eswitch_index >( pred );
     }
 
     template< typename Pred, Index Idx >
-        requires ( details::is_predicate< std::remove_reference_t< Pred > >::value == false )
-    auto operator,( Pred && pred, Idx t1 ) 
+        requires ( details::is_predicate_v< std::decay_t< Pred > > == false )
+    auto operator,( Pred && pred, Idx ) 
     {
         return predicate_condition< std::remove_reference_t< Pred >, Idx::eswitch_index >( 
             std::forward< Pred >( pred ) );
