@@ -21,7 +21,8 @@
 // move Default case to the END - DONE
 // lazy_eswitch
 // tuple+pair handle - DONE
-// write concept Comparable( or maybe stl has one )
+// write concept Comparable( or maybe stl has one ) DONE
+// 
 
 /*
    auto swtch = 
@@ -46,6 +47,7 @@
     auto [f,s] = some_pair;
     if( f == true && s == "buu" )
  */
+
 namespace eswitch_v4
 {
     template< typename T >
@@ -263,26 +265,11 @@ namespace eswitch_v4
             static constexpr bool value = false;
         };
 
-        template< typename T, typename = void >
-        struct has_type : std::false_type{};
+        template< typename T >
+        concept has_type = requires{ typename T::type; };
 
         template< typename T >
-        struct has_type< T, std::void_t< typename T::type > > : std::true_type{};
-
-        template< typename T >
-        constexpr bool has_type_v = has_type< T >::value;
-
-        template< typename T, typename = void >
-        struct has_value : std::false_type{};
-
-        template< typename T >
-        struct has_value< T, std::void_t< decltype( T::value ) > > : std::true_type{};
-
-        template< typename T >
-        constexpr bool has_value_v = has_value< T >::value;
-
-        template< typename T >
-        constexpr bool has_not_value_v = !has_value< T >::value;
+        concept has_value = requires{ T::value; };
 
         template< typename ... TupleCnds, typename Cnd, typename ... Cnds >
         constexpr auto move_default_case_to_the_end_impl( std::tuple< TupleCnds... > && tup, Cnd && cnd, Cnds &&...cnds )
@@ -315,6 +302,15 @@ namespace eswitch_v4
 
     } // namespace details
     
+    template< typename T >
+    concept ComparableExceptAnyAndVariant = 
+        !details::is_std_any_v< T > || 
+        !details::is_std_variant_v< T > || 
+        requires( T a, T b ) {
+        { a == b };
+        { a != b };
+    };
+
     template< typename T >
     concept IsCndPredicate = details::is_predicate_v< T >;
 
@@ -403,12 +399,11 @@ namespace eswitch_v4
     class condition
     {
         Comparison_operators cmp_operator;        
-        T value_;
+        const T & value_;
     public:
 
-        template< typename TVal >
-        constexpr condition( const Comparison_operators cmp_type, TVal&& value ) 
-            : cmp_operator( cmp_type ), value_( std::forward< TVal >( value ) )
+        constexpr condition( const Comparison_operators cmp_type, const T & value ) 
+            : cmp_operator( cmp_type ), value_( value )
             { 
             }
 
@@ -496,10 +491,13 @@ namespace eswitch_v4
         }
     };
 
+    template< Condition Cnd1, Condition Cnd2 >
+    conditions( Logical_operators, Cnd1, Cnd2 ) -> conditions< Cnd1, Cnd2 >;
+
     template< Condition Cnd, Callable Func >
     struct condition_with_predicate
     {
-        template< typename TSrcTuple >
+        template< StdTuple TSrcTuple >
         void operator()( const TSrcTuple & src_tuple ) const
         {
             if( cnd( src_tuple ) ) func();
@@ -515,7 +513,6 @@ namespace eswitch_v4
     template< typename T, typename F >
     condition_with_predicate( T, F ) -> condition_with_predicate< T, F >;
 
-
     template< Index Idx, typename T >
     auto operator==( Idx idx, T && rhv )
     {
@@ -529,7 +526,6 @@ namespace eswitch_v4
     }
     
     struct Fallthrough {};
-    struct Padding{};
 
     template< typename Cnd, ReturnValueNoneVoid Func >
     auto operator^( condition_with_predicate< Cnd, Func >&& cp, const Fallthrough & )
@@ -542,9 +538,11 @@ namespace eswitch_v4
     template< typename ... Args >
     class eswitch_impl
     {
-        std::tuple< Args... > tup_;
+        static_assert( ( ComparableExceptAnyAndVariant<Args> && ... ), "Input Types should be COMPARABLE!" );
+
+        std::tuple< const Args &... > tup_;
     public:
-        eswitch_impl( Args ... ts ) : tup_{ ts... }
+        eswitch_impl( const Args &... ts ) : tup_{ std::cref( ts )... }
         {            
         }
 
@@ -560,21 +558,23 @@ namespace eswitch_v4
         template< typename ... Cnds >
         auto operator()( Cnds && ... cnds )
         {
-            if constexpr( ( details::has_not_value_v< args_t< Cnds > > || ... ) )
+            if constexpr( ( !details::has_value< args_t< Cnds > > || ... ) )
             {
-                static_assert( !( details::has_not_value_v< args_t< Cnds > > || ... ), 
+                static_assert( !( !details::has_value< args_t< Cnds > > || ... ), 
                     "Predicate with 'auto' argument aren't ALLOWED!" );
 
             }        
-            else if constexpr( ( details::has_type_v< underlying< Cnds > > && ... ) )
+            else if constexpr( ( details::has_type< underlying< Cnds > > && ... ) )
             {
-                static_assert( details::has_type_v< std::common_type< underlying_t< Cnds >... > >, 
+                static_assert( details::has_type< std::common_type< underlying_t< Cnds >... > >, 
                     "Inconsistent 'Return type'!" );
             }
         }
 
+        struct Padding {};
+
         template< typename ... Cnds >
-        auto operator()( Cnds && ... cnds ) requires details::has_type_v< std::common_type< underlying_t< Cnds >... > >
+        auto operator()( Cnds && ... cnds ) requires details::has_type< std::common_type< underlying_t< Cnds >... > >
         {
             constexpr auto generic_lambda = []< typename T, T... ints >
                 ( std::index_sequence< ints... > && int_seq, auto && tup, auto && f )
@@ -668,9 +668,6 @@ namespace eswitch_v4
 
         return expand_tuple( std::make_index_sequence< std::tuple_size_v< std::decay_t< T > > >{}, tup );
     }
-
-    template< Condition Cnd1, Condition Cnd2 >
-    conditions( Logical_operators, Cnd1, Cnd2 ) -> conditions< Cnd1, Cnd2 >;
 
     template< Index Idx, typename T >
     auto operator!=( Idx idx, T && rhv )
