@@ -16,7 +16,7 @@
 
 enum Place { unknown = 0, new_york=5, washington=129, new_jersey=501 };
 
-#define Case( cnds ) ( cnds ) % [&]
+#define Case( ... ) case_( __VA_ARGS__ ) % [&]
 #define Default  ( _1 == extension::any{} ) % [&]
 
 /*
@@ -26,6 +26,9 @@ enum Place { unknown = 0, new_york=5, washington=129, new_jersey=501 };
         Case( _1 == 0  && _2 == 0 ) { return true; }, 
         Default { return false; }
     ];
+
+
+
 
     int i = 0;
     eswitch( param1, param2 )
@@ -557,6 +560,17 @@ TEST_CASE( "eswitch_v5::std_tuple", "" )
         );
 
         REQUIRE( !r ); 
+    }
+
+    SECTION( "match_without_indexes" )
+    {
+        auto r = eswitch( pr )
+        (
+            Default { return false; },
+            Case( 7, "Hope", true ) { return true; }
+        );
+
+        REQUIRE( r ); 
     }
 
 }

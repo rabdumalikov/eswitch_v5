@@ -19,19 +19,52 @@
 
 /// TODO
 // move Default case to the END - DONE
-// lazy_eswitch
+// lazy_eswitch - DECLINED( since it doesn't have sence for now )
 // tuple+pair handle - DONE
 // write concept Comparable( or maybe stl has one ) DONE
-// 
+// willcard
 
 /*
-   auto swtch = 
+
+    int i = 1;
+    std::string str{ "hello" };
+
+    eswithc( i, str )
+    (
+        Case( 1, "Hello" ){ return ""; },
+        Default{ return "fail"; }
+    );
+
+    j = true;
+    eswithc( i, str )
+    (
+        Case( 1, "Hello", _3 != true ){ return ""; },
+        Default{ return "fail"; }
+    );
+
+    auto swtch = 
         lazy_eswitch (
             Case( _1 == 1 && _2 == 0 && _3 == 1 )
         );
+  
+    for_each( vec, lazy_switch( 
+        Case( ( is_odd, _1 ) )( int val ){ count++; }
+    ) );
 
-   swtch( 10, 15 );
+    for_each( vec, eswitch( 
+        Case( ( is_odd ) ) ( int val ){ odd_count++; },
+        Case( ( is_even ) )( int val ){ even_count++; },
+        );
 
+    for_each( vec, []( const auto & val )
+    {
+        if( is_odd( val ) ) ++odd_count;
+        else if( is_even( val ) ) ++even_count;
+    } );
+
+    ( vec | range::filter( is_odd  ) ).size();
+    ( vec | range::filter( is_even ) ).size();
+    
    std::tuple< int, int, int > tup;
    eswitch( tup )
    (
@@ -51,13 +84,13 @@
 namespace eswitch_v4
 {
     template< typename T >
-    concept Index = requires( T ){ T::eswitch_index; };
+    concept Index = requires( T ){ std::decay_t<T>::eswitch_index; };
 
     template< typename T >
     concept Condition = requires( T t )
     { 
         t( std::make_tuple() ); 
-        T::template is_out_of_range<int{}>(); 
+        std::decay_t<T>::template is_out_of_range<int{}>(); 
     };
 
     template< typename T >
@@ -300,6 +333,12 @@ namespace eswitch_v4
                 std::forward< Cnds >( cnds )... );
         }
 
+        template< int ... Is, typename Tup1, typename Tup2 >
+        constexpr auto tuple_merge( Tup1 && tup1, Tup2 && tup2 )
+        {
+            return std::make_tuple( (std::get< Is >( std::move( tup1 ) ) == std::get< Is >( std::move( tup2 ) ) )... );
+        }
+
     } // namespace details
     
     template< typename T >
@@ -399,11 +438,12 @@ namespace eswitch_v4
     class condition
     {
         Comparison_operators cmp_operator;        
-        const T & value_;
+        T value_;
     public:
 
-        constexpr condition( const Comparison_operators cmp_type, const T & value ) 
-            : cmp_operator( cmp_type ), value_( value )
+        template< typename Arg >
+        constexpr condition( const Comparison_operators cmp_type, Arg && value ) 
+            : cmp_operator( cmp_type ), value_( std::forward< Arg >( value ) )
             { 
             }
 
@@ -753,22 +793,77 @@ namespace eswitch_v4
         return conditions( Logical_operators::or_, std::forward< T1 >( i ), std::move( cnd ) );
     }
 
-    template< typename T1, typename T2 >
-    condition< T1, T2 > case_( condition< T1, T2 > && cnd );
+    template< Condition Cnd1, Condition Cnd2 >
+    auto operator&&( Cnd1 && cnd1, Cnd2 && cnd2 )
+    {
+        return conditions( Logical_operators::and_, std::forward< Cnd1 >( cnd1 ), std::forward< Cnd2 >( cnd2 ) );
+    }
 
-    template< typename T1, typename T2 >
-    conditions< T1, T2 > case_( conditions< T1, T2 > && cnds );
-     
+    template< Condition Cnd1, Condition Cnd2 >
+    auto operator||( Cnd1 && cnd1, Cnd2 && cnd2 )
+    {
+        return conditions( Logical_operators::or_, std::forward< Cnd1 >( cnd1 ), std::move( cnd2 ) );
+    }
+
     template< Condition Cnd >
     Cnd case_( Cnd && cnd )
     { 
         return std::move( cnd ); 
     }
 
-    template< typename T >
-    auto case_( T && value )
-    { 
-        return _1 == std::forward< T >( value ); 
+    template< typename ... Ts >
+    auto case_( Ts &&... values )
+    {        
+        auto lmbd0 = []< int I >( Index_< I > && idx, const auto & tup, const auto & f )
+        {
+            f( idx, std::get< I >( tup ) );
+        };
+
+        auto lmbd1 = [&] < typename T, T ... ints >( std::index_sequence< ints... >&&, const auto & tup )
+        {
+            auto t = std::make_tuple( Index_< ints >{}... );
+            auto merged = details::tuple_merge< ints... >( std::move( t ), std::move( tup ) );
+
+            //return std::get< 0 >( merged ) && std::get< 1 >( merged );
+            return ( std::get< ints >( merged ) && ... );
+        };
+
+
+        return lmbd1( std::make_index_sequence< sizeof...(Ts) >{}, std::make_tuple( std::forward< Ts >( values )... ) );
+
+        // auto tup = std::make_tuple( std::forward< Ts >( values )... );
+
+        // auto lmbd0 = []< int I >( Index_< I > && idx, const auto & tup, const auto & f )
+        // {
+        //     f( idx, std::get< I >( tup ) );
+        // };
+
+        // auto lmbd1 = [&] < typename T, T ... ints >( std::index_sequence< ints... >&&, const auto & tup, auto && f )
+        // {
+        //     ( lmbd0( Index_< ints >{}, tup, f ), ... );
+        // };
+
+        // std::tuple<> output;
+
+        // lmbd1( std::make_index_sequence< sizeof...( Ts ) >{}, tup, 
+        //     [&]< int I >( Index_< I > idx, const auto & val )
+        //     {
+        //         if constexpr( Condition< decltype( val ) > )
+        //         {
+        //             output = std::tuple_cat( output, std::make_tuple( val ) );
+        //         }
+        //         else
+        //         {
+        //             output = std::tuple_cat( output, std::make_tuple( idx == val ) );
+        //         }                
+        //     } );
+
+        // auto lmbd3 = [&] < typename T, T ... ints >( std::index_sequence< ints... >&&, auto & tup )
+        // {
+        //     return ( ( std::get< ints >( tup ) && ... ) );
+        // };
+
+        // return lmbd3( std::make_index_sequence< sizeof...(Ts) >{}, output );
     }
 
     template< typename T, typename ... TArgs >
