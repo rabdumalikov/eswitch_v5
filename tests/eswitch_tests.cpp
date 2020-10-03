@@ -573,6 +573,19 @@ TEST_CASE( "eswitch_v5::std_tuple", "" )
         REQUIRE( r ); 
     }
 
+    
+    SECTION( "no_match_without_indexes" )
+    {
+        auto r = eswitch( pr )
+        (
+            Default { return false; },
+            Case( 7, "Hpe", true ) { return true; }
+        );
+
+        REQUIRE( !r ); 
+    }
+
+
 }
 
 TEST_CASE( "eswitch_v5::not_compiled", "" ) 

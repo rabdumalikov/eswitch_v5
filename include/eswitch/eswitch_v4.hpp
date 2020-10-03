@@ -22,8 +22,10 @@
 // lazy_eswitch - DECLINED( since it doesn't have sence for now )
 // tuple+pair handle - DONE
 // write concept Comparable( or maybe stl has one ) DONE
-// willcard
-
+// Willcard
+// Add error in type are incomparable
+// Support: Case( "hello", 1, _3 != nullptr )
+// Support: Case( std::regex( "" ) )
 /*
 
     int i = 1;
@@ -336,7 +338,8 @@ namespace eswitch_v4
         template< int ... Is, typename Tup1, typename Tup2 >
         constexpr auto tuple_merge( Tup1 && tup1, Tup2 && tup2 )
         {
-            return std::make_tuple( (std::get< Is >( std::move( tup1 ) ) == std::get< Is >( std::move( tup2 ) ) )... );
+            return std::make_tuple( (std::get< Is >( std::move( tup1 ) ) == 
+                std::get< Is >( std::move( tup2 ) ) )... );
         }
 
     } // namespace details
