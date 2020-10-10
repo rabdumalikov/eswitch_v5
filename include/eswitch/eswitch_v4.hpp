@@ -827,46 +827,10 @@ namespace eswitch_v4
             auto t = std::make_tuple( Index_< ints >{}... );
             auto merged = details::tuple_merge< ints... >( std::move( t ), std::move( tup ) );
 
-            //return std::get< 0 >( merged ) && std::get< 1 >( merged );
             return ( std::get< ints >( merged ) && ... );
         };
 
-
         return lmbd1( std::make_index_sequence< sizeof...(Ts) >{}, std::make_tuple( std::forward< Ts >( values )... ) );
-
-        // auto tup = std::make_tuple( std::forward< Ts >( values )... );
-
-        // auto lmbd0 = []< int I >( Index_< I > && idx, const auto & tup, const auto & f )
-        // {
-        //     f( idx, std::get< I >( tup ) );
-        // };
-
-        // auto lmbd1 = [&] < typename T, T ... ints >( std::index_sequence< ints... >&&, const auto & tup, auto && f )
-        // {
-        //     ( lmbd0( Index_< ints >{}, tup, f ), ... );
-        // };
-
-        // std::tuple<> output;
-
-        // lmbd1( std::make_index_sequence< sizeof...( Ts ) >{}, tup, 
-        //     [&]< int I >( Index_< I > idx, const auto & val )
-        //     {
-        //         if constexpr( Condition< decltype( val ) > )
-        //         {
-        //             output = std::tuple_cat( output, std::make_tuple( val ) );
-        //         }
-        //         else
-        //         {
-        //             output = std::tuple_cat( output, std::make_tuple( idx == val ) );
-        //         }                
-        //     } );
-
-        // auto lmbd3 = [&] < typename T, T ... ints >( std::index_sequence< ints... >&&, auto & tup )
-        // {
-        //     return ( ( std::get< ints >( tup ) && ... ) );
-        // };
-
-        // return lmbd3( std::make_index_sequence< sizeof...(Ts) >{}, output );
     }
 
     template< typename T, typename ... TArgs >
