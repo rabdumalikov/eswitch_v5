@@ -573,7 +573,29 @@ TEST_CASE( "eswitch_v5::std_tuple", "" )
         REQUIRE( r ); 
     }
 
+    SECTION( "match_with_one_index" )
+    {
+        auto r = eswitch( pr )
+        (
+            Default { return false; },
+            Case( 7, "Hope", _3 == true ) { return true; }
+        );
+
+        REQUIRE( r ); 
+    }
     
+    
+    SECTION( "match_with_one_index" )
+    {
+        auto r = eswitch( pr )
+        (
+            Default { return false; },
+            Case( 7, "Hope", _3 != true ) { return true; }
+        );
+
+        REQUIRE( !r ); 
+    }
+
     SECTION( "no_match_without_indexes" )
     {
         auto r = eswitch( pr )
@@ -585,14 +607,82 @@ TEST_CASE( "eswitch_v5::std_tuple", "" )
         REQUIRE( !r ); 
     }
 
+    SECTION( "no_match_without_indexes" )
+    {
+        auto r = eswitch( pr )
+        (
+            Default { return false; },
+            Case( 7, _2 != "Hpe", true ) { return true; }
+        );
 
+        REQUIRE( r ); 
+    }
 }
+
+TEST_CASE( "eswitch_v5::match_without_indexes", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    SECTION( "match_without_indexes" )
+    {
+        auto r = eswitch( 7, std::string{ "Hope" }, true )
+        (
+            Default { return false; },
+            Case( 7, "Hope", true ) { return true; }
+        );
+
+        REQUIRE( r ); 
+    }
+
+    
+    SECTION( "no_match_without_indexes" )
+    {
+        auto r = eswitch( 7, std::string{ "Hope" }, true )
+        (
+            Default { return false; },
+            Case( 7, "Hpe", true ) { return true; }
+        );
+
+        REQUIRE( !r ); 
+    }
+
+    SECTION( "match_with_one_index" )
+    {
+        auto r = eswitch( 7, std::string{ "Hope" }, true )
+        (
+            Default { return false; },
+            Case( 7, "Hope", _3 == true ) { return true; }
+        );
+
+        REQUIRE( r ); 
+    }
+
+    SECTION( "no_match_with_one_index" )
+    {
+        auto r = eswitch( 7, std::string{ "Hope" }, true )
+        (
+            Default { return false; },
+            Case( 7, _2 != "Hpe", true ) { return true; }
+        );
+
+        REQUIRE( r ); 
+    }
+}
+
 
 TEST_CASE( "eswitch_v5::not_compiled", "" ) 
 {
+    using namespace eswitch_v4;
+ 
     SECTION( "match_2nd_case" )
     {
-        std::any a = std::string{ "S" };
+        //std::any a = std::string{ "S" };
+
+        // auto r = eswitch( true, std::string{ "Hello" } )
+        // (
+        //     Case( _2 == true, "Hello" ) { return true; }
+        // );
 
         // eswitch( a )
         // (

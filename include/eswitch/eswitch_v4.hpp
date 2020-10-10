@@ -24,7 +24,7 @@
 // write concept Comparable( or maybe stl has one ) DONE
 // Willcard
 // Add error in type are incomparable
-// Support: Case( "hello", 1, _3 != nullptr )
+// Support: Case( "hello", 1, _3 != nullptr ) DONE
 // Support: Case( std::regex( "" ) )
 /*
 
@@ -336,10 +336,23 @@ namespace eswitch_v4
         }
 
         template< int ... Is, typename Tup1, typename Tup2 >
-        constexpr auto tuple_merge( Tup1 && tup1, Tup2 && tup2 )
+        constexpr auto tuple_combine( Tup1 && tup1, Tup2 && tup2 )
         {
-            return std::make_tuple( (std::get< Is >( std::move( tup1 ) ) == 
-                std::get< Is >( std::move( tup2 ) ) )... );
+            auto combine = []< typename T1, typename T2 >( T1 && t1, T2 && t2 )
+            {
+                if constexpr( Condition< T2 > && Index< T1 > )
+                {
+                    static_assert( T1::eswitch_index == T2::idx::eswitch_index, "Wrong Index!" );
+                    return std::forward< T2 >( t2 );
+                }
+                else
+                    return std::forward< T1 >( t1 ) == std::forward< T2 >( t2 );
+            };
+            
+            return std::make_tuple( combine( 
+                std::get< Is >( std::move( tup1 ) ), 
+                std::get< Is >( std::move( tup2 ) ) 
+                )... );
         }
 
     } // namespace details
@@ -443,6 +456,7 @@ namespace eswitch_v4
         Comparison_operators cmp_operator;        
         T value_;
     public:
+        using idx = TIndex;
 
         template< typename Arg >
         constexpr condition( const Comparison_operators cmp_type, Arg && value ) 
@@ -809,28 +823,24 @@ namespace eswitch_v4
     }
 
     template< Condition Cnd >
-    Cnd case_( Cnd && cnd )
+    auto case_( Cnd && cnd )
     { 
         return std::move( cnd ); 
     }
 
     template< typename ... Ts >
     auto case_( Ts &&... values )
-    {        
-        auto lmbd0 = []< int I >( Index_< I > && idx, const auto & tup, const auto & f )
+    {
+        auto lmbd = [&]< typename T, T ... ints >( std::index_sequence< ints... >&&, auto && tup )
         {
-            f( idx, std::get< I >( tup ) );
-        };
-
-        auto lmbd1 = [&] < typename T, T ... ints >( std::index_sequence< ints... >&&, const auto & tup )
-        {
-            auto t = std::make_tuple( Index_< ints >{}... );
-            auto merged = details::tuple_merge< ints... >( std::move( t ), std::move( tup ) );
+            auto merged = details::tuple_combine< ints... >( 
+                std::make_tuple( Index_< ints >{}... ), std::move( tup ) );
 
             return ( std::get< ints >( merged ) && ... );
         };
 
-        return lmbd1( std::make_index_sequence< sizeof...(Ts) >{}, std::make_tuple( std::forward< Ts >( values )... ) );
+        return lmbd( std::make_index_sequence< sizeof...(Ts) >{},
+            std::make_tuple( std::forward< Ts >( values )... ) );
     }
 
     template< typename T, typename ... TArgs >
