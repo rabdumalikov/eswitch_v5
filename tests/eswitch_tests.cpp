@@ -758,6 +758,11 @@ TEST_CASE( "eswitch_v5::not_compiled", "" )
  
     SECTION( "match_2nd_case" )
     {
+        // eswitch( std::string{ "Hope" } )
+        // (
+        //     Case( true ) { return true; }
+        // );
+
         //std::any a = std::string{ "S" };
 
         // auto r = eswitch( true, std::string{ "Hello" } )

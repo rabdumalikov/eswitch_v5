@@ -495,10 +495,8 @@ namespace eswitch_v4
     private:
 
         template< typename T1, typename T2 >
-        static bool compare( const Comparison_operators CmpOper, T1 && t1, T2 && t2 )
-        {                
-            static_assert( Comparable< T1, T2 >, "Types are not COMPARABLE!" );
-            
+        static bool compare( const Comparison_operators CmpOper, T1 && t1, T2 && t2 ) requires Comparable< T1, T2 >
+        {                            
             switch( CmpOper )
             {
                 case Comparison_operators::equal_:
@@ -509,6 +507,15 @@ namespace eswitch_v4
                     return details::unreachable();
             };
         }
+
+        template< typename T1, typename T2 >
+        static bool compare( const Comparison_operators CmpOper, T1 && t1, T2 && t2 ) 
+        {                
+            static_assert( Comparable< T1, T2 >, "Types are not COMPARABLE!" );
+            
+            return false;
+        }
+
     };
 
     template< Condition TCnd1, Condition TCnd2 >
@@ -661,13 +668,6 @@ namespace eswitch_v4
                 [ this, &return_value, break_ = false ]( const auto & cnd ) mutable
                 {
                     using namespace details;
-
-                    // using type = std::decay_t< decltype( cnd.cnd ) >;
-                    
-                    // if constexpr( !IsCndPredicate< type > )
-                    // {
-                    //     constexpr int indx = type::idx::eswitch_index;
-                    // }
 
                     if( break_ || !cnd.cnd( tup_ ) ) return;
 
