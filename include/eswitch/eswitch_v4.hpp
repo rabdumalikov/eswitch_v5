@@ -21,10 +21,10 @@
 // move Default case to the END - DONE
 // lazy_eswitch - DECLINED( since it doesn't have sence for now )
 // tuple+pair handle - DONE
-// write concept Comparable( or maybe stl has one ) DONE
-// Willcard
+// write concept Comparable( or maybe stl has one ) - DONE
+// Willcard - DONE
 // Add error in type are incomparable
-// Support: Case( "hello", 1, _3 != nullptr ) DONE
+// Support: Case( "hello", 1, _3 != nullptr ) - DONE
 // Support: Case( std::regex( "" ) )
 /*
 
@@ -860,5 +860,6 @@ namespace eswitch_v4
 
     /// static declarations
     static const Fallthrough fallthrough_;
+    static const extension::any _;
 
 } // namespace eswitch_v4

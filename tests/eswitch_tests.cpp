@@ -670,6 +670,87 @@ TEST_CASE( "eswitch_v5::match_without_indexes", "" )
     }
 }
 
+TEST_CASE( "eswitch_v5::wildcard", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    SECTION( "match_2nd_wildcard" )
+    {
+        auto r = eswitch( 7, std::string{ "Hope" }, true )
+        (
+            Default { return false; },
+            Case( 7, _, true ) { return true; }
+        );
+
+        REQUIRE( r ); 
+    }
+    SECTION( "match_1st_wildcard" )
+    {
+        auto r = eswitch( 7, std::string{ "Hope" }, true )
+        (
+            Default { return false; },
+            Case( _, "Hope", true ) { return true; }
+        );
+
+        REQUIRE( r ); 
+    }
+    SECTION( "match_3rd_wildcard" )
+    {
+        auto r = eswitch( 7, std::string{ "Hope" }, true )
+        (
+            Default { return false; },
+            Case( 7, "Hope", _ ) { return true; }
+        );
+
+        REQUIRE( r ); 
+    }
+
+    SECTION( "2_match_1st_and_2nd_wildcard" )
+    {
+        auto r = eswitch( 7, std::string{ "Hope" }, true )
+        (
+            Default { return false; },
+            Case( _, _, true ) { return true; }
+        );
+
+        REQUIRE( r ); 
+    }
+
+    SECTION( "2_match_1st_and_3rd_wildcard" )
+    {
+        auto r = eswitch( 7, std::string{ "Hope" }, true )
+        (
+            Default { return false; },
+            Case( _, "Hope", _ ) { return true; }
+        );
+
+        REQUIRE( r ); 
+    }
+
+    SECTION( "2_match_2nd_and_3rd_wildcard" )
+    {
+        auto r = eswitch( 7, std::string{ "Hope" }, true )
+        (
+            Default { return false; },
+            Case( 7, _, _ ) { return true; }
+        );
+
+        REQUIRE( r ); 
+    }
+
+
+    SECTION( "3_match_1st_2nd_and_3rd_wildcard" )
+    {
+        auto r = eswitch( 7, std::string{ "Hope" }, true )
+        (
+            Default { return false; },
+            Case( _, _, _ ) { return true; }
+        );
+
+        REQUIRE( r ); 
+    }
+}
 
 TEST_CASE( "eswitch_v5::not_compiled", "" ) 
 {
