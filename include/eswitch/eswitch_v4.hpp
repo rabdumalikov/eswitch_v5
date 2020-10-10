@@ -550,7 +550,7 @@ namespace eswitch_v4
 
     private:
 
-        static bool compare( const Logical_operators LogicalOperator, bool t1, bool t2 )
+        static bool compare( const Logical_operators LogicalOperator, const bool t1, const bool t2 )
         {                
             switch( LogicalOperator )
             {
