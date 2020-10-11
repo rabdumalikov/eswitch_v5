@@ -16,6 +16,7 @@
 #include <concepts>
 #include <any>
 #include <variant>
+#include <regex>
 
 /// TODO
 // move Default case to the END - DONE
@@ -463,6 +464,7 @@ namespace eswitch_v4
         Comparison_operators cmp_operator;        
         T value_;
     public:
+        using value_type = T;
         using idx = TIndex;
 
         template< typename Arg >
@@ -516,6 +518,89 @@ namespace eswitch_v4
             return false;
         }
 
+    };
+
+    bool operator==( const std::string & str, const std::regex & rgx )
+    {
+        if( std::smatch base_match; std::regex_match( str, base_match, rgx ) )
+        {
+            // std::ssub_match base_sub_match = base_match[1];
+            // std::string base = base_sub_match.str();
+        }
+        return true;
+    }
+
+    bool operator!=( const std::string & str, const std::regex & rgx )
+    {
+        return false;
+    }
+
+    template< Index TIndex >
+    class condition< TIndex, std::regex& >
+    {
+        Comparison_operators cmp_operator;        
+        std::regex value_;
+    public:
+        using value_type = std::regex;
+        using idx = TIndex;
+
+        template< typename Arg >
+        constexpr condition( const Comparison_operators cmp_type, Arg && value ) 
+            : cmp_operator( cmp_type ), value_( std::forward< Arg >( value ) )
+            { 
+            }
+
+        template< StdTuple TSrcTuple >
+        bool operator()( const TSrcTuple & src_tuple ) const
+        {
+            static_assert( !is_out_of_range< std::tuple_size_v< TSrcTuple > >(), 
+                "Case Index is OUT OF RANGE" ); 
+
+            return compare( cmp_operator, std::get< TIndex::eswitch_index >( src_tuple ), value_ );         
+        }
+
+        template< StdTuple TSrcTuple, typename F >
+        bool operator()( const TSrcTuple & src_tuple, F && f ) const
+        {
+            static_assert( !is_out_of_range< std::tuple_size_v< TSrcTuple > >(), 
+                "Case Index is OUT OF RANGE" ); 
+
+            return compare( cmp_operator, std::get< TIndex::eswitch_index >( src_tuple ), value_, std::forward< F >( f ) );         
+        }
+
+        template< uint32_t MaxIndex >
+        static constexpr bool is_out_of_range() 
+        { 
+            return TIndex::eswitch_index >= MaxIndex; 
+        }
+
+    private:
+
+        template< typename T1, typename T2 >
+        static bool compare( const Comparison_operators CmpOper, T1 && t1, T2 && t2 )
+        {                         
+            switch( CmpOper )
+            {
+                case Comparison_operators::equal_:
+                    return t1 == t2;
+                case Comparison_operators::not_equal_:
+                    return !( t1 == t2 );
+                default:
+                    return details::unreachable();
+            };
+        }
+
+        template< typename T1, typename T2, typename F >
+        static bool compare( const Comparison_operators CmpOper, T1 && t1, T2 && t2, F && f )
+        {                         
+            if( std::smatch match; std::regex_match( t1, match, t2 ) )
+            {
+                f( match );
+                return CmpOper == Comparison_operators::equal_ ? true : false;
+            }   
+
+            return CmpOper == Comparison_operators::equal_ ? false : true;
+        }
     };
 
     template< Condition TCnd1, Condition TCnd2 >
@@ -608,6 +693,9 @@ namespace eswitch_v4
         return std::move( cp );
     }
 
+    template< typename T >
+    concept IsRegexCondition = details::is_default_case_v< T > || ( Condition< T > && std::is_same_v< typename T::value_type, std::regex > );
+
     template< typename ... Args >
     class eswitch_impl
     {
@@ -647,7 +735,9 @@ namespace eswitch_v4
         struct Padding {};
 
         template< typename ... Cnds >
-        auto operator()( Cnds && ... cnds ) requires details::has_type< std::common_type< underlying_t< Cnds >... > >
+        auto operator()( Cnds && ... cnds ) requires 
+            details::has_type< std::common_type< underlying_t< Cnds >... > > &&
+            ( !( IsRegexCondition< decltype( cnds.cnd ) > && ... ) )
         {
             constexpr auto generic_lambda = []< typename T, T... ints >
                 ( std::index_sequence< ints... > && int_seq, auto && tup, auto && f )
@@ -697,6 +787,70 @@ namespace eswitch_v4
                         else
                         { 
                             return_value = cnd.func();
+                        }
+                    }
+
+                    break_ = !cnd.fallthrough;
+                });
+
+            if constexpr( has_return_value ) 
+            {
+                return return_value.value();
+            }
+        }
+
+        template< typename ... Cnds >
+        auto operator()( Cnds &&... cnds ) 
+            requires details::has_type< std::common_type< underlying_t< Cnds >... > > && 
+            ( IsRegexCondition< decltype( cnds.cnd ) > && ... )
+        {
+            constexpr auto generic_lambda = []< typename T, T... ints >
+                ( std::index_sequence< ints... > && int_seq, auto && tup, auto && f )
+                {
+                    ( f( std::get< ints >( tup ) ), ... );
+                };
+
+            using return_t = std::common_type_t< underlying_t< Cnds >... >;
+
+            constexpr auto has_return_value = !std::is_same_v< return_t, void >;
+
+            std::optional< std::conditional_t< has_return_value, return_t, Padding >
+                > return_value;
+
+            generic_lambda( 
+                std::make_index_sequence< sizeof...( Cnds ) >{}, 
+                details::move_default_case_to_the_end( std::forward< Cnds >( cnds )... ), 
+                [ this, &return_value, break_ = false ]( const auto & cnd ) mutable
+                {
+                    using namespace details;
+
+                    if( break_ ) return;
+
+                    constexpr auto amount_args = amount_args_v< decltype(cnd.func) >;
+
+                    if constexpr( sizeof...( Args ) == 1 && amount_args == 1 &&
+                                  is_condition_v< decltype( cnd.cnd ) > )
+                    {
+                        if constexpr( !has_return_value )
+                        {
+                            cnd.cnd( tup_, std::move( cnd.func ) );
+                        }
+                        else
+                        {
+                            return_value = cnd.cnd( tup_, std::move( cnd.func ) );
+                        }                            
+                    }
+                    else if constexpr( amount_args == 0 )
+                    {
+                        if constexpr( !has_return_value )
+                        {
+                            if( cnd.cnd( tup_ ) )
+                                cnd.func();
+                        }
+                        else
+                        { 
+                            if( cnd.cnd( tup_ ) )
+                                return_value = cnd.func();
                         }
                     }
 
@@ -857,6 +1011,29 @@ namespace eswitch_v4
 
         return lmbd( std::make_index_sequence< sizeof...(Ts) >{},
             std::make_tuple( std::forward< Ts >( values )... ) );
+    }
+
+    /*
+
+    switch( std::string{ "Key: value" } )
+    (
+        Case( "(\w*): (\w*)"_r )( const std::smatch & all_matches )
+        {
+
+        },
+        Default { }
+    );
+
+    */
+
+    auto operator ""_r( const char * rgx, const std::size_t sz )
+    {
+        return std::regex{ rgx };
+    }
+
+    auto case_( std::regex && rgx )
+    {
+        return _1 == rgx;
     }
 
     template< typename T, typename ... TArgs >

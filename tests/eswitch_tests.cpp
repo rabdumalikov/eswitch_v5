@@ -752,6 +752,50 @@ TEST_CASE( "eswitch_v5::wildcard", "" )
     }
 }
 
+TEST_CASE( "eswitch_v5::std_regex", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    SECTION( "match_std_regex_without_group" )
+    {
+        auto r = eswitch( std::string{ "Hope" } )
+        (
+            Case( R"(\w*)"_r ) { return true; }
+        );
+
+        REQUIRE( r );
+    }
+
+    
+    SECTION( "match_std_regex_with_group" )
+    {        
+        auto r = eswitch( std::string{ "Hope" } )
+        (
+            Case( R"((\w*))"_r )( const std::smatch & match ) 
+            { 
+                return match.size() == 1 && match[1].str() == "Hope"; 
+            }
+        );
+
+        REQUIRE( r ); 
+    }
+
+    SECTION( "match_std_regex_with_group_2" )
+    {        
+        auto r = eswitch( std::string{ "Key: value" } )
+        (
+            Case( R"((\w*): (\w*))"_r )( const std::smatch & match ) 
+            { 
+                return match.size() == 2 && match[1].str() == "Key" && match[2].str() == "value"; 
+            }
+        );
+
+        REQUIRE( r ); 
+    }
+
+}
+
 TEST_CASE( "eswitch_v5::not_compiled", "" ) 
 {
     using namespace eswitch_v4;
