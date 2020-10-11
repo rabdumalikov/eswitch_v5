@@ -719,16 +719,14 @@ namespace eswitch_v4
 
                     if( break_ ) return;
 
-                    if constexpr( !IsRegexCondition< decltype( cnd.cnd ) > )
-                        if( !cnd.cnd( tup_ ) ) return;
-
                     constexpr auto amount_args = amount_args_v< decltype(cnd.func) >;
-
-                    using first_type_t = std::decay_t< decltype( std::get< 0 >( tup_ ) ) >;
 
                     if constexpr( sizeof...( Args ) == 1 && amount_args == 1 &&
                         is_condition_v< decltype( cnd.cnd ) > )
                     {                  
+                        if constexpr( !IsRegexCondition< decltype( cnd.cnd ) > )
+                            if( !cnd.cnd( tup_ ) ) return;
+
                         if constexpr( !has_return_value )
                         {
                             if constexpr( IsRegexCondition< decltype( cnd.cnd ) > )
@@ -741,14 +739,12 @@ namespace eswitch_v4
                             if constexpr( IsRegexCondition< decltype( cnd.cnd ) > )
                                 return_value = cnd.cnd( tup_, std::move( cnd.func ) );
                             else
-                                return_value = cnd.func( cnd.cnd.value( tup_ ) );
-
+                                return_value = cnd.func( cnd.cnd.value( tup_ ) );                                
                         }       
                     }
                     else if constexpr( amount_args == 0 )
                     {
-                        if constexpr( IsRegexCondition< decltype( cnd.cnd ) > )
-                            if( !cnd.cnd( tup_ ) ) return;
+                        if( !cnd.cnd( tup_ ) ) return;
 
                         if constexpr( !has_return_value )
                         {
@@ -759,6 +755,11 @@ namespace eswitch_v4
                             return_value = cnd.func();
                         }
                     }
+                    else
+                    {
+                        if( !cnd.cnd( tup_ ) ) return;
+                    }
+                    
 
                     break_ = !cnd.fallthrough;
                 });
