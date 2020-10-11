@@ -794,6 +794,32 @@ TEST_CASE( "eswitch_v5::std_regex", "" )
         REQUIRE( r ); 
     }
 
+    SECTION( "match_std_regex_with_group_3" )
+    {        
+        auto r = eswitch( std::string{ "Key: 123" } )
+        (
+            Case( R"((\w*): (\d*))"_r )( const std::smatch & match ) 
+            { 
+                return match.size() == 2 && match[1].str() == "Key" && match[2].str() == "123"; 
+            }
+        );
+
+        REQUIRE( r ); 
+    }
+
+    SECTION( "match_std_regex_with_group_4" )
+    {        
+        auto r = eswitch( std::string{ "Key: Hi123" } )
+        (
+            Case( R"((\w*): (.*))"_r )( const std::smatch & match ) 
+            { 
+                return match.size() == 2 && match[1].str() == "Key" && match[2].str() == "Hi123"; 
+            }
+        );
+
+        REQUIRE( r ); 
+    }
+
 }
 
 TEST_CASE( "eswitch_v5::not_compiled", "" ) 
