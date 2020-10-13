@@ -771,7 +771,6 @@ namespace eswitch_v4
         }
     };
 
-
     template< typename ... Ts >
     auto eswitch( Ts && ... ts )
     {
@@ -807,18 +806,6 @@ namespace eswitch_v4
     auto operator!=( Idx idx, T && rhv )
     {
         return condition< Idx, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
-    }
-
-    template< typename T1, typename T2, typename T3 >
-    auto operator&&( T1 && i, condition< T2, T3 > && j )
-    {
-        return conditions( Logical_operators::and_, std::forward< T1 >( i ), std::move( j ) );
-    }
-
-    template< typename T1, typename T2, typename T3 >
-    auto operator||( T1 && i, condition< T2, T3 > && j )
-    {
-        return conditions( Logical_operators::or_, std::forward< T1 >( i ), std::move( j ) );
     }
 
     template< typename TPred, uint32_t ... Is >
@@ -885,18 +872,6 @@ namespace eswitch_v4
     auto operator||( T1 && i, Cnd && cnd )
     {
         return conditions( Logical_operators::or_, std::forward< T1 >( i ), std::move( cnd ) );
-    }
-
-    template< Condition Cnd1, Condition Cnd2 >
-    auto operator&&( Cnd1 && cnd1, Cnd2 && cnd2 )
-    {
-        return conditions( Logical_operators::and_, std::forward< Cnd1 >( cnd1 ), std::forward< Cnd2 >( cnd2 ) );
-    }
-
-    template< Condition Cnd1, Condition Cnd2 >
-    auto operator||( Cnd1 && cnd1, Cnd2 && cnd2 )
-    {
-        return conditions( Logical_operators::or_, std::forward< Cnd1 >( cnd1 ), std::move( cnd2 ) );
     }
 
     template< Condition Cnd >
