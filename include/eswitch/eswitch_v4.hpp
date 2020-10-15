@@ -166,16 +166,7 @@ namespace eswitch_v4
     const Index_< 9 > _10;   const Index_< 19 > _20;    const Index_< 29 > _30;           
          
     namespace details 
-    {
-        template< typename T >
-        auto Just_find_out_return_type( T && value ){ return std::forward< T >( value ); }
-        
-        template< typename T >
-        struct is_condition : std::false_type {};
-        
-        template< Index I, typename T >
-        struct is_condition< condition< I, T > > : std::true_type {};
-
+    {        
         template< typename T >
         struct is_default_case : std::false_type {};
 
@@ -186,17 +177,14 @@ namespace eswitch_v4
         constexpr bool is_default_case_v = is_default_case< T >::value;
 
         template< typename T >
-        constexpr bool is_condition_v = is_condition< T >::value;
+        constexpr std::false_type is_std_variant( T &&  );
+
+        template< typename ... Ts >
+        constexpr std::true_type  is_std_variant( std::variant< Ts... > && );
 
         template< typename T >
-        struct is_std_variant : std::false_type {};
+        constexpr bool is_std_variant_v = decltype( is_std_variant( std::declval< std::decay_t< T > >() ) )();
         
-        template< typename ... T >
-        struct is_std_variant< std::variant< T... > > : std::true_type {};
-
-        template< typename ... T >
-        constexpr bool is_std_variant_v = is_std_variant< T... >::value;
-
         template< typename T >
         struct is_std_pair : std::false_type {};
         
@@ -222,7 +210,7 @@ namespace eswitch_v4
         constexpr bool is_std_tuple_v = is_std_tuple< std::decay_t< T > >::value;
 
         template< typename T >
-        constexpr bool is_std_any_v = std::is_same_v< T, std::any >;
+        constexpr bool is_std_any_v = std::is_same_v< std::decay_t< T >, std::any >;
 
         template< typename T >
         struct is_callable_impl : std::false_type {};
@@ -408,14 +396,14 @@ namespace eswitch_v4
             }
         };
 
-        template< typename T, typename ... TArgs >
+        template< typename T, std::size_t Sz >
         struct Any_from_impl
         {
-            std::array< T, sizeof...(TArgs) + 1 > anythings;
+            std::array< T, Sz > anythings;
 
-            template< typename T1, typename ... TOthers >
-            constexpr Any_from_impl( T1 && arg, TOthers && ... args )
-                : anythings{ std::forward< T1 >( arg ), std::forward< TOthers >( args )... }
+            template< typename ... Args >
+            constexpr Any_from_impl( Args &&... args )
+                : anythings{ std::forward< Args >( args )... }
                 {
                 }
 
@@ -425,6 +413,10 @@ namespace eswitch_v4
                 return is_in_set( value, st.anythings );
             }
         };        
+
+        template< typename ... Args >
+        Any_from_impl( Args &&... ) -> Any_from_impl< std::common_type_t< std::decay_t< Args >... >, sizeof...( Args ) >;        
+
     } // namespace extension
 
 
@@ -435,31 +427,71 @@ namespace eswitch_v4
     };
 
     template< typename T >
-    static bool operator==( const std::any & t1, my_type< T > )
-    {
-        return std::any_cast< T >(&t1) != nullptr;        
-    }
+    concept IsRegexCondition = details::is_default_case_v< std::decay_t< T > > || ( Condition< T > && std::is_same_v< typename std::decay_t< T >::value_type, std::regex > );
 
-    template< typename ... Args, typename T >
-    static bool operator==( const std::variant< Args... > & t1, my_type< T > )
-    {
-        return std::get_if< T >(&t1) != nullptr;        
-    }
+    template< Index TIndex >
+    struct regex_support
+    {        
+        template<  typename T, StdTuple TSrcTuple >
+        static auto execute( Comparison_operators, const T & value_, const TSrcTuple & src_tuple ) 
+            requires std::is_same_v< std::decay_t< T >, std::regex > &&
+                ( std::tuple_size_v< std::decay_t< TSrcTuple > > >= 1 )
+        {
+            const auto & text( std::get< TIndex::eswitch_index >( src_tuple ) );
 
-    template< typename T >
-    static auto get_value( const std::any & t1, my_type< T > )
-    {
-        return std::any_cast< T >(t1);        
-    }
+            if( std::smatch match; std::regex_match( text, match, value_ ) )
+            {              
+                std::vector< std::string > vs;
+                vs.reserve( match.size() - 1 );
 
-    template< typename ... Args, typename T >
-    static auto get_value( const std::variant< Args... > & t1, my_type< T > )
+                for( const auto & v : match )  
+                    vs.push_back( v );
+
+                return std::make_optional( std::move( vs ) );
+            }   
+
+            return std::optional< std::vector< std::string > >{};
+        }
+    };
+
+    template< Index TIndex >
+    struct Any_and_Variant_support
     {
-        return std::get< T >(t1);        
-    }
+        template< typename T, typename T1, typename ... Ts >
+        static auto execute( Comparison_operators, const T & value_, const std::tuple< T1, Ts... > & src_tuple )
+            requires details::has_type< T > && 
+                ( details::is_std_any_v<     decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) > || 
+                  details::is_std_variant_v< decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) > )
+        {
+            auto entry = std::get< TIndex::eswitch_index >( src_tuple );
+
+            using type = typename T::type;
+            using _T = decltype( std::get< TIndex::eswitch_index >( src_tuple ) );
+
+            if constexpr( details::is_std_any_v< _T > )
+            {
+                if( auto * val = std::any_cast< type >( &entry ) )
+                {
+                    return std::make_optional( *val );
+                }
+            }
+            else if constexpr( details::is_std_variant_v< _T > ) 
+            {
+                if( auto * val = std::get_if< type >( &entry ) )
+                {
+                    return std::make_optional( *val );
+                }
+            }
+                        
+            return std::optional< type >{};
+        }
+    };
+
 
     template< Index TIndex, typename T >
-    class condition
+    class condition 
+        : public regex_support< TIndex >
+        , public Any_and_Variant_support< TIndex >
     {
         Comparison_operators cmp_operator;        
         T value_;
@@ -479,18 +511,19 @@ namespace eswitch_v4
             }
 
         template< StdTuple TSrcTuple >
-        bool operator()( const TSrcTuple & src_tuple ) const
+        auto operator()( const TSrcTuple & src_tuple ) const
         {
             static_assert( !is_out_of_range< std::tuple_size_v< TSrcTuple > >(), 
-                "Case Index is OUT OF RANGE" ); 
+                    "Case Index is OUT OF RANGE" ); 
 
-            return compare( cmp_operator, std::get< TIndex::eswitch_index >( src_tuple ), value_ );         
+            return execute( cmp_operator, value_, src_tuple );
         }
 
         template< StdTuple TSrcTuple >
-        auto value( const TSrcTuple & src_tuple ) const
+        bool operator()( const TSrcTuple & src_tuple ) const
+            requires ( std::tuple_size_v< std::decay_t< TSrcTuple > > == 0 )
         {
-            return get_value( std::get< TIndex::eswitch_index >( src_tuple ), value_ );
+            return false;
         }
 
         template< uint32_t MaxIndex >
@@ -500,6 +533,15 @@ namespace eswitch_v4
         }
 
     private:
+    
+        using regex_support< TIndex >::execute;
+        using Any_and_Variant_support< TIndex >::execute;
+
+        template< typename T_, StdTuple TSrcTuple >
+        static bool execute( Comparison_operators cmp_operator, const T_& value_, const TSrcTuple & src_tuple )
+        {
+            return compare( cmp_operator, std::get< TIndex::eswitch_index >( src_tuple ), value_ );         
+        }
 
         template< typename T1, typename T2 >
         static bool compare( const Comparison_operators CmpOper, T1 && t1, T2 && t2 ) 
@@ -522,44 +564,6 @@ namespace eswitch_v4
             static_assert( Comparable< T1, T2 >, "Types are not COMPARABLE!" );
             
             return false;
-        }
-    };
-
-    template< Index TIndex >
-    class condition< TIndex, std::regex& > : public condition< TIndex, std::regex >
-    {
-    public:
-        using base = condition< TIndex, std::regex >;
-        using condition< TIndex, std::regex >::condition;
-
-        template< StdTuple TSrcTuple >
-        bool operator()( const TSrcTuple & src_tuple ) const
-        {
-            return ( *this )( src_tuple, []( const auto & res ){} );
-        }
-
-        template< StdTuple TSrcTuple, typename F >
-        bool operator()( const TSrcTuple & src_tuple, F && f ) const
-        {
-            static_assert( !( base::template is_out_of_range< std::tuple_size_v< TSrcTuple > >() ), 
-                "Case Index is OUT OF RANGE" ); 
-
-            return compare( this->cmp_operator, std::get< TIndex::eswitch_index >( src_tuple ), 
-                this->value_, std::forward< F >( f ) );         
-        }
-
-    private:
-
-        template< typename T1, typename T2, typename F >
-        static bool compare( const Comparison_operators CmpOper, T1 && t1, T2 && t2, F && f )
-        {                         
-            if( std::smatch match; std::regex_match( t1, match, t2 ) )
-            {
-                f( match );
-                return CmpOper == Comparison_operators::equal_ ? true : false;
-            }   
-
-            return CmpOper == Comparison_operators::equal_ ? false : true;
         }
     };
 
@@ -590,7 +594,9 @@ namespace eswitch_v4
         template< StdTuple TSrcTuple >
         bool operator()( const TSrcTuple & src_tuple ) const
         {
-            return compare( logical_operator, cnd1_( src_tuple ),  cnd2_( src_tuple ) );            
+            return compare( logical_operator, 
+                static_cast< bool >( cnd1_( src_tuple ) ),  
+                static_cast< bool >( cnd2_( src_tuple ) ) );            
         }
 
     private:
@@ -615,12 +621,6 @@ namespace eswitch_v4
     template< Condition Cnd, Callable Func >
     struct condition_with_predicate
     {
-        template< StdTuple TSrcTuple >
-        void operator()( const TSrcTuple & src_tuple ) const
-        {
-            if( cnd( src_tuple ) ) func();
-        }
-
         using F = Func;
 
         Cnd  cnd;
@@ -653,17 +653,16 @@ namespace eswitch_v4
         return std::move( cp );
     }
 
-    template< typename T >
-    concept IsRegexCondition = details::is_default_case_v< T > || ( Condition< T > && std::is_same_v< typename T::value_type, std::regex > );
-
     template< typename ... Args >
     class eswitch_impl
     {
         static_assert( ( ComparableExceptAnyAndVariant<Args> && ... ), "Input Types should be COMPARABLE!" );
 
-        std::tuple< const Args &... > tup_;
+        std::tuple< Args... > tup_;
     public:
-        eswitch_impl( const Args &... ts ) : tup_{ std::cref( ts )... }
+
+        template< typename ... Ts >
+        eswitch_impl( Ts &&... ts ) : tup_{ std::forward< Ts >( ts )... }
         {            
         }
 
@@ -721,45 +720,36 @@ namespace eswitch_v4
 
                     constexpr auto amount_args = amount_args_v< decltype(cnd.func) >;
 
-                    if constexpr( sizeof...( Args ) == 1 && amount_args == 1 &&
-                        is_condition_v< decltype( cnd.cnd ) > )
-                    {                  
-                        if constexpr( !IsRegexCondition< decltype( cnd.cnd ) > )
-                            if( !cnd.cnd( tup_ ) ) return;
+                    auto res = cnd.cnd( tup_ );
 
-                        if constexpr( !has_return_value )
+                    if( !res ) return;
+
+                    if constexpr( amount_args == 1 && !std::is_same_v< decltype( res ), bool > )
+                    {                  
+                        if constexpr( has_return_value )
                         {
-                            if constexpr( IsRegexCondition< decltype( cnd.cnd ) > )
-                                cnd.cnd( tup_, std::move( cnd.func ) );
-                            else
-                                cnd.func( cnd.cnd.value( tup_ ) );
+                            return_value = cnd.func( *res );                            
                         }
                         else
                         {
-                            if constexpr( IsRegexCondition< decltype( cnd.cnd ) > )
-                                return_value = cnd.cnd( tup_, std::move( cnd.func ) );
-                            else
-                                return_value = cnd.func( cnd.cnd.value( tup_ ) );                                
+                            cnd.func( *res );                            
                         }       
                     }
                     else if constexpr( amount_args == 0 )
                     {
-                        if( !cnd.cnd( tup_ ) ) return;
-
-                        if constexpr( !has_return_value )
+                        if constexpr( has_return_value )
                         {
-                            cnd.func();
+                            return_value = cnd.func();
                         }
                         else
                         { 
-                            return_value = cnd.func();
+                            cnd.func();
                         }
                     }
                     else
                     {
-                        if( !cnd.cnd( tup_ ) ) return;
-                    }
-                    
+                        details::unreachable();
+                    }                                               
 
                     break_ = !cnd.fallthrough;
                 });
@@ -770,6 +760,9 @@ namespace eswitch_v4
             }
         }
     };
+
+    template< typename ... Ts >
+    eswitch_impl( Ts... ) -> eswitch_impl< Ts... >;
 
     template< typename ... Ts >
     auto eswitch( Ts && ... ts )
@@ -905,13 +898,10 @@ namespace eswitch_v4
         return _1 == rgx;
     }
 
-    template< typename T, typename ... TArgs >
-    auto any_from( T && arg1, TArgs&& ... args )
+    template< typename ... Args >
+    auto any_from( Args &&... args )
     {
-        using return_t = decltype( details::Just_find_out_return_type( std::forward< T >( arg1 ) ) );
-
-        return extension::Any_from_impl< return_t, TArgs... >( 
-            std::forward< T >( arg1 ), std::forward< TArgs >( args )... );
+        return extension::Any_from_impl( std::forward< Args >( args )... );
     }
     
     template< int64_t From, int64_t To >

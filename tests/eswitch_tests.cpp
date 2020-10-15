@@ -54,6 +54,37 @@ enum Place { unknown = 0, new_york=5, washington=129, new_jersey=501 };
     );
 */
 
+TEST_CASE( "eswitch_v5::any_from_match", "" ) 
+{
+    using namespace eswitch_v4;
+    using namespace std;
+
+    SECTION( "match_any_from" )
+    {
+        auto r = 
+        eswitch( washington )
+        (
+            Case( _1 == any_from( washington, new_york ) ) { return 123; },
+            Default   { return 'c'; } 
+        );
+
+        REQUIRE( r == 123 );    
+    }
+
+    SECTION( "match_any_from2" )
+    {
+        auto r = 
+        eswitch( new_york )
+        (
+            Case( _1 == any_from( washington, new_york ) ) { return 123; },
+            Default   { return 'c'; } 
+        );
+
+        REQUIRE( r == 123 );    
+    }
+
+}
+
 TEST_CASE( "eswitch_v5::equal_match", "" ) 
 {
     using namespace eswitch_v4;
@@ -398,7 +429,6 @@ TEST_CASE( "eswitch_v5::std_variant_only", "" )
 
         auto r = eswitch( a )
         (
-            //Case( _1 == my_type< float >{} ) { return ""; },
             Case( _1 == my_type< int >{} )( const int val ) { return ""; },
             Case( _1 == my_type< std::string >{} )( const std::string & val ) { return val + "hello"; },
             Default { return "Default"; }
@@ -772,9 +802,9 @@ TEST_CASE( "eswitch_v5::std_regex", "" )
     {        
         auto r = eswitch( std::string{ "Hope" } )
         (
-            Case( R"((\w*))"_r )( const std::smatch & match ) 
+            Case( R"((\w*))"_r )( const std::vector< std::string > & match ) 
             { 
-                return match.size() == 1 && match[1].str() == "Hope"; 
+                return match.size() == 2 && match[1] == "Hope"; 
             }
         );
 
@@ -785,9 +815,10 @@ TEST_CASE( "eswitch_v5::std_regex", "" )
     {        
         auto r = eswitch( std::string{ "Key: value" } )
         (
-            Case( R"((\w*): (\w*))"_r )( const std::smatch & match ) 
+            Case( R"((\w*): (\w*))"_r )( const std::vector< std::string > & match ) 
             { 
-                return match.size() == 2 && match[1].str() == "Key" && match[2].str() == "value"; 
+                //std::cout << "SSSSIZE=" << match.size() << match[1].str() << match[2].str() << std::endl << std::endl;
+                return match.size() == 3 && match[1] == "Key" && match[2] == "value"; 
             }
         );
 
@@ -798,9 +829,9 @@ TEST_CASE( "eswitch_v5::std_regex", "" )
     {        
         auto r = eswitch( std::string{ "Key: 123" } )
         (
-            Case( R"((\w*): (\d*))"_r )( const std::smatch & match ) 
+            Case( R"((\w*): (\d*))"_r )( const std::vector< std::string > & match ) 
             { 
-                return match.size() == 2 && match[1].str() == "Key" && match[2].str() == "123"; 
+                return match.size() == 3 && match[1] == "Key" && match[2] == "123"; 
             }
         );
 
@@ -811,9 +842,9 @@ TEST_CASE( "eswitch_v5::std_regex", "" )
     {        
         auto r = eswitch( std::string{ "Key: Hi123" } )
         (
-            Case( R"((\w*): (.*))"_r )( const std::smatch & match ) 
+            Case( R"((\w*): (.*))"_r )( const std::vector< std::string > & match ) 
             { 
-                return match.size() == 2 && match[1].str() == "Key" && match[2].str() == "Hi123"; 
+                return match.size() == 3 && match[1] == "Key" && match[2] == "Hi123"; 
             }
         );
 
@@ -822,39 +853,39 @@ TEST_CASE( "eswitch_v5::std_regex", "" )
 
 }
 
-TEST_CASE( "eswitch_v5::not_compiled", "" ) 
-{
-    using namespace eswitch_v4;
+// TEST_CASE( "eswitch_v5::not_compiled", "" ) 
+// {
+//     using namespace eswitch_v4;
  
-    SECTION( "match_2nd_case" )
-    {
-        // eswitch( std::string{ "Hope" } )
-        // (
-        //     Case( true ) { return true; }
-        // );
+//     SECTION( "match_2nd_case" )
+//     {
+//         // eswitch( std::string{ "Hope" } )
+//         // (
+//         //     Case( true ) { return true; }
+//         // );
 
-        //std::any a = std::string{ "S" };
+//         //std::any a = std::string{ "S" };
 
-        // auto r = eswitch( true, std::string{ "Hello" } )
-        // (
-        //     Case( _2 == true, "Hello" ) { return true; }
-        // );
+//         // auto r = eswitch( true, std::string{ "Hello" } )
+//         // (
+//         //     Case( _2 == true, "Hello" ) { return true; }
+//         // );
 
-        // eswitch( a )
-        // (
-        //     Case( _1 == my_type< std::string >{} )( const auto & val ) { return val; }
-        // );
+//         // eswitch( a )
+//         // (
+//         //     Case( _1 == my_type< std::string >{} )( const auto & val ) { return val; }
+//         // );
         
-        // eswitch( a )
-        // (
-        //     Case( _1 == my_type< std::string >{} )( const std::string & val ) { return val; },
-        //     Case( _1 == my_type< int >{} ) { return true; },
-        //     Default { return 1; }
-        // );
+//         // eswitch( a )
+//         // (
+//         //     Case( _1 == my_type< std::string >{} )( const std::string & val ) { return val; },
+//         //     Case( _1 == my_type< int >{} ) { return true; },
+//         //     Default { return 1; }
+//         // );
 
-        // eswitch( a )
-        // (
-        //     Case( _1 == my_type< int >{} && _2 == my_type< int >{} ) { return ""; },
-        // );
-    }
-}
+//         // eswitch( a )
+//         // (
+//         //     Case( _1 == my_type< int >{} && _2 == my_type< int >{} ) { return ""; },
+//         // );
+//     }
+// }
