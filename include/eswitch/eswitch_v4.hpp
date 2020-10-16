@@ -93,10 +93,10 @@ namespace eswitch_v4
     concept Condition = requires( T t )
     { 
         t( std::make_tuple() ); 
-        std::decay_t<T>::template is_out_of_range<int{}>(); 
+        std::decay_t< T >::template is_out_of_range< std::size_t{} >(); 
     };
 
-    template< typename TPred, uint32_t ... Is >
+    template< typename TPred, std::size_t ... Is >
     class predicate_condition;
 
     template< Index TIndex, typename T >
@@ -112,16 +112,16 @@ namespace eswitch_v4
     {
         class Range
         {
-            int32_t start_;
-            int32_t end_;
+            std::size_t start_;
+            std::size_t end_;
 
             public:
-            Range( const int32_t start, const int32_t end ) 
+            Range( const std::size_t start, const std::size_t end ) 
                 : start_( start ), end_( end )
                 {                
                 }
 
-            friend bool operator==( const int32_t val, const Range & rm )
+            friend bool operator==( const std::size_t val, const Range & rm )
             {
                 return val >= rm.start_ && val <= rm.end_;
             }
@@ -170,12 +170,12 @@ namespace eswitch_v4
     }
 
 
-    template< int32_t Idx >
+    template< std::size_t Idx >
     struct Index_
     { 
-        static constexpr int32_t eswitch_index = Idx;
+        static constexpr std::size_t eswitch_index = Idx;
 
-        auto in( const int32_t start, const int32_t end ) const
+        auto in( const std::size_t start, const std::size_t end ) const
         {
             return condition< Index_< Idx >, extension::Range >( Comparison_operators::equal_, extension::Range( start, end ) );
         }
@@ -275,14 +275,14 @@ namespace eswitch_v4
         template< typename R, typename C, typename ... Args >
         struct amount_args_function_has< R(C::*)(Args...) const >
         {
-            static constexpr int value = sizeof...(Args);
+            static constexpr std::size_t value = sizeof...( Args );
             using type = R;
         };
 
         template< typename R, typename C, typename ... Args >
         struct amount_args_function_has< R(C::*)(Args...) >
         {
-            static constexpr int value = sizeof...(Args);
+            static constexpr std::size_t value = sizeof...( Args );
             using type = R;
         };
 
@@ -421,7 +421,7 @@ namespace eswitch_v4
             if( std::smatch match; std::regex_match( text, match, value_ ) )
             {              
                 std::vector< std::string > vs;
-                vs.reserve( match.size() - 1 );
+                vs.reserve( match.size() );
 
                 for( const auto & v : match )  
                     vs.push_back( v );
@@ -505,7 +505,7 @@ namespace eswitch_v4
             return false;
         }
 
-        template< uint32_t MaxIndex >
+        template< std::size_t MaxIndex >
         static constexpr bool is_out_of_range() 
         { 
             return TIndex::eswitch_index >= MaxIndex; 
@@ -563,7 +563,7 @@ namespace eswitch_v4
             {                
             }
 
-        template< uint32_t MaxIndex >
+        template< std::size_t MaxIndex >
         static constexpr bool is_out_of_range() 
         {
             return TCnd1::template is_out_of_range< MaxIndex >() || 
@@ -661,7 +661,6 @@ namespace eswitch_v4
             {
                 static_assert( !( !has_value< args_t< Cnds > > || ... ), 
                     "Predicate with 'auto' argument aren't ALLOWED!" );
-
             }        
             else if constexpr( ( has_type< underlying< Cnds > > && ... ) )
             {
@@ -780,7 +779,7 @@ namespace eswitch_v4
         return condition< Idx, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
     }
 
-    template< typename TPred, uint32_t ... Is >
+    template< typename TPred, std::size_t ... Is >
     class predicate_condition
     {
         public:
@@ -801,7 +800,7 @@ namespace eswitch_v4
             return pred_( std::get< Is >( src_tuple )... );
         }
 
-        template< uint32_t MaxIndex >
+        template< std::size_t MaxIndex >
         static constexpr bool is_out_of_range()
         {
             constexpr std::array< bool, sizeof...( Is ) > list{ ( Is >= MaxIndex )... };
@@ -824,7 +823,7 @@ namespace eswitch_v4
             std::forward< Pred >( pred ) );
     }
 
-    template < typename P, uint32_t ... I, Index Idx >
+    template < typename P, std::size_t ... I, Index Idx >
     predicate_condition< P, I..., Idx::eswitch_index > 
         compose_new_predicate_condition_type( const predicate_condition< P, I... > & pred_cnd, Idx idx );
          
@@ -883,8 +882,8 @@ namespace eswitch_v4
         return extension::Any_from_impl( std::forward< Args >( args )... );
     }
     
-    template< int64_t From, int64_t To >
-    bool in_range( const int64_t value )
+    template< std::size_t From, std::size_t To >
+    bool in_range( const std::size_t value )
     {
         return value >= From && value <= To;
     }
