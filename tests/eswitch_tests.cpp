@@ -16,9 +16,6 @@
 
 enum Place { unknown = 0, new_york=5, washington=129, new_jersey=501 };
 
-#define Case( ... ) case_( __VA_ARGS__ ) % [&]
-#define Default  ( _1 == extension::any{} ) % [&]
-
 /*
     eswitch( param1, param2 )
     [
@@ -82,6 +79,189 @@ TEST_CASE( "eswitch_v5::any_from_match", "" )
 
         REQUIRE( r == 123 );    
     }
+}
+
+TEST_CASE( "eswitch_v5::compile_time_evaluation", "" ) 
+{
+    using namespace eswitch_v4;
+    
+    constexpr auto result1 = eswitch( new_york )
+    (
+        Case( _1 == new_york ) { return 123; },
+        Default   { return 'c'; } 
+    );
+
+    static_assert( result1 == 123 );
+
+    constexpr auto result2 = eswitch( new_york )
+    (
+        Case( _1 == any_from( washington, new_york ) ) { return 1234; },
+        Default   { return 'c'; } 
+    );
+
+    static_assert( result2 == 1234 );
+
+    constexpr auto result3 = eswitch( new_jersey )
+    (
+        Case( _1 == any_from( washington, new_york ) ) { return 1234; },
+        Default   { return 'c'; } 
+    );
+
+    static_assert( result3 == 'c' );
+
+    constexpr auto result4 = eswitch( new_jersey )
+    (
+        Case( _1 == any_from( washington, new_york ) ) { return 1234; },
+        Case( new_jersey ) { return 'H'; },
+        Default   { return 'c'; } 
+    );
+
+    static_assert( result4 == 'H' );
+
+    constexpr auto result4_1 = eswitch( new_jersey, washington )
+    (
+        Case( _1 == new_jersey && _2 == washington ) { return 1234; },
+        Case( new_jersey ) { return 'H'; },
+        Default   { return 'c'; } 
+    );
+
+    static_assert( result4_1 == 1234 );
+
+    constexpr auto result5 = eswitch( new_jersey )
+    (
+        Case( _1 != any_from( washington, new_york ) ) { return 1234; },
+        Case( new_jersey ) { return 'H'; },
+        Default   { return 'c'; } 
+    );
+
+    static_assert( result5 == 1234 );
+
+    auto is_even = []( auto v ) { return v % 2 == 0; };
+    auto is_odd  = []( auto v ) { return !(v % 2 == 0); };
+
+    constexpr auto result6 = eswitch( 2 )
+    (
+        Case( ( is_even, _1 ) ) { return true; },
+        Case( ( is_odd, _1 ) ) { return false; } 
+    );
+
+    static_assert( result6 == true );
+
+    constexpr auto result7 = eswitch( 3 )
+    (
+        Case( ( is_even, _1 ) ) { return true; },
+        Case( ( is_odd, _1 ) ) { return false; } 
+    );
+
+    static_assert( result7 == false );
+
+    constexpr std::variant< int, float > var1 = 10;
+
+    constexpr auto result8 = eswitch( var1 )
+    (
+        Case( _1 == my_type< float >{} ) { return false; },
+        Case( _1 == my_type< int >{} ) { return true; }
+    );    
+
+    static_assert( result8 == true );
+
+    constexpr std::variant< int, double > var2{ 5.5 };
+
+    constexpr auto result9 = eswitch( var2 )
+    (
+        Case( _1 == my_type< double >{} ) { return false; },
+        Case( _1 == my_type< int >{} ) { return true; }
+    );    
+
+    static_assert( result9 == false );
+
+    constexpr auto result9_1 = eswitch( var2 )
+    (
+        Case( _1 == my_type< double >{} || _1 == my_type< int >{} ) { return true; },
+        Default { return false; }
+    );    
+
+    static_assert( result9_1 == true );
+
+    constexpr auto result9_2 = eswitch( var2 )
+    (
+        Case( _1 == my_type< double >{} )( const double val ) { return val; },
+        Case( _1 == my_type< int >{} )( const int val ) { return val; },
+        Default { return 0; }
+    );    
+
+    static_assert( result9_2 == 5.5 );
+
+    constexpr std::variant< int, float, const char* > var3 = "H";
+
+    constexpr auto result10 = eswitch( var3 )
+    (
+        Case( _1 == my_type< float >{} ) { return true; },
+        Case( _1 == my_type< int >{} ) { return true; },
+        Default { return false; }
+    );    
+
+    static_assert( result10 == false );
+
+    constexpr std::pair pr{ 10, true };
+
+    constexpr auto result11 = eswitch( pr )
+    (
+        Case( _1 == 10 && _2 == true ) { return true; },
+        Default { return false; }
+    );
+
+    static_assert( result11 == true );
+
+    constexpr auto result11_1 = eswitch( pr )
+    (
+        Case( 10, true ) { return true; },
+        Default { return false; }
+    );
+
+    static_assert( result11_1 == true );
+
+    constexpr std::tuple tp{ 10, 5.6, true };
+
+    constexpr auto result12 = eswitch( tp )
+    (
+        Case( _1 == 10 && _2 == 5.6 && _3 == true ) { return true; },
+        Default { return false; }
+    );
+
+    static_assert( result12 == true );
+
+    constexpr auto result12_1 = eswitch( tp )
+    (
+        Case( 10, 5.6, true ) { return true; },
+        Default { return false; }
+    );
+
+    static_assert( result12_1 == true );
+
+    constexpr auto result12_2 = eswitch( tp )
+    (
+        Case( 10, 5.6, false ) { return true; },
+        Default { return false; }
+    );
+
+    static_assert( result12_2 == false );
+
+    constexpr auto result12_3 = eswitch( tp )
+    (
+        Case( _1 == 10 && _2 == 5.6 && _3 != false ) { return true; },
+        Default { return false; }
+    );
+
+    static_assert( result12_3 == true );
+
+    constexpr auto result12_4 = eswitch( tp )
+    (
+        Case( 10, 5.6, _3 != false ) { return true; },
+        Default { return false; }
+    );
+
+    static_assert( result12_4 == true );
 
 }
 

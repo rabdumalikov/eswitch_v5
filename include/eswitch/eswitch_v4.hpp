@@ -116,12 +116,12 @@ namespace eswitch_v4
             std::size_t end_;
 
             public:
-            Range( const std::size_t start, const std::size_t end ) 
+            constexpr Range( const std::size_t start, const std::size_t end ) 
                 : start_( start ), end_( end )
                 {                
                 }
 
-            friend bool operator==( const std::size_t val, const Range & rm )
+            friend constexpr bool operator==( const std::size_t val, const Range & rm )
             {
                 return val >= rm.start_ && val <= rm.end_;
             }
@@ -251,7 +251,12 @@ namespace eswitch_v4
         template< typename T >
         constexpr bool is_callable_v = is_callable_impl< decltype( &T::operator() ) >::value;
 
-        static bool unreachable() { assert( false ); return false; }
+        static constexpr bool unreachable() 
+        { 
+            if( !std::is_constant_evaluated() ) assert( false ); 
+
+            return false; 
+        }
 
         template< typename T >
         struct is_predicate : std::false_type {};
@@ -437,7 +442,7 @@ namespace eswitch_v4
     struct Any_and_Variant_support
     {
         template< typename T, typename T1, typename ... Ts >
-        static auto execute( Comparison_operators, const T & value_, const std::tuple< T1, Ts... > & src_tuple )
+        static constexpr auto execute( Comparison_operators, const T & value_, const std::tuple< T1, Ts... > & src_tuple )
             requires has_type< T > && 
                 ( details::is_std_any_v<     decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) > || 
                   details::is_std_variant_v< decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) > )
@@ -490,7 +495,7 @@ namespace eswitch_v4
             }
 
         template< StdTuple TSrcTuple >
-        auto operator()( const TSrcTuple & src_tuple ) const
+        constexpr auto operator()( const TSrcTuple & src_tuple ) const
         {
             static_assert( !is_out_of_range< std::tuple_size_v< TSrcTuple > >(), 
                     "Case Index is OUT OF RANGE" ); 
@@ -499,7 +504,7 @@ namespace eswitch_v4
         }
 
         template< StdTuple TSrcTuple >
-        bool operator()( const TSrcTuple & src_tuple ) const
+        constexpr bool operator()( const TSrcTuple & src_tuple ) const
             requires ( std::tuple_size_v< std::decay_t< TSrcTuple > > == 0 )
         {
             return false;
@@ -517,13 +522,13 @@ namespace eswitch_v4
         using Any_and_Variant_support< TIndex >::execute;
 
         template< typename T_, StdTuple TSrcTuple >
-        static bool execute( Comparison_operators cmp_operator, const T_& value_, const TSrcTuple & src_tuple )
+        static constexpr bool execute( Comparison_operators cmp_operator, const T_& value_, const TSrcTuple & src_tuple )
         {
             return compare( cmp_operator, std::get< TIndex::eswitch_index >( src_tuple ), value_ );         
         }
 
         template< typename T1, typename T2 >
-        static bool compare( const Comparison_operators CmpOper, T1 && t1, T2 && t2 ) 
+        static constexpr bool compare( const Comparison_operators CmpOper, T1 && t1, T2 && t2 ) 
             requires Comparable< T1, T2 >
         {                            
             switch( CmpOper )
@@ -538,7 +543,7 @@ namespace eswitch_v4
         }
 
         template< typename T1, typename T2 >
-        static bool compare( const Comparison_operators CmpOper, T1 && t1, T2 && t2 ) 
+        static constexpr bool compare( const Comparison_operators CmpOper, T1 && t1, T2 && t2 ) 
         {                
             static_assert( Comparable< T1, T2 >, "Types are not COMPARABLE!" );
             
@@ -556,7 +561,7 @@ namespace eswitch_v4
     public:
 
         template< Condition Cnd1, Condition Cnd2 >
-        conditions( const Logical_operators logical_operator, Cnd1 && cnd1, Cnd2 && cnd2 ) 
+        constexpr conditions( const Logical_operators logical_operator, Cnd1 && cnd1, Cnd2 && cnd2 ) 
             : logical_operator( logical_operator )
             , cnd1_( std::forward< Cnd1 >( cnd1 ) )
             , cnd2_( std::forward< Cnd2 >( cnd2 ) )
@@ -571,7 +576,7 @@ namespace eswitch_v4
         }
      
         template< StdTuple TSrcTuple >
-        bool operator()( const TSrcTuple & src_tuple ) const
+        constexpr bool operator()( const TSrcTuple & src_tuple ) const
         {
             return compare( logical_operator, 
                 static_cast< bool >( cnd1_( src_tuple ) ),  
@@ -580,7 +585,7 @@ namespace eswitch_v4
 
     private:
 
-        static bool compare( const Logical_operators LogicalOperator, const bool t1, const bool t2 )
+        static constexpr bool compare( const Logical_operators LogicalOperator, const bool t1, const bool t2 )
         {                
             switch( LogicalOperator )
             {
@@ -611,13 +616,19 @@ namespace eswitch_v4
     condition_with_predicate( T, F ) -> condition_with_predicate< T, F >;
 
     template< Index Idx, typename T >
-    auto operator==( Idx idx, T && rhv )
+    constexpr auto operator==( Idx idx, T && rhv )
     {
         return condition< Idx, T >( Comparison_operators::equal_, std::forward< T >( rhv ) );
     }
 
+    template< Index Idx, typename T >
+    constexpr auto operator!=( Idx idx, T && rhv )
+    {
+        return condition< Idx, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
+    }
+
     template< Condition T, Callable Func >
-    auto operator%( T && cnd, Func && f )
+    constexpr auto operator%( T && cnd, Func && f )
     {
         return condition_with_predicate{ std::move( cnd ), std::move( f ) };
     }
@@ -625,7 +636,7 @@ namespace eswitch_v4
     struct Fallthrough {};
 
     template< typename Cnd, ReturnValueNoneVoid Func >
-    auto operator^( condition_with_predicate< Cnd, Func >&& cp, const Fallthrough & )
+    constexpr auto operator^( condition_with_predicate< Cnd, Func >&& cp, const Fallthrough & )
     {
         cp.fallthrough = true;
 
@@ -641,7 +652,7 @@ namespace eswitch_v4
     public:
 
         template< typename ... Ts >
-        eswitch_impl( Ts &&... ts ) : tup_{ std::forward< Ts >( ts )... }
+        constexpr eswitch_impl( Ts &&... ts ) : tup_{ std::forward< Ts >( ts )... }
         {            
         }
 
@@ -655,7 +666,7 @@ namespace eswitch_v4
         using args_t = details::amount_args< typename T::F >;
 
         template< typename ... Cnds >
-        auto operator()( Cnds && ... cnds )
+        constexpr auto operator()( Cnds && ... cnds )
         {
             if constexpr( ( !has_value< args_t< Cnds > > || ... ) )
             {
@@ -672,7 +683,7 @@ namespace eswitch_v4
         struct Padding {};
 
         template< typename ... Cnds >
-        auto operator()( Cnds && ... cnds ) requires has_type< std::common_type< underlying_t< Cnds >... > >
+        constexpr auto operator()( Cnds && ... cnds ) requires has_type< std::common_type< underlying_t< Cnds >... > >
         {
             constexpr auto generic_lambda = []< typename T, T... ints >
                 ( std::index_sequence< ints... > && int_seq, auto && tup, auto && f )
@@ -706,7 +717,7 @@ namespace eswitch_v4
                     {                  
                         if constexpr( has_return_value )
                         {
-                            return_value = cnd.func( *res );                            
+                            return_value = static_cast< return_t >( cnd.func( *res ) );                            
                         }
                         else
                         {
@@ -717,7 +728,7 @@ namespace eswitch_v4
                     {
                         if constexpr( has_return_value )
                         {
-                            return_value = cnd.func();
+                            return_value = static_cast< return_t >( cnd.func() );
                         }
                         else
                         { 
@@ -743,13 +754,13 @@ namespace eswitch_v4
     eswitch_impl( Ts... ) -> eswitch_impl< Ts... >;
 
     template< typename ... Ts >
-    auto eswitch( Ts && ... ts )
+    constexpr auto eswitch( Ts && ... ts )
     {
         return eswitch_impl( std::forward< Ts >( ts )... );
     }
 
     template< StdPair T >
-    auto eswitch( T && pair )
+    constexpr auto eswitch( T && pair )
     {
         if constexpr( std::is_rvalue_reference_v< T&& > )
         {
@@ -762,7 +773,7 @@ namespace eswitch_v4
     }
 
     template< StdTuple T >
-    auto eswitch( T && tup )
+    constexpr auto eswitch( T && tup )
     {
         auto expand_tuple = [] < typename _T, _T ... ints >
             ( std::index_sequence< ints... > &&, const auto & tup )
@@ -773,26 +784,21 @@ namespace eswitch_v4
         return expand_tuple( std::make_index_sequence< std::tuple_size_v< std::decay_t< T > > >{}, tup );
     }
 
-    template< Index Idx, typename T >
-    auto operator!=( Idx idx, T && rhv )
-    {
-        return condition< Idx, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
-    }
-
     template< typename TPred, std::size_t ... Is >
     class predicate_condition
     {
-        public:
         TPred pred_;
 
+        public:
+
         template< typename T >
-        predicate_condition( T && pred ) 
+        constexpr predicate_condition( T && pred ) 
             : pred_( std::forward< T >( pred ) )
             {                    
             }
 
         template< typename TSrcTuple >
-        bool operator()( const TSrcTuple & src_tuple ) const
+        constexpr bool operator()( const TSrcTuple & src_tuple ) const
         {
             static_assert( !is_out_of_range< std::tuple_size_v< TSrcTuple > >(), 
                 "Case Index is OUT OF RANGE" ); 
@@ -810,14 +816,14 @@ namespace eswitch_v4
     };
 
     template< typename R, typename... Args, Index Idx >
-    auto operator,( R(*pred)(Args...), Idx )
+    constexpr auto operator,( R(*pred)(Args...), Idx )
     {
         return predicate_condition< R(*)(Args...), Idx::eswitch_index >( pred );
     }
 
     template< typename Pred, Index Idx >
         requires ( details::is_predicate_v< std::decay_t< Pred > > == false )
-    auto operator,( Pred && pred, Idx ) 
+    constexpr auto operator,( Pred && pred, Idx ) 
     {
         return predicate_condition< std::remove_reference_t< Pred >, Idx::eswitch_index >( 
             std::forward< Pred >( pred ) );
@@ -828,31 +834,31 @@ namespace eswitch_v4
         compose_new_predicate_condition_type( const predicate_condition< P, I... > & pred_cnd, Idx idx );
          
     template< IsCndPredicate Pred, Index Idx >
-    auto operator,( Pred && pred, Idx idx )
+    constexpr auto operator,( Pred && pred, Idx idx )
     {
         return decltype( compose_new_predicate_condition_type( pred, idx ) )( std::move( pred.pred_ ) );
     }
 
     template< typename T1, Condition Cnd >
-    auto operator&&( T1 && i, Cnd && cnd )
+    constexpr auto operator&&( T1 && i, Cnd && cnd )
     {
         return conditions( Logical_operators::and_, std::forward< T1 >( i ), std::move( cnd ) );
     }
 
     template< typename T1, Condition Cnd >
-    auto operator||( T1 && i, Cnd && cnd )
+    constexpr auto operator||( T1 && i, Cnd && cnd )
     {
         return conditions( Logical_operators::or_, std::forward< T1 >( i ), std::move( cnd ) );
     }
 
     template< Condition Cnd >
-    auto case_( Cnd && cnd )
+    constexpr auto case_( Cnd && cnd )
     { 
         return std::move( cnd ); 
     }
 
     template< typename ... Ts >
-    auto case_( Ts &&... values )
+    constexpr auto case_( Ts &&... values )
     {
         auto lmbd = [&]< typename T, T ... ints >( std::index_sequence< ints... >&&, auto && tup )
         {
@@ -871,19 +877,19 @@ namespace eswitch_v4
         return std::regex{ rgx };
     }
 
-    auto case_( std::regex && rgx )
+    constexpr auto case_( std::regex && rgx )
     {
         return _1 == rgx;
     }
 
     template< typename ... Args >
-    auto any_from( Args &&... args )
+    constexpr auto any_from( Args &&... args )
     {
         return extension::Any_from_impl( std::forward< Args >( args )... );
     }
     
     template< std::size_t From, std::size_t To >
-    bool in_range( const std::size_t value )
+    constexpr bool in_range( const std::size_t value )
     {
         return value >= From && value <= To;
     }
@@ -897,5 +903,8 @@ namespace eswitch_v4
     /// static declarations
     static const Fallthrough fallthrough_;
     static const extension::any _;
+
+    #define Case( ... ) case_( __VA_ARGS__ ) % [&]
+    #define Default  ( _1 == extension::any{} ) % [&]
 
 } // namespace eswitch_v4
