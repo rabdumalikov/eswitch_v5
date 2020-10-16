@@ -87,7 +87,7 @@
 namespace eswitch_v4
 {
     template< typename T >
-    concept Index = requires( T ){ std::decay_t<T>::eswitch_index; };
+    concept Index = requires( T ){ std::decay_t< T >::eswitch_index; };
 
     template< typename T >
     concept Condition = requires( T t )
@@ -95,18 +95,6 @@ namespace eswitch_v4
         t( std::make_tuple() ); 
         std::decay_t<T>::template is_out_of_range<int{}>(); 
     };
-
-    template< typename T >
-    concept ConditionClass = requires( T t )
-    { 
-        t.value();
-    };
-
-    template< typename T >
-    concept ReturnValueNoneVoid = std::is_same_v< 
-        std::invoke_result_t< std::remove_reference_t< T > >,
-        void 
-    >;
 
     template< typename TPred, uint32_t ... Is >
     class predicate_condition;
@@ -139,7 +127,46 @@ namespace eswitch_v4
             }
         };
 
-        struct any;        
+        template< typename T, typename TArray >
+        constexpr bool is_in_set( const T & to_check, const TArray & arr )
+        {
+            return std::find( std::begin( arr ), std::end( arr ), to_check ) != std::end( arr );
+        }
+
+        // any
+        struct any 
+        {
+            template < typename T >
+            friend constexpr bool operator==( const T& value, const any& st ) {
+                return true;
+            }
+
+            template < typename T >
+            friend constexpr bool operator!=( const T& value, const any& st ) {
+                return false;
+            }
+        };
+
+        template< typename T, std::size_t Sz >
+        struct Any_from_impl
+        {
+            std::array< T, Sz > anythings;
+
+            template< typename ... Args >
+            constexpr Any_from_impl( Args &&... args )
+                : anythings{ std::forward< Args >( args )... }
+                {
+                }
+
+            template< typename T_ >
+            friend constexpr bool operator==( const T_ & value, const Any_from_impl& st ) 
+            {
+                return is_in_set( value, st.anythings );
+            }
+        };        
+
+        template< typename ... Args >
+        Any_from_impl( Args &&... ) -> Any_from_impl< std::common_type_t< std::decay_t< Args >... >, sizeof...( Args ) >;        
     }
 
 
@@ -289,12 +316,6 @@ namespace eswitch_v4
             static constexpr bool value = false;
         };
 
-        template< typename T >
-        concept has_type = requires{ typename T::type; };
-
-        template< typename T >
-        concept has_value = requires{ T::value; };
-
         template< typename ... TupleCnds, typename Cnd, typename ... Cnds >
         constexpr auto move_default_case_to_the_end_impl( std::tuple< TupleCnds... > && tup, Cnd && cnd, Cnds &&...cnds )
         {
@@ -343,9 +364,14 @@ namespace eswitch_v4
                 std::get< Is >( std::move( tup2 ) ) 
                 )... );
         }
-
     } // namespace details
     
+    template< typename T >
+    concept has_type = requires{ typename T::type; };
+
+    template< typename T >
+    concept has_value = requires{ T::value; };
+
     template< typename T >
     concept ComparableExceptAnyAndVariant = 
         !details::is_std_any_v< T > || 
@@ -363,6 +389,11 @@ namespace eswitch_v4
     };
 
     template< typename T >
+    concept ReturnValueNoneVoid = std::is_same_v< 
+        std::invoke_result_t< std::remove_reference_t< T > >,
+        void 
+    >;
+    template< typename T >
     concept IsCndPredicate = details::is_predicate_v< T >;
 
     template< typename T >
@@ -373,58 +404,6 @@ namespace eswitch_v4
 
     template< typename T >
     concept StdPair = details::is_std_pair_v< T >;
-
-    namespace extension
-    {             
-        template< typename T, typename TArray >
-        constexpr bool is_in_set( const T & to_check, const TArray & arr )
-        {
-            return std::find( std::begin( arr ), std::end( arr ), to_check ) != std::end( arr );
-        }
-
-        // any
-        struct any 
-        {
-            template < typename T >
-            friend constexpr bool operator==( const T& value, const any& st ) {
-                return true;
-            }
-
-            template < typename T >
-            friend constexpr bool operator!=( const T& value, const any& st ) {
-                return false;
-            }
-        };
-
-        template< typename T, std::size_t Sz >
-        struct Any_from_impl
-        {
-            std::array< T, Sz > anythings;
-
-            template< typename ... Args >
-            constexpr Any_from_impl( Args &&... args )
-                : anythings{ std::forward< Args >( args )... }
-                {
-                }
-
-            template< typename T_ >
-            friend constexpr bool operator==( const T_ & value, const Any_from_impl& st ) 
-            {
-                return is_in_set( value, st.anythings );
-            }
-        };        
-
-        template< typename ... Args >
-        Any_from_impl( Args &&... ) -> Any_from_impl< std::common_type_t< std::decay_t< Args >... >, sizeof...( Args ) >;        
-
-    } // namespace extension
-
-
-    template< typename T >
-    struct my_type
-    {
-        using type = T;
-    };
 
     template< typename T >
     concept IsRegexCondition = details::is_default_case_v< std::decay_t< T > > || ( Condition< T > && std::is_same_v< typename std::decay_t< T >::value_type, std::regex > );
@@ -459,7 +438,7 @@ namespace eswitch_v4
     {
         template< typename T, typename T1, typename ... Ts >
         static auto execute( Comparison_operators, const T & value_, const std::tuple< T1, Ts... > & src_tuple )
-            requires details::has_type< T > && 
+            requires has_type< T > && 
                 ( details::is_std_any_v<     decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) > || 
                   details::is_std_variant_v< decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) > )
         {
@@ -678,15 +657,15 @@ namespace eswitch_v4
         template< typename ... Cnds >
         auto operator()( Cnds && ... cnds )
         {
-            if constexpr( ( !details::has_value< args_t< Cnds > > || ... ) )
+            if constexpr( ( !has_value< args_t< Cnds > > || ... ) )
             {
-                static_assert( !( !details::has_value< args_t< Cnds > > || ... ), 
+                static_assert( !( !has_value< args_t< Cnds > > || ... ), 
                     "Predicate with 'auto' argument aren't ALLOWED!" );
 
             }        
-            else if constexpr( ( details::has_type< underlying< Cnds > > && ... ) )
+            else if constexpr( ( has_type< underlying< Cnds > > && ... ) )
             {
-                static_assert( details::has_type< std::common_type< underlying_t< Cnds >... > >, 
+                static_assert( has_type< std::common_type< underlying_t< Cnds >... > >, 
                     "Inconsistent 'Return type'!" );
             }
         }
@@ -694,7 +673,7 @@ namespace eswitch_v4
         struct Padding {};
 
         template< typename ... Cnds >
-        auto operator()( Cnds && ... cnds ) requires details::has_type< std::common_type< underlying_t< Cnds >... > >
+        auto operator()( Cnds && ... cnds ) requires has_type< std::common_type< underlying_t< Cnds >... > >
         {
             constexpr auto generic_lambda = []< typename T, T... ints >
                 ( std::index_sequence< ints... > && int_seq, auto && tup, auto && f )
@@ -909,6 +888,12 @@ namespace eswitch_v4
     {
         return value >= From && value <= To;
     }
+
+    template< typename T >
+    struct my_type
+    {
+        using type = T;
+    };
 
     /// static declarations
     static const Fallthrough fallthrough_;
