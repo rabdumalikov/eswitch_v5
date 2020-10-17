@@ -300,6 +300,20 @@ TEST_CASE( "eswitch_v5::fallthrough", "" )
     using namespace eswitch_v5;
     using namespace std;
 
+    SECTION( "match_case" )
+    {
+        int i = 0;
+        eswitch( washington )
+        (
+            Case( washington ) { i += 1; } ^ fallthrough_,
+            Case( new_york )   { i += 2; },
+            Default            { i += 3; }
+        );
+
+
+        REQUIRE( i == 3 );    
+    }
+
     SECTION( "match_1st_and_2nd_case" )
     {
         int i = 0;

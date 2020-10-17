@@ -18,71 +18,8 @@
 #include <variant>
 #include <regex>
 
-/// TODO
-// move Default case to the END - DONE
-// lazy_eswitch - DECLINED( since it doesn't have sence for now )
-// tuple+pair handle - DONE
-// write concept Comparable( or maybe stl has one ) - DONE
-// Willcard - DONE
-// Add ERROR if type are incomparable - DONE
-// Support: Case( "hello", 1, _3 != nullptr ) - DONE
-// Support: Case( std::regex( "" ) )
-/*
-
-    int i = 1;
-    std::string str{ "hello" };
-
-    eswithc( i, str )
-    (
-        Case( 1, "Hello" ){ return ""; },
-        Default{ return "fail"; }
-    );
-
-    j = true;
-    eswithc( i, str )
-    (
-        Case( 1, "Hello", _3 != true ){ return ""; },
-        Default{ return "fail"; }
-    );
-
-    auto swtch = 
-        lazy_eswitch (
-            Case( _1 == 1 && _2 == 0 && _3 == 1 )
-        );
-  
-    for_each( vec, lazy_switch( 
-        Case( ( is_odd, _1 ) )( int val ){ count++; }
-    ) );
-
-    for_each( vec, eswitch( 
-        Case( ( is_odd ) ) ( int val ){ odd_count++; },
-        Case( ( is_even ) )( int val ){ even_count++; },
-        );
-
-    for_each( vec, []( const auto & val )
-    {
-        if( is_odd( val ) ) ++odd_count;
-        else if( is_even( val ) ) ++even_count;
-    } );
-
-    ( vec | range::filter( is_odd  ) ).size();
-    ( vec | range::filter( is_even ) ).size();
-    
-   std::tuple< int, int, int > tup;
-   eswitch( tup )
-   (
-       Case( _1 == 1 && _2 == 0 && _3 == 1 )
-   );
-
-
-   eswitch( pair )
-   (
-       Case( _1 == true && _2 == "buu" )
-   );
-
-    auto [f,s] = some_pair;
-    if( f == true && s == "buu" )
- */
+// Add static assert if fallthrough and lambda with args were used
+// Think about __state: its name 
 
 namespace eswitch_v5
 {
@@ -112,7 +49,7 @@ namespace eswitch_v5
             std::size_t start_;
             std::size_t end_;
 
-            public:
+            public:            
             constexpr Range( const std::size_t start, const std::size_t end ) 
                 : start_( start ), end_( end )
                 {                
@@ -123,12 +60,6 @@ namespace eswitch_v5
                 return val >= rm.start_ && val <= rm.end_;
             }
         };
-
-        template< typename T, typename TArray >
-        constexpr bool is_in_set( const T & to_check, const TArray & arr )
-        {
-            return std::find( std::begin( arr ), std::end( arr ), to_check ) != std::end( arr );
-        }
 
         // any
         struct any 
@@ -160,6 +91,13 @@ namespace eswitch_v5
             {
                 return is_in_set( value, st.anythings );
             }
+
+            private:
+            template< typename T_, typename TArray >
+            constexpr static bool is_in_set( const T_ & to_check, const TArray & arr )
+            {
+                return std::find( std::begin( arr ), std::end( arr ), to_check ) != std::end( arr );
+            }
         };        
 
         template< typename ... Args >
@@ -178,16 +116,16 @@ namespace eswitch_v5
         }
     };
 
-    const Index_< 0 > _1;    const Index_< 10 > _11;    const Index_< 20 > _21;  
-    const Index_< 1 > _2;    const Index_< 11 > _12;    const Index_< 21 > _22;
-    const Index_< 2 > _3;    const Index_< 12 > _13;    const Index_< 22 > _23;
-    const Index_< 3 > _4;    const Index_< 13 > _14;    const Index_< 23 > _24;
-    const Index_< 4 > _5;    const Index_< 14 > _15;    const Index_< 24 > _25;
-    const Index_< 5 > _6;    const Index_< 15 > _16;    const Index_< 25 > _26;
-    const Index_< 6 > _7;    const Index_< 16 > _17;    const Index_< 26 > _27;
-    const Index_< 7 > _8;    const Index_< 17 > _18;    const Index_< 27 > _28;
-    const Index_< 8 > _9;    const Index_< 18 > _19;    const Index_< 28 > _29;
-    const Index_< 9 > _10;   const Index_< 19 > _20;    const Index_< 29 > _30;           
+    constexpr Index_< 0 > _1;    constexpr Index_< 10 > _11;    constexpr Index_< 20 > _21;  
+    constexpr Index_< 1 > _2;    constexpr Index_< 11 > _12;    constexpr Index_< 21 > _22;
+    constexpr Index_< 2 > _3;    constexpr Index_< 12 > _13;    constexpr Index_< 22 > _23;
+    constexpr Index_< 3 > _4;    constexpr Index_< 13 > _14;    constexpr Index_< 23 > _24;
+    constexpr Index_< 4 > _5;    constexpr Index_< 14 > _15;    constexpr Index_< 24 > _25;
+    constexpr Index_< 5 > _6;    constexpr Index_< 15 > _16;    constexpr Index_< 25 > _26;
+    constexpr Index_< 6 > _7;    constexpr Index_< 16 > _17;    constexpr Index_< 26 > _27;
+    constexpr Index_< 7 > _8;    constexpr Index_< 17 > _18;    constexpr Index_< 27 > _28;
+    constexpr Index_< 8 > _9;    constexpr Index_< 18 > _19;    constexpr Index_< 28 > _29;
+    constexpr Index_< 9 > _10;   constexpr Index_< 19 > _20;    constexpr Index_< 29 > _30;           
          
     namespace details 
     {        
@@ -347,7 +285,7 @@ namespace eswitch_v5
                 std::forward< Cnds >( cnds )... );
         }
 
-        template< int ... Is, typename Tup1, typename Tup2 >
+        template< std::size_t ... Is, typename Tup1, typename Tup2 >
         constexpr auto tuple_combine( Tup1 && tup1, Tup2 && tup2 )
         {
             auto combine = []< typename T1, typename T2 >( T1 && t1, T2 && t2 )
@@ -412,7 +350,7 @@ namespace eswitch_v5
 
     template< Index TIndex >
     struct regex_support
-    {        
+    {
         template<  typename T, StdTuple TSrcTuple >
         static auto execute( Comparison_operators, const T & value_, const TSrcTuple & src_tuple ) 
             requires std::is_same_v< std::decay_t< T >, std::regex > &&
@@ -429,7 +367,7 @@ namespace eswitch_v5
                     vs.push_back( v );
 
                 return std::make_optional( std::move( vs ) );
-            }   
+            }
 
             return std::optional< std::vector< std::string > >{};
         }
@@ -622,6 +560,42 @@ namespace eswitch_v5
         return condition< Idx, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
     }
 
+    class __state
+    {
+        enum class status { set, indetermined };
+
+        bool value_;
+        status status_;
+    public:
+
+        constexpr explicit __state( const bool value ) : value_{ value }, status_{ status::set } {}
+
+        constexpr __state() : value_{ false }, status_{ status::indetermined } {}
+
+        constexpr operator bool() const
+        {
+            return status_ == status::set && value_ == true;
+        }    
+
+        constexpr auto& operator=( const bool value )
+        {
+            value_ = value;
+            status_ = status::set;
+
+            return *this;
+        }
+
+        constexpr bool operator==( const bool value ) const
+        {
+            return status_ == status::set && value_ == value;
+        }
+  
+        constexpr bool operator!=( const bool value ) const
+        {
+            return !( *this == value );
+        }
+    };
+
     template< typename ... Args >
     class eswitch_impl
     {
@@ -680,13 +654,25 @@ namespace eswitch_v5
             generic_lambda( 
                 std::make_index_sequence< sizeof...( Cnds ) >{}, 
                 details::move_default_case_to_the_end( std::forward< Cnds >( cnds )... ), 
-                [ this, &return_value, break_ = false ]( const auto & cnd ) mutable
+                [ this, &return_value, fallthrough = __state{} ]( const auto & cnd ) mutable
                 {
                     using namespace details;
 
-                    if( break_ ) return;
+                    if( fallthrough == false ) return;
 
-                    constexpr auto amount_args = amount_args_v< decltype(cnd.func) >;
+                    constexpr auto amount_args = amount_args_v< decltype( cnd.func ) >;
+
+                    if constexpr( amount_args == 0 )
+                    {
+                        if( fallthrough )
+                        {
+                            cnd.func();                                                
+                                
+                            fallthrough = cnd.fallthrough;
+
+                            return;
+                        }
+                    }
 
                     auto res = cnd.cnd( tup_ );
 
@@ -716,10 +702,10 @@ namespace eswitch_v5
                     }
                     else
                     {
-                        details::unreachable();
+                        unreachable();
                     }                                               
 
-                    break_ = !cnd.fallthrough;
+                    fallthrough = cnd.fallthrough;
                 });
 
             if constexpr( has_return_value ) 
@@ -897,8 +883,8 @@ namespace eswitch_v5
     }
 
     /// static declarations
-    static const Fallthrough fallthrough_;
-    static const extension::any _;
+    static constexpr Fallthrough fallthrough_;
+    static constexpr extension::any _;
 
     #define Case( ... ) case_( __VA_ARGS__ ) % [&]
     #define Default  ( _1 == extension::any{} ) % [&]
