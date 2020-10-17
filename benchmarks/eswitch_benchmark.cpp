@@ -1,13 +1,13 @@
 //  Copyright (c) 2019 Rustam Abdumalikov
 //
-//  "eswitch_v4" library
+//  "eswitch_v5" library
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include "benchmark/benchmark.h"
-#include "eswitch_v4.hpp"
+#include "eswitch_v5.hpp"
 #include <iostream>
 
 
@@ -83,7 +83,7 @@ int _native_switch(const std::string& str)
 
 int _eswitch(const std::string& str)
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
 
     estatus3 es3 = FAILED;
     eprogress3 ep3 = RUNNING;
@@ -123,7 +123,7 @@ int native_switch_forloop()
 
 int E_SWITCH_forloop()
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
 
     int result = 0;
 
@@ -156,7 +156,7 @@ int native_switch_str_cmp(const std::string& str)
 
 int E_SWITCH_str_cmp(const std::string& str)
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
 
     return eswitch(5, str) >>
         case_( _1 == 5 && _2 == "Hello") >> to_return(1) >>
@@ -185,7 +185,7 @@ int native_switch_several_str_cmp(const std::string& str)
 
 int E_SWITCH_several_str_cmp(const std::string& str)
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
 
     return eswitch(5, str) >>
         case_( _1 == 5 && _2 == "is") >> to_return(-10) >>
@@ -218,7 +218,7 @@ int IF_from_string_to_enum(const std::string& str)
 
 int E_SWITCH_from_string_to_enum(const std::string& str)
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     
     return eswitch(str) >>
         case_( "unknown" )    >> to_return(unknown) >>

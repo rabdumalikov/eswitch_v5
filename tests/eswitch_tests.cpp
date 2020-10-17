@@ -1,12 +1,12 @@
 //  Copyright (c) 2019 Rustam Abdumalikov
 //
-//  "eswitch_v4" library
+//  "eswitch_v5" library
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include "eswitch_v4.hpp"
+#include "eswitch_v5.hpp"
 #include <memory>
 #include <sstream>
 #include <iostream>
@@ -53,7 +53,7 @@ enum Place { unknown = 0, new_york=5, washington=129, new_jersey=501 };
 
 TEST_CASE( "eswitch_v5::any_from_match", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     SECTION( "match_any_from" )
@@ -83,7 +83,7 @@ TEST_CASE( "eswitch_v5::any_from_match", "" )
 
 TEST_CASE( "eswitch_v5::compile_time_evaluation", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     
     constexpr auto result1 = eswitch( new_york )
     (
@@ -267,7 +267,7 @@ TEST_CASE( "eswitch_v5::compile_time_evaluation", "" )
 
 TEST_CASE( "eswitch_v5::equal_match", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     SECTION( "match_first_case" )
@@ -297,7 +297,7 @@ TEST_CASE( "eswitch_v5::equal_match", "" )
 
 TEST_CASE( "eswitch_v5::fallthrough", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     SECTION( "match_1st_and_2nd_case" )
@@ -344,7 +344,7 @@ TEST_CASE( "eswitch_v5::fallthrough", "" )
 
 TEST_CASE( "eswitch_v5::not_equal_match", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     SECTION( "match_first_case" )
@@ -374,7 +374,7 @@ TEST_CASE( "eswitch_v5::not_equal_match", "" )
 
 TEST_CASE( "eswitch_v5::default_match", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     SECTION( "match_default_case" )
@@ -406,7 +406,7 @@ TEST_CASE( "eswitch_v5::default_match", "" )
 
 TEST_CASE( "eswitch_v5::not_equal_match2", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     auto is_even = []( auto v ) { return v % 2 == 0; };
@@ -443,7 +443,7 @@ TEST_CASE( "eswitch_v5::not_equal_match2", "" )
 
 TEST_CASE( "eswitch_v5::std_any_failure", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     std::any a = 10;
@@ -456,7 +456,7 @@ TEST_CASE( "eswitch_v5::std_any_failure", "" )
 
 TEST_CASE( "eswitch_v5::std_any_default", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     std::any a = 10;
@@ -472,7 +472,7 @@ TEST_CASE( "eswitch_v5::std_any_default", "" )
 
 TEST_CASE( "eswitch_v5::std_any_success", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     SECTION( "match_2nd_case" )
@@ -536,7 +536,7 @@ TEST_CASE( "eswitch_v5::std_any_success", "" )
 
 TEST_CASE( "eswitch_v5::std_any_only", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     SECTION( "match_2nd_case" )
@@ -571,7 +571,7 @@ TEST_CASE( "eswitch_v5::std_any_only", "" )
 
 TEST_CASE( "eswitch_v5::std_variant_only", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     SECTION( "match_2nd_case" )
@@ -620,7 +620,7 @@ TEST_CASE( "eswitch_v5::std_variant_only", "" )
 
 TEST_CASE( "eswitch_v5::std_variant_plus_std_any", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     SECTION( "match_2nd_case" )
@@ -656,7 +656,7 @@ TEST_CASE( "eswitch_v5::std_variant_plus_std_any", "" )
 
 TEST_CASE( "eswitch_v5::default_cast_at_any_position", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     SECTION( "default_at_1st_position" )
@@ -715,7 +715,7 @@ TEST_CASE( "eswitch_v5::default_cast_at_any_position", "" )
 
 TEST_CASE( "eswitch_v5::std_pair", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     std::pair pr{ 10, std::string{"Hello" } };
@@ -745,7 +745,7 @@ TEST_CASE( "eswitch_v5::std_pair", "" )
 
 TEST_CASE( "eswitch_v5::std_tuple", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     std::tuple pr{ 7, std::string{ "Hope" }, true };
@@ -831,7 +831,7 @@ TEST_CASE( "eswitch_v5::std_tuple", "" )
 
 TEST_CASE( "eswitch_v5::match_without_indexes", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     SECTION( "match_without_indexes" )
@@ -882,7 +882,7 @@ TEST_CASE( "eswitch_v5::match_without_indexes", "" )
 
 TEST_CASE( "eswitch_v5::wildcard", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     SECTION( "match_2nd_wildcard" )
@@ -964,7 +964,7 @@ TEST_CASE( "eswitch_v5::wildcard", "" )
 
 TEST_CASE( "eswitch_v5::std_regex", "" ) 
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
     using namespace std;
 
     SECTION( "match_std_regex_without_group" )
@@ -1035,7 +1035,7 @@ TEST_CASE( "eswitch_v5::std_regex", "" )
 
 // TEST_CASE( "eswitch_v5::not_compiled", "" ) 
 // {
-//     using namespace eswitch_v4;
+//     using namespace eswitch_v5;
  
 //     SECTION( "match_2nd_case" )
 //     {

@@ -1,6 +1,6 @@
 //  Copyright (c) 2019-2020 Rustam Abdumalikov
 //
-//  "eswitch_v4" library
+//  "eswitch_v5" library
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
@@ -84,7 +84,7 @@
     if( f == true && s == "buu" )
  */
 
-namespace eswitch_v4
+namespace eswitch_v5
 {
     template< typename T >
     concept Index = requires( T ){ std::decay_t< T >::eswitch_index; };
@@ -101,9 +101,6 @@ namespace eswitch_v4
 
     template< Index TIndex, typename T >
     class condition;
-
-    template< Condition TCnd1, Condition TCnd2 >
-    class conditions;
 
     enum class Logical_operators{ and_, or_ };
     enum class Comparison_operators{ equal_, not_equal_ };
@@ -471,7 +468,6 @@ namespace eswitch_v4
         }
     };
 
-
     template< Index TIndex, typename T >
     class condition 
         : public regex_support< TIndex >
@@ -602,18 +598,17 @@ namespace eswitch_v4
     template< Condition Cnd1, Condition Cnd2 >
     conditions( Logical_operators, Cnd1, Cnd2 ) -> conditions< Cnd1, Cnd2 >;
 
-    template< Condition Cnd, Callable Func >
-    struct condition_with_predicate
+    template< typename T1, Condition Cnd >
+    constexpr auto operator&&( T1 && i, Cnd && cnd )
     {
-        using F = Func;
+        return conditions( Logical_operators::and_, std::forward< T1 >( i ), std::move( cnd ) );
+    }
 
-        Cnd  cnd;
-        Func func;
-        bool fallthrough = false;
-    };
-
-    template< typename T, typename F >
-    condition_with_predicate( T, F ) -> condition_with_predicate< T, F >;
+    template< typename T1, Condition Cnd >
+    constexpr auto operator||( T1 && i, Cnd && cnd )
+    {
+        return conditions( Logical_operators::or_, std::forward< T1 >( i ), std::move( cnd ) );
+    }
 
     template< Index Idx, typename T >
     constexpr auto operator==( Idx idx, T && rhv )
@@ -625,22 +620,6 @@ namespace eswitch_v4
     constexpr auto operator!=( Idx idx, T && rhv )
     {
         return condition< Idx, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
-    }
-
-    template< Condition T, Callable Func >
-    constexpr auto operator%( T && cnd, Func && f )
-    {
-        return condition_with_predicate{ std::move( cnd ), std::move( f ) };
-    }
-    
-    struct Fallthrough {};
-
-    template< typename Cnd, ReturnValueNoneVoid Func >
-    constexpr auto operator^( condition_with_predicate< Cnd, Func >&& cp, const Fallthrough & )
-    {
-        cp.fallthrough = true;
-
-        return std::move( cp );
     }
 
     template< typename ... Args >
@@ -784,6 +763,35 @@ namespace eswitch_v4
         return expand_tuple( std::make_index_sequence< std::tuple_size_v< std::decay_t< T > > >{}, tup );
     }
 
+    template< Condition Cnd, Callable Func >
+    struct condition_with_predicate
+    {
+        using F = Func;
+
+        Cnd  cnd;
+        Func func;
+        bool fallthrough = false;
+    };
+
+    template< typename T, typename F >
+    condition_with_predicate( T, F ) -> condition_with_predicate< T, F >;
+
+    template< Condition T, Callable Func >
+    constexpr auto operator%( T && cnd, Func && f )
+    {
+        return condition_with_predicate{ std::move( cnd ), std::move( f ) };
+    }
+    
+    struct Fallthrough {};
+
+    template< typename Cnd, ReturnValueNoneVoid Func >
+    constexpr auto operator^( condition_with_predicate< Cnd, Func >&& cp, const Fallthrough & )
+    {
+        cp.fallthrough = true;
+
+        return std::move( cp );
+    }
+
     template< typename TPred, std::size_t ... Is >
     class predicate_condition
     {
@@ -839,18 +847,6 @@ namespace eswitch_v4
         return decltype( compose_new_predicate_condition_type( pred, idx ) )( std::move( pred.pred_ ) );
     }
 
-    template< typename T1, Condition Cnd >
-    constexpr auto operator&&( T1 && i, Cnd && cnd )
-    {
-        return conditions( Logical_operators::and_, std::forward< T1 >( i ), std::move( cnd ) );
-    }
-
-    template< typename T1, Condition Cnd >
-    constexpr auto operator||( T1 && i, Cnd && cnd )
-    {
-        return conditions( Logical_operators::or_, std::forward< T1 >( i ), std::move( cnd ) );
-    }
-
     template< Condition Cnd >
     constexpr auto case_( Cnd && cnd )
     { 
@@ -870,11 +866,6 @@ namespace eswitch_v4
 
         return lmbd( std::make_index_sequence< sizeof...(Ts) >{},
             std::make_tuple( std::forward< Ts >( values )... ) );
-    }
-
-    auto operator ""_r( const char * rgx, const std::size_t sz )
-    {
-        return std::regex{ rgx };
     }
 
     constexpr auto case_( std::regex && rgx )
@@ -900,6 +891,11 @@ namespace eswitch_v4
         using type = T;
     };
 
+    auto operator ""_r( const char * rgx, const std::size_t sz )
+    {
+        return std::regex{ rgx };
+    }
+
     /// static declarations
     static const Fallthrough fallthrough_;
     static const extension::any _;
@@ -907,4 +903,4 @@ namespace eswitch_v4
     #define Case( ... ) case_( __VA_ARGS__ ) % [&]
     #define Default  ( _1 == extension::any{} ) % [&]
 
-} // namespace eswitch_v4
+} // namespace eswitch_v5
