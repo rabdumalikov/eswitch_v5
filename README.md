@@ -6,7 +6,7 @@ To overcome **native switch** limitations:
 - one parameter per **native switch**
 - the parameter restricted to only _integral_ types( **int**, **char**, **enum** ... ).
 
-**eswitch** supports any number of _parameters_ and almost without restriction on their _type_,</br>
+**eswitch** supports any number of _parameters_ and almost without restriction on their _type_
  as long as the _type_ is **comparable**( i.e. has **operator==** ).
 ____________________________________________________
 ## Feature comparison:
@@ -29,13 +29,15 @@ ____________________________________________________
     ...
     std::string value{ "gt" };
     
-    eswitch( value ) >>
-        case_( "amp" )  >> []{ Print('&'); } >>
-        case_( "lt" )   >> []{ Print('<'); } >>
-        case_( "gt" )   >> []{ Print('>'); } >>
-        case_( "quot" ) >> []{ Print('\"'); } >>
-        case_( "apos" ) >> []{ Print('\''); } >>
-        default_        >> []{ Print('?'); };
+    eswitch( value )
+    (
+        Case( "amp" )  { Print('&'); },
+        Case( "lt" )   { Print('<'); },
+        Case( "gt" )   { Print('>'); },
+        Case( "quot" ) { Print('\"'); },
+        Case( "apos" ) { Print('\''); },
+        Default        { Print('?'); }
+    );
 ```
 -  #### Output:
     ```
@@ -47,10 +49,12 @@ ____________________________________________________
     ...
     int value = 15;
     
-    eswitch( value ) >>
-        case_( _1.in( 1, 10 ) )  >> []{ Print("Value in a range[1,10]"); } >>
-        case_( _1.in( 11, 20 ) ) >> []{ Print("Value in a range[11,20]"); } >>
-        default_                 >> []{ Print('?'); };
+    eswitch( value )
+    (
+        Case( _1.in( 1, 10 ) )  { Print("Value in a range[1,10]"); },
+        Case( _1.in( 11, 20 ) ) { Print("Value in a range[11,20]"); },
+        Default                 { Print('?'); }
+    );
 ```
 -  #### Output:
     ```
@@ -64,9 +68,9 @@ ____________________________________________________
     Place place = washington;
 
     eswitch( place ) >>
-        case_( washington ) >> []{ Print('w'); } >>
-        case_( california ) >> []{ Print('c'); } >>
-        default_            >> []{ Print('?'); };
+        Case( washington ) { Print('w'); },
+        Case( california ) { Print('c'); },
+        Default            { Print('?'); }
 ```
 -  #### Output:
     ```
@@ -79,15 +83,90 @@ ____________________________________________________
     enum Place { washington, california, ... };
     Place place = washington;
 
-    eswitch( place ) >>
-        case_( washington ) >> []{ Print('w'); } >> fallthrough_ >>
-        case_( california ) >> []{ Print('c'); } >>
-        default_            >> []{ Print('?'); };
+    eswitch( place )
+    (
+        Case( washington ) { Print('w'); } ^ fallthrough_,
+        Case( california ) { Print('c'); },
+        Default            { Print('?'); }
+    );
 ```
 -  #### Output:
 ```
     w
     c
+```
+
+## _std::any_
+``` cpp
+    ...
+    std::any any = std::string{ "Hello" };
+    
+    eswitch( any )
+    (
+        Case( is< std::string >{} )( const std::string & str ) { Print("Str=%s", str ); },
+        Case( is< int >{} ) { Print("int"); },
+        Default             { Print("Some other type"); }
+    );
+```
+-  #### Output:
+```
+    Str=Hello
+```
+
+## _std::variant_
+``` cpp
+    ...
+    std::variant< int, double, char > var = 5.5;
+    
+    eswitch( var )
+    (
+        Case(is<double>{})(double d){ Print("Dbl=%f", d ); },
+        Case(is<char>{})  (char ch) { Print("Ch=%d", ch ); },
+        Case(is<int>{})    (int i)  { Print("Int=%d", i ); },
+        Default { Print("Some other type"); }
+    );
+```
+-  #### Output:
+```
+    Dbl=5.5
+```
+
+## _std::pair_
+``` cpp
+    ...
+    std::pair pr{ 10, std::string{"Hi!"} };
+    
+    auto result = eswitch( pr )
+    (
+        Case(10, "Hi!")       { return true; },
+        Case(10, _2 != "Hi!") { return false; },
+        Case(_1 != 10, "Hi!") { return false; },
+        Default               { return false; }
+    );
+    Print("Result=%s", result ? "true" : "false");
+```
+-  #### Output:
+```
+    Result=true
+```
+
+## _std::tuple_
+``` cpp
+    ...
+    std::tuple tup{ 1, 1, 1, 1 };
+    
+    auto result = eswitch( tup )
+    (
+        Case( 1, 0, 0, 0 )       { return 8; },
+        Case( 1, 0, 0, 1 )       { return 9; },
+        Case( 1, 0, 1, 1 )       { return 11; },
+        Case( 1, 1, 1, 1 )       { return 15; },
+    );
+    Print("Result=%d", result);
+```
+-  #### Output:
+```
+    Result=15
 ```
 
 ## _stringify enum_
@@ -97,12 +176,13 @@ ____________________________________________________
     Place place = new_york;
 
     const char * enum_to_str = 
-        eswitch( place ) >>
-            case_( washington ) >> to_return( "washington" ) >>
-            case_( california ) >> to_return( "california" ) >>
-            case_( new_york )   >> to_return( "new_york" ) >>
-            default_            >> to_return( "???" ) >>
-            in_place_return_;
+        eswitch( place )
+        (
+            Case( washington ) { return "washington"; },
+            Case( california ) { return "california"; },
+            Case( new_york )   { return "new_york"; },
+            Default            { return "???"; }
+        );
 
     printf( "State=%s" "\n", enum_to_str );
 ```
@@ -119,21 +199,23 @@ ____________________________________________________
     payload_type payload = ...;
     XmlJsonParser * parser = ...;
 
-    eswitch( payload, parser ) >>
-        case_( _1 == XML && _2 != nullptr ) >> [&] { 
+    eswitch( payload, parser )
+    (
+        Case( _2 != nullptr && _1 == XML ) { 
             auto result = parser->parse_xml( ... );
             ...
-        } >>
-        case_( _1 == JSON && _2 != nullptr ) >> [&] {
+        },
+        Case( _2 != nullptr && _1 == JSON ) {
             auto result = parser->parse_json( ... );
             ...
-        } >>
-        case_( _2 == nullptr ) >> [&] { 
+        },
+        Case( _2 == nullptr ) { 
             PrintError(...); 
-        } >>
-        default_ >> [] { 
+        },
+        Default { 
             unreachable(); 
-        };
+        }
+    );
 ```
 
 ## _Params match by predicate_
@@ -147,10 +229,12 @@ ____________________________________________________
 
     for( const char ch : "Nimbus 2000!"_s ) 
     {    
-        eswitch( ch ) >>
-            case_( ( isalpha, _1 ) ) >> [&]{ ++amountAlphas; } >>
-            case_( ( isdigit, _1 ) ) >> [&]{ ++amountDigits; } >>
-            default_                 >> [&]{ ++amountOthers; };
+        eswitch( ch )
+        (
+            Case( ( isalpha, _1 ) ) { ++amountAlphas; },
+            Case( ( isdigit, _1 ) ) { ++amountDigits; },
+            Default                 { ++amountOthers; }
+        );
     }
 
     printf( "amountAlphas=%d, amountDigits=%d, amountOthers=%d", 
@@ -162,13 +246,8 @@ ____________________________________________________
     amountAlphas=6, amountDigits=4, amountOthers=2
 ```
 
-## _Customized cases_
+## _Regex cases_
 ``` cpp
-
-    regex operator "" _r( const char* rgx, size_t ){...}
-
-    // "RegexMatcher" defined in example/example17.cpp
-    CASE_OVERLOAD( regex, RegexMatcher );
     ...
     string response =
         "HTTP/1.1 200 OK" "\r\n"
@@ -179,14 +258,13 @@ ____________________________________________________
 
     for( const auto & line : tokenize( response, "\r\n" ) )
     {       
-        eswitch( line ) >>
-            case_( "^.+ 200 .+$"_r ) >>     // match for "HTTP/1.1 200 OK"
-            case_( "^.+: .+$"_r )    >> [&] // match for "key: value"
-            { 
-                auto splitted = split( line, ':' );                     
-                fields[ splitted[ 0 ] ] = splitted[ 1 ];
-            } >>
-            default_ >> []{ terminate(); };
+        eswitch( line )
+        (
+            /// rgxmatch has same values as std::smatch
+            Case( "^(.+): (.+)$"_r )( std::vector< std::string > && rgxmatch ) {
+                fields[ std::move( rgxmatch[ 1 ] ) ] = std::move( rgxmatch[ 2 ] );
+            }
+        );
         ...
     }
     ...
@@ -202,41 +280,17 @@ ____________________________________________________
 _______________
 
 ## Minimum C++ standard:
-C++14
+C++20
 _______________
 
 ## Supported Compilers:
 
-Should work on all major compilers which support **C++14**.<br/>
+Should work on all major compilers which support **C++20**.
 I personally tested on following:
 
-- **clang++-8**  (or later)
+- **clang++-11**  (or later)
 - **g++-6.3.0** (or later)
 - **Visual Studio** **2019**.
-
-_______________
-## Performance:
-
-**TOOL TO MEASURE:** google benchmark
-
-**FILE:** */benchmarks/eswitch_benchmark.cpp*
-
-**COMPILERS:** clang\+\+, g\+\+ and visual studio 2019.
-
-**BUILD FLAGS:**
-
-- **clang++** and **g++** => **"-O3"**
-- **visual studio 2019** => **"/Ox"**.
-	
-**RESULTS:**
-
-| Compiler | eswitch VS native switch |
-| :---: | :---: |
-| *clang++* | *slower*, but **not critical** |
-| *g++* | no performance difference |
-| *visual studio 2019*| *slower*, but **not critical** |
-
-_______________
 
 _______________
 ## TODO:

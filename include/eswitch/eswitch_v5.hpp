@@ -645,11 +645,11 @@ namespace eswitch_v5
                     {                  
                         if constexpr( has_return_value )
                         {
-                            return_value = static_cast< return_t >( cnd.func( *res ) );                            
+                            return_value = static_cast< return_t >( cnd.func( std::move( *res ) ) );                            
                         }
                         else
                         {
-                            cnd.func( *res );                            
+                            cnd.func( std::move( *res ) );                            
                         }       
                     }
                     else if constexpr( amount_args == 0 )
@@ -835,7 +835,7 @@ namespace eswitch_v5
     }
 
     template< typename T >
-    struct my_type
+    struct is
     {
         using type = T;
     };

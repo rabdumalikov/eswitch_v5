@@ -159,8 +159,8 @@ TEST_CASE( "eswitch_v5::compile_time_evaluation", "" )
 
     constexpr auto result8 = eswitch( var1 )
     (
-        Case( _1 == my_type< float >{} ) { return false; },
-        Case( _1 == my_type< int >{} ) { return true; }
+        Case( _1 == is< float >{} ) { return false; },
+        Case( _1 == is< int >{} ) { return true; }
     );    
 
     static_assert( result8 == true );
@@ -169,15 +169,15 @@ TEST_CASE( "eswitch_v5::compile_time_evaluation", "" )
 
     constexpr auto result9 = eswitch( var2 )
     (
-        Case( _1 == my_type< double >{} ) { return false; },
-        Case( _1 == my_type< int >{} ) { return true; }
+        Case( _1 == is< double >{} ) { return false; },
+        Case( _1 == is< int >{} ) { return true; }
     );    
 
     static_assert( result9 == false );
 
     constexpr auto result9_1 = eswitch( var2 )
     (
-        Case( _1 == my_type< double >{} || _1 == my_type< int >{} ) { return true; },
+        Case( _1 == is< double >{} || _1 == is< int >{} ) { return true; },
         Default { return false; }
     );    
 
@@ -185,8 +185,8 @@ TEST_CASE( "eswitch_v5::compile_time_evaluation", "" )
 
     constexpr auto result9_2 = eswitch( var2 )
     (
-        Case( _1 == my_type< double >{} )( const double val ) { return val; },
-        Case( _1 == my_type< int >{} )( const int val ) { return val; },
+        Case( _1 == is< double >{} )( const double val ) { return val; },
+        Case( _1 == is< int >{} )( const int val ) { return val; },
         Default { return 0; }
     );    
 
@@ -196,8 +196,8 @@ TEST_CASE( "eswitch_v5::compile_time_evaluation", "" )
 
     constexpr auto result10 = eswitch( var3 )
     (
-        Case( _1 == my_type< float >{} ) { return true; },
-        Case( _1 == my_type< int >{} ) { return true; },
+        Case( _1 == is< float >{} ) { return true; },
+        Case( _1 == is< int >{} ) { return true; },
         Default { return false; }
     );    
 
@@ -464,7 +464,7 @@ TEST_CASE( "eswitch_v5::std_any_failure", "" )
 
     REQUIRE_THROWS_AS( eswitch( a )
     (
-        Case( _1 == my_type< float >{} ) { return true; }
+        Case( _1 == is< float >{} ) { return true; }
     ), std::bad_optional_access );    
 }
 
@@ -478,7 +478,7 @@ TEST_CASE( "eswitch_v5::std_any_default", "" )
     REQUIRE_FALSE( 
         eswitch( a )
         (
-            Case( _1 == my_type< float >{} ) { return true; },
+            Case( is< float >{} ) { return true; },
             Default { return false; }
         ) 
     );    
@@ -496,8 +496,8 @@ TEST_CASE( "eswitch_v5::std_any_success", "" )
         REQUIRE( 
             eswitch( a )
             (
-                Case( _1 == my_type< float >{} ) { return false; },
-                Case( _1 == my_type< int >{} ) { return true; },
+                Case( _1 == is< float >{} ) { return false; },
+                Case( _1 == is< int >{} ) { return true; },
                 Default { return false; }
             ) 
         );    
@@ -511,8 +511,8 @@ TEST_CASE( "eswitch_v5::std_any_success", "" )
         REQUIRE( 
             eswitch( a )
             (
-                Case( _1 == my_type< float >{} ) { return true; },
-                Case( _1 == my_type< int >{} ) { return false; },
+                Case( _1 == is< float >{} ) { return true; },
+                Case( _1 == is< int >{} ) { return false; },
                 Default { return false; }
             ) 
         );    
@@ -526,7 +526,7 @@ TEST_CASE( "eswitch_v5::std_any_success", "" )
         REQUIRE( 
             eswitch( a )
             (
-                Case( _1 == my_type< float >{} || _1 == my_type< int >{} ) { return true; },
+                Case( _1 == is< float >{} || _1 == is< int >{} ) { return true; },
                 Default { return false; }
             ) 
         );    
@@ -539,8 +539,8 @@ TEST_CASE( "eswitch_v5::std_any_success", "" )
         REQUIRE( 
             eswitch( a )
             (
-                Case( _1 == my_type< float >{} ) { return false; },
-                Case( _1 == my_type< std::string >{} ) { return true; },
+                Case( _1 == is< float >{} ) { return false; },
+                Case( _1 == is< std::string >{} ) { return true; },
                 Default { return false; }
             ) 
         );    
@@ -559,8 +559,8 @@ TEST_CASE( "eswitch_v5::std_any_only", "" )
 
         auto r = eswitch( a )
         (
-            Case( _1 == my_type< float >{} )  { return 0; },
-            Case( _1 == my_type< int >{} )( const int val ) { return val + 11; },
+            Case( _1 == is< float >{} )  { return 0; },
+            Case( _1 == is< int >{} )( const int val ) { return val + 11; },
             Default { return 0; }
         );
 
@@ -573,9 +573,9 @@ TEST_CASE( "eswitch_v5::std_any_only", "" )
 
         auto r = eswitch( a )
         (
-            Case( _1 == my_type< float >{} ) { return ""; },
-            Case( _1 == my_type< int >{} )( const int val ) { return ""; },
-            Case( _1 == my_type< std::string >{} )( const std::string & val ) { return val + "hello"; },
+            Case( _1 == is< float >{} ) { return ""; },
+            Case( _1 == is< int >{} )( const int val ) { return ""; },
+            Case( _1 == is< std::string >{} )( const std::string & val ) { return val + "hello"; },
             Default { return ""; }
         );
 
@@ -594,8 +594,8 @@ TEST_CASE( "eswitch_v5::std_variant_only", "" )
 
         auto r = eswitch( a )
         (
-            Case( _1 == my_type< double >{} )( const double val ) { return val - 1; },
-            Case( _1 == my_type< int >{} )  { return 0; },
+            Case( _1 == is< double >{} )( const double val ) { return val - 1; },
+            Case( _1 == is< int >{} )  { return 0; },
             Default { return 0; }
         );
 
@@ -608,9 +608,9 @@ TEST_CASE( "eswitch_v5::std_variant_only", "" )
 
         auto r = eswitch( a )
         (
-            Case( _1 == my_type< float >{} ) { return ""; },
-            Case( _1 == my_type< int >{} )( const int val ) { return ""; },
-            Case( _1 == my_type< std::string >{} )( const std::string & val ) { return val + "hello"; },
+            Case( _1 == is< float >{} ) { return ""; },
+            Case( _1 == is< int >{} )( const int val ) { return ""; },
+            Case( _1 == is< std::string >{} )( const std::string & val ) { return val + "hello"; },
             Default { return ""; }
         );
 
@@ -623,8 +623,8 @@ TEST_CASE( "eswitch_v5::std_variant_only", "" )
 
         auto r = eswitch( a )
         (
-            Case( _1 == my_type< int >{} )( const int val ) { return ""; },
-            Case( _1 == my_type< std::string >{} )( const std::string & val ) { return val + "hello"; },
+            Case( _1 == is< int >{} )( const int val ) { return ""; },
+            Case( _1 == is< std::string >{} )( const std::string & val ) { return val + "hello"; },
             Default { return "Default"; }
         );
 
@@ -644,8 +644,8 @@ TEST_CASE( "eswitch_v5::std_variant_plus_std_any", "" )
 
         auto r = eswitch( a, v )
         (
-            Case( _1 == my_type< std::string >{} && _2 == my_type< double >{} ) { return true; },
-            Case( _1 == my_type< int >{} && _2 == my_type< int >{} ) { return false; },
+            Case( _1 == is< std::string >{} && _2 == is< double >{} ) { return true; },
+            Case( _1 == is< int >{} && _2 == is< int >{} ) { return false; },
             Default { return false; }
         );
 
@@ -659,8 +659,8 @@ TEST_CASE( "eswitch_v5::std_variant_plus_std_any", "" )
 
         auto r = eswitch( a )
         (
-            Case( _1 == my_type< std::string >{} )( const std::string & val ) { return val; },
-            Case( _1 == my_type< int >{} ) { return ""; },
+            Case( _1 == is< std::string >{} )( const std::string & val ) { return val; },
+            Case( _1 == is< int >{} ) { return ""; },
             Default { return ""; }
         );
         
@@ -1005,6 +1005,22 @@ TEST_CASE( "eswitch_v5::std_regex", "" )
         REQUIRE( r ); 
     }
 
+    SECTION( "match_std_regex_with_group_and_std_move" )
+    {        
+        auto r = eswitch( std::string{ "Hope" } )
+        (
+            Case( R"((\w*))"_r )( std::vector< std::string > && match ) 
+            { 
+                std::string tmp{ std::move( match[1] ) };
+
+                return match.size() == 2 && tmp == "Hope" && match[1].empty(); 
+            }
+        );
+
+        REQUIRE( r ); 
+    }
+
+
     SECTION( "match_std_regex_with_group_2" )
     {        
         auto r = eswitch( std::string{ "Key: value" } )
@@ -1067,19 +1083,19 @@ TEST_CASE( "eswitch_v5::std_regex", "" )
 
 //         // eswitch( a )
 //         // (
-//         //     Case( _1 == my_type< std::string >{} )( const auto & val ) { return val; }
+//         //     Case( _1 == is< std::string >{} )( const auto & val ) { return val; }
 //         // );
         
 //         // eswitch( a )
 //         // (
-//         //     Case( _1 == my_type< std::string >{} )( const std::string & val ) { return val; },
-//         //     Case( _1 == my_type< int >{} ) { return true; },
+//         //     Case( _1 == is< std::string >{} )( const std::string & val ) { return val; },
+//         //     Case( _1 == is< int >{} ) { return true; },
 //         //     Default { return 1; }
 //         // );
 
 //         // eswitch( a )
 //         // (
-//         //     Case( _1 == my_type< int >{} && _2 == my_type< int >{} ) { return ""; },
+//         //     Case( _1 == is< int >{} && _2 == is< int >{} ) { return ""; },
 //         // );
 //     }
 // }
