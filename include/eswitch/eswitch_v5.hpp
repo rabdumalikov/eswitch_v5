@@ -19,7 +19,6 @@
 #include <regex>
 
 // Add static assert if fallthrough and lambda with args were used
-// Think about __state: its name 
 
 namespace eswitch_v5
 {
@@ -560,42 +559,6 @@ namespace eswitch_v5
         return condition< Idx, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
     }
 
-    class __state
-    {
-        enum class status { set, indetermined };
-
-        bool value_;
-        status status_;
-    public:
-
-        constexpr explicit __state( const bool value ) : value_{ value }, status_{ status::set } {}
-
-        constexpr __state() : value_{ false }, status_{ status::indetermined } {}
-
-        constexpr operator bool() const
-        {
-            return status_ == status::set && value_ == true;
-        }    
-
-        constexpr auto& operator=( const bool value )
-        {
-            value_ = value;
-            status_ = status::set;
-
-            return *this;
-        }
-
-        constexpr bool operator==( const bool value ) const
-        {
-            return status_ == status::set && value_ == value;
-        }
-  
-        constexpr bool operator!=( const bool value ) const
-        {
-            return !( *this == value );
-        }
-    };
-
     template< typename ... Args >
     class eswitch_impl
     {
@@ -654,17 +617,17 @@ namespace eswitch_v5
             generic_lambda( 
                 std::make_index_sequence< sizeof...( Cnds ) >{}, 
                 details::move_default_case_to_the_end( std::forward< Cnds >( cnds )... ), 
-                [ this, &return_value, fallthrough = __state{} ]( const auto & cnd ) mutable
+                [ this, &return_value, fallthrough = std::optional< bool >{} ]( const auto & cnd ) mutable
                 {
                     using namespace details;
 
-                    if( fallthrough == false ) return;
+                    if( fallthrough && !( *fallthrough ) ) return;
 
                     constexpr auto amount_args = amount_args_v< decltype( cnd.func ) >;
 
                     if constexpr( amount_args == 0 )
                     {
-                        if( fallthrough )
+                        if( fallthrough && *fallthrough )
                         {
                             cnd.func();                                                
                                 
