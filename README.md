@@ -67,10 +67,12 @@ ____________________________________________________
     enum Place { washington, california, ... };
     Place place = washington;
 
-    eswitch( place ) >>
+    eswitch( place )
+    (
         Case( washington ) { Print('w'); },
         Case( california ) { Print('c'); },
         Default            { Print('?'); }
+    );
 ```
 -  #### Output:
     ```
@@ -157,10 +159,10 @@ ____________________________________________________
     
     auto result = eswitch( tup )
     (
-        Case( 1, 0, 0, 0 )       { return 8; },
-        Case( 1, 0, 0, 1 )       { return 9; },
-        Case( 1, 0, 1, 1 )       { return 11; },
-        Case( 1, 1, 1, 1 )       { return 15; },
+        Case( 1, 0, 0, 0 ) { return 8; },
+        Case( 1, 0, 0, 1 ) { return 9; },
+        Case( 1, 0, 1, 1 ) { return 11; },
+        Case( 1, 1, 1, 1 ) { return 15; },
     );
     Print("Result=%d", result);
 ```
