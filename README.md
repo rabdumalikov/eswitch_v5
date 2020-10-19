@@ -123,9 +123,15 @@ ____________________________________________________
     
     eswitch( any )
     (
-        Case( is< std::string >{} )( const std::string & str ) { Print("Str=%s", str ); },
-        Case( is< int >{} ) { Print("int"); },
-        Default             { Print("Some other type"); }
+        Case( is< std::string >{} )( const std::string & str ) 
+        {
+            Print("Str=%s", str ); 
+        },
+        Case( is< int >{} ) 
+        { 
+            Print("int"); 
+        },
+        Default { Print("Some other type"); }
     );
 ```
 -  #### Output:
@@ -140,9 +146,18 @@ ____________________________________________________
     
     eswitch( var )
     (
-        Case(is<double>{})(double d){ Print("Dbl=%f", d ); },
-        Case(is<char>{})  (char   c){ Print("Ch=%d", c ); },
-        Case(is<int>{})   (int    i){ Print("Int=%d", i ); },
+        Case( is<double>{} )( double d ) 
+        {
+            Print("Dbl=%f", d ); 
+        },
+        Case( is<char>{} )( char c ) 
+        { 
+            Print("Ch=%d", c ); 
+        },
+        Case( is<int>{} )( int i ) 
+        { 
+            Print("Int=%d", i ); 
+        },
         Default { Print("Some other type"); }
     );
 ```
@@ -158,10 +173,10 @@ ____________________________________________________
     
     auto result = eswitch( pr )
     (
-        Case(10, "Hi!")       { return true; },
-        Case(10, _2 != "Hi!") { return false; },
-        Case(_1 != 10, "Hi!") { return false; },
-        Default               { return false; }
+        Case( 10, "Hi!" )       { return true; },
+        Case( 10, _2 != "Hi!" ) { return false; },
+        Case( _1 != 10, "Hi!" ) { return false; },
+        Default                 { return false; }
     );
     Print("Result=%s", result ? "true" : "false");
 ```
