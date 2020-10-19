@@ -39,7 +39,7 @@ namespace eswitch_v5
     class condition;
 
     enum class Logical_operators{ and_, or_ };
-    enum class Comparison_operators{ equal_, not_equal_ };
+    enum class Comparison_operators{ equal, not_equal, greater, greater_or_equal, less, less_or_equal };
 
     namespace extension
     {
@@ -111,7 +111,7 @@ namespace eswitch_v5
 
         auto in( const std::size_t start, const std::size_t end ) const
         {
-            return condition< Index_< Idx >, extension::Range >( Comparison_operators::equal_, extension::Range( start, end ) );
+            return condition< Index_< Idx >, extension::Range >( Comparison_operators::equal, extension::Range( start, end ) );
         }
     };
 
@@ -466,10 +466,30 @@ namespace eswitch_v5
         {                            
             switch( CmpOper )
             {
-                case Comparison_operators::equal_:
-                    return t1 == t2;
-                case Comparison_operators::not_equal_:
-                    return !( t1 == t2 );
+                case Comparison_operators::equal:
+                {
+                    if constexpr( requires{ t1 == t2; } ) return t1 == t2;
+                }
+                case Comparison_operators::not_equal:
+                {
+                    if constexpr( requires{ !( t1 == t2 ); } ) return !( t1 == t2 );
+                }
+                case Comparison_operators::greater:
+                {
+                    if constexpr( requires{ t1 > t2; } ) return t1 > t2;
+                }    
+                case Comparison_operators::greater_or_equal:
+                { 
+                    if constexpr( requires{ t1 >= t2; } ) return t1 >= t2;
+                }
+                case Comparison_operators::less:
+                {
+                    if constexpr( requires{ t1 < t2; } ) return t1 < t2;
+                }
+                case Comparison_operators::less_or_equal:
+                {
+                    if constexpr( requires{ t1 <= t2; } ) return t1 <= t2;
+                }
                 default:
                     return details::unreachable();
             };
@@ -550,13 +570,37 @@ namespace eswitch_v5
     template< Index Idx, typename T >
     constexpr auto operator==( Idx idx, T && rhv )
     {
-        return condition< Idx, T >( Comparison_operators::equal_, std::forward< T >( rhv ) );
+        return condition< Idx, T >( Comparison_operators::equal, std::forward< T >( rhv ) );
     }
 
     template< Index Idx, typename T >
     constexpr auto operator!=( Idx idx, T && rhv )
     {
-        return condition< Idx, T >( Comparison_operators::not_equal_, std::forward< T >( rhv ) );
+        return condition< Idx, T >( Comparison_operators::not_equal, std::forward< T >( rhv ) );
+    }
+
+    template< Index Idx, typename T >
+    constexpr auto operator>( Idx idx, T && rhv )
+    {
+        return condition< Idx, T >( Comparison_operators::greater, std::forward< T >( rhv ) );
+    }
+
+    template< Index Idx, typename T >
+    constexpr auto operator>=( Idx idx, T && rhv )
+    {
+        return condition< Idx, T >( Comparison_operators::greater_or_equal, std::forward< T >( rhv ) );
+    }
+
+    template< Index Idx, typename T >
+    constexpr auto operator<( Idx idx, T && rhv )
+    {
+        return condition< Idx, T >( Comparison_operators::less, std::forward< T >( rhv ) );
+    }
+
+    template< Index Idx, typename T >
+    constexpr auto operator<=( Idx idx, T && rhv )
+    {
+        return condition< Idx, T >( Comparison_operators::less_or_equal, std::forward< T >( rhv ) );
     }
 
     template< typename ... Args >

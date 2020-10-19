@@ -60,6 +60,24 @@ ____________________________________________________
     ```
     Value in a range[11,20]
 	```
+
+## _Comparison_
+``` cpp
+    ...
+    int value = 15;
+    
+    eswitch( value )
+    (
+        Case( _1 >  0  && _1 <  16 ) { Print("Value in a range(0,16)"); },
+        Case( _1 >= 16 && _1 <= 20 ) { Print("Value between range[16,20]"); },
+        Default                      { Print('?'); }
+    );
+```
+-  #### Output:
+    ```
+    Value in a range(0,16)
+	```
+    
     
 ## _implicit break_
 ``` cpp
@@ -123,8 +141,8 @@ ____________________________________________________
     eswitch( var )
     (
         Case(is<double>{})(double d){ Print("Dbl=%f", d ); },
-        Case(is<char>{})  (char ch) { Print("Ch=%d", ch ); },
-        Case(is<int>{})    (int i)  { Print("Int=%d", i ); },
+        Case(is<char>{})  (char   c){ Print("Ch=%d", c ); },
+        Case(is<int>{})   (int    i){ Print("Int=%d", i ); },
         Default { Print("Some other type"); }
     );
 ```
@@ -296,7 +314,7 @@ I personally tested on following:
 
 _______________
 ## TODO:
-implement support for ( **>, >=, <, <=** ) and _bitwise_ operators( **\&, \|, \^, \~** )
+implement support for _bitwise_ operators( **\&, \|, \^, \~** )
 _______________
 
 

@@ -85,6 +85,14 @@ TEST_CASE( "eswitch_v5::compile_time_evaluation", "" )
 {
     using namespace eswitch_v5;
     
+    constexpr auto result0 = eswitch( 50 )
+    (
+        Case( _1 >= 0 && _1 <= 100 ) { return true; },
+        Default { return false; } 
+    );
+
+    static_assert( result0 );
+
     constexpr auto result1 = eswitch( new_york )
     (
         Case( _1 == new_york ) { return 123; },
@@ -263,6 +271,88 @@ TEST_CASE( "eswitch_v5::compile_time_evaluation", "" )
 
     static_assert( result12_4 == true );
 
+}
+
+
+TEST_CASE( "eswitch_v5::greater_or_less", "" ) 
+{
+    using namespace eswitch_v5;
+    using namespace std;
+
+    SECTION( "greater" )
+    {
+        auto r = 
+        eswitch( 50 )
+        (
+            Case( _1 > 2 ) { return true; },
+            Default { return false; } 
+        );
+
+        REQUIRE( r );    
+    }
+
+    SECTION( "greater_2nd_match" )
+    {
+        auto r = 
+        eswitch( 50 )
+        (
+            Case( _1 > 50 ) { return false; },
+            Case( _1 > 49 ) { return true; },
+            Default { return false; } 
+        );
+
+        REQUIRE( r );    
+    }
+
+    
+    SECTION( "greater_or_equal" )
+    {
+        auto r = 
+        eswitch( 50 )
+        (
+            Case( _1 >= 50 ) { return true; },
+            Default { return false; } 
+        );
+
+        REQUIRE( r );    
+    }
+
+    SECTION( "less" )
+    {
+        auto r = 
+        eswitch( 50 )
+        (
+            Case( _1 < 100 ) { return true; },
+            Default { return false; } 
+        );
+
+        REQUIRE( r );    
+    }
+
+    
+    SECTION( "less_or_equal" )
+    {
+        auto r = 
+        eswitch( 50 )
+        (
+            Case( _1 <= 50 ) { return true; },
+            Default { return false; } 
+        );
+
+        REQUIRE( r );    
+    }
+
+    SECTION( "mix_of_operators" )
+    {
+        auto r = 
+        eswitch( 50 )
+        (
+            Case( _1 >= 0 && _1 <= 100 ) { return true; },
+            Default { return false; } 
+        );
+
+        REQUIRE( r );    
+    }
 }
 
 TEST_CASE( "eswitch_v5::equal_match", "" ) 
