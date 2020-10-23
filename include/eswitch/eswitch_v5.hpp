@@ -43,6 +43,9 @@ namespace eswitch_v5
 
     namespace extension
     {
+        enum class range{ open, close };
+
+        template< range RangeType >
         class Range
         {
             std::size_t start_;
@@ -56,7 +59,10 @@ namespace eswitch_v5
 
             friend constexpr bool operator==( const std::size_t val, const Range & rm )
             {
-                return val >= rm.start_ && val <= rm.end_;
+                if constexpr( RangeType == range::close ) 
+                    return val >= rm.start_ && val <= rm.end_;
+                else
+                    return val > rm.start_ && val < rm.end_;
             }
         };
 
@@ -111,7 +117,18 @@ namespace eswitch_v5
 
         auto in( const std::size_t start, const std::size_t end ) const
         {
-            return condition< Index_< Idx >, extension::Range >( Comparison_operators::equal, extension::Range( start, end ) );
+            using namespace extension;
+            
+            using Rng_t = Range< range::open >;
+            return condition< Index_< Idx >, Rng_t >( Comparison_operators::equal, Rng_t( start, end ) );
+        }
+        
+        auto within( const std::size_t start, const std::size_t end ) const
+        {
+            using namespace extension;
+
+            using Rng_t = Range< range::close >;
+            return condition< Index_< Idx >, Rng_t >( Comparison_operators::equal, Rng_t( start, end ) );
         }
     };
 

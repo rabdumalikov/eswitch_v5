@@ -51,6 +51,60 @@ enum Place { unknown = 0, new_york=5, washington=129, new_jersey=501 };
     );
 */
 
+TEST_CASE( "eswitch_v5::range", "" ) 
+{
+    using namespace eswitch_v5;
+    using namespace std;
+
+    SECTION( "inside_range" )
+    {
+        auto r = 
+        eswitch( 6 )
+        (
+            Case( _1.in( 1, 10 ) ) { return true; },
+            Default   { return false; } 
+        );
+
+        REQUIRE( r );    
+    }
+
+    SECTION( "inside_range" )
+    {
+        auto r = 
+        eswitch( 10 )
+        (
+            Case( _1.in( 1, 10 ) ) { return true; },
+            Default   { return false; } 
+        );
+
+        REQUIRE( !r );    
+    }
+
+    SECTION( "within_range" )
+    {
+        auto r = 
+        eswitch( 6 )
+        (
+            Case( _1.within( 1, 10 ) ) { return true; },
+            Default   { return false; } 
+        );
+
+        REQUIRE( r );    
+    }
+
+    SECTION( "within_range" )
+    {
+        auto r = 
+        eswitch( 10 )
+        (
+            Case( _1.within( 1, 10 ) ) { return true; },
+            Default   { return false; } 
+        );
+
+        REQUIRE( r );    
+    }
+}
+
 TEST_CASE( "eswitch_v5::any_from_match", "" ) 
 {
     using namespace eswitch_v5;
