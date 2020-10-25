@@ -93,7 +93,7 @@ void foo( const int value )
     eswitch( value )
     (
         Case( _1 >  0  && _1 <  16 ) { Print("Value inside range(0,16)"); },
-        Case( _1 >= 16 && _1 <= 20 ) { Print("Value between range[16,20]"); },
+        Case( _1 >= 16 && _1 <= 20 ) { Print("Value within range[16,20]"); },
         Default                      { Print('?'); }
     );
 }
@@ -101,7 +101,7 @@ void foo( const int value )
 -  #### Output:
     ```
     foo( 15 ); // Value inside range(0,16)
-    foo( 16 ); // Value inside range[16,20]
+    foo( 16 ); // Value within range[16,20]
 	```
     
 ## _Comparison made easy_
