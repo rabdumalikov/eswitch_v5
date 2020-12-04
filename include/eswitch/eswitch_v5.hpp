@@ -808,6 +808,8 @@ namespace eswitch_v5
     template< typename TPred, std::size_t ... Is >
     class predicate_condition
     {
+        public:
+        
         TPred pred_;
 
         template< typename T >
