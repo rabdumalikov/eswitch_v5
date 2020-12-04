@@ -1,6 +1,6 @@
-//  Copyright (c) 2019 Rustam Abdumalikov
+//  Copyright (c) 2020 Rustam Abdumalikov
 //
-//  "eswitch_v4" library
+//  "eswitch_v5" library
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
@@ -9,7 +9,7 @@
 #undef NDEBUG
 #include <assert.h>
 
-#include "eswitch_v4.hpp"
+#include "eswitch_v5.hpp"
 #include "memory"
 #include <iostream>
 
@@ -17,9 +17,9 @@ enum Place{ california, washington, new_york, new_jersey, las_vegas };
 
 class Parser{};
 
-int main( /* Logical operator "&&" and "||" in "case" */ )
+int main()
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
 
     {
         std::unique_ptr< Parser > parser( new Parser{} );
@@ -28,9 +28,11 @@ int main( /* Logical operator "&&" and "||" in "case" */ )
 
         bool executed = false;
 
-        eswitch( p, parser ) >> 
-            case_( _1 == california && _2 == nullptr ) >> [&]{ assert( false ); } >>
-            case_( _1 == california && _2 != nullptr ) >> [&]{ executed = true; };
+        eswitch( p, parser )
+        (
+            Case( _1 == california && _2 == nullptr ) { assert( false ); },
+            Case( _1 == california && _2 != nullptr ) { executed = true; }
+        );
 
         assert( executed );
     }    
@@ -42,10 +44,12 @@ int main( /* Logical operator "&&" and "||" in "case" */ )
 
         bool executed = false;
 
-        eswitch( p, parser ) >> 
-            case_( _1 == california || _2 == nullptr ) >> [&]{ executed = true; } >>
-            case_( _1 == california && _2 != nullptr ) >> [&]{ assert( false ); };
+        eswitch( p, parser )
+        ( 
+            Case( _1 == california || _2 == nullptr ) { executed = true; },
+            Case( _1 == california && _2 != nullptr ) { assert( false ); }
+        );
 
         assert( executed );
-    }   
+    }      
 }

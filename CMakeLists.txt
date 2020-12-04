@@ -19,7 +19,7 @@ endif()
 include(DownloadProject.cmake)
 download_project(PROJ                catchtest
                  GIT_REPOSITORY      https://github.com/catchorg/Catch2.git
-                 GIT_TAG             master
+                 GIT_TAG             v2.x
                  ${UPDATE_DISCONNECTED_IF_AVAILABLE}
 )
 
@@ -68,4 +68,4 @@ endfunction(build_source_file)
  list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/)
  #include (gcovr)
 
- #add_subdirectory("example")
+ add_subdirectory("example")

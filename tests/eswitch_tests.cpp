@@ -1207,6 +1207,61 @@ TEST_CASE( "eswitch_v5::std_regex", "" )
 
 }
 
+std::string foo()
+{
+    return "Hello";
+}
+
+TEST_CASE( "eswitch_v5::temporary_as_argument", "" )
+{
+    using namespace eswitch_v5;
+ 
+    const Place p = new_york;
+
+    bool executed = false;
+
+    eswitch( p, foo() )
+    ( 
+        Case( _1 == new_york || _2 == "Hello" ) { executed = true; },
+        Case( _1 == new_york && _2 != "Hello" ) { assert( false ); }
+    );
+
+    REQUIRE( executed );
+}
+
+TEST_CASE( "eswitch_v5::predicate_with_mutiple_args", "" )
+{
+    using namespace eswitch_v5;
+ 
+    auto is_positive = []( const int i, const int j, const int k ) { return i  > 0 && j > 0 && k > 0; };
+
+    SECTION( "in_order" )
+    {
+        bool executed = false;
+
+        eswitch( 1, 2, 3 )
+        (
+            Case( ( is_positive, _1, _2, _3 ) ) { executed = true; },
+            Default { assert( false ); }
+        );
+
+        REQUIRE( executed );
+    }
+
+    SECTION( "out_of_order" )
+    {
+        bool executed = false;
+
+        eswitch( 1, 2, 3 )
+        (
+            Case( ( is_positive, _3, _1, _2 ) ) { executed = true; },
+            Default { assert( false ); }
+        );
+
+        REQUIRE( executed );
+    }
+
+}
 // TEST_CASE( "eswitch_v5::not_compiled", "" ) 
 // {
 //     using namespace eswitch_v5;

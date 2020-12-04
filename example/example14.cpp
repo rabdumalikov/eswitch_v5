@@ -1,6 +1,6 @@
 //  Copyright (c) 2019 Rustam Abdumalikov
 //
-//  "eswitch_v4" library
+//  "eswitch_v5" library
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
@@ -9,7 +9,7 @@
 #undef NDEBUG
 #include <assert.h>
 
-#include "eswitch_v4.hpp"
+#include "eswitch_v5.hpp"
 #include <iostream>
 #include <cmath>
 
@@ -34,7 +34,7 @@ CASE_OVERLOAD( double, fcmp );
 
 int main( /* EXAMPLE NAME: CUSTOM EXTENTION( FOR DOUBLE ) */ )
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
 
     bool executed = false;
 

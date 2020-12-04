@@ -1,6 +1,6 @@
 //  Copyright (c) 2019 Rustam Abdumalikov
 //
-//  "eswitch_v4" library
+//  "eswitch_v5" library
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
@@ -9,7 +9,7 @@
 #undef NDEBUG
 #include <assert.h>
 
-#include "eswitch_v4.hpp"
+#include "eswitch_v5.hpp"
 #include <iostream>
 #include <regex>
 
@@ -39,7 +39,7 @@ std::regex operator "" _r( const char* rgx, size_t )
 
 int main( /* EXAMPLE NAME: CUSTOM EXTENTION( FOR REGEX ) */ )
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
 
     const auto phone_number = "^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$"_r;
     const auto email = "[\\w-]+@([\\w-]+\\.)+[\\w-]+"_r;

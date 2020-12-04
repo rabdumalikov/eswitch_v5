@@ -1,6 +1,6 @@
-//  Copyright (c) 2019 Rustam Abdumalikov
+//  Copyright (c) 2020 Rustam Abdumalikov
 //
-//  "eswitch_v4" library
+//  "eswitch_v5" library
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
@@ -9,22 +9,24 @@
 #undef NDEBUG
 #include <assert.h>
 
-#include "eswitch_v4.hpp"
+#include "eswitch_v5.hpp"
 #include <iostream>
 
 enum Place{ california, washington, new_york, new_jersey, las_vegas };
 
-int main( /* EXAMPLE NAME: ANY FROM HELPER FUNCTION */ )
+int main()
 {
-    using namespace eswitch_v4;
+    using namespace eswitch_v5;
 
     for( const auto p : { california, washington, new_york } )
     {
         bool executed = false;
 
-        eswitch( p ) >>
-            case_( _1 == any_from( california, washington, new_york ) ) >> [&]{ executed = true; } >>
-            default_ >> [&]{ assert( false ); };
+        eswitch( p )
+        (
+            Case( _1 == any_from( california, washington, new_york ) ) { executed = true; },
+            Default { assert( false ); }
+        );
 
         assert( executed );
     }

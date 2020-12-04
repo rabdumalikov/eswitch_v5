@@ -212,7 +212,7 @@ namespace eswitch_v5
         template< typename T >
         struct is_predicate : std::false_type {};
 
-        template< template< typename, uint32_t ... > class C, typename T, uint32_t ... Is >
+        template< template< typename, std::size_t ... > class C, typename T, std::size_t ... Is >
         struct is_predicate< C< T, Is... > >
             : std::conditional_t< 
                 std::is_same_v< C<T, Is... >, predicate_condition< T, Is... > >, 
@@ -350,7 +350,10 @@ namespace eswitch_v5
         void 
     >;
     template< typename T >
-    concept IsCndPredicate = details::is_predicate_v< T >;
+    concept IsCndPredicate = details::is_predicate_v< std::decay_t< T > >;
+
+    template< typename T >
+    concept IsNotCndPredicate = !IsCndPredicate< T >;
 
     template< typename T >
     concept Callable = details::is_callable_v< T >;
@@ -625,7 +628,7 @@ namespace eswitch_v5
     {
         static_assert( ( ComparableExceptAnyAndVariant<Args> && ... ), "Input Types should be COMPARABLE!" );
 
-        std::tuple< Args... > tup_;
+        std::tuple< const Args &... > tup_;
     public:
 
         template< typename ... Ts >
@@ -807,15 +810,13 @@ namespace eswitch_v5
     {
         TPred pred_;
 
-        public:
-
         template< typename T >
         constexpr predicate_condition( T && pred ) 
             : pred_( std::forward< T >( pred ) )
             {                    
             }
 
-        template< typename TSrcTuple >
+        template< StdTuple TSrcTuple >
         constexpr bool operator()( const TSrcTuple & src_tuple ) const
         {
             static_assert( !is_out_of_range< std::tuple_size_v< TSrcTuple > >(), 
@@ -839,8 +840,7 @@ namespace eswitch_v5
         return predicate_condition< R(*)(Args...), Idx::eswitch_index >( pred );
     }
 
-    template< typename Pred, Index Idx >
-        requires ( details::is_predicate_v< std::decay_t< Pred > > == false )
+    template< IsNotCndPredicate Pred, Index Idx >
     constexpr auto operator,( Pred && pred, Idx ) 
     {
         return predicate_condition< std::remove_reference_t< Pred >, Idx::eswitch_index >( 
@@ -849,7 +849,7 @@ namespace eswitch_v5
 
     template < typename P, std::size_t ... I, Index Idx >
     predicate_condition< P, I..., Idx::eswitch_index > 
-        compose_new_predicate_condition_type( const predicate_condition< P, I... > & pred_cnd, Idx idx );
+        compose_new_predicate_condition_type( const predicate_condition< P, I... > &, Idx );
          
     template< IsCndPredicate Pred, Index Idx >
     constexpr auto operator,( Pred && pred, Idx idx )
