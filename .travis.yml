@@ -1,0 +1,8 @@
+dist: trusty
+sudo: false
+
+#travis configuration for coverage testing
+language: cpp
+
+script:
+  cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_CROSSCOMPILING=1 -DRUN_HAVE_STD_REGEX=0 -DRUN_HAVE_POSIX_REGEX=0
