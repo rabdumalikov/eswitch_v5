@@ -22,6 +22,4 @@ set(run_examples_list
 foreach(example_name ${run_examples_list})
   build_source_file(${example_name})
   set_target_properties(${example_name} PROPERTIES FOLDER "run examples")
-)
-
 endforeach(example_name)

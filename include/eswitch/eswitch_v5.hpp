@@ -448,7 +448,7 @@ namespace eswitch_v5
             }
 
         template< StdTuple TSrcTuple >
-        constexpr auto operator()( const TSrcTuple & src_tuple ) const
+        inline constexpr auto operator()( const TSrcTuple & src_tuple ) const
         {
             static_assert( !is_out_of_range< std::tuple_size_v< TSrcTuple > >(), 
                     "Case Index is OUT OF RANGE" ); 
@@ -533,11 +533,10 @@ namespace eswitch_v5
 
     public:
 
-        template< Condition Cnd1, Condition Cnd2 >
-        constexpr conditions( const Logical_operators logical_operator, Cnd1 && cnd1, Cnd2 && cnd2 ) 
+        constexpr conditions( const Logical_operators logical_operator, TCnd1 && cnd1, TCnd2 && cnd2 ) 
             : logical_operator( logical_operator )
-            , cnd1_( std::forward< Cnd1 >( cnd1 ) )
-            , cnd2_( std::forward< Cnd2 >( cnd2 ) )
+            , cnd1_( std::move( cnd1 ) )
+            , cnd2_( std::move( cnd2 ) )
             {                
             }
 
@@ -549,7 +548,7 @@ namespace eswitch_v5
         }
      
         template< StdTuple TSrcTuple >
-        constexpr bool operator()( const TSrcTuple & src_tuple ) const
+        inline constexpr bool operator()( const TSrcTuple & src_tuple ) const
         {
             return compare( logical_operator, 
                 static_cast< bool >( cnd1_( src_tuple ) ),  
@@ -575,50 +574,50 @@ namespace eswitch_v5
     template< Condition Cnd1, Condition Cnd2 >
     conditions( Logical_operators, Cnd1, Cnd2 ) -> conditions< Cnd1, Cnd2 >;
 
-    template< typename T1, Condition Cnd >
-    constexpr auto operator&&( T1 && i, Cnd && cnd )
+    template< Condition Cnd1, Condition Cnd2 >
+    constexpr auto operator&&( Cnd1 && cnd1, Cnd2 && cnd2 )
     {
-        return conditions( Logical_operators::and_, std::forward< T1 >( i ), std::move( cnd ) );
+        return conditions( Logical_operators::and_, std::move( cnd1 ), std::move( cnd2 ) );
     }
 
-    template< typename T1, Condition Cnd >
-    constexpr auto operator||( T1 && i, Cnd && cnd )
+    template< Condition Cnd1, Condition Cnd2 >
+    constexpr auto operator||( Cnd1 && cnd1, Cnd2 && cnd2 )
     {
-        return conditions( Logical_operators::or_, std::forward< T1 >( i ), std::move( cnd ) );
+        return conditions( Logical_operators::or_, std::move( cnd1 ), std::move( cnd2 ) );
     }
 
     template< Index Idx, typename T >
-    constexpr auto operator==( Idx idx, T && rhv )
+    constexpr auto operator==( Idx, T && rhv )
     {
         return condition< Idx, T >( Comparison_operators::equal, std::forward< T >( rhv ) );
     }
 
     template< Index Idx, typename T >
-    constexpr auto operator!=( Idx idx, T && rhv )
+    constexpr auto operator!=( Idx, T && rhv )
     {
         return condition< Idx, T >( Comparison_operators::not_equal, std::forward< T >( rhv ) );
     }
 
     template< Index Idx, typename T >
-    constexpr auto operator>( Idx idx, T && rhv )
+    constexpr auto operator>( Idx, T && rhv )
     {
         return condition< Idx, T >( Comparison_operators::greater, std::forward< T >( rhv ) );
     }
 
     template< Index Idx, typename T >
-    constexpr auto operator>=( Idx idx, T && rhv )
+    constexpr auto operator>=( Idx, T && rhv )
     {
         return condition< Idx, T >( Comparison_operators::greater_or_equal, std::forward< T >( rhv ) );
     }
 
     template< Index Idx, typename T >
-    constexpr auto operator<( Idx idx, T && rhv )
+    constexpr auto operator<( Idx, T && rhv )
     {
         return condition< Idx, T >( Comparison_operators::less, std::forward< T >( rhv ) );
     }
 
     template< Index Idx, typename T >
-    constexpr auto operator<=( Idx idx, T && rhv )
+    constexpr auto operator<=( Idx, T && rhv )
     {
         return condition< Idx, T >( Comparison_operators::less_or_equal, std::forward< T >( rhv ) );
     }

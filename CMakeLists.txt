@@ -6,7 +6,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
     add_compile_options( -std=c++20 -stdlib=libc++ )
     message("ESWITCH Debug.build")
 ELSE()
-    add_compile_options( -O3 -std=c++20 -stdlib=libc++ )
+    add_compile_options( -O3 -std=c++20 -stdlib=libc++  )
     message("ESWITCH Release.build")
 ENDIF()
 
@@ -22,14 +22,6 @@ download_project(PROJ                catchtest
                  GIT_TAG             v2.x
                  ${UPDATE_DISCONNECTED_IF_AVAILABLE}
 )
-
-# Prevent GoogleTest from overriding our compiler/linker options
-# when building with Visual Studio
-#set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-
-# Disable building tests for GoogleTest
-#set(gtest_build_tests OFF CACHE BOOL "" FORCE)
-#set(gtest_build_samples OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(${catchtest_SOURCE_DIR} ${catchtest_BINARY_DIR})
 
@@ -53,10 +45,10 @@ target_include_directories(eswitch_tests PUBLIC $<BUILD_INTERFACE:${catchtest_SO
 add_test(NAME eswitch_tests COMMAND eswitch_tests)
 
 
-#add_executable(eswitch_benchmark benchmarks/eswitch_benchmark.cpp)
-#target_include_directories(eswitch_benchmark PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)
-#target_include_directories(eswitch_benchmark PUBLIC $<BUILD_INTERFACE:${googlebench_SOURCE_DIR}/include/>)
-#target_link_libraries(eswitch_benchmark benchmark)
+add_executable(eswitch_benchmark benchmarks/eswitch_benchmark.cpp)
+target_include_directories(eswitch_benchmark PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)
+target_include_directories(eswitch_benchmark PUBLIC $<BUILD_INTERFACE:${googlebench_SOURCE_DIR}/include/>)
+target_link_libraries(eswitch_benchmark benchmark)
 
 function(build_source_file base_name )
   message(STATUS ${base_name})
@@ -68,4 +60,4 @@ endfunction(build_source_file)
  list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/)
  #include (gcovr)
 
- add_subdirectory("examples")
+ #add_subdirectory("examples")

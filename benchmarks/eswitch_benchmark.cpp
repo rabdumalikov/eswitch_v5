@@ -22,14 +22,13 @@ void name(benchmark::State& state)\
 }\
 BENCHMARK(name);
 
-#define BENCHMARK_IT( name, args, function_to_benchmark )\
+#define BENCHMARK_IT( name, function_to_benchmark, ... )\
 void name(benchmark::State& state)\
-{\
-    auto arg = args;\
+{\    
 \
     while (state.KeepRunning()) {\
-        benchmark::DoNotOptimize(\
-            function_to_benchmark(arg));\
+        const auto res = function_to_benchmark(__VA_ARGS__);\
+        benchmark::DoNotOptimize(res);\
     }\
 }\
 BENCHMARK(name);
@@ -48,11 +47,8 @@ enum eprogress3 {
     FINISHED
 };
 
-int _native_switch(const std::string& str)
+int _native_switch( const estatus3 es3, const eprogress3 ep3, const std::string& str)
 {
-    estatus3 es3 = FAILED;
-    eprogress3 ep3 = RUNNING;
-
     switch (es3) {
     case SUCCESS:
 
@@ -62,12 +58,12 @@ int _native_switch(const std::string& str)
         case FINISHED: break;
         default: return 3;
         }
-        break;
+        return 0;
     case FAILED:
 
         switch (ep3) {
         case RUNNING:
-            if (str == "Hell") return 1;
+            if (str == "Hello") return 1;
             else 
                 return 2;
         case IN_PROGRES: break;
@@ -81,22 +77,21 @@ int _native_switch(const std::string& str)
     }
 }
 
-int _eswitch(const std::string& str)
+int _eswitch( const estatus3 es3, const eprogress3 ep3, const std::string& str )
 {
     using namespace eswitch_v5;
 
-    estatus3 es3 = FAILED;
-    eprogress3 ep3 = RUNNING;
-
-    return eswitch(es3, ep3, str) >>
-        case_(_1 == SUCCESS) >> to_return(0) >>
-        case_( _1 == FAILED && _2 == RUNNING && _3 == "Hello") >> to_return(1) >>
-        case_( _1 == FAILED && _2 == RUNNING) >> to_return(2) >>     
-        default_ >> to_return(3) >> in_place_return_;
+    return eswitch(es3, ep3, str)
+    ( 
+        Case( _1 == SUCCESS) { return 0; },
+        Case( _1 == FAILED && _2 == RUNNING && _3 == "Hello") { return 1; },
+        Case( _1 == FAILED && _2 == RUNNING) { return 2; }, 
+        Default { return 3; }
+    );
 }
 
-BENCHMARK_IT( check_E_SWITCH, std::string{"Hello"}, _eswitch );
-BENCHMARK_IT( check_native_switch, std::string{"Hello"}, _native_switch );
+BENCHMARK_IT( check_E_SWITCH, _eswitch, FAILED, RUNNING, std::string{"Hello"} );
+BENCHMARK_IT( check_native_switch, _native_switch, FAILED, RUNNING, std::string{"Hello"} );
 
 // =====================================================
 
@@ -129,10 +124,12 @@ int E_SWITCH_forloop()
 
     for (int i = 0; i < 10; ++i) 
     {
-        result = eswitch(i) >>
-            //case_( _1 == 1 || _1 == 2 || _1 == 3 || _1 == 4 || _1 == 5 ) >> to_return(1) >> // not optimal
-            case_( _1 == any_from( 1, 2, 3, 4, 5 ) ) >> to_return(1) >>
-            default_ >> to_return(3) >> in_place_return_;
+        result = eswitch(i)
+        (
+            //Case( _1 == 1 || _1 == 2 || _1 == 3 || _1 == 4 || _1 == 5 ) >> to_return(1) >> // not optimal
+            Case( _1 == any_from( 1, 2, 3, 4, 5 ) ) { return 1; }, 
+            Default { return 3; }
+        );
     }
 
     return result;
@@ -158,14 +155,15 @@ int E_SWITCH_str_cmp(const std::string& str)
 {
     using namespace eswitch_v5;
 
-    return eswitch(5, str) >>
-        case_( _1 == 5 && _2 == "Hello") >> to_return(1) >>
-        default_ >> to_return(3) >>
-        in_place_return_;
+    return eswitch(5, str)
+    (
+        Case( _1 == 5 && _2 == "Hello") { return 1; },
+        Default { return 3; }
+    );
 }
 
-BENCHMARK_IT( check_E_SWITCH_str_cmp, std::string("Hello"), E_SWITCH_str_cmp );
-BENCHMARK_IT( check_native_switch_str_cmp, std::string("Hello"), native_switch_str_cmp );
+BENCHMARK_IT( check_E_SWITCH_str_cmp, E_SWITCH_str_cmp, std::string("Hello") );
+BENCHMARK_IT( check_native_switch_str_cmp, native_switch_str_cmp, std::string("Hello") );
 
 // =====================================================
 
@@ -187,18 +185,19 @@ int E_SWITCH_several_str_cmp(const std::string& str)
 {
     using namespace eswitch_v5;
 
-    return eswitch(5, str) >>
-        case_( _1 == 5 && _2 == "is") >> to_return(-10) >>
-        case_( _1 == 5 && _2 == "my") >> to_return(-20) >>     
-        case_( _1 == 5 && _2 == "name" ) >> to_return(-30) >>
-        case_( _1 == 5 && _2 == "Hell") >> to_return(-40) >>
-        case_( _1 == 5 && _2 == "Hello") >> to_return(1) >>
-        default_ >> to_return(3) >>
-        in_place_return_;
+    return eswitch(5, str)
+    (
+        Case( _1 == 5 && _2 == "is") { return -10; },
+        Case( _1 == 5 && _2 == "my") { return -20; },     
+        Case( _1 == 5 && _2 == "name" ) { return -30; },
+        Case( _1 == 5 && _2 == "Hell") { return -40; },
+        Case( _1 == 5 && _2 == "Hello") { return 1; },
+        Default { return 3; }
+    );
 }
 
-BENCHMARK_IT( check_E_SWITCH_several_str_cmp, std::string("Hello"), E_SWITCH_several_str_cmp );
-BENCHMARK_IT( check_native_switch_several_str_cmp, std::string("Hello"), native_switch_several_str_cmp );
+BENCHMARK_IT( check_E_SWITCH_several_str_cmp, E_SWITCH_several_str_cmp, std::string("Hello") );
+BENCHMARK_IT( check_native_switch_several_str_cmp, native_switch_several_str_cmp, std::string("Hello") );
 
 // =====================================================
 
@@ -220,13 +219,14 @@ int E_SWITCH_from_string_to_enum(const std::string& str)
 {
     using namespace eswitch_v5;
     
-    return eswitch(str) >>
-        case_( "unknown" )    >> to_return(unknown) >>
-        case_( "new_york" )   >> to_return(new_york) >> 
-        case_( "washington" ) >> to_return(washington) >> 
-        case_( "new_jersey" ) >> to_return(new_jersey) >> 
-        default_              >> to_return( -1 ) >>
-        in_place_return_;
+    return eswitch(str)
+    (
+        Case( "unknown" )     { return unknown; },
+        Case( "new_york" )    { return new_york; }, 
+        Case( "washington" )  { return washington; },
+        Case( "new_jersey" )  { return new_jersey; }, 
+        Default               { return -1; }
+    );
 }
 
 int MAP_from_string_to_enum(const std::string& str)
@@ -245,33 +245,33 @@ int MAP_from_string_to_enum(const std::string& str)
 }
 
 
-BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_1st_match, std::string("unknown"), E_SWITCH_from_string_to_enum );
-BENCHMARK_IT( check_IF_from_string_to_enum_1st_match, std::string("unknown"), IF_from_string_to_enum );
-BENCHMARK_IT( check_MAP_from_string_to_enum_1st_match, std::string("unknown"), MAP_from_string_to_enum );
+BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_1st_match, E_SWITCH_from_string_to_enum, std::string("unknown") );
+BENCHMARK_IT( check_IF_from_string_to_enum_1st_match, IF_from_string_to_enum, std::string("unknown") );
+BENCHMARK_IT( check_MAP_from_string_to_enum_1st_match, MAP_from_string_to_enum, std::string("unknown") );
 
 // =====================================================
 
-BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_2nd_match, std::string("new_york"), E_SWITCH_from_string_to_enum );
-BENCHMARK_IT( check_IF_from_string_to_enum_2nd_match, std::string("new_york"), IF_from_string_to_enum );
-BENCHMARK_IT( check_MAP_from_string_to_enum_2nd_match, std::string("new_york"), MAP_from_string_to_enum );
+BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_2nd_match, E_SWITCH_from_string_to_enum, std::string("new_york") );
+BENCHMARK_IT( check_IF_from_string_to_enum_2nd_match, IF_from_string_to_enum, std::string("new_york") );
+BENCHMARK_IT( check_MAP_from_string_to_enum_2nd_match, MAP_from_string_to_enum, std::string("new_york") );
 
 // =====================================================
 
-BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_3rd_match, std::string("washington"), E_SWITCH_from_string_to_enum );
-BENCHMARK_IT( check_IF_from_string_to_enum_3rd_match, std::string("washington"), IF_from_string_to_enum );
-BENCHMARK_IT( check_MAP_from_string_to_enum_3rd_match, std::string("washington"), MAP_from_string_to_enum );
+BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_3rd_match, E_SWITCH_from_string_to_enum, std::string("washington") );
+BENCHMARK_IT( check_IF_from_string_to_enum_3rd_match, IF_from_string_to_enum, std::string("washington") );
+BENCHMARK_IT( check_MAP_from_string_to_enum_3rd_match, MAP_from_string_to_enum, std::string("washington") );
 
 // =====================================================
 
-BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_4th_match, std::string("new_jersey"), E_SWITCH_from_string_to_enum );
-BENCHMARK_IT( check_IF_from_string_to_enum_4th_match, std::string("new_jersey"), IF_from_string_to_enum );
-BENCHMARK_IT( check_MAP_from_string_to_enum_4th_match, std::string("new_jersey"), MAP_from_string_to_enum );
+BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_4th_match, E_SWITCH_from_string_to_enum, std::string("new_jersey") );
+BENCHMARK_IT( check_IF_from_string_to_enum_4th_match, IF_from_string_to_enum, std::string("new_jersey") );
+BENCHMARK_IT( check_MAP_from_string_to_enum_4th_match, MAP_from_string_to_enum, std::string("new_jersey") );
 
 // =====================================================
 
-BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_no_match, std::string("junk"), E_SWITCH_from_string_to_enum );
-BENCHMARK_IT( check_IF_from_string_to_enum_no_match, std::string("junk"), IF_from_string_to_enum );
-BENCHMARK_IT( check_MAP_from_string_to_enum_no_match, std::string("junk"), MAP_from_string_to_enum );
+BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_no_match, E_SWITCH_from_string_to_enum, std::string("junk") );
+BENCHMARK_IT( check_IF_from_string_to_enum_no_match, IF_from_string_to_enum, std::string("junk") );
+BENCHMARK_IT( check_MAP_from_string_to_enum_no_match, MAP_from_string_to_enum, std::string("junk") );
 
 // =====================================================
 
