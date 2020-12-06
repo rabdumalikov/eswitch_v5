@@ -323,6 +323,6 @@ Boost Software License( Version 1.0 )
 _______________
 
 ## Build status:
-- on GitHub Actions: [![GitHub Actions Status](https://github.com/rabdumalikov/eswitch_v5/blob/main/.github/workflows/cmake%20CI/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
+- on GitHub Actions: [![GitHub Actions Status](https://github.com/rabdumalikov/eswitch_v5/workflows/eswitch_v5%20CI/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
 _______________
 
