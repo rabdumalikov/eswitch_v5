@@ -1,12 +1,26 @@
-cmake_minimum_required(VERSION 2.8.2)
+cmake_minimum_required(VERSION 3.5.1)
 
 project(ESWITCH)
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
-    add_compile_options( -std=c++20 -stdlib=libc++ )
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        add_compile_options( -std=c++20 -stdlib=libc++ )
+        message("ClangCompiler")
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        add_compile_options( -std=c++20 )
+        message("GccCompiler")
+    endif()
+
     message("ESWITCH Debug.build")
 ELSE()
-    add_compile_options( -O3 -std=c++20 -stdlib=libc++  )
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        add_compile_options( -O3 -std=c++20 -stdlib=libc++ )
+        message("ClangCompiler")
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        add_compile_options( -O3 -std=c++20 )
+        message("GccCompiler")
+    endif()
+
     message("ESWITCH Release.build")
 ENDIF()
 

@@ -371,7 +371,7 @@ namespace eswitch_v5
     struct regex_support
     {
         template<  typename T, StdTuple TSrcTuple >
-        static auto execute( Comparison_operators, const T & value_, const TSrcTuple & src_tuple ) 
+        inline static auto execute( Comparison_operators, const T & value_, const TSrcTuple & src_tuple ) 
             requires std::is_same_v< std::decay_t< T >, std::regex > &&
                 ( std::tuple_size_v< std::decay_t< TSrcTuple > > >= 1 )
         {
@@ -396,7 +396,7 @@ namespace eswitch_v5
     struct Any_and_Variant_support
     {
         template< typename T, typename T1, typename ... Ts >
-        static constexpr auto execute( Comparison_operators, const T & value_, const std::tuple< T1, Ts... > & src_tuple )
+        inline static constexpr auto execute( Comparison_operators, const T & value_, const std::tuple< T1, Ts... > & src_tuple )
             requires has_type< T > && 
                 ( details::is_std_any_v<     decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) > || 
                   details::is_std_variant_v< decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) > )
@@ -457,7 +457,7 @@ namespace eswitch_v5
         }
 
         template< StdTuple TSrcTuple >
-        constexpr bool operator()( const TSrcTuple & src_tuple ) const
+        inline constexpr bool operator()( const TSrcTuple & src_tuple ) const
             requires ( std::tuple_size_v< std::decay_t< TSrcTuple > > == 0 )
         {
             return false;
@@ -475,13 +475,13 @@ namespace eswitch_v5
         using Any_and_Variant_support< TIndex >::execute;
 
         template< typename T_, StdTuple TSrcTuple >
-        static constexpr bool execute( Comparison_operators cmp_operator, const T_& value_, const TSrcTuple & src_tuple )
+        inline static constexpr bool execute( Comparison_operators cmp_operator, const T_& value_, const TSrcTuple & src_tuple )
         {
             return compare( cmp_operator, std::get< TIndex::eswitch_index >( src_tuple ), value_ );         
         }
 
         template< typename T1, typename T2 >
-        static constexpr bool compare( const Comparison_operators CmpOper, T1 && t1, T2 && t2 ) 
+        inline static constexpr bool compare( const Comparison_operators CmpOper, T1 && t1, T2 && t2 ) 
             requires Comparable< T1, T2 >
         {                            
             switch( CmpOper )
@@ -557,7 +557,7 @@ namespace eswitch_v5
 
     private:
 
-        static constexpr bool compare( const Logical_operators LogicalOperator, const bool t1, const bool t2 )
+        inline static constexpr bool compare( const Logical_operators LogicalOperator, const bool t1, const bool t2 )
         {                
             switch( LogicalOperator )
             {
@@ -631,7 +631,7 @@ namespace eswitch_v5
     public:
 
         template< typename ... Ts >
-        constexpr eswitch_impl( Ts &&... ts ) : tup_{ std::forward< Ts >( ts )... }
+        constexpr eswitch_impl( Ts &&... ts ) : tup_( std::forward< Ts >( ts )... )
         {            
         }
 
@@ -645,7 +645,7 @@ namespace eswitch_v5
         using args_t = details::amount_args< typename T::F >;
 
         template< typename ... Cnds >
-        constexpr auto operator()( Cnds && ... cnds )
+        inline constexpr auto operator()( Cnds && ... cnds )
         {
             if constexpr( ( !has_value< args_t< Cnds > > || ... ) )
             {
@@ -662,7 +662,7 @@ namespace eswitch_v5
         struct Padding {};
 
         template< typename ... Cnds >
-        constexpr auto operator()( Cnds && ... cnds ) requires has_type< std::common_type< underlying_t< Cnds >... > >
+        inline constexpr auto operator()( Cnds && ... cnds ) requires has_type< std::common_type< underlying_t< Cnds >... > >
         {
             constexpr auto generic_lambda = []< typename T, T... ints >
                 ( std::index_sequence< ints... > && int_seq, auto && tup, auto && f )
