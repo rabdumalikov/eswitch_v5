@@ -1,3 +1,5 @@
+## Build status
+![CMake](https://github.com/rabdumalikov/eswitch_v5/workflows/CMake/badge.svg?branch=main)
 __________
 ## Motivation:
 
@@ -320,9 +322,5 @@ I personally tested on following:
 _______________
 ## License:
 Boost Software License( Version 1.0 )
-_______________
-
-## Build status:
-- on GitHub Actions: [![GitHub Actions Status](https://github.com/rabdumalikov/eswitch_v5/workflows/eswitch_v5%20CI/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
 _______________
 
