@@ -1,0 +1,38 @@
+name: eswitch_v5 gcc CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install gcc 10
+      id: install_gcc_10
+      shell: bash
+      working-directory: ${{ env.HOME }}
+      run: |
+        sudo apt-get install -y g++-10
+        ls
+
+    - name: GCC check
+      run: g++-10 -v
+        
+    - name: Configure
+      shell: cmake -P {0}
+      run: |
+        set(ENV{CC} ${{ matrix.config.cc }})
+        set(ENV{CXX} ${{ matrix.config.cxx }})
+
+    - name: Build gcc
+      working-directory: ${{ env.HOME }}
+      shell: bash
+      run: ./build.sh g++-10
+
+    - name: Benchmark
+      working-directory: ${{ env.HOME }}
+      shell: bash
+      continue-on-error: true
+      run: ./build/release/eswitch_benchmark
