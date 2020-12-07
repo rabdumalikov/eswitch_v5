@@ -1,3 +1,4 @@
+__________
 ## Build status
 ![CMake](https://github.com/rabdumalikov/eswitch_v5/workflows/CMake/badge.svg?branch=main)
 __________
