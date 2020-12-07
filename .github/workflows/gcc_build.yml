@@ -1,4 +1,4 @@
-name: eswitch_v5 gcc CI
+name: gcc CI
 
 on: [push]
 

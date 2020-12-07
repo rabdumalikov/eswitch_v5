@@ -1,4 +1,4 @@
-name: eswitch_v5 clang CI
+name: clang CI
 
 on: [push]
 

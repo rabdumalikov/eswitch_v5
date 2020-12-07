@@ -1,4 +1,4 @@
-name: eswitch_v5 clang TESTS
+name: clang TESTS
 
 on: [push]
 

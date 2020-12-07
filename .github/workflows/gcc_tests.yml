@@ -1,4 +1,4 @@
-name: eswitch_v5 gcc TESTS
+name: gcc TESTS
 
 on: [push]
 
