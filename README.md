@@ -1,7 +1,3 @@
-__________
-## Build status
-![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/eswitch_v5%20CI/badge.svg?branch=main)
-__________
 ## Motivation:
 
 To overcome **native switch** limitations:
@@ -11,7 +7,12 @@ To overcome **native switch** limitations:
 
 **eswitch** supports any number of _parameters_ and almost without restriction on their _type_
  as long as the _type_ is **comparable**( i.e. has **operator==** ).
+
 ____________________________________________________
+## Build status
+![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/eswitch_v5%20CI/badge.svg?branch=main)
+____________________________________________________
+
 ## Feature comparison:
 
 | Feature | eswitch | native switch |
