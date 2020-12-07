@@ -10,7 +10,11 @@ To overcome **native switch** limitations:
 
 ____________________________________________________
 ## Build status
-![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/eswitch_v5%20CI/badge.svg?branch=main)
+[![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/clang%20CI/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
+[![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/clang%20TESTS/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
+[![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/gcc%20CI/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
+[![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/gcc%20TESTS/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
+
 ____________________________________________________
 
 ## Feature comparison:

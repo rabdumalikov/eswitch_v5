@@ -1,0 +1,39 @@
+name: clang TESTS
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Clang 12 and libc++
+      id: install_clang_12
+      shell: bash
+      working-directory: ${{ env.HOME }}
+      run: |
+        wget https://apt.llvm.org/llvm.sh
+        chmod +x llvm.sh
+        sudo ./llvm.sh 12
+        sudo apt-get install libc++-12-dev libc++abi-12-dev
+        ls
+
+    - name: Configure
+      shell: cmake -P {0}
+      run: |
+        set(ENV{CC} ${{ matrix.config.cc }})
+        set(ENV{CXX} ${{ matrix.config.cxx }})
+
+
+    - name: Build clang
+      working-directory: ${{ env.HOME }}
+      shell: bash
+      run: ./build.sh clang++-12           
+
+    - name: Test
+      working-directory: ${{ env.HOME }}
+      shell: bash
+      run: ./build/release/eswitch_tests
+           
