@@ -11,6 +11,10 @@ To overcome **native switch** limitations:
 ____________________________________________________
 ## Build status
 ![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/eswitch_v5%20CI/badge.svg?branch=main)
+![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/eswitch_v5%20CI::Test/badge.svg?branch=main)
+![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/eswitch_v5%20CI.Test/badge.svg?branch=main)
+![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/Test/badge.svg?branch=main)
+
 ____________________________________________________
 
 ## Feature comparison:
