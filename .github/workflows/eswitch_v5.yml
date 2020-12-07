@@ -1,4 +1,4 @@
-name: CMake
+name: eswitch_v5 CI
 
 on: [push]
 

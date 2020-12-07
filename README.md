@@ -1,6 +1,6 @@
 __________
 ## Build status
-![CMake](https://github.com/rabdumalikov/eswitch_v5/workflows/CMake/badge.svg?branch=main)
+![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/eswitch_v5%20CI/badge.svg?branch=main)
 __________
 ## Motivation:
 
