@@ -187,7 +187,7 @@ BENCHMARK_IT( check_range_check_3rd_match_NativeSwitch, native_switch_range_chec
 int native_switch_std_any( const std::any & value )
 {
     if( auto * v = std::any_cast< int >( &value ) ) return *v;
-    else if( auto * v = std::any_cast< std::string >( &value ) ) return 77;
+    else if( auto * v = std::any_cast< std::string >( &value ) ) return v->size();
     else
     {
         return -1;
@@ -201,17 +201,15 @@ int E_SWITCH_std_any( const std::any & value )
     return eswitch( value )
     (
         Case( _1 == is< int >{} )( const int v ) { return v; },
-        Case( _1 == is< std::string >{} )( const std::string & v ) { return 77; },
+        Case( _1 == is< std::string >{} )( const std::string & v ) { return v.size(); },
         Default { return -1; }
     );
-
-    return -1;
 }
 
 BENCHMARK_AND_COMPARE( check_std_any_1st_match_ESWITCH, E_SWITCH_std_any, 10, std::any{ 10 } );
 BENCHMARK_AND_COMPARE( check_std_any_1st_match_NativeSwitch, native_switch_std_any, 10, std::any{ 10 } );
-BENCHMARK_AND_COMPARE( check_std_any_2nd_match_ESWITCH, E_SWITCH_std_any, 77, std::any{ std::string{ "Hell" } } );
-BENCHMARK_AND_COMPARE( check_std_any_2nd_match_NativeSwitch, native_switch_std_any, 77, std::any{ std::string{ "Hell" } } );
+BENCHMARK_AND_COMPARE( check_std_any_2nd_match_ESWITCH, E_SWITCH_std_any, 4, std::any{ std::string{ "Hell" } } );
+BENCHMARK_AND_COMPARE( check_std_any_2nd_match_NativeSwitch, native_switch_std_any, 4, std::any{ std::string{ "Hell" } } );
 BENCHMARK_AND_COMPARE( check_std_any_3rd_match_ESWITCH, E_SWITCH_std_any, -1, std::any{ double{ 0.0 } } );
 BENCHMARK_AND_COMPARE( check_std_any_3rd_match_NativeSwitch, native_switch_std_any, -1, std::any{ double{ 0.0 } } );
 

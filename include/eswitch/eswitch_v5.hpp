@@ -408,18 +408,18 @@ namespace eswitch_v5
             {
                 if( auto * val = std::any_cast< type >( &entry ) )
                 {            
-                    return std::make_optional( *val );
+                    return std::make_optional( std::cref( *val ) );
                 }
             }
             else if constexpr( details::is_std_variant_v< _T > ) 
             {
                 if( auto * val = std::get_if< type >( &entry ) )
                 {
-                    return std::make_optional( *val );
+                    return std::make_optional( std::cref( *val ) );
                 }
             }            
                         
-            return std::optional< type >{};
+            return std::optional< std::reference_wrapper< const type > >{};
         }
     };
 
