@@ -90,8 +90,8 @@ int _eswitch( const estatus3 es3, const eprogress3 ep3, const std::string& str )
     );
 }
 
-BENCHMARK_IT( check_E_SWITCH, _eswitch, FAILED, RUNNING, std::string{"Hello"} );
-BENCHMARK_IT( check_native_switch, _native_switch, FAILED, RUNNING, std::string{"Hello"} );
+BENCHMARK_IT( check_multiple_matches_E_SWITCH, _eswitch, FAILED, RUNNING, std::string{"Hello"} );
+BENCHMARK_IT( check_multiple_matches_NativeSwitch, _native_switch, FAILED, RUNNING, std::string{"Hello"} );
 
 // =====================================================
 
@@ -135,8 +135,144 @@ int E_SWITCH_forloop()
     return result;
 }
 
-BENCHMARK_IT_WITHOUT_ARGS( check_E_SWITCH_forloop, E_SWITCH_forloop );
-BENCHMARK_IT_WITHOUT_ARGS( check_native_switch_forloop, native_switch_forloop );
+BENCHMARK_IT_WITHOUT_ARGS( check_forloop_ESWITCH, E_SWITCH_forloop );
+BENCHMARK_IT_WITHOUT_ARGS( check_forloop_NativeSwitch, native_switch_forloop );
+
+// =====================================================
+
+int native_switch_range_check( const int value )
+{
+    if( value > 0 && value < 10 ) return 0;
+    else if( value >= 10 && value <= 20 ) return 11;
+    else if( value > 30 && value <= 50 ) return 40;
+}
+
+int E_SWITCH_range_check( const int value )
+{
+    using namespace eswitch_v5;
+
+    return eswitch( value )
+    (
+        Case( _1 > 0 && _1 < 10 ) { return 0; },
+        Case( _1 >= 10 && _1 <= 20 ) { return 11; },
+        Case( _1 > 30 && _1 <= 50 ) { return 40; }
+    );
+}
+
+BENCHMARK_IT( check_range_check_1st_match_ESWITCH, E_SWITCH_range_check, 5 );
+BENCHMARK_IT( check_range_check_1st_match_NativeSwitch, native_switch_range_check, 5 );
+BENCHMARK_IT( check_range_check_2nd_match_ESWITCH, E_SWITCH_range_check, 10 );
+BENCHMARK_IT( check_range_check_2nd_match_NativeSwitch, native_switch_range_check, 10 );
+BENCHMARK_IT( check_range_check_3rd_match_ESWITCH, E_SWITCH_range_check, 31 );
+BENCHMARK_IT( check_range_check_3rd_match_NativeSwitch, native_switch_range_check, 31 );
+
+
+auto native_switch_std_any( const std::any & value )
+{
+    if( auto * v = std::any_cast< int >( &value ) ) return std::optional< long int >( *v );
+    else if( auto * v = std::any_cast< std::string >( &value ) ) return std::optional< long int >( v->size() );
+    else
+    {
+        return std::optional< long int >( -1 );
+    }   
+}
+
+int E_SWITCH_std_any( const std::any & value )
+{
+    using namespace eswitch_v5;
+
+    return eswitch( value )
+    (
+        Case( _1 == is< int >{} )( const int v ) { return v; },
+        Case( _1 == is< std::string >{} )( const std::string & v ) { return v.size(); },
+        Default { return -1; }
+    );
+}
+
+BENCHMARK_IT( check_std_any_1st_match_ESWITCH, E_SWITCH_std_any, std::any{ 10 } );
+BENCHMARK_IT( check_std_any_1st_match_NativeSwitch, native_switch_std_any, std::any{ 10 } );
+
+auto native_switch_std_variant( const std::variant< int, std::string > & value )
+{
+    if( auto * v = std::get_if< int >( &value ) ) return std::optional< long int >( *v );
+    else if( auto * v = std::get_if< std::string >( &value ) ) return std::optional< long int >( v->size() );
+    else
+    {
+        return std::optional< long int >( -1 );
+    }   
+}
+
+int E_SWITCH_std_variant( const std::variant< int, std::string > & value )
+{
+    using namespace eswitch_v5;
+
+    return eswitch( value )
+    (
+        Case( _1 == is< int >{} )( const int v ) { return v; },
+        Case( _1 == is< std::string >{} )( const std::string & v ) { return v.size(); },
+        Default { return -1; }
+    );
+}
+
+BENCHMARK_IT( check_std_variant_1st_match_ESWITCH, E_SWITCH_std_any, std::variant< int, std::string >{ 10 } );
+BENCHMARK_IT( check_std_variant_1st_match_NativeSwitch, native_switch_std_any, std::variant< int, std::string >{ 10 } );
+
+static auto rgx_for_match = std::regex( ".*: .*" );
+
+auto native_switch_std_regex_match( const std::string & text )
+{
+    if( std::smatch match; std::regex_match( text, match, rgx_for_match ) )
+    {
+        return true;
+    }
+    return false;
+}
+
+int E_SWITCH_std_regex_match( const std::string & value )
+{
+    using namespace eswitch_v5;
+
+    return eswitch( value )
+    (
+        Case( rgx_for_match ) { return true; },
+        Default { return false; }
+    );
+}
+
+BENCHMARK_IT( check_std_regex_match_ESWITCH, E_SWITCH_std_regex_match, std::string{ "Key: value" } );
+BENCHMARK_IT( check_std_regex_match_NativeSwitch, native_switch_std_regex_match, std::string{ "Key: value" } );
+
+static auto rgx_for_match_with_withdrawal = std::regex( "(.*): (.*)" );
+
+auto native_switch_std_regex_match_with_withdrawal( const std::string & text )
+{
+    if( std::smatch match; std::regex_match( text, match, rgx_for_match_with_withdrawal ) )
+    {
+        std::vector< std::string > vs;
+        vs.reserve( match.size() );
+
+        for( const auto & v : match )  
+            vs.push_back( v );
+
+        return vs;
+    }
+    return std::vector< std::string >{};
+}
+
+auto E_SWITCH_std_regex_match_with_withdrawal( const std::string & value )
+{
+    using namespace eswitch_v5;
+
+    return eswitch( value )
+    (
+        Case( rgx_for_match_with_withdrawal )( std::vector< std::string > && vs ) { return std::move( vs ); },
+        Default { return std::vector< std::string >{}; }
+    );
+}
+
+BENCHMARK_IT( check_std_regex_match_with_withdrawal_ESWITCH, E_SWITCH_std_regex_match_with_withdrawal, std::string{ "Key: value" } );
+BENCHMARK_IT( check_std_regex_match_with_withdrawal_NativeSwitch, native_switch_std_regex_match_with_withdrawal, std::string{ "Key: value" } );
+
 
 // =====================================================
 
@@ -162,8 +298,8 @@ int E_SWITCH_str_cmp(const std::string& str)
     );
 }
 
-BENCHMARK_IT( check_E_SWITCH_str_cmp, E_SWITCH_str_cmp, std::string("Hello") );
-BENCHMARK_IT( check_native_switch_str_cmp, native_switch_str_cmp, std::string("Hello") );
+BENCHMARK_IT( check_str_cmp_ESWITCH, E_SWITCH_str_cmp, std::string("Hello") );
+BENCHMARK_IT( check_str_cmp_NativeSwitch, native_switch_str_cmp, std::string("Hello") );
 
 // =====================================================
 
@@ -196,8 +332,8 @@ int E_SWITCH_several_str_cmp(const std::string& str)
     );
 }
 
-BENCHMARK_IT( check_E_SWITCH_several_str_cmp, E_SWITCH_several_str_cmp, std::string("Hello") );
-BENCHMARK_IT( check_native_switch_several_str_cmp, native_switch_several_str_cmp, std::string("Hello") );
+BENCHMARK_IT( check_several_str_cmp_ESWITCH, E_SWITCH_several_str_cmp, std::string("Hello") );
+BENCHMARK_IT( check_several_str_cmp_NativeSwitch, native_switch_several_str_cmp, std::string("Hello") );
 
 // =====================================================
 
@@ -245,33 +381,33 @@ int MAP_from_string_to_enum(const std::string& str)
 }
 
 
-BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_1st_match, E_SWITCH_from_string_to_enum, std::string("unknown") );
-BENCHMARK_IT( check_IF_from_string_to_enum_1st_match, IF_from_string_to_enum, std::string("unknown") );
-BENCHMARK_IT( check_MAP_from_string_to_enum_1st_match, MAP_from_string_to_enum, std::string("unknown") );
+BENCHMARK_IT( check_from_string_to_enum_1st_match_ESWITCH, E_SWITCH_from_string_to_enum, std::string("unknown") );
+BENCHMARK_IT( check_from_string_to_enum_1st_match_IF, IF_from_string_to_enum, std::string("unknown") );
+BENCHMARK_IT( check_from_string_to_enum_1st_match_MAP, MAP_from_string_to_enum, std::string("unknown") );
 
 // =====================================================
 
-BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_2nd_match, E_SWITCH_from_string_to_enum, std::string("new_york") );
-BENCHMARK_IT( check_IF_from_string_to_enum_2nd_match, IF_from_string_to_enum, std::string("new_york") );
-BENCHMARK_IT( check_MAP_from_string_to_enum_2nd_match, MAP_from_string_to_enum, std::string("new_york") );
+BENCHMARK_IT( check_from_string_to_enum_2nd_match_ESWITCH, E_SWITCH_from_string_to_enum, std::string("new_york") );
+BENCHMARK_IT( check_from_string_to_enum_2nd_match_IF, IF_from_string_to_enum, std::string("new_york") );
+BENCHMARK_IT( check_from_string_to_enum_2nd_match_MAP, MAP_from_string_to_enum, std::string("new_york") );
 
 // =====================================================
 
-BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_3rd_match, E_SWITCH_from_string_to_enum, std::string("washington") );
-BENCHMARK_IT( check_IF_from_string_to_enum_3rd_match, IF_from_string_to_enum, std::string("washington") );
-BENCHMARK_IT( check_MAP_from_string_to_enum_3rd_match, MAP_from_string_to_enum, std::string("washington") );
+BENCHMARK_IT( check_from_string_to_enum_3rd_match_ESWITCH, E_SWITCH_from_string_to_enum, std::string("washington") );
+BENCHMARK_IT( check_from_string_to_enum_3rd_match_IF, IF_from_string_to_enum, std::string("washington") );
+BENCHMARK_IT( check_from_string_to_enum_3rd_match_MAP, MAP_from_string_to_enum, std::string("washington") );
 
 // =====================================================
 
-BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_4th_match, E_SWITCH_from_string_to_enum, std::string("new_jersey") );
-BENCHMARK_IT( check_IF_from_string_to_enum_4th_match, IF_from_string_to_enum, std::string("new_jersey") );
-BENCHMARK_IT( check_MAP_from_string_to_enum_4th_match, MAP_from_string_to_enum, std::string("new_jersey") );
+BENCHMARK_IT( check_from_string_to_enum_4th_match_ESWITCH, E_SWITCH_from_string_to_enum, std::string("new_jersey") );
+BENCHMARK_IT( check_from_string_to_enum_4th_match_IF, IF_from_string_to_enum, std::string("new_jersey") );
+BENCHMARK_IT( check_from_string_to_enum_4th_match_MAP, MAP_from_string_to_enum, std::string("new_jersey") );
 
 // =====================================================
 
-BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_no_match, E_SWITCH_from_string_to_enum, std::string("junk") );
-BENCHMARK_IT( check_IF_from_string_to_enum_no_match, IF_from_string_to_enum, std::string("junk") );
-BENCHMARK_IT( check_MAP_from_string_to_enum_no_match, MAP_from_string_to_enum, std::string("junk") );
+BENCHMARK_IT( check_from_string_to_enum_no_match_ESWITCH, E_SWITCH_from_string_to_enum, std::string("junk") );
+BENCHMARK_IT( check_from_string_to_enum_no_match_IF, IF_from_string_to_enum, std::string("junk") );
+BENCHMARK_IT( check_from_string_to_enum_no_match_MAP, MAP_from_string_to_enum, std::string("junk") );
 
 
 static auto unknown_str = std::string{ "unknown" };
@@ -327,25 +463,36 @@ int MAP_from_string_to_enum_2(const std::string& str)
 }
 
 // =====================================================
-BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_1st_match_2, E_SWITCH_from_string_to_enum_2, std::string("unknown") );
-BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_2nd_match_2, E_SWITCH_from_string_to_enum_2, std::string("new_york") );
-BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_3rd_match_2, E_SWITCH_from_string_to_enum_2, std::string("washington") );
-BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_4th_match_2, E_SWITCH_from_string_to_enum_2, std::string("new_jersey") );
-BENCHMARK_IT( check_E_SWITCH_from_string_to_enum_no_match_2,  E_SWITCH_from_string_to_enum_2, std::string("junk") );
+
+BENCHMARK_IT( another_check_from_string_to_enum_1st_match_ESWITCH, E_SWITCH_from_string_to_enum_2, std::string("unknown") );
+BENCHMARK_IT( another_check_from_string_to_enum_1st_match_IF, IF_from_string_to_enum_2, std::string("unknown") );
+BENCHMARK_IT( another_check_from_string_to_enum_1st_match_MAP, MAP_from_string_to_enum_2, std::string("unknown") );
 
 // =====================================================
-BENCHMARK_IT( check_IF_from_string_to_enum_1st_match_2, IF_from_string_to_enum_2, std::string("unknown") );
-BENCHMARK_IT( check_IF_from_string_to_enum_2nd_match_2, IF_from_string_to_enum_2, std::string("new_york") );
-BENCHMARK_IT( check_IF_from_string_to_enum_3rd_match_2, IF_from_string_to_enum_2, std::string("washington") );
-BENCHMARK_IT( check_IF_from_string_to_enum_4th_match_2, IF_from_string_to_enum_2, std::string("new_jersey") );
-BENCHMARK_IT( check_IF_from_string_to_enum_no_match_2,  IF_from_string_to_enum_2, std::string("junk") );
+
+BENCHMARK_IT( another_check_from_string_to_enum_2nd_match_ESWITCH, E_SWITCH_from_string_to_enum_2, std::string("new_york") );
+BENCHMARK_IT( another_check_from_string_to_enum_2nd_match_IF, IF_from_string_to_enum_2, std::string("new_york") );
+BENCHMARK_IT( another_check_from_string_to_enum_2nd_match_MAP, MAP_from_string_to_enum_2, std::string("new_york") );
 
 // =====================================================
-BENCHMARK_IT( check_MAP_from_string_to_enum_1st_match_2, MAP_from_string_to_enum_2, std::string("unknown") );
-BENCHMARK_IT( check_MAP_from_string_to_enum_2nd_match_2, MAP_from_string_to_enum_2, std::string("new_york") );
-BENCHMARK_IT( check_MAP_from_string_to_enum_3rd_match_2, MAP_from_string_to_enum_2, std::string("washington") );
-BENCHMARK_IT( check_MAP_from_string_to_enum_4th_match_2, MAP_from_string_to_enum_2, std::string("new_jersey") );
-BENCHMARK_IT( check_MAP_from_string_to_enum_no_match_2,  MAP_from_string_to_enum_2, std::string("junk") );
+
+BENCHMARK_IT( another_check_from_string_to_enum_3rd_match_ESWITCH, E_SWITCH_from_string_to_enum_2, std::string("washington") );
+BENCHMARK_IT( another_check_from_string_to_enum_3rd_match_IF, IF_from_string_to_enum_2, std::string("washington") );
+BENCHMARK_IT( another_check_from_string_to_enum_3rd_match_MAP, MAP_from_string_to_enum_2, std::string("washington") );
+
+// =====================================================
+
+BENCHMARK_IT( another_check_from_string_to_enum_4th_match_ESWITCH, E_SWITCH_from_string_to_enum_2, std::string("new_jersey") );
+BENCHMARK_IT( another_check_from_string_to_enum_4th_match_IF, IF_from_string_to_enum_2, std::string("new_jersey") );
+BENCHMARK_IT( another_check_from_string_to_enum_4th_match_MAP, MAP_from_string_to_enum_2, std::string("new_jersey") );
+
+// =====================================================
+
+BENCHMARK_IT( another_check_from_string_to_enum_no_match_ESWITCH,  E_SWITCH_from_string_to_enum_2, std::string("junk") );
+BENCHMARK_IT( another_check_from_string_to_enum_no_match_IF,  IF_from_string_to_enum_2, std::string("junk") );
+BENCHMARK_IT( another_check_from_string_to_enum_no_match_MAP,  MAP_from_string_to_enum_2, std::string("junk") );
+
+// =====================================================
 
 int main( int, char ** )
 {

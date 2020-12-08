@@ -392,13 +392,13 @@ namespace eswitch_v5
     template< Index TIndex >
     struct Any_and_Variant_support
     {
-        template< typename T, typename T1, typename ... Ts >
-        inline static constexpr auto execute( Comparison_operators, const T & value_, const std::tuple< T1, Ts... > & src_tuple )
+        template< typename T, StdTuple TSrcTuple >
+        inline static constexpr auto execute( Comparison_operators, const T & value_, const TSrcTuple & src_tuple )
             requires has_type< T > && 
                 ( details::is_std_any_v<     decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) > || 
                   details::is_std_variant_v< decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) > )
         {
-            auto entry = std::get< TIndex::eswitch_index >( src_tuple );
+            const auto & entry = std::get< TIndex::eswitch_index >( src_tuple );
 
             using type = typename T::type;
             using _T = decltype( std::get< TIndex::eswitch_index >( src_tuple ) );
