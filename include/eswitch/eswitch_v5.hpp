@@ -301,8 +301,8 @@ namespace eswitch_v5
                 std::forward< Cnds >( cnds )... );
         }
 
-        template< std::size_t ... Is, typename Tup1, typename Tup2 >
-        constexpr auto tuple_combine( Tup1 && tup1, Tup2 && tup2 )
+        template< std::size_t ... Is, typename Tup >
+        inline constexpr auto create_indexed_condition( Tup && values )
         {
             auto combine = []< typename T1, typename T2 >( T1 && t1, T2 && t2 )
             {
@@ -315,11 +315,8 @@ namespace eswitch_v5
                     return std::forward< T1 >( t1 ) == std::forward< T2 >( t2 );
             };
             
-            return std::make_tuple( combine( 
-                std::get< Is >( std::move( tup1 ) ), 
-                std::get< Is >( std::move( tup2 ) ) 
-                )... );
-        }
+            return ( combine( Index_< Is >{}, std::get< Is >( std::move( values ) ) ) && ... );
+        }        
     } // namespace details
     
     template< typename T >
@@ -575,7 +572,7 @@ namespace eswitch_v5
     conditions( Logical_operators, Cnd1, Cnd2 ) -> conditions< Cnd1, Cnd2 >;
 
     template< Condition Cnd1, Condition Cnd2 >
-    constexpr auto operator&&( Cnd1 && cnd1, Cnd2 && cnd2 )
+    inline constexpr auto operator&&( Cnd1 && cnd1, Cnd2 && cnd2 )
     {
         return conditions( Logical_operators::and_, std::move( cnd1 ), std::move( cnd2 ) );
     }
@@ -587,39 +584,39 @@ namespace eswitch_v5
     }
 
     template< Index Idx, typename T >
-    constexpr auto operator==( Idx, T && rhv )
+    inline constexpr auto operator==( Idx &&, T && rhv )
     {
-        return condition< Idx, T >( Comparison_operators::equal, std::forward< T >( rhv ) );
+        return condition< std::decay_t< Idx >, T >( Comparison_operators::equal, std::forward< T >( rhv ) );
     }
 
     template< Index Idx, typename T >
-    constexpr auto operator!=( Idx, T && rhv )
+    constexpr auto operator!=( Idx &&, T && rhv )
     {
-        return condition< Idx, T >( Comparison_operators::not_equal, std::forward< T >( rhv ) );
+        return condition< std::decay_t< Idx >, T >( Comparison_operators::not_equal, std::forward< T >( rhv ) );
     }
 
     template< Index Idx, typename T >
-    constexpr auto operator>( Idx, T && rhv )
+    constexpr auto operator>( Idx &&, T && rhv )
     {
-        return condition< Idx, T >( Comparison_operators::greater, std::forward< T >( rhv ) );
+        return condition< std::decay_t< Idx >, T >( Comparison_operators::greater, std::forward< T >( rhv ) );
     }
 
     template< Index Idx, typename T >
-    constexpr auto operator>=( Idx, T && rhv )
+    constexpr auto operator>=( Idx &&, T && rhv )
     {
-        return condition< Idx, T >( Comparison_operators::greater_or_equal, std::forward< T >( rhv ) );
+        return condition< std::decay_t< Idx >, T >( Comparison_operators::greater_or_equal, std::forward< T >( rhv ) );
     }
 
     template< Index Idx, typename T >
-    constexpr auto operator<( Idx, T && rhv )
+    constexpr auto operator<( Idx &&, T && rhv )
     {
-        return condition< Idx, T >( Comparison_operators::less, std::forward< T >( rhv ) );
+        return condition< std::decay_t< Idx >, T >( Comparison_operators::less, std::forward< T >( rhv ) );
     }
 
     template< Index Idx, typename T >
-    constexpr auto operator<=( Idx, T && rhv )
+    constexpr auto operator<=( Idx &&, T && rhv )
     {
-        return condition< Idx, T >( Comparison_operators::less_or_equal, std::forward< T >( rhv ) );
+        return condition< std::decay_t< Idx >, T >( Comparison_operators::less_or_equal, std::forward< T >( rhv ) );
     }
 
     template< typename ... Args >
@@ -742,7 +739,7 @@ namespace eswitch_v5
     };
 
     template< typename ... Ts >
-    eswitch_impl( Ts... ) -> eswitch_impl< Ts... >;
+    eswitch_impl( Ts &&... ) -> eswitch_impl< Ts... >;
 
     template< typename ... Ts >
     constexpr auto eswitch( Ts && ... ts )
@@ -859,41 +856,35 @@ namespace eswitch_v5
     }
 
     template< Condition Cnd >
-    constexpr auto case_( Cnd && cnd )
+    inline constexpr auto case_( Cnd && cnd )
     { 
         return std::move( cnd ); 
     }
 
     template< typename ... Ts >
-    constexpr auto case_( Ts &&... values )
+    inline constexpr auto case_( Ts &&... values )
     {
-        auto lmbd = [&]< typename T, T ... ints >( std::index_sequence< ints... >&&, auto && tup )
+        auto lmbd = []< typename T, T ... ints >( std::index_sequence< ints... >&&, auto &&... values )
         {
-            auto merged = details::tuple_combine< ints... >( 
-                std::make_tuple( Index_< ints >{}... ), std::move( tup ) );
-
-            return ( std::get< ints >( merged ) && ... );
+            /// I intentionally avoided std::make_tuple, because the former change type of string literals
+            /// from "const char[some_size]&" to "const char*" and this significantly impacts the performance.
+            return details::create_indexed_condition< ints... >( 
+                std::tuple< Ts... >( std::forward< Ts >( values )... ) ); 
         };
 
         return lmbd( std::make_index_sequence< sizeof...(Ts) >{},
-            std::make_tuple( std::forward< Ts >( values )... ) );
+            std::forward< Ts >( values )... );
     }
 
-    constexpr auto case_( std::regex && rgx )
+    inline auto case_( std::regex && rgx )
     {
-        return _1 == rgx;
+        return _1 == std::move( rgx );
     }
 
     template< typename ... Args >
     constexpr auto any_from( Args &&... args )
     {
         return extension::Any_from_impl( std::forward< Args >( args )... );
-    }
-    
-    template< std::size_t From, std::size_t To >
-    constexpr bool in_range( const std::size_t value )
-    {
-        return value >= From && value <= To;
     }
 
     template< typename T >
