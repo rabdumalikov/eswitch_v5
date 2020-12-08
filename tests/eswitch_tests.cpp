@@ -1260,8 +1260,25 @@ TEST_CASE( "eswitch_v5::predicate_with_mutiple_args", "" )
 
         REQUIRE( executed );
     }
-
 }
+
+TEST_CASE( "eswitch_v5::details", "" )
+{
+    using namespace eswitch_v5;
+ 
+    std::any a{ 10 };
+    REQUIRE( details::is_std_any_v< decltype( a ) > );
+
+    const std::any & aref = a;
+    REQUIRE( details::is_std_any_v< decltype( aref ) > );
+
+    std::variant< int, std::string > v{ 10 };
+    REQUIRE( details::is_std_variant_v< decltype( v ) > );
+
+    const std::variant< int, std::string > & vref = v;
+    REQUIRE( details::is_std_variant_v< decltype( vref ) > );
+}
+
 // TEST_CASE( "eswitch_v5::not_compiled", "" ) 
 // {
 //     using namespace eswitch_v5;

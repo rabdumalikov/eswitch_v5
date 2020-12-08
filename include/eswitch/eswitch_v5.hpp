@@ -17,6 +17,7 @@
 #include <any>
 #include <variant>
 #include <regex>
+#include <algorithm>
 
 // Add static assert if fallthrough and lambda with args were used
 
@@ -252,7 +253,7 @@ namespace eswitch_v5
         };
 
         template< typename T >
-        constexpr bool amount_args_v = amount_args< T >::value;
+        constexpr std::size_t amount_args_v = amount_args< T >::value;
 
         template< typename T, typename = void >
         struct invoke_result {};
@@ -393,7 +394,7 @@ namespace eswitch_v5
     struct Any_and_Variant_support
     {
         template< typename T, StdTuple TSrcTuple >
-        inline static constexpr auto execute( Comparison_operators, const T & value_, const TSrcTuple & src_tuple )
+        inline static constexpr auto execute( Comparison_operators, const T & value_, const TSrcTuple & src_tuple ) noexcept
             requires has_type< T > && 
                 ( details::is_std_any_v<     decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) > || 
                   details::is_std_variant_v< decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) > )
@@ -402,11 +403,11 @@ namespace eswitch_v5
 
             using type = typename T::type;
             using _T = decltype( std::get< TIndex::eswitch_index >( src_tuple ) );
-
+    
             if constexpr( details::is_std_any_v< _T > )
             {
                 if( auto * val = std::any_cast< type >( &entry ) )
-                {
+                {            
                     return std::make_optional( *val );
                 }
             }
@@ -416,14 +417,14 @@ namespace eswitch_v5
                 {
                     return std::make_optional( *val );
                 }
-            }
+            }            
                         
             return std::optional< type >{};
         }
     };
 
     template< Index TIndex, typename T >
-    class condition 
+    class condition final
         : public regex_support< TIndex >
         , public Any_and_Variant_support< TIndex >
     {
@@ -874,11 +875,6 @@ namespace eswitch_v5
 
         return lmbd( std::make_index_sequence< sizeof...(Ts) >{},
             std::forward< Ts >( values )... );
-    }
-
-    inline auto case_( std::regex && rgx )
-    {
-        return _1 == std::move( rgx );
     }
 
     template< typename ... Args >

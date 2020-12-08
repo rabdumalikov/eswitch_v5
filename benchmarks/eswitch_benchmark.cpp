@@ -6,6 +6,10 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+
+#undef NDEBUG
+#include <assert.h>
+
 #include "benchmark/benchmark.h"
 #include "eswitch_v5.hpp"
 #include <iostream>
@@ -28,6 +32,19 @@ void name(benchmark::State& state)\
 \
     while (state.KeepRunning()) {\
         const auto res = function_to_benchmark(__VA_ARGS__);\
+        benchmark::DoNotOptimize(res);\
+    }\
+}\
+BENCHMARK(name);
+
+
+#define BENCHMARK_AND_COMPARE( name, function_to_benchmark, actual_result, ... )\
+void name(benchmark::State& state)\
+{\    
+\
+    while (state.KeepRunning()) {\
+        const auto res = function_to_benchmark(__VA_ARGS__);\
+        assert( res == actual_result );\
         benchmark::DoNotOptimize(res);\
     }\
 }\
@@ -167,13 +184,13 @@ BENCHMARK_IT( check_range_check_3rd_match_ESWITCH, E_SWITCH_range_check, 31 );
 BENCHMARK_IT( check_range_check_3rd_match_NativeSwitch, native_switch_range_check, 31 );
 
 
-auto native_switch_std_any( const std::any & value )
+int native_switch_std_any( const std::any & value )
 {
-    if( auto * v = std::any_cast< int >( &value ) ) return std::optional< long int >( *v );
-    else if( auto * v = std::any_cast< std::string >( &value ) ) return std::optional< long int >( v->size() );
+    if( auto * v = std::any_cast< int >( &value ) ) return *v;
+    else if( auto * v = std::any_cast< std::string >( &value ) ) return 77;
     else
     {
-        return std::optional< long int >( -1 );
+        return -1;
     }   
 }
 
@@ -184,21 +201,27 @@ int E_SWITCH_std_any( const std::any & value )
     return eswitch( value )
     (
         Case( _1 == is< int >{} )( const int v ) { return v; },
-        Case( _1 == is< std::string >{} )( const std::string & v ) { return v.size(); },
+        Case( _1 == is< std::string >{} )( const std::string & v ) { return 77; },
         Default { return -1; }
     );
+
+    return -1;
 }
 
-BENCHMARK_IT( check_std_any_1st_match_ESWITCH, E_SWITCH_std_any, std::any{ 10 } );
-BENCHMARK_IT( check_std_any_1st_match_NativeSwitch, native_switch_std_any, std::any{ 10 } );
+BENCHMARK_AND_COMPARE( check_std_any_1st_match_ESWITCH, E_SWITCH_std_any, 10, std::any{ 10 } );
+BENCHMARK_AND_COMPARE( check_std_any_1st_match_NativeSwitch, native_switch_std_any, 10, std::any{ 10 } );
+BENCHMARK_AND_COMPARE( check_std_any_2nd_match_ESWITCH, E_SWITCH_std_any, 77, std::any{ std::string{ "Hell" } } );
+BENCHMARK_AND_COMPARE( check_std_any_2nd_match_NativeSwitch, native_switch_std_any, 77, std::any{ std::string{ "Hell" } } );
+BENCHMARK_AND_COMPARE( check_std_any_3rd_match_ESWITCH, E_SWITCH_std_any, -1, std::any{ double{ 0.0 } } );
+BENCHMARK_AND_COMPARE( check_std_any_3rd_match_NativeSwitch, native_switch_std_any, -1, std::any{ double{ 0.0 } } );
 
-auto native_switch_std_variant( const std::variant< int, std::string > & value )
+int native_switch_std_variant( const std::variant< int, std::string > & value )
 {
-    if( auto * v = std::get_if< int >( &value ) ) return std::optional< long int >( *v );
-    else if( auto * v = std::get_if< std::string >( &value ) ) return std::optional< long int >( v->size() );
+    if( auto * v = std::get_if< int >( &value ) ) return *v;
+    else if( auto * v = std::get_if< std::string >( &value ) ) return v->size();
     else
     {
-        return std::optional< long int >( -1 );
+        return -1;
     }   
 }
 
@@ -208,14 +231,14 @@ int E_SWITCH_std_variant( const std::variant< int, std::string > & value )
 
     return eswitch( value )
     (
-        Case( _1 == is< int >{} )( const int v ) { return v; },
-        Case( _1 == is< std::string >{} )( const std::string & v ) { return v.size(); },
+        Case( is< int >{} )( const int v ) { return v; },
+        Case( is< std::string >{} )( const std::string & v ) { return v.size(); },
         Default { return -1; }
     );
 }
 
-BENCHMARK_IT( check_std_variant_1st_match_ESWITCH, E_SWITCH_std_any, std::variant< int, std::string >{ 10 } );
-BENCHMARK_IT( check_std_variant_1st_match_NativeSwitch, native_switch_std_any, std::variant< int, std::string >{ 10 } );
+BENCHMARK_AND_COMPARE( check_std_variant_1st_match_ESWITCH, E_SWITCH_std_variant, 10, std::variant< int, std::string >{ 10 } );
+BENCHMARK_AND_COMPARE( check_std_variant_1st_match_NativeSwitch, native_switch_std_variant, 10, std::variant< int, std::string >{ 10 } );
 
 static auto rgx_for_match = std::regex( ".*: .*" );
 
