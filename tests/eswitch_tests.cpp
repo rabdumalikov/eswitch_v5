@@ -774,6 +774,20 @@ TEST_CASE( "eswitch_v5::std_variant_only", "" )
 
         REQUIRE( r == "Default" ); 
     }
+
+    SECTION( "unset_variant" )
+    {
+        std::variant< std::monostate, int, double, std::string > a;
+
+        auto r = eswitch( a )
+        (
+            Case( _1 == is< int >{} )( const int val ) { return ""; },
+            Case( _1 == is< std::string >{} )( const std::string & val ) { return val + "hello"; },
+            Default { return "Default"; }
+        );
+
+        REQUIRE( r == "Default" ); 
+    }
 }
 
 TEST_CASE( "eswitch_v5::std_variant_plus_std_any", "" ) 
