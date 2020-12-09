@@ -5,6 +5,8 @@ project(ESWITCH)
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         add_compile_options( -std=c++20 -stdlib=libc++ )
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
+
         message("ClangCompiler")
     elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         add_compile_options( -std=c++20 )
@@ -15,6 +17,8 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
 ELSE()
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         add_compile_options( -O3 -std=c++20 -stdlib=libc++ )
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
+
         message("ClangCompiler")
     elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         add_compile_options( -O3 -std=c++20 )
@@ -49,8 +53,6 @@ download_project(PROJ                googlebench
 set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(${googlebench_SOURCE_DIR} ${googlebench_BINARY_DIR})
-
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 
 add_executable(eswitch_tests tests/eswitch_tests.cpp)
 target_include_directories(eswitch_tests PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)
