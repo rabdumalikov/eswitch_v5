@@ -13,7 +13,7 @@ __________
 eswitch( __params__ )
 ( 
     Case( __condition__ ) { ... } ^ __falling_options__,
-    Default { ... } ;
+    Default { ... }
 );
 // __param__            - list of parameters( i.e. param1, param2, ..., param_n )
 // __condition__        - it could be specific order match( i.e. _1 == smth1 || _2 == smth2 || ... )
@@ -32,7 +32,7 @@ eswitch( __params__ )
  - **param matching via indexing and without**
  - **comparison made easy**
  - **match for**: _std::any, std::variant, std::regex_
- - **match and withdraw value from**: _std::any, std::variant, std::regex_
+ - **match and withdraw value from**: _std::any_, _std::variant_ and _std::regex_
  
      - **referencing to params in _eswitch_**:
         ``` cpp
@@ -51,7 +51,15 @@ eswitch( __params__ )
         eswitch( p1, p2 )
         (
             Case( true, false ) {...}, // same as "Case( _1 == true && _2 == false )" 
-            Case( false ){...}
+            Case( false ) {...}
+        );
+        ```
+     - **explicit fallthrough**:
+        ``` cpp
+        eswitch( p1, p2 )
+        (
+            Case( 25 ) {...} ^ fallthrough_,
+            Case( 15 ) {...} // If 1st "Case" will be matched, then body of 2nd "Case" will be executed as well
         );
         ```
 
@@ -60,7 +68,7 @@ eswitch( __params__ )
         eswitch( p1, p2 )
         (
             Case( ( is_odd, _1 ) && ( is_odd, _2 ) ) {...},
-            Case( ( is_negative( _1, _2 ) ){...}
+            Case( ( is_negative( _1, _2 ) ) {...}
         );
             
         // i.e.
@@ -115,19 +123,20 @@ eswitch( __params__ )
         ``` cpp
         eswitch( any ) 
         (
-            Case( is< int >{} ) {...}, // will be executed in 'std::any' contain 'int'
-            Case( is< std::string >{} ) {...} // will be executed in 'std::any' contain 'std::string'
+            Case( is< int >{} ) {...}, // will be executed in "std::any/std::variant" contain "int"
+            Case( is< std::string >{} ) {...} // will be executed in "std::any/std::variant" contain "std::string"
         );
         ```
     - **match and withdraw value from _std::any_ or _std::variant_**:
         ``` cpp
         eswitch( any ) 
         (
-            Case( is< int >{} )( const int value ) {...}, // Note that keyword 'auto' isn't allowed( i.e. code won't compile )
+            /// NOTE THAT: keyword "auto"( in 2nd parentheses ) isn't allowed( i.e. code won't compile )
+            Case( is< int >{} )( const int value ) {...},
             Case( is< std::string >{} )( const std::string & value ) {...}
         );
         ```
-    - **match for _std::regex_**:
+    - **_std::regex_ match**:
         ``` cpp
         eswitch( text ) 
         (
@@ -135,12 +144,12 @@ eswitch( __params__ )
             Case( R"(\d*)"_r ) { return "number"; }
         );
         ```
-    - **match and withdraw values from _std::regex_**:
+    - **match and withdraw value/values from _std::regex_**:
         ``` cpp
         eswitch( text ) 
         (
-            /// NOTE that "vector<string>"" and "std::smatch" contain same values
-            Case( R"((\w*))"_r )( const vector< string > & match ){ return match[1]; } 
-            Case( R"((\d*))"_r )( const vector< string > & match ){ return match[1]; } 
+            /// NOTE THAT: "vector<string>"" and "std::smatch" are identical in terms of values
+            Case( R"((\w*))"_r )( const vector< string > & match ) { return match[1]; } 
+            Case( R"((\d*))"_r )( const vector< string > & match ) { return match[1]; } 
         );
         ```
