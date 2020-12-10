@@ -26,8 +26,8 @@ jobs:
     - name: Configure
       shell: cmake -P {0}
       run: |
-        set(ENV{CC} clang-12)
-        set(ENV{CXX} clang++-12)
+        export CC=clang-12
+        export CXX=clang++-12
         echo $CXX
         echo $CC
 
