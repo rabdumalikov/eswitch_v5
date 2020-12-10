@@ -24,7 +24,6 @@ jobs:
       run: clang++-12 -v
 
     - name: Configure
-      shell: cmake -P {0}
       run: |
         export CC=clang-12
         export CXX=clang++-12
