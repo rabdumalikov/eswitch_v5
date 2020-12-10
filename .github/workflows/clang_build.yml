@@ -26,19 +26,18 @@ jobs:
     - name: Configure
       shell: cmake -P {0}
       run: |
-        set(ENV{CC} ${{ matrix.config.cc }})
-        set(ENV{CXX} ${{ matrix.config.cxx }})
+        set(ENV{CC} clang-12)
+        set(ENV{CXX} clang++-12)
+        echo $CXX
+        echo $CC
 
     - name: Build clang
       working-directory: ${{ env.HOME }}
       shell: bash
-      run: ./build.sh clang++-12           
+      run: ./build.sh           
            
     - name: Benchmark
       working-directory: ${{ env.HOME }}
       shell: bash
       continue-on-error: true
       run: ./build/release/eswitch_benchmark
-      
-    - name: Code Coverage Report
-      uses: romeovs/lcov-reporter-action@v0.2.11
