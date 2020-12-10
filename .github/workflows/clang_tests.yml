@@ -26,7 +26,9 @@ jobs:
     - name: Build clang
       working-directory: ${{ env.HOME }}
       shell: bash
-      run: cmake . -DCMAKE_BUILD_TYPE=Release  
+      run: |
+           cmake . -DCMAKE_BUILD_TYPE=Release
+           make
       env:
         CXX: clang++-12
         CC: clang-12         
@@ -34,7 +36,5 @@ jobs:
     - name: Test
       working-directory: ${{ env.HOME }}
       shell: bash
-      run: |
-        ls 
-        ./eswitch_tests
+      run: ./eswitch_tests
            
