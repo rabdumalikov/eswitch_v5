@@ -21,12 +21,12 @@ jobs:
         ls
 
     - name: CLANG check
-      run: clang++ -v
+      run: clang++-12 -v
 
     - name: Build clang
       working-directory: ${{ env.HOME }}
       shell: bash
-      run: ./build.sh  
+      run: cmake . -DCMAKE_BUILD_TYPE=Release  
       env:
         CXX: clang++-12
         CC: clang-12         
@@ -35,4 +35,4 @@ jobs:
       working-directory: ${{ env.HOME }}
       shell: bash
       continue-on-error: true
-      run: ./build/release/eswitch_benchmark
+      run: ./eswitch_benchmark
