@@ -217,7 +217,7 @@ eswitch( __params__ )
         eswitch( text ) 
         (
             /// NOTE that "vector<string>"" and "std::smatch" contain same values
-            Case( R"((\w*))"_r )( const vector< string > & match ){ return match[1]; } 
-            Case( R"((\d*))"_r )( const vector< string > & match ){ return match[1]; } 
+            Case( R"((\w*))"_r )( vector< string > && match ){ return match[1]; } 
+            Case( R"((\d*))"_r )( vector< string > && match ){ return match[1]; } 
         );
         ```

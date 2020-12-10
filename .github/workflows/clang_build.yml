@@ -39,3 +39,6 @@ jobs:
       shell: bash
       continue-on-error: true
       run: ./build/release/eswitch_benchmark
+      
+    - name: Code Coverage Report
+      uses: romeovs/lcov-reporter-action@v0.2.11
