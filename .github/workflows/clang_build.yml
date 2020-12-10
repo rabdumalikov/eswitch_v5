@@ -21,19 +21,15 @@ jobs:
         ls
 
     - name: CLANG check
-      run: clang++-12 -v
-
-    - name: Configure
-      run: |
-        export CC=clang-12
-        export CXX=clang++-12
-        echo $CXX
-        echo $CC
+      run: clang++ -v
 
     - name: Build clang
       working-directory: ${{ env.HOME }}
       shell: bash
-      run: ./build.sh           
+      run: ./build.sh  
+      env:
+        CXX: clang++-12
+        CC: clang-12         
            
     - name: Benchmark
       working-directory: ${{ env.HOME }}
