@@ -1,4 +1,4 @@
-//  Copyright (c) 2019 Rustam Abdumalikov
+//  Copyright (c) 2019-2021 Rustam Abdumalikov
 //
 //  "eswitch_v5" library
 //
@@ -15,41 +15,6 @@
 #include "catch2/catch.hpp"
 
 enum Place { unknown = 0, new_york=5, washington=129, new_jersey=501 };
-
-/*
-    eswitch( param1, param2 )
-    [
-        Case( _1 == 20 || _2 == 50 ) -> Fallthrough { return true; },
-        Case( _1 == 0  && _2 == 0 ) { return true; }, 
-        Default { return false; }
-    ];
-
-
-
-
-    int i = 0;
-    eswitch( param1, param2 )
-    [
-        Case( _1 == 20 || _2 == 50 ){} ^ Fallthrough ^ Likely,
-        Case( _1 == 0  && _2 == 0 ) { i = 66; Break; }, 
-        Default { return false; }
-    ];
-
-    /// posible only with macroses
-    eswitch( i, j ) 
-    {
-        Case( _1 == 20 || _2 == 50 ){} ^ Fallthrough ^ Likely,
-        Case( _1 == 0  && _2 == 0 ) { i = 66; Break; }, 
-        Default { return false; }
-    };
-
-    eswitch( i, j ) 
-    (
-        Case( _1 == 20 || _2 == 50 ){} ^ Fallthrough ^ Likely,
-        Case( _1 == 0  && _2 == 0 ) { i = 66; Break; }, 
-        Default { return false; }
-    );
-*/
 
 TEST_CASE( "eswitch_v5::range", "" ) 
 {

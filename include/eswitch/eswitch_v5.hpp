@@ -1,4 +1,4 @@
-//  Copyright (c) 2019-2020 Rustam Abdumalikov
+//  Copyright (c) 2019-2021 Rustam Abdumalikov
 //
 //  "eswitch_v5" library
 //

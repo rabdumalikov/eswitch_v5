@@ -318,7 +318,7 @@ Should work on all major compilers which support **C++20**.
 I personally tested on following:
 
 - **clang++\-11**  (or later)
-- **g++\-9.3.0** (or later)
+- **g++\-10.2.0** (or later)
 - **Visual Studio** **2019**.
 
 ## How to build:
