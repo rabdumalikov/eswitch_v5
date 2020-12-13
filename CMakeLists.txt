@@ -18,7 +18,8 @@ ELSE()
         message("ClangCompiler")
     elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         add_compile_options( -O3 -std=c++20 )
-        message("GccCompiler")
+        #set(CMAKE_CXX_FLAGS_RELEASE "-std=c++20 -O3 -Wno-stringop-truncation")
+        message("GccCompiler__")
     endif()
 
     message("ESWITCH Release.build")
@@ -60,6 +61,11 @@ target_include_directories(eswitch_tests PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOUR
 target_include_directories(eswitch_tests PUBLIC $<BUILD_INTERFACE:${catchtest_SOURCE_DIR}/single_include/>)
 add_test(NAME eswitch_tests COMMAND eswitch_tests)
 
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    add_compile_options( -Winline )
+    message("GccCompiler")
+endif()
 
 add_executable(eswitch_benchmark benchmarks/eswitch_benchmark.cpp)
 target_include_directories(eswitch_benchmark PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)

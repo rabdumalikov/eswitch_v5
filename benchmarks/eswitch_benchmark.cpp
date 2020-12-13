@@ -16,7 +16,7 @@
 
 #define BENCHMARK_IT( name, function_to_benchmark, ... )\
 void name(benchmark::State& state)\
-{\    
+{\
 \
     while (state.KeepRunning()) {\
         const auto res = function_to_benchmark(__VA_ARGS__);\
@@ -28,7 +28,7 @@ BENCHMARK(name);
 
 #define BENCHMARK_AND_COMPARE( name, function_to_benchmark, actual_result, ... )\
 void name(benchmark::State& state)\
-{\    
+{\
 \
     while (state.KeepRunning()) {\
         const auto res = function_to_benchmark(__VA_ARGS__) == actual_result;\
@@ -61,7 +61,7 @@ int _native_switch( const estatus3 es3, const eprogress3 ep3, const std::string&
         case RUNNING: break;
         case IN_PROGRES: break;
         case FINISHED: break;
-        default: return 3;
+        default: return 31;
         }
         return 0;
     case FAILED:
@@ -73,13 +73,13 @@ int _native_switch( const estatus3 es3, const eprogress3 ep3, const std::string&
                 return 2;
         case IN_PROGRES: break;
         case FINISHED: break;
-        default: return 3;
+        default: return 32;
         }
 
         break;
-    default:
-        return 3;
     }
+
+    return 33;
 }
 
 int _eswitch( const estatus3 es3, const eprogress3 ep3, const std::string& str )
@@ -91,7 +91,7 @@ int _eswitch( const estatus3 es3, const eprogress3 ep3, const std::string& str )
         Case( _1 == SUCCESS) { return 0; },
         Case( _1 == FAILED && _2 == RUNNING && _3 == "Hello") { return 1; },
         Case( _1 == FAILED && _2 == RUNNING) { return 2; }, 
-        Default { return 3; }
+        Default { return 33; }
     );
 }
 
@@ -150,6 +150,7 @@ int IF_range_check( const int value )
     if( value > 0 && value < 10 ) return 0;
     else if( value >= 10 && value <= 20 ) return 11;
     else if( value > 30 && value <= 50 ) return 40;
+    else return 101;
 }
 
 int E_SWITCH_range_check( const int value )
@@ -160,7 +161,8 @@ int E_SWITCH_range_check( const int value )
     (
         Case( _1 > 0 && _1 < 10 ) { return 0; },
         Case( _1 >= 10 && _1 <= 20 ) { return 11; },
-        Case( _1 > 30 && _1 <= 50 ) { return 40; }
+        Case( _1 > 30 && _1 <= 50 ) { return 40; },
+        Default { return 101; }
     );
 }
 
@@ -552,9 +554,9 @@ BENCHMARK_AND_COMPARE( another_check_from_string_to_enum_no_match_MAP,  MAP_from
 int main( int, char ** )
 {
     int argc = 2;
-    char* argv[] = { "benchs", "--benchmark_out=bench.txt", nullptr };
+    const char * argv[] = { "benchs", "--benchmark_out=bench.txt", nullptr };
 
-	::benchmark::Initialize(&argc, argv); 
+	::benchmark::Initialize( &argc, const_cast< char** >( argv) ); 
 	::benchmark::ConsoleReporter cr;
 	::benchmark::JSONReporter jsnr;
 	::benchmark::RunSpecifiedBenchmarks( &cr, &jsnr); 

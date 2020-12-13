@@ -33,14 +33,14 @@ namespace eswitch_v5
         std::decay_t< T >::template is_out_of_range< std::size_t{} >(); 
     };
 
-    template< typename TPred, std::size_t ... Is >
+    template< typename, std::size_t ... >
     class predicate_condition;
-
-    template< Index TIndex, typename T >
-    class condition;
 
     enum class Logical_operators{ and_, or_ };
     enum class Comparison_operators{ equal, not_equal, greater, greater_or_equal, less, less_or_equal };
+
+    template< Comparison_operators, Index, typename >
+    class condition;
 
     namespace extension
     {
@@ -58,7 +58,7 @@ namespace eswitch_v5
                 {                
                 }
 
-            friend constexpr bool operator==( const std::size_t val, const Range & rm )
+            friend constexpr bool operator==( const std::size_t val, const Range rm )
             {
                 if constexpr( RangeType == range::close ) 
                     return val >= rm.start_ && val <= rm.end_;
@@ -70,13 +70,13 @@ namespace eswitch_v5
         // any
         struct any 
         {
-            template < typename T >
-            friend constexpr bool operator==( const T& value, const any& st ) {
+            template< typename T >
+            friend constexpr bool operator==( const T&, const any& ) {
                 return true;
             }
 
-            template < typename T >
-            friend constexpr bool operator!=( const T& value, const any& st ) {
+            template< typename T >
+            friend constexpr bool operator!=( const T&, const any& ) {
                 return false;
             }
         };
@@ -121,7 +121,7 @@ namespace eswitch_v5
             using namespace extension;
             
             using Rng_t = Range< range::open >;
-            return condition< Index_< Idx >, Rng_t >( Comparison_operators::equal, Rng_t( start, end ) );
+            return condition< Comparison_operators::equal, Index_< Idx >, Rng_t >( Rng_t( start, end ) );
         }
         
         auto within( const std::size_t start, const std::size_t end ) const
@@ -129,7 +129,7 @@ namespace eswitch_v5
             using namespace extension;
 
             using Rng_t = Range< range::close >;
-            return condition< Index_< Idx >, Rng_t >( Comparison_operators::equal, Rng_t( start, end ) );
+            return condition< Comparison_operators::equal, Index_< Idx >, Rng_t >( Rng_t( start, end ) );
         }
     };
 
@@ -149,8 +149,8 @@ namespace eswitch_v5
         template< typename T >
         struct is_default_case : std::false_type {};
 
-        template< Index I >
-        struct is_default_case< condition< I, extension::any > > : std::true_type {};
+        template< Comparison_operators Op, Index I >
+        struct is_default_case< condition< Op, I, extension::any > > : std::true_type {};
 
         template< typename T >
         constexpr bool is_default_case_v = is_default_case< T >::value;
@@ -203,7 +203,7 @@ namespace eswitch_v5
         template< typename T >
         constexpr bool is_callable_v = is_callable_impl< decltype( &T::operator() ) >::value;
 
-        static constexpr bool unreachable() 
+        inline static constexpr bool unreachable() 
         { 
             if( !std::is_constant_evaluated() ) assert( false ); 
 
@@ -303,7 +303,7 @@ namespace eswitch_v5
         }
 
         template< std::size_t ... Is, typename Tup >
-        inline constexpr auto create_indexed_condition( Tup && values )
+        inline static constexpr auto create_indexed_condition( Tup && values )
         {
             auto combine = []< typename T1, typename T2 >( T1 && t1, T2 && t2 )
             {
@@ -362,14 +362,11 @@ namespace eswitch_v5
     template< typename T >
     concept StdPair = details::is_std_pair_v< T >;
 
-    template< typename T >
-    concept IsRegexCondition = details::is_default_case_v< std::decay_t< T > > || ( Condition< T > && std::is_same_v< typename std::decay_t< T >::value_type, std::regex > );
-
-    template< Index TIndex >
+    template< Comparison_operators CmpOperator, Index TIndex, typename T >
     struct regex_support
     {
-        template<  typename T, StdTuple TSrcTuple >
-        inline static auto execute( Comparison_operators, const T & value_, const TSrcTuple & src_tuple ) 
+        template< StdTuple TSrcTuple >
+        inline static auto execute( const T & value_, const TSrcTuple & src_tuple ) 
             requires std::is_same_v< std::decay_t< T >, std::regex > &&
                 ( std::tuple_size_v< std::decay_t< TSrcTuple > > >= 1 )
         {
@@ -390,11 +387,11 @@ namespace eswitch_v5
         }
     };
 
-    template< Index TIndex >
+    template< Comparison_operators CmpOperator, Index TIndex, typename T >
     struct Any_and_Variant_support
     {
-        template< typename T, StdTuple TSrcTuple >
-        inline static constexpr auto execute( Comparison_operators, const T & value_, const TSrcTuple & src_tuple ) noexcept
+        template< StdTuple TSrcTuple >
+        inline static constexpr auto execute( const T & value_, const TSrcTuple & src_tuple ) noexcept
             requires has_type< T > && 
                 ( details::is_std_any_v<     decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) > || 
                   details::is_std_variant_v< decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) > )
@@ -423,25 +420,23 @@ namespace eswitch_v5
         }
     };
 
-    template< Index TIndex, typename T >
-    class condition final
-        : public regex_support< TIndex >
-        , public Any_and_Variant_support< TIndex >
-    {
-        Comparison_operators cmp_operator;        
-        T value_;
-
-        template< Index I, typename T_ >
+    template< Comparison_operators CmpOperator, Index TIndex, typename T >
+    class condition
+        : public regex_support< CmpOperator, TIndex, T >
+        , public Any_and_Variant_support< CmpOperator, TIndex, T >
+    { 
+        template< Comparison_operators, Index, typename >
         friend class condition;
         
+        T value_;
     public:
 
         using value_type = T;
         using idx = TIndex;
 
         template< typename Arg >
-        constexpr condition( const Comparison_operators cmp_type, Arg && value ) 
-            : cmp_operator( cmp_type ), value_( std::forward< Arg >( value ) )
+        constexpr condition( Arg && value ) 
+            : value_( std::forward< Arg >( value ) )
             { 
             }
 
@@ -451,7 +446,7 @@ namespace eswitch_v5
             static_assert( !is_out_of_range< std::tuple_size_v< TSrcTuple > >(), 
                     "Case Index is OUT OF RANGE" ); 
 
-            return execute( cmp_operator, value_, src_tuple );
+            return execute( value_, src_tuple );
         }
 
         template< StdTuple TSrcTuple >
@@ -469,20 +464,20 @@ namespace eswitch_v5
 
     private:
     
-        using regex_support< TIndex >::execute;
-        using Any_and_Variant_support< TIndex >::execute;
+        using regex_support< CmpOperator, TIndex, T >::execute;
+        using Any_and_Variant_support< CmpOperator, TIndex, T >::execute;
 
-        template< typename T_, StdTuple TSrcTuple >
-        inline static constexpr bool execute( Comparison_operators cmp_operator, const T_& value_, const TSrcTuple & src_tuple )
+        template< StdTuple TSrcTuple >
+        inline static constexpr bool execute( const T & value_, const TSrcTuple & src_tuple )
         {
-            return compare( cmp_operator, std::get< TIndex::eswitch_index >( src_tuple ), value_ );         
+            return compare( std::get< TIndex::eswitch_index >( src_tuple ), value_ );         
         }
 
-        template< typename T1, typename T2 >
-        inline static constexpr bool compare( const Comparison_operators CmpOper, T1 && t1, T2 && t2 ) 
-            requires Comparable< T1, T2 >
+        template< typename TupValue >
+        inline static constexpr bool compare( TupValue && t1, const T & t2 ) 
+            requires Comparable< TupValue, T >
         {                            
-            switch( CmpOper )
+            switch( CmpOperator )
             {
                 case Comparison_operators::equal:
                 {
@@ -508,13 +503,11 @@ namespace eswitch_v5
                 {
                     if constexpr( requires{ t1 <= t2; } ) return t1 <= t2;
                 }
-                default:
-                    return details::unreachable();
             };
         }
 
         template< typename T1, typename T2 >
-        static constexpr bool compare( const Comparison_operators CmpOper, T1 && t1, T2 && t2 ) 
+        inline static constexpr bool compare( T1 && t1, T2 && t2 ) 
         {                
             static_assert( Comparable< T1, T2 >, "Types are not COMPARABLE!" );
             
@@ -522,102 +515,117 @@ namespace eswitch_v5
         }
     };
 
-    template< Condition TCnd1, Condition TCnd2 >
+    template< Logical_operators LogicalOperator, Condition ... Cnds >
     class conditions
     {
-        Logical_operators logical_operator;
-        TCnd1 cnd1_;
-        TCnd2 cnd2_;
+        template< Logical_operators, Condition ... >
+        friend class conditions;
 
+        std::tuple< Cnds... > cnds_;
     public:
 
-        constexpr conditions( const Logical_operators logical_operator, TCnd1 && cnd1, TCnd2 && cnd2 ) 
-            : logical_operator( logical_operator )
-            , cnd1_( std::move( cnd1 ) )
-            , cnd2_( std::move( cnd2 ) )
+        template< Condition ... OtherCnds, Condition Cnd >
+        constexpr conditions( conditions< LogicalOperator, OtherCnds... > && cnds, Cnd && cnd ) 
+            : cnds_( std::tuple_cat( std::move( cnds.cnds_ ), std::make_tuple( std::move( cnd ) ) ) )
+            {                
+            }
+
+        constexpr conditions( Cnds &&... cnds ) 
+            : cnds_( std::move( cnds )... )
             {                
             }
 
         template< std::size_t MaxIndex >
         static constexpr bool is_out_of_range() 
         {
-            return TCnd1::template is_out_of_range< MaxIndex >() || 
-                   TCnd2::template is_out_of_range< MaxIndex >();
+            return ( Cnds::template is_out_of_range< MaxIndex >() || ... );
         }
      
         template< StdTuple TSrcTuple >
         inline constexpr bool operator()( const TSrcTuple & src_tuple ) const
         {
-            return compare( logical_operator, 
-                static_cast< bool >( cnd1_( src_tuple ) ),  
-                static_cast< bool >( cnd2_( src_tuple ) ) );            
+            auto lmbd = [&]< typename T, T ... ints >( std::index_sequence< ints... > && )
+            {
+                return compare( static_cast< bool >( std::get< ints >( cnds_ )( src_tuple ) )... );
+            };
+
+            return lmbd( std::make_index_sequence< sizeof...( Cnds ) >{} );
         }
 
     private:
 
-        inline static constexpr bool compare( const Logical_operators LogicalOperator, const bool t1, const bool t2 )
+        inline static constexpr bool compare( const auto ... ts )
         {                
             switch( LogicalOperator )
             {
             case Logical_operators::and_:
-                return t1 && t2;
+                return ( ts && ... );
             case Logical_operators::or_:
-                return t1 || t2;
-            default: 
-                return details::unreachable();
+                return ( ts || ... );
             };
         }
     };
 
-    template< Condition Cnd1, Condition Cnd2 >
-    conditions( Logical_operators, Cnd1, Cnd2 ) -> conditions< Cnd1, Cnd2 >;
-
-    template< Condition Cnd1, Condition Cnd2 >
-    inline constexpr auto operator&&( Cnd1 && cnd1, Cnd2 && cnd2 )
+    template< Condition ... Cnds, Condition Cnd >
+    inline static constexpr auto operator&&( conditions< Logical_operators::and_, Cnds... > && cnds, Cnd && cnd )
     {
-        return conditions( Logical_operators::and_, std::move( cnd1 ), std::move( cnd2 ) );
+        return conditions< Logical_operators::and_, Cnds..., Cnd >( 
+            std::move( cnds ), std::move( cnd ) );
     }
 
     template< Condition Cnd1, Condition Cnd2 >
-    constexpr auto operator||( Cnd1 && cnd1, Cnd2 && cnd2 )
+    inline static constexpr auto operator&&( Cnd1 && cnd1, Cnd2 && cnd2 )
     {
-        return conditions( Logical_operators::or_, std::move( cnd1 ), std::move( cnd2 ) );
+        return conditions< Logical_operators::and_, Cnd1, Cnd2 >( std::move( cnd1 ), std::move( cnd2 ) );
+    }
+
+    template< Condition ... Cnds, Condition Cnd >
+    inline static constexpr auto operator||( conditions< Logical_operators::or_, Cnds... > && cnds, Cnd && cnd )
+    {
+        return conditions< Logical_operators::or_, Cnds..., Cnd >( 
+            std::move( cnds ), std::move( cnd ) );
+    }
+
+    template< Condition Cnd1, Condition Cnd2 >
+    inline static constexpr auto operator||( Cnd1 && cnd1, Cnd2 && cnd2 )
+    {
+        return conditions< Logical_operators::or_, Cnd1, Cnd2 >( std::move( cnd1 ), std::move( cnd2 ) );
     }
 
     template< Index Idx, typename T >
-    inline constexpr auto operator==( Idx &&, T && rhv )
+    inline static constexpr auto operator==( Idx &&, T && rhv )
     {
-        return condition< std::decay_t< Idx >, T >( Comparison_operators::equal, std::forward< T >( rhv ) );
+        return condition< Comparison_operators::equal, std::decay_t< Idx >, T >( std::forward< T >( rhv ) );
     }
 
     template< Index Idx, typename T >
     constexpr auto operator!=( Idx &&, T && rhv )
     {
-        return condition< std::decay_t< Idx >, T >( Comparison_operators::not_equal, std::forward< T >( rhv ) );
+        return condition< Comparison_operators::not_equal, std::decay_t< Idx >, T >( std::forward< T >( rhv ) );
     }
 
     template< Index Idx, typename T >
     constexpr auto operator>( Idx &&, T && rhv )
     {
-        return condition< std::decay_t< Idx >, T >( Comparison_operators::greater, std::forward< T >( rhv ) );
+        return condition< Comparison_operators::greater, std::decay_t< Idx >, T >( std::forward< T >( rhv ) );
     }
 
     template< Index Idx, typename T >
     constexpr auto operator>=( Idx &&, T && rhv )
     {
-        return condition< std::decay_t< Idx >, T >( Comparison_operators::greater_or_equal, std::forward< T >( rhv ) );
+        return condition< Comparison_operators::greater_or_equal, std::decay_t< Idx >, T >( std::forward< T >( rhv ) );
     }
 
     template< Index Idx, typename T >
     constexpr auto operator<( Idx &&, T && rhv )
     {
-        return condition< std::decay_t< Idx >, T >( Comparison_operators::less, std::forward< T >( rhv ) );
+        return condition< Comparison_operators::less, std::decay_t< Idx >, T >( std::forward< T >( rhv ) );
     }
 
     template< Index Idx, typename T >
     constexpr auto operator<=( Idx &&, T && rhv )
     {
-        return condition< std::decay_t< Idx >, T >( Comparison_operators::less_or_equal, std::forward< T >( rhv ) );
+        return condition< Comparison_operators::less_or_equal, std::decay_t< Idx >, T >( std::forward< T >( rhv ) );
     }
 
     template< typename ... Args >
@@ -743,13 +751,13 @@ namespace eswitch_v5
     eswitch_impl( Ts &&... ) -> eswitch_impl< Ts... >;
 
     template< typename ... Ts >
-    constexpr auto eswitch( Ts && ... ts )
+    inline static constexpr auto eswitch( Ts && ... ts )
     {
         return eswitch_impl( std::forward< Ts >( ts )... );
     }
 
     template< StdPair T >
-    constexpr auto eswitch( T && pair )
+    inline static constexpr auto eswitch( T && pair )
     {
         if constexpr( std::is_rvalue_reference_v< T&& > )
         {
@@ -762,7 +770,7 @@ namespace eswitch_v5
     }
 
     template< StdTuple T >
-    constexpr auto eswitch( T && tup )
+    inline static constexpr auto eswitch( T && tup )
     {
         auto expand_tuple = [] < typename _T, _T ... ints >
             ( std::index_sequence< ints... > &&, const auto & tup )
@@ -787,7 +795,7 @@ namespace eswitch_v5
     condition_with_predicate( T, F ) -> condition_with_predicate< T, F >;
 
     template< Condition T, Callable Func >
-    constexpr auto operator%( T && cnd, Func && f )
+    inline static constexpr auto operator%( T && cnd, Func && f )
     {
         return condition_with_predicate{ std::move( cnd ), std::move( f ) };
     }
@@ -795,7 +803,7 @@ namespace eswitch_v5
     struct Fallthrough {};
 
     template< typename Cnd, ReturnValueNoneVoid Func >
-    constexpr auto operator^( condition_with_predicate< Cnd, Func >&& cp, const Fallthrough & )
+    inline static constexpr auto operator^( condition_with_predicate< Cnd, Func >&& cp, const Fallthrough & )
     {
         cp.fallthrough = true;
 
@@ -834,13 +842,13 @@ namespace eswitch_v5
     };
 
     template< typename R, typename... Args, Index Idx >
-    constexpr auto operator,( R(*pred)(Args...), Idx )
+    inline static constexpr auto operator,( R(*pred)(Args...), Idx )
     {
         return predicate_condition< R(*)(Args...), Idx::eswitch_index >( pred );
     }
 
     template< IsNotCndPredicate Pred, Index Idx >
-    constexpr auto operator,( Pred && pred, Idx ) 
+    inline static constexpr auto operator,( Pred && pred, Idx ) 
     {
         return predicate_condition< std::remove_reference_t< Pred >, Idx::eswitch_index >( 
             std::forward< Pred >( pred ) );
@@ -851,19 +859,19 @@ namespace eswitch_v5
         compose_new_predicate_condition_type( const predicate_condition< P, I... > &, Idx );
          
     template< IsCndPredicate Pred, Index Idx >
-    constexpr auto operator,( Pred && pred, Idx idx )
+    inline static constexpr auto operator,( Pred && pred, Idx idx )
     {
         return decltype( compose_new_predicate_condition_type( pred, idx ) )( std::move( pred.pred_ ) );
     }
 
     template< Condition Cnd >
-    inline constexpr auto case_( Cnd && cnd )
+    inline static constexpr auto case_( Cnd && cnd )
     { 
         return std::move( cnd ); 
     }
 
     template< typename ... Ts >
-    inline constexpr auto case_( Ts &&... values )
+    inline static constexpr auto case_( Ts &&... values )
     {
         auto lmbd = []< typename T, T ... ints >( std::index_sequence< ints... >&&, auto &&... values )
         {
@@ -878,7 +886,7 @@ namespace eswitch_v5
     }
 
     template< typename ... Args >
-    constexpr auto any_from( Args &&... args )
+    inline static constexpr auto any_from( Args &&... args )
     {
         return extension::Any_from_impl( std::forward< Args >( args )... );
     }
