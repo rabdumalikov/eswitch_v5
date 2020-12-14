@@ -90,8 +90,8 @@ int __attribute__ ((noinline)) _eswitch( const estatus3 es3, const eprogress3 ep
     );
 }
 
-// BENCHMARK_AND_COMPARE( check_multiple_matches_E_SWITCH, _eswitch, 1, FAILED, RUNNING, std::string{"Hello"} );
-// BENCHMARK_AND_COMPARE( check_multiple_matches_NativeSwitch, Native_Switch, 1, FAILED, RUNNING, std::string{"Hello"} );
+BENCHMARK_AND_COMPARE( check_multiple_matches_E_SWITCH, _eswitch, 1, FAILED, RUNNING, std::string{"Hello"} );
+BENCHMARK_AND_COMPARE( check_multiple_matches_NativeSwitch, Native_Switch, 1, FAILED, RUNNING, std::string{"Hello"} );
 
 
 // // =====================================================
@@ -127,7 +127,7 @@ int __attribute__ ((noinline)) E_SWITCH_forloop( int amount_iters )
     {
         result += eswitch(i)
         (
-            //Case( _1 == 1 || _1 == 2 || _1 == 3 || _1 == 4 || _1 == 5 ) >> to_return(1) >> // not optimal
+            //Case( _1 == 1 || _1 == 2 || _1 == 3 || _1 == 4 || _1 == 5 ) { return 1; }, // also possible
             Case( _1 == any_from( 1, 2, 3, 4, 5 ) ) { return 1; }, 
             Default { return 3; }
         );
@@ -136,10 +136,9 @@ int __attribute__ ((noinline)) E_SWITCH_forloop( int amount_iters )
     return result;
 }
 
-int * i = new int(10);
-
-BENCHMARK_AND_COMPARE( check_forloop_ESWITCH, E_SWITCH_forloop, 999, *i );
-BENCHMARK_AND_COMPARE( check_forloop_NativeSwitch, native_switch_forloop, 999, *i );
+int i = 10;
+BENCHMARK_AND_COMPARE( check_forloop_ESWITCH, E_SWITCH_forloop, 999, i );
+BENCHMARK_AND_COMPARE( check_forloop_NativeSwitch, native_switch_forloop, 999, i );
 
 // // =====================================================
 
