@@ -12,34 +12,30 @@
 
 #include "benchmark/benchmark.h"
 #include "eswitch_v5.hpp"
-#include <iostream>
 
 #define BENCHMARK_IT( name, function_to_benchmark, ... )\
 void name(benchmark::State& state)\
 {\
 \
     while (state.KeepRunning()) {\
-        const auto res = function_to_benchmark(__VA_ARGS__);\
+        auto res = function_to_benchmark(__VA_ARGS__);\
         benchmark::DoNotOptimize(res);\
     }\
 }\
-BENCHMARK(name);
+BENCHMARK(name)
 
 
 #define BENCHMARK_AND_COMPARE( name, function_to_benchmark, actual_result, ... )\
 void name(benchmark::State& state)\
 {\
-\
     while (state.KeepRunning()) {\
-        const auto res = function_to_benchmark(__VA_ARGS__) == actual_result;\
-        assert( res );\
-        benchmark::DoNotOptimize(res);\
+        auto var = function_to_benchmark(__VA_ARGS__);\
+        benchmark::DoNotOptimize(var == actual_result);\
+        benchmark::ClobberMemory();\
     }\
 }\
-BENCHMARK(name);
+BENCHMARK(name)
 
-
-const int AMOUNT_ITERATION = 1000000;
 
 enum estatus3 {
     SUCCESS,
@@ -52,7 +48,7 @@ enum eprogress3 {
     FINISHED
 };
 
-int _native_switch( const estatus3 es3, const eprogress3 ep3, const std::string& str)
+int __attribute__ ((noinline)) Native_Switch( const estatus3 es3, const eprogress3 ep3, const std::string& str )
 {
     switch (es3) {
     case SUCCESS:
@@ -65,7 +61,6 @@ int _native_switch( const estatus3 es3, const eprogress3 ep3, const std::string&
         }
         return 0;
     case FAILED:
-
         switch (ep3) {
         case RUNNING:
             if (str == "Hello") return 1;
@@ -79,10 +74,10 @@ int _native_switch( const estatus3 es3, const eprogress3 ep3, const std::string&
         break;
     }
 
-    return 33;
+    return 809;
 }
 
-int _eswitch( const estatus3 es3, const eprogress3 ep3, const std::string& str )
+int __attribute__ ((noinline)) _eswitch( const estatus3 es3, const eprogress3 ep3, const std::string& str )
 {
     using namespace eswitch_v5;
 
@@ -96,24 +91,25 @@ int _eswitch( const estatus3 es3, const eprogress3 ep3, const std::string& str )
 }
 
 BENCHMARK_AND_COMPARE( check_multiple_matches_E_SWITCH, _eswitch, 1, FAILED, RUNNING, std::string{"Hello"} );
-BENCHMARK_AND_COMPARE( check_multiple_matches_NativeSwitch, _native_switch, 1, FAILED, RUNNING, std::string{"Hello"} );
+BENCHMARK_AND_COMPARE( check_multiple_matches_NativeSwitch, Native_Switch, 1, FAILED, RUNNING, std::string{"Hello"} );
 
-// =====================================================
 
-int native_switch_forloop()
+// // =====================================================
+
+int __attribute__ ((noinline)) native_switch_forloop( int amount_iters )
 {
     int result = 0;
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < amount_iters; ++i) {
         switch (i) {
         case 1:
         case 2:
         case 3:
         case 4:
         case 5:
-            result = 1;
+            result += 1;
             break;
         default:
-            result = 3;
+            result += 3;
             break;
         }
     }
@@ -121,17 +117,17 @@ int native_switch_forloop()
     return result;
 }
 
-int E_SWITCH_forloop()
+int __attribute__ ((noinline)) E_SWITCH_forloop( int amount_iters )
 {
     using namespace eswitch_v5;
 
     int result = 0;
 
-    for (int i = 0; i < 10; ++i) 
+    for (int i = 0; i < amount_iters; ++i) 
     {
-        result = eswitch(i)
+        result += eswitch(i)
         (
-            //Case( _1 == 1 || _1 == 2 || _1 == 3 || _1 == 4 || _1 == 5 ) >> to_return(1) >> // not optimal
+            //Case( _1 == 1 || _1 == 2 || _1 == 3 || _1 == 4 || _1 == 5 ) { return 1; }, // also possible
             Case( _1 == any_from( 1, 2, 3, 4, 5 ) ) { return 1; }, 
             Default { return 3; }
         );
@@ -140,12 +136,13 @@ int E_SWITCH_forloop()
     return result;
 }
 
-BENCHMARK_AND_COMPARE( check_forloop_ESWITCH, E_SWITCH_forloop, 3 );
-BENCHMARK_AND_COMPARE( check_forloop_NativeSwitch, native_switch_forloop, 3 );
+int i = 10;
+BENCHMARK_AND_COMPARE( check_forloop_ESWITCH, E_SWITCH_forloop, 999, i );
+BENCHMARK_AND_COMPARE( check_forloop_NativeSwitch, native_switch_forloop, 999, i );
 
 // =====================================================
 
-int IF_range_check( const int value )
+int __attribute__ ((noinline)) IF_range_check( const int value )
 {
     if( value > 0 && value < 10 ) return 0;
     else if( value >= 10 && value <= 20 ) return 11;
@@ -153,7 +150,7 @@ int IF_range_check( const int value )
     else return 101;
 }
 
-int E_SWITCH_range_check( const int value )
+int __attribute__ ((noinline)) E_SWITCH_range_check( const int value )
 {
     using namespace eswitch_v5;
 
@@ -166,7 +163,7 @@ int E_SWITCH_range_check( const int value )
     );
 }
 
-int E_SWITCH_range_check_made_easy( const int value )
+int __attribute__ ((noinline)) E_SWITCH_range_check_made_easy( const int value )
 {
     using namespace eswitch_v5;
 
@@ -192,12 +189,12 @@ BENCHMARK_AND_COMPARE( check_range_check_3rd_match_IF, IF_range_check, 40, 31 );
 
 static auto is_positive = []( const int i ) { return i  > 0; };
 
-bool direct_match_via_predicate( const int value )
+bool __attribute__ ((noinline)) direct_match_via_predicate( const int value )
 {
     return is_positive( value );
 }
 
-bool E_SWITCH_match_via_predicate( const int value )
+bool __attribute__ ((noinline)) E_SWITCH_match_via_predicate( const int value )
 {
     using namespace eswitch_v5;
 
@@ -214,7 +211,7 @@ BENCHMARK_AND_COMPARE( check_no_match_via_predicate_ESWITCH, E_SWITCH_match_via_
 BENCHMARK_AND_COMPARE( check_no_match_via_predicate_DIRECT, direct_match_via_predicate, false, -1 );
 
 
-int IF_std_any( const std::any & value )
+int __attribute__ ((noinline)) IF_std_any( const std::any & value )
 {
     if( auto * v = std::any_cast< int >( &value ) ) return *v;
     else if( auto * v = std::any_cast< std::string >( &value ) ) return v->size();
@@ -224,7 +221,7 @@ int IF_std_any( const std::any & value )
     }   
 }
 
-int E_SWITCH_std_any( const std::any & value )
+int __attribute__ ((noinline)) E_SWITCH_std_any( const std::any & value )
 {
     using namespace eswitch_v5;
 
@@ -243,7 +240,7 @@ BENCHMARK_AND_COMPARE( check_std_any_2nd_match_IF, IF_std_any, 4, std::any{ std:
 BENCHMARK_AND_COMPARE( check_std_any_3rd_match_ESWITCH, E_SWITCH_std_any, -1, std::any{ double{ 0.0 } } );
 BENCHMARK_AND_COMPARE( check_std_any_3rd_match_IF, IF_std_any, -1, std::any{ double{ 0.0 } } );
 
-int IF_std_variant( const std::variant< int, std::string > & value )
+int __attribute__ ((noinline)) IF_std_variant( const std::variant< int, std::string > & value )
 {
     if( auto * v = std::get_if< int >( &value ) ) return *v;
     else if( auto * v = std::get_if< std::string >( &value ) ) return v->size();
@@ -253,7 +250,7 @@ int IF_std_variant( const std::variant< int, std::string > & value )
     }   
 }
 
-int E_SWITCH_std_variant( const std::variant< int, std::string > & value )
+int __attribute__ ((noinline)) E_SWITCH_std_variant( const std::variant< int, std::string > & value )
 {
     using namespace eswitch_v5;
 
@@ -272,7 +269,7 @@ BENCHMARK_AND_COMPARE( check_std_variant_2nd_match_IF, IF_std_variant, 5, std::v
 
 static auto rgx_for_match = std::regex( ".*: .*" );
 
-auto IF_std_regex_match( const std::string & text )
+auto __attribute__ ((noinline)) IF_std_regex_match( const std::string & text )
 {
     if( std::smatch match; std::regex_match( text, match, rgx_for_match ) )
     {
@@ -281,7 +278,7 @@ auto IF_std_regex_match( const std::string & text )
     return false;
 }
 
-int E_SWITCH_std_regex_match( const std::string & value )
+int __attribute__ ((noinline)) E_SWITCH_std_regex_match( const std::string & value )
 {
     using namespace eswitch_v5;
 
@@ -297,7 +294,7 @@ BENCHMARK_AND_COMPARE( check_std_regex_match_IF, IF_std_regex_match, true, std::
 
 static auto rgx_for_match_with_withdrawal = std::regex( "(.*): (.*)" );
 
-int IF_std_regex_match_with_withdrawal( const std::string & text )
+int __attribute__ ((noinline)) IF_std_regex_match_with_withdrawal( const std::string & text )
 {
     if( std::smatch match; std::regex_match( text, match, rgx_for_match_with_withdrawal ) )
     {
@@ -312,7 +309,7 @@ int IF_std_regex_match_with_withdrawal( const std::string & text )
     return 0;
 }
 
-int E_SWITCH_std_regex_match_with_withdrawal( const std::string & value )
+int __attribute__ ((noinline)) E_SWITCH_std_regex_match_with_withdrawal( const std::string & value )
 {
     using namespace eswitch_v5;
 
@@ -333,34 +330,34 @@ BENCHMARK_AND_COMPARE( check_std_regex_no_match_with_withdrawal_IF, IF_std_regex
 
 // =====================================================
 
-int native_switch_str_cmp(const std::string& str)
+int __attribute__ ((noinline)) native_switch_str_cmp( int i, const std::string& str)
 {
-    switch (5) {
+    switch (i) {
     case 5:
         if (str == "Hello") return 1;
-        break;
     default:
         return 3;
     }
 }
 
-int E_SWITCH_str_cmp(const std::string& str)
+int __attribute__ ((noinline)) E_SWITCH_str_cmp(int i, const std::string& str)
 {
     using namespace eswitch_v5;
 
-    return eswitch(5, str)
+    return eswitch(i, str)
     (
         Case( _1 == 5 && _2 == "Hello") { return 1; },
         Default { return 3; }
     );
 }
 
-BENCHMARK_AND_COMPARE( check_str_cmp_ESWITCH, E_SWITCH_str_cmp, 1, std::string("Hello") );
-BENCHMARK_AND_COMPARE( check_str_cmp_NativeSwitch, native_switch_str_cmp, 1, std::string("Hello") );
+int ii = 5;
+BENCHMARK_AND_COMPARE( check_str_cmp_ESWITCH, E_SWITCH_str_cmp, 1, ii, std::string("Hello") );
+BENCHMARK_AND_COMPARE( check_str_cmp_NativeSwitch, native_switch_str_cmp, 1, ii, std::string("Hello") );
 
-// =====================================================
+// // =====================================================
 
-int native_switch_several_str_cmp(const std::string& str)
+int __attribute__ ((noinline)) native_switch_several_str_cmp(const std::string& str)
 {
     switch (5) {
     case 5:
@@ -374,7 +371,7 @@ int native_switch_several_str_cmp(const std::string& str)
     }
 }
 
-int E_SWITCH_several_str_cmp(const std::string& str)
+int __attribute__ ((noinline)) E_SWITCH_several_str_cmp(const std::string& str)
 {
     using namespace eswitch_v5;
 
@@ -392,11 +389,11 @@ int E_SWITCH_several_str_cmp(const std::string& str)
 BENCHMARK_AND_COMPARE( check_several_str_cmp_ESWITCH, E_SWITCH_several_str_cmp, 1, std::string("Hello") );
 BENCHMARK_AND_COMPARE( check_several_str_cmp_NativeSwitch, native_switch_several_str_cmp, 1, std::string("Hello") );
 
-// =====================================================
+// // =====================================================
 
 enum Place { unknown = 0, new_york=5, washington=129, new_jersey=501 };
 
-int IF_from_string_to_enum(const std::string& str)
+int __attribute__ ((noinline)) IF_from_string_to_enum(const std::string& str)
 {
     if( str == "unknown" ) return unknown;
     else if( str == "new_york" ) return new_york;
@@ -408,7 +405,7 @@ int IF_from_string_to_enum(const std::string& str)
     }    
 }
 
-int E_SWITCH_from_string_to_enum(const std::string& str)
+int __attribute__ ((noinline)) E_SWITCH_from_string_to_enum(const std::string& str)
 {
     using namespace eswitch_v5;
     
@@ -422,7 +419,7 @@ int E_SWITCH_from_string_to_enum(const std::string& str)
     );
 }
 
-int MAP_from_string_to_enum(const std::string& str)
+int __attribute__ ((noinline)) MAP_from_string_to_enum(const std::string& str)
 {
     static std::map< std::string, Place > cache{
         { "unknown", unknown },
@@ -473,7 +470,7 @@ static auto washington_str = std::string{ "washington" };
 static auto new_jersey_str = std::string{ "new_jersey" };
 
 
-int IF_from_string_to_enum_2(const std::string& str)
+int __attribute__ ((noinline)) IF_from_string_to_enum_2(const std::string& str)
 {
     using namespace std::string_literals;
 
@@ -487,7 +484,7 @@ int IF_from_string_to_enum_2(const std::string& str)
     }    
 }
 
-int E_SWITCH_from_string_to_enum_2(const std::string& str)
+int __attribute__ ((noinline)) E_SWITCH_from_string_to_enum_2(const std::string& str)
 {
     using namespace eswitch_v5;
     using namespace std::string_literals;
@@ -502,7 +499,7 @@ int E_SWITCH_from_string_to_enum_2(const std::string& str)
     );
 }
 
-int MAP_from_string_to_enum_2(const std::string& str)
+int __attribute__ ((noinline)) MAP_from_string_to_enum_2(const std::string& str)
 {
     using namespace std::string_literals;
 

@@ -93,16 +93,13 @@ namespace eswitch_v5
                 }
 
             template< typename T_ >
-            friend constexpr bool operator==( const T_ & value, const Any_from_impl& st ) 
+            inline friend constexpr bool operator==( const T_ & value, const Any_from_impl& st ) 
             {
-                return is_in_set( value, st.anythings );
-            }
-
-            private:
-            template< typename T_, typename TArray >
-            constexpr static bool is_in_set( const T_ & to_check, const TArray & arr )
-            {
-                return std::find( std::begin( arr ), std::end( arr ), to_check ) != std::end( arr );
+                #ifdef __cpp_lib_ranges
+                    return std::ranges::find( st.anythings, value ) != std::end( st.anythings  );
+                #else
+                    return std::find( std::begin( st.anythings ), std::end( st.anythings ), value ) != std::end( st.anythings  );
+                #endif
             }
         };        
 
