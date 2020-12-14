@@ -95,7 +95,11 @@ namespace eswitch_v5
             template< typename T_ >
             inline friend constexpr bool operator==( const T_ & value, const Any_from_impl& st ) 
             {
-                return std::ranges::find( st.anythings, value ) != std::end( st.anythings  );
+                #ifdef __cpp_lib_ranges
+                    return std::ranges::find( st.anythings, value ) != std::end( st.anythings  );
+                #else
+                    return std::find( std::begin( st.anythings ), std::end( st.anythings ), value ) != std::end( st.anythings  );
+                #endif
             }
         };        
 
