@@ -6,7 +6,7 @@ To overcome **native switch** limitations:
 - the parameter restricted to only _integral_ types( **int**, **char**, **enum** ... ).
 
 **eswitch** supports any number of _parameters_ and almost without restriction on their _type_
- as long as the _type_ is **comparable**( i.e. has **operator==** ).
+ as long as the _type_ is **comparable**( i.e. has **operator==**, **operator!=** and so on ).
 
 ## Build status:
 

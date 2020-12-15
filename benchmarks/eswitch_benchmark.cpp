@@ -267,6 +267,100 @@ BENCHMARK_AND_COMPARE( check_std_variant_1st_match_IF, IF_std_variant, 10, std::
 BENCHMARK_AND_COMPARE( check_std_variant_2nd_match_ESWITCH, E_SWITCH_std_variant, 5, std::variant< int, std::string >{ std::string{"Hello"} } );
 BENCHMARK_AND_COMPARE( check_std_variant_2nd_match_IF, IF_std_variant, 5, std::variant< int, std::string >{ std::string{"Hello"} } );
 
+struct base
+{
+    virtual ~base(){}
+    virtual int draw() = 0;
+    virtual int cdraw() const = 0;
+};
+struct circle : base
+{
+    virtual int draw() { return 10; };
+    virtual int cdraw() const { return 11; }
+};
+struct square : base
+{
+    virtual int draw() { return 20; };
+    virtual int cdraw() const { return 21; }
+};
+struct rectangle : base
+{
+    virtual int draw() { return 30; };
+    virtual int cdraw() const { return 31; }
+};
+
+int __attribute__ ((noinline)) IF_polymorphism_pointer( base * value )
+{
+    if( auto * d = dynamic_cast< circle* >( value ) ) return d->draw();
+    else if( auto * d = dynamic_cast< square* >( value ) ) return d->draw();
+    else
+    {
+        return -1;
+    }   
+}
+
+int __attribute__ ((noinline)) E_SWITCH_polymorphism_pointer( base * value )
+{
+    using namespace eswitch_v5;
+
+    return eswitch( value )
+    (
+        Case( is< circle >{} )( circle * c ){ return c->draw(); },
+        Case( is< square >{} )( square * s ){ return s->draw(); },
+        Default { return -1; }
+    );
+}
+
+circle c;
+BENCHMARK_AND_COMPARE( check_polymorphism_ptr_1st_match_ESWITCH, E_SWITCH_polymorphism_pointer, 10, &c );
+BENCHMARK_AND_COMPARE( check_polymorphism_ptr_1st_match_IF, IF_polymorphism_pointer, 10, &c );
+square s;
+BENCHMARK_AND_COMPARE( check_polymorphism_ptr_2nd_match_ESWITCH, E_SWITCH_polymorphism_pointer, 20, &s );
+BENCHMARK_AND_COMPARE( check_polymorphism_ptr_2nd_match_IF, IF_polymorphism_pointer, 20, &s );
+
+BENCHMARK_AND_COMPARE( check_polymorphism_ptr_no_match_ESWITCH, E_SWITCH_polymorphism_pointer, -1, nullptr );
+BENCHMARK_AND_COMPARE( check_polymorphism_ptr_no_match_IF, IF_polymorphism_pointer, -1, nullptr );
+
+int __attribute__ ((noinline)) IF_polymorphism_reference( base & value )
+{
+    try
+    {
+        auto & d = dynamic_cast< circle& >( value );
+        return d.draw();
+    }
+    catch( const std::bad_cast & ){}
+
+    try
+    {
+        auto & d = dynamic_cast< square& >( value );
+        return d.draw();
+    }
+    catch( const std::bad_cast & )
+    {
+        return -1;
+    }
+}
+
+int __attribute__ ((noinline)) E_SWITCH_polymorphism_reference( base & value )
+{
+    using namespace eswitch_v5;
+
+    return eswitch( value )
+    (
+        Case( is< circle >{} )( circle & c ){ return c.draw(); },
+        Case( is< square >{} )( square & s ){ return s.draw(); },
+        Default { return -1; }
+    );
+}
+
+BENCHMARK_AND_COMPARE( check_polymorphism_ref_1st_match_ESWITCH, E_SWITCH_polymorphism_reference, 10, c );
+BENCHMARK_AND_COMPARE( check_polymorphism_ref_1st_match_IF, IF_polymorphism_reference, 10, c );
+BENCHMARK_AND_COMPARE( check_polymorphism_ref_2nd_match_ESWITCH, E_SWITCH_polymorphism_reference, 20, s );
+BENCHMARK_AND_COMPARE( check_polymorphism_ref_2nd_match_IF, IF_polymorphism_reference, 20, s );
+rectangle r;
+BENCHMARK_AND_COMPARE( check_polymorphism_ref_no_match_ESWITCH, E_SWITCH_polymorphism_reference, -1, r );
+BENCHMARK_AND_COMPARE( check_polymorphism_ref_no_match_IF, IF_polymorphism_reference, -1, r );
+
 static auto rgx_for_match = std::regex( ".*: .*" );
 
 auto __attribute__ ((noinline)) IF_std_regex_match( const std::string & text )

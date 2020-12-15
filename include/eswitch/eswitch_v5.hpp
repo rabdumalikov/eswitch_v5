@@ -385,6 +385,44 @@ namespace eswitch_v5
     };
 
     template< Comparison_operators CmpOperator, Index TIndex, typename T >
+    struct Polymorphism_support
+    {
+        template< StdTuple TSrcTuple >
+        inline static constexpr auto execute( const T & value_, const TSrcTuple & src_tuple ) noexcept
+            requires has_type< T > 
+        {
+            auto & entry = std::get< TIndex::eswitch_index >( src_tuple );
+
+            using _T = std::remove_reference_t< decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) >;
+
+            using type = std::conditional_t< std::is_const_v< std::remove_pointer_t< _T > >, 
+                    const typename T::type, typename T::type >;
+
+            if constexpr( std::is_pointer_v< _T > )
+            {
+                if( auto * d = dynamic_cast< type* >( entry ) )
+                {
+                    return std::make_optional( d );
+                }
+                            
+                return std::optional< type* >{};
+            }
+            else
+            {
+                try
+                {
+                    auto & d = dynamic_cast< type& >( entry );
+                    return std::make_optional( std::ref( d ) );
+                }
+                catch( const std::bad_cast & )
+                {                    
+                    return std::optional< std::reference_wrapper< type > >{};
+                }
+            }
+        }
+    };
+
+    template< Comparison_operators CmpOperator, Index TIndex, typename T >
     struct Any_and_Variant_support
     {
         template< StdTuple TSrcTuple >
@@ -420,6 +458,7 @@ namespace eswitch_v5
     template< Comparison_operators CmpOperator, Index TIndex, typename T >
     class condition
         : public regex_support< CmpOperator, TIndex, T >
+        , public Polymorphism_support< CmpOperator, TIndex, T >
         , public Any_and_Variant_support< CmpOperator, TIndex, T >
     { 
         template< Comparison_operators, Index, typename >
@@ -460,8 +499,9 @@ namespace eswitch_v5
         }
 
     private:
-    
-        using regex_support< CmpOperator, TIndex, T >::execute;
+        
+        using regex_support< CmpOperator, TIndex, T >::execute;        
+        using Polymorphism_support< CmpOperator, TIndex, T >::execute;
         using Any_and_Variant_support< CmpOperator, TIndex, T >::execute;
 
         template< StdTuple TSrcTuple >

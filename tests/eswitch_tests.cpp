@@ -1258,6 +1258,233 @@ TEST_CASE( "eswitch_v5::details", "" )
     REQUIRE( details::is_std_variant_v< decltype( vref ) > );
 }
 
+struct base
+{
+    virtual ~base(){}
+    virtual int draw() = 0;
+    virtual int cdraw() const = 0;
+};
+
+struct circle : base
+{
+    virtual int draw() { return 10; };
+    virtual int cdraw() const { return 11; }
+};
+
+struct square : base
+{
+    virtual int draw() { return 20; };
+    virtual int cdraw() const { return 21; }
+};
+
+struct rectangle : base
+{
+    virtual int draw() { return 30; };
+    virtual int cdraw() const { return 31; }
+};
+
+TEST_CASE( "eswitch_v5::polymorphism_pointer", "" )
+{
+    using namespace eswitch_v5;
+
+    SECTION( "circle_match" ) 
+    {
+        circle s;
+        base * b = &s;
+
+        auto res = eswitch( b )
+        (
+            Case( is< circle >{} )( circle * c ){ return c->draw(); },
+            Case( is< square >{} )( square * s ){ return s->draw(); },
+            Default { return -1; }
+        );
+
+        REQUIRE( res == 10 );
+    }
+
+    SECTION( "square_match" ) 
+    {
+        square s;
+        base * b = &s;
+
+        auto res = eswitch( b )
+        (
+            Case( is< circle >{} )( circle * c ){ return c->draw(); },
+            Case( is< square >{} )( square * s ){ return s->draw(); },
+            Default { return -1; }
+        );
+
+        REQUIRE( res == 20 );
+    }
+
+
+    SECTION( "Default_match" ) 
+    {
+        base * b = nullptr;
+
+        auto res = eswitch( b )
+        (
+            Case( is< circle >{} )( circle * c ){ return c->draw(); },
+            Case( is< square >{} )( square * s ){ return s->draw(); },
+            Default { return -1; }
+        );
+
+        REQUIRE( res == -1 );
+    }
+}
+
+TEST_CASE( "eswitch_v5::polymorphism_const_pointer", "" )
+{
+    using namespace eswitch_v5;
+
+    SECTION( "circle_match" ) 
+    {
+        circle s;
+        const base * b = &s;
+
+        auto res = eswitch( b )
+        (
+            Case( is< circle >{} )( const circle * c ){ return c->cdraw(); },
+            Case( is< square >{} )( const square * s ){ return s->cdraw(); },
+            Default { return -1; }
+        );
+
+        REQUIRE( res == 11 );
+    }
+
+    SECTION( "square_match" ) 
+    {
+        square s;
+        const base * b = &s;
+
+        auto res = eswitch( b )
+        (
+            Case( is< circle >{} )( const circle * c ){ return c->cdraw(); },
+            Case( is< square >{} )( const square * s ){ return s->cdraw(); },
+            Default { return -1; }
+        );
+
+        REQUIRE( res == 21 );
+    }
+
+
+    SECTION( "Default_match" ) 
+    {
+        const base * b = nullptr;
+
+        auto res = eswitch( b )
+        (
+            Case( is< circle >{} )( const circle * c ){ return c->cdraw(); },
+            Case( is< square >{} )( const square * s ){ return s->cdraw(); },
+            Default { return -1; }
+        );
+
+        REQUIRE( res == -1 );
+    }
+}
+
+TEST_CASE( "eswitch_v5::polymorphism_reference", "" )
+{
+    using namespace eswitch_v5;
+
+    SECTION( "circle_match" ) 
+    {
+        circle c;
+        base & b = c;
+
+        auto res = eswitch( b )
+        (
+            Case( is< circle >{} )( circle & c ){ return c.draw(); },
+            Case( is< square >{} )( square & s ){ return s.draw(); },
+            Default { return -1; }
+        );
+
+        REQUIRE( res == 10 );
+    }
+
+    SECTION( "square_match" ) 
+    {
+        square s;
+        base & b = s;
+
+        auto res = eswitch( b )
+        (
+            Case( is< circle >{} )( circle & c ){ return c.draw(); },
+            Case( is< square >{} )( square & s ){ return s.draw(); },
+            Default { return -1; }
+        );
+
+        REQUIRE( res == 20 );
+    }
+
+
+    SECTION( "Default_match" ) 
+    {
+        rectangle r;
+        base & b = r;
+
+        auto res = eswitch( b )
+        (
+            Case( is< circle >{} )( circle & c ){ return c.draw(); },
+            Case( is< square >{} )( square & s ){ return s.draw(); },
+            Default { return -1; }
+        );
+
+        REQUIRE( res == -1 );
+    }
+}
+
+TEST_CASE( "eswitch_v5::polymorphism_const reference", "" )
+{
+    using namespace eswitch_v5;
+
+    SECTION( "circle_match" ) 
+    {
+        circle c;
+        const base & b = c;
+
+        auto res = eswitch( b )
+        (
+            Case( is< circle >{} )( const circle & c ){ return c.cdraw(); },
+            Case( is< square >{} )( const square & s ){ return s.cdraw(); },
+            Default { return -1; }
+        );
+
+        REQUIRE( res == 11 );
+    }
+
+    SECTION( "square_match" ) 
+    {
+        square s;
+        const base & b = s;
+
+        auto res = eswitch( b )
+        (
+            Case( is< circle >{} )( const circle & c ){ return c.cdraw(); },
+            Case( is< square >{} )( const square & s ){ return s.cdraw(); },
+            Default { return -1; }
+        );
+
+        REQUIRE( res == 21 );
+    }
+
+
+    SECTION( "Default_match" ) 
+    {
+        rectangle r;
+        const base & b = r;
+
+        auto res = eswitch( b )
+        (
+            Case( is< circle >{} )( const circle & c ){ return c.cdraw(); },
+            Case( is< square >{} )( const square & s ){ return s.cdraw(); },
+            Default { return -1; }
+        );
+
+        REQUIRE( res == -1 );
+    }
+}
+
 // TEST_CASE( "eswitch_v5::not_compiled", "" ) 
 // {
 //     using namespace eswitch_v5;
