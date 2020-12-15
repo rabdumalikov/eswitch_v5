@@ -30,7 +30,7 @@ To overcome **native switch** limitations:
 | _(conditions > 1) per **case**_ | yes | no |
 | std::any match | yes | no |
 | std::variant<...> match | yes | no |
-| polymorphism match | yes | no |
+| polymorphic match | yes | no |
 | std::regex match | yes | no |
 
 # Examples:
@@ -186,7 +186,7 @@ void foo( const std::variant< int, double, char > & var )
     foo( {} );  // Varient is empty
     ```
 
-## _polymorphism match_
+## _polymorphic match_
 ``` cpp
 struct base {...};
 struct circle : base {...};
