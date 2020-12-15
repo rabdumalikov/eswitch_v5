@@ -2,28 +2,19 @@ cmake_minimum_required(VERSION 3.5.1)
 
 project(ESWITCH)
 
+add_compile_options( -std=c++20 )
+
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        add_compile_options( -std=c++20 -stdlib=libc++ )
-        message("ClangCompiler")
-    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        add_compile_options( -std=c++20 )
-        message("GccCompiler")
-    endif()
-
-    message("ESWITCH Debug.build")
+    message("ESWITCH Debug.build Compiler=${CMAKE_CXX_COMPILER_ID}")
 ELSE()
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        add_compile_options( -O3 -std=c++20 -stdlib=libc++ )
-        message("ClangCompiler")
-    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        add_compile_options( -O3 -Wall -pedantic -fno-omit-frame-pointer -std=c++20 )
-        #set(CMAKE_CXX_FLAGS_RELEASE "-std=c++20 -O3 -Wno-stringop-truncation")
-        message("GccCompiler__")
-    endif()
-
-    message("ESWITCH Release.build")
+    # -fno-omit-frame-pointer - use this flag for profiler 
+    add_compile_options( -O3 -Wall -pedantic -Wno-unused-lambda-capture )
+    message("ESWITCH Release.build Compiler=${CMAKE_CXX_COMPILER_ID}")
 ENDIF()
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    add_compile_options( -stdlib=libc++ )
+endif()
 
 if (CMAKE_VERSION VERSION_LESS 3.2)
     set(UPDATE_DISCONNECTED_IF_AVAILABLE "")
@@ -55,22 +46,19 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 endif()
 
-add_executable(eswitch_tests tests/eswitch_tests.cpp)
-target_include_directories(eswitch_tests PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)
-#target_link_libraries(eswitch_tests catch2 catch2_main)
-target_include_directories(eswitch_tests PUBLIC $<BUILD_INTERFACE:${catchtest_SOURCE_DIR}/single_include/>)
-add_test(NAME eswitch_tests COMMAND eswitch_tests)
+add_executable(test_eswitch tests/eswitch_tests.cpp)
+target_include_directories(test_eswitch PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)
+target_include_directories(test_eswitch PUBLIC $<BUILD_INTERFACE:${catchtest_SOURCE_DIR}/single_include/>)
 
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_options( -Winline )
-    message("GccCompiler")
 endif()
 
-add_executable(eswitch_benchmark benchmarks/eswitch_benchmark.cpp)
-target_include_directories(eswitch_benchmark PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)
-target_include_directories(eswitch_benchmark PUBLIC $<BUILD_INTERFACE:${googlebench_SOURCE_DIR}/include/>)
-target_link_libraries(eswitch_benchmark benchmark)
+add_executable(benchmark_eswitch benchmarks/eswitch_benchmarks.cpp)
+target_include_directories(benchmark_eswitch PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)
+target_include_directories(benchmark_eswitch PUBLIC $<BUILD_INTERFACE:${googlebench_SOURCE_DIR}/include/>)
+target_link_libraries(benchmark_eswitch benchmark)
 
 function(build_source_file base_name )
   message(STATUS ${base_name})

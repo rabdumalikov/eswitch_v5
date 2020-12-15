@@ -778,8 +778,7 @@ TEST_CASE( "eswitch_v5::std_variant_plus_std_any", "" )
     SECTION( "match_2nd_case" )
     {
         std::any a = std::string{ "S" };
-        std::variant< int, double > v = 19.9;
-
+        
         auto r = eswitch( a )
         (
             Case( _1 == is< std::string >{} )( const std::string & val ) { return val; },

@@ -36,5 +36,5 @@ jobs:
     - name: Test
       working-directory: ${{ env.HOME }}
       shell: bash
-      run: ./eswitch_tests
+      run: ./test_eswitch
            
