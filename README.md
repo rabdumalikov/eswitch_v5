@@ -30,6 +30,7 @@ To overcome **native switch** limitations:
 | _(conditions > 1) per **case**_ | yes | no |
 | std::any match | yes | no |
 | std::variant<...> match | yes | no |
+| polymorphism match | yes | no |
 | std::regex match | yes | no |
 
 # Examples:
@@ -183,6 +184,37 @@ void foo( const std::variant< int, double, char > & var )
     foo( 'c' ); // Char=c
     foo( 223 ); // Integer=223
     foo( {} );  // Varient is empty
+    ```
+
+## _polymorphism match_
+``` cpp
+struct base {...};
+struct circle : base {...};
+struct square : base {...};
+struct rectangle : base {...};
+
+void foo( base * b )
+{
+    eswitch( b )
+    (
+        Case( is< circle >{} )( circle * c ) {
+            Print("Name=%s", c->name() ); 
+        },
+        Case( is< square >{} )( square * s ) { 
+            Print("Name=%s", s->name() ); 
+        },
+        Default { 
+            Print("Name=Unknown" ); 
+        }
+    );
+}
+```
+-  #### Output:
+    ```
+    foo( new circle{} );    // Name=Circle
+    foo( new square{} );    // Name=Square
+    foo( new rectangle{} ); // Name=Unknown
+    foo( nullptr );         // Name=Unknown
     ```
 
 ## _std::pair_
