@@ -642,15 +642,4 @@ BENCHMARK_AND_COMPARE( another_check_from_string_to_enum_no_match_MAP,  MAP_from
 
 // =====================================================
 
-int main( int, char ** )
-{
-    int argc = 2;
-    const char * argv[] = { "benchs", "--benchmark_out=bench.txt", nullptr };
-
-	::benchmark::Initialize( &argc, const_cast< char** >( argv) ); 
-	::benchmark::ConsoleReporter cr;
-	::benchmark::JSONReporter jsnr;
-	::benchmark::RunSpecifiedBenchmarks( &cr, &jsnr); 
-
-	return 1;
-}
+BENCHMARK_MAIN();
