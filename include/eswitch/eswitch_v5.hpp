@@ -550,7 +550,7 @@ namespace eswitch_v5
                 regex_support< CmpOperator, CaseEntry >,
                 Polymorphism_support< CmpOperator, CaseEntry >,
                 Any_and_Variant_support< CmpOperator, CaseEntry >                
-            >
+            >;
 
         public:
 
