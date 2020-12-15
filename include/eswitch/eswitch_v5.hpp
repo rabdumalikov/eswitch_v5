@@ -359,17 +359,14 @@ namespace eswitch_v5
     template< typename T >
     concept StdPair = details::is_std_pair_v< T >;
 
-    template< Comparison_operators CmpOperator, Index TIndex, typename T >
+    template< Comparison_operators CmpOperator, typename CaseEntry >
     struct regex_support
     {
-        template< StdTuple TSrcTuple >
-        inline static auto execute( const T & value_, const TSrcTuple & src_tuple ) 
-            requires std::is_same_v< std::decay_t< T >, std::regex > &&
-                ( std::tuple_size_v< std::decay_t< TSrcTuple > > >= 1 )
+        template< typename TupleEntry >
+        inline static auto execute( TupleEntry && tuple_entry, const CaseEntry & value ) 
+            requires std::is_same_v< std::decay_t< CaseEntry >, std::regex >
         {
-            const auto & text( std::get< TIndex::eswitch_index >( src_tuple ) );
-
-            if( std::smatch match; std::regex_match( text, match, value_ ) )
+            if( std::smatch match; std::regex_match( tuple_entry, match, value ) )
             {              
                 std::vector< std::string > vs;
                 vs.reserve( match.size() );
@@ -384,34 +381,29 @@ namespace eswitch_v5
         }
     };
 
-    template< Comparison_operators CmpOperator, Index TIndex, typename T >
+    template< Comparison_operators CmpOperator, typename CaseEntry >
     struct Polymorphism_support
     {
-        template< StdTuple TSrcTuple >
-        inline static constexpr auto execute( const T & value_, const TSrcTuple & src_tuple ) noexcept
-            requires has_type< T > 
+        template< typename TupleEntry >
+        inline static constexpr auto execute( TupleEntry && tuple_entry, const CaseEntry & ) noexcept
+            requires has_type< CaseEntry > 
         {
-            auto & entry = std::get< TIndex::eswitch_index >( src_tuple );
-
-            using _T = std::remove_reference_t< decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) >;
+            using _T = std::remove_reference_t< TupleEntry >;
 
             using type = std::conditional_t< std::is_const_v< std::remove_pointer_t< _T > >, 
-                    const typename T::type, typename T::type >;
+                    const typename CaseEntry::type, typename CaseEntry::type >;
 
             if constexpr( std::is_pointer_v< _T > )
             {
-                if( auto * d = dynamic_cast< type* >( entry ) )
-                {
-                    return std::make_optional( d );
-                }
-                            
-                return std::optional< type* >{};
+                auto * d = dynamic_cast< type* >( tuple_entry );
+
+                return d != nullptr ? std::make_optional( d ) : std::optional< type* >{};                
             }
             else
             {
                 try
                 {
-                    auto & d = dynamic_cast< type& >( entry );
+                    auto & d = dynamic_cast< type& >( tuple_entry );
                     return std::make_optional( std::ref( d ) );
                 }
                 catch( const std::bad_cast & )
@@ -422,30 +414,26 @@ namespace eswitch_v5
         }
     };
 
-    template< Comparison_operators CmpOperator, Index TIndex, typename T >
+    template< Comparison_operators CmpOperator, typename CaseEntry >
     struct Any_and_Variant_support
     {
-        template< StdTuple TSrcTuple >
-        inline static constexpr auto execute( const T & value_, const TSrcTuple & src_tuple ) noexcept
-            requires has_type< T > && 
-                ( details::is_std_any_v<     decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) > || 
-                  details::is_std_variant_v< decltype( std::get< TIndex::eswitch_index >( src_tuple ) ) > )
+        template< typename TupleEntry >
+        inline static constexpr auto execute( TupleEntry && tuple_entry, const CaseEntry & ) noexcept
+            requires has_type< CaseEntry > && 
+                ( details::is_std_any_v< TupleEntry > || details::is_std_variant_v< TupleEntry > )
         {
-            const auto & entry = std::get< TIndex::eswitch_index >( src_tuple );
-
-            using type = typename T::type;
-            using _T = decltype( std::get< TIndex::eswitch_index >( src_tuple ) );
-    
-            if constexpr( details::is_std_any_v< _T > )
+            using type = typename CaseEntry::type;
+         
+            if constexpr( details::is_std_any_v< TupleEntry > )
             {
-                if( auto * val = std::any_cast< type >( &entry ) )
+                if( auto * val = std::any_cast< type >( &tuple_entry ) )
                 {            
                     return std::make_optional( std::cref( *val ) );
                 }
             }
-            else if constexpr( details::is_std_variant_v< _T > ) 
+            else if constexpr( details::is_std_variant_v< TupleEntry > ) 
             {
-                if( auto * val = std::get_if< type >( &entry ) )
+                if( auto * val = std::get_if< type >( &tuple_entry ) )
                 {
                     return std::make_optional( std::cref( *val ) );
                 }
@@ -455,19 +443,19 @@ namespace eswitch_v5
         }
     };
 
-    template< Comparison_operators CmpOperator, Index TIndex, typename T >
+    template< Comparison_operators CmpOperator, Index TIndex, typename CaseEntry >
     class condition
-        : public regex_support< CmpOperator, TIndex, T >
-        , public Polymorphism_support< CmpOperator, TIndex, T >
-        , public Any_and_Variant_support< CmpOperator, TIndex, T >
+        : public regex_support< CmpOperator, CaseEntry >
+        , public Polymorphism_support< CmpOperator, CaseEntry >
+        , public Any_and_Variant_support< CmpOperator, CaseEntry >
     { 
         template< Comparison_operators, Index, typename >
         friend class condition;
         
-        T value_;
+        CaseEntry value_;
     public:
 
-        using value_type = T;
+        using value_type = CaseEntry;
         using idx = TIndex;
 
         template< typename Arg >
@@ -482,7 +470,7 @@ namespace eswitch_v5
             static_assert( !is_out_of_range< std::tuple_size_v< TSrcTuple > >(), 
                     "Case Index is OUT OF RANGE" ); 
 
-            return execute( value_, src_tuple );
+            return execute( std::get< TIndex::eswitch_index >( src_tuple ), value_ );
         }
 
         template< StdTuple TSrcTuple >
@@ -500,19 +488,19 @@ namespace eswitch_v5
 
     private:
         
-        using regex_support< CmpOperator, TIndex, T >::execute;        
-        using Polymorphism_support< CmpOperator, TIndex, T >::execute;
-        using Any_and_Variant_support< CmpOperator, TIndex, T >::execute;
+        using regex_support< CmpOperator, CaseEntry >::execute;        
+        using Polymorphism_support< CmpOperator, CaseEntry >::execute;
+        using Any_and_Variant_support< CmpOperator, CaseEntry >::execute;
 
-        template< StdTuple TSrcTuple >
-        inline static constexpr bool execute( const T & value_, const TSrcTuple & src_tuple )
+        template< typename TupleEntry >
+        inline static constexpr bool execute( TupleEntry && tuple_entry, const CaseEntry & value )
         {
-            return compare( std::get< TIndex::eswitch_index >( src_tuple ), value_ );         
+            return compare( tuple_entry, value );         
         }
 
-        template< typename TupValue >
-        inline static constexpr bool compare( TupValue && t1, const T & t2 ) 
-            requires Comparable< TupValue, T >
+        template< typename TupleEntry >
+        inline static constexpr bool compare( TupleEntry && t1, const CaseEntry & t2 ) 
+            requires Comparable< TupleEntry, CaseEntry >
         {                            
             switch( CmpOperator )
             {
