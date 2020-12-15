@@ -554,7 +554,12 @@ namespace eswitch_v5
 
         public:
 
-        using base::condition_impl;
+        template< typename Arg >
+        constexpr condition( Arg && value ) 
+            : base( std::forward< Arg >( value ) )
+            { 
+            }
+
     };
 
     template< Logical_operators LogicalOperator, Condition ... Cnds >
