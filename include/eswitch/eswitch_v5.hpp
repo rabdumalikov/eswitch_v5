@@ -443,14 +443,11 @@ namespace eswitch_v5
         }
     };
 
-    template< Comparison_operators CmpOperator, Index TIndex, typename CaseEntry >
-    class condition
-        : public regex_support< CmpOperator, CaseEntry >
-        , public Polymorphism_support< CmpOperator, CaseEntry >
-        , public Any_and_Variant_support< CmpOperator, CaseEntry >
+    template< Comparison_operators CmpOperator, Index TIndex, typename CaseEntry, typename ... Modules >
+    class condition_impl : public Modules...
     { 
-        template< Comparison_operators, Index, typename >
-        friend class condition;
+        template< Comparison_operators, Index, typename, typename... >
+        friend class condition_impl;
         
         CaseEntry value_;
     public:
@@ -459,7 +456,7 @@ namespace eswitch_v5
         using idx = TIndex;
 
         template< typename Arg >
-        constexpr condition( Arg && value ) 
+        constexpr condition_impl( Arg && value ) 
             : value_( std::forward< Arg >( value ) )
             { 
             }
@@ -488,9 +485,7 @@ namespace eswitch_v5
 
     private:
         
-        using regex_support< CmpOperator, CaseEntry >::execute;        
-        using Polymorphism_support< CmpOperator, CaseEntry >::execute;
-        using Any_and_Variant_support< CmpOperator, CaseEntry >::execute;
+        using Modules::execute...;
 
         template< typename TupleEntry >
         inline static constexpr bool execute( TupleEntry && tuple_entry, const CaseEntry & value )
@@ -538,6 +533,28 @@ namespace eswitch_v5
             
             return false;
         }
+    };
+
+    // Customization point
+    template< Comparison_operators CmpOperator, Index TIndex, typename CaseEntry >
+    class condition
+        : public 
+            condition_impl< CmpOperator, TIndex, CaseEntry,
+                regex_support< CmpOperator, CaseEntry >,
+                Polymorphism_support< CmpOperator, CaseEntry >,
+                Any_and_Variant_support< CmpOperator, CaseEntry >
+            >
+    {
+        using base =             
+            condition_impl< CmpOperator, TIndex, CaseEntry,
+                regex_support< CmpOperator, CaseEntry >,
+                Polymorphism_support< CmpOperator, CaseEntry >,
+                Any_and_Variant_support< CmpOperator, CaseEntry >                
+            >
+
+        public:
+
+        using base::condition_impl;
     };
 
     template< Logical_operators LogicalOperator, Condition ... Cnds >
