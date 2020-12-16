@@ -21,7 +21,7 @@ jobs:
     - name: Doxygen Action
       uses: mattnotmitt/doxygen-action@v1.1.0
       with:
-        doxyfile-path: "doc/"
+        doxyfile-path: "doc/Doxyfile.in"
         working-directory: ${{ env.HOME }}
     
     - name: Deploy
