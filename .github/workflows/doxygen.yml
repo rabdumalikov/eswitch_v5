@@ -22,7 +22,7 @@ jobs:
       uses: mattnotmitt/doxygen-action@v1.1.0
       with:
         doxyfile-path: "doc/Doxyfile.in"
-        working-directory: ${{ env.HOME }}
+        working-directory: "${{ env.HOME }}"
     
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
