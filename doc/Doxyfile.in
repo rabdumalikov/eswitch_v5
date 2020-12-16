@@ -12,7 +12,7 @@ ENABLED_SECTIONS        =
 
 # Resources
 OUTPUT_DIRECTORY        = .
-INPUT                   = @eswitch-v5_SOURCE_DIR@/include \
+INPUT                   = @eswitch-v5_SOURCE_DIR@/include/eswitch \
                           @eswitch-v5_SOURCE_DIR@/doc/index.md \
                           @eswitch-v5_SOURCE_DIR@/doc/examples.md
                           
@@ -25,8 +25,8 @@ EXCLUDE                 = @eswitch-v5_SOURCE_DIR@/tests \
 EXAMPLE_PATH            = @eswitch-v5_SOURCE_DIR@/examples
 
 EXAMPLE_RECURSIVE       = YES
-IMAGE_PATH              = @eswitch-v5_BINARY_DIR@/image
-FILTER_PATTERNS         = *.hpp="\"@eswitch-v5_BINARY_DIR@/doc/preprocess.sh\""
+#IMAGE_PATH              = @eswitch-v5_BINARY_DIR@/image
+#FILTER_PATTERNS         = *.hpp="\"@eswitch-v5_BINARY_DIR@/doc/preprocess.sh\""
 WARN_IF_UNDOCUMENTED    = NO
 
 SHOW_GROUPED_MEMB_INC   = YES
@@ -55,7 +55,7 @@ GENERATE_DEPRECATEDLIST = YES
 SHOW_USED_FILES         = NO
 SHOW_FILES              = YES
 SHOW_NAMESPACES         = YES
-LAYOUT_FILE             = @eswitch-v5_SOURCE_DIR@/doc/layout.xml
+#LAYOUT_FILE             = @eswitch-v5_SOURCE_DIR@/doc/layout.xml
 
 
 CLASS_DIAGRAMS          = YES
