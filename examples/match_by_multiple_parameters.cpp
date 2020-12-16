@@ -7,15 +7,14 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #undef NDEBUG
-#include <assert.h>
-
-#include "eswitch_v5.hpp"
+///[match_by_multiple_parameters]
+#include <cassert>
+#include <eswitch_v5.hpp>
 #include "memory"
-#include <iostream>
 
 enum Place{ california, washington, new_york, new_jersey, las_vegas };
 
-class Parser{};
+class Parser{/*code*/};
 
 int main()
 {
@@ -53,3 +52,4 @@ int main()
         assert( executed );
     }      
 }
+///[match_by_multiple_parameters]

@@ -7,14 +7,13 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #undef NDEBUG
-#include <assert.h>
-
-#include "eswitch_v5.hpp"
-#include <iostream>
+///[default]
+#include <cassert>
+#include <eswitch_v5.hpp>
 
 enum Place{ california, washington, new_york, new_jersey, las_vegas };
 
-int main( /* EXAMPLE: DEFAULT CASE */ )
+int main()
 {
     using namespace eswitch_v5;
 
@@ -33,3 +32,4 @@ int main( /* EXAMPLE: DEFAULT CASE */ )
 
     assert( executed );
 }
+///[default]

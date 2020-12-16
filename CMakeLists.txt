@@ -71,3 +71,4 @@ endfunction(build_source_file)
  #include (gcovr)
 
  #add_subdirectory("examples")
+ add_subdirectory("doc")

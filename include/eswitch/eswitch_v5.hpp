@@ -1,3 +1,6 @@
+/// \file eswitch_v5.hpp
+/// \brief implementation
+
 //  Copyright (c) 2019-2021 Rustam Abdumalikov
 //
 //  "eswitch_v5" library
@@ -23,6 +26,9 @@
 
 namespace eswitch_v5
 {
+    /// \addtogroup concepts
+    /// @{
+
     template< typename T >
     concept Index = requires( T ){ std::decay_t< T >::eswitch_index; };
 
@@ -32,18 +38,26 @@ namespace eswitch_v5
         t( std::make_tuple() ); 
         std::decay_t< T >::template is_out_of_range< std::size_t{} >(); 
     };
+    /// @}
 
-    template< typename, std::size_t ... >
-    class predicate_condition;
+    /// \addtogroup main-components
+    /// @{
 
     enum class Logical_operators{ and_, or_ };
     enum class Comparison_operators{ equal, not_equal, greater, greater_or_equal, less, less_or_equal };
+    /// @}
 
     template< Comparison_operators, Index, typename >
     class condition;
 
+    template< typename, std::size_t ... >
+    class predicate_condition;
+
     namespace extension
     {
+        /// \addtogroup underlying-details
+        /// @{
+
         enum class range{ open, close };
 
         template< range RangeType >
@@ -67,7 +81,6 @@ namespace eswitch_v5
             }
         };
 
-        // any
         struct any 
         {
             template< typename T >
@@ -102,17 +115,32 @@ namespace eswitch_v5
                 #endif
             }
         };        
+        /// @}
+
+        /// \addtogroup deduction-guides
+        /// @{
 
         template< typename ... Args >
         Any_from_impl( Args &&... ) -> Any_from_impl< std::common_type_t< std::decay_t< Args >... >, sizeof...( Args ) >;        
+        /// @}
     }
 
+    /// \addtogroup underlying-details
+    /// @{
 
+    /// \ingroup index-variables
+    /// \brief This structure is used as a reference to 
+    /// a specific parameter inside **eswitch**.
     template< std::size_t Idx >
     struct Index_
     { 
+        /// \brief Refer to some element in std::tuple( where **eswitch**
+        /// keep all the parameters ).
         static constexpr std::size_t eswitch_index = Idx;
 
+        /// \brief Helper method which defines **open set** of **integers**.
+        /// Then this **set** is used to determine whether certain _value_
+        /// is **in** that **set**.
         auto in( const std::size_t start, const std::size_t end ) const
         {
             using namespace extension;
@@ -121,6 +149,9 @@ namespace eswitch_v5
             return condition< Comparison_operators::equal, Index_< Idx >, Rng_t >( Rng_t( start, end ) );
         }
         
+        /// \brief Helper method which defines **close set** of **integers**.
+        /// Then this **set** is used to determine whether certain _value_
+        /// is **within** that **set**.
         auto within( const std::size_t start, const std::size_t end ) const
         {
             using namespace extension;
@@ -129,6 +160,10 @@ namespace eswitch_v5
             return condition< Comparison_operators::equal, Index_< Idx >, Rng_t >( Rng_t( start, end ) );
         }
     };
+    /// @}
+
+    /// \addtogroup index-variables
+    /// @{
 
     constexpr Index_< 0 > _1;    constexpr Index_< 10 > _11;    constexpr Index_< 20 > _21;  
     constexpr Index_< 1 > _2;    constexpr Index_< 11 > _12;    constexpr Index_< 21 > _22;
@@ -140,9 +175,13 @@ namespace eswitch_v5
     constexpr Index_< 7 > _8;    constexpr Index_< 17 > _18;    constexpr Index_< 27 > _28;
     constexpr Index_< 8 > _9;    constexpr Index_< 18 > _19;    constexpr Index_< 28 > _29;
     constexpr Index_< 9 > _10;   constexpr Index_< 19 > _20;    constexpr Index_< 29 > _30;           
-         
+    /// @}
+
     namespace details 
     {        
+        /// \addtogroup utilities
+        /// @{
+
         template< typename T >
         struct is_default_case : std::false_type {};
 
@@ -187,7 +226,7 @@ namespace eswitch_v5
 
         template< typename T >
         constexpr bool is_std_any_v = std::is_same_v< std::decay_t< T >, std::any >;
-
+    
         template< typename T >
         struct is_callable_impl : std::false_type {};
 
@@ -291,7 +330,7 @@ namespace eswitch_v5
                 return std::tuple_cat( std::move( tup ), std::make_tuple( std::forward< Cnd >( cnd ) ) );
             }                        
         }
-
+        
         template< typename ... Cnds >
         constexpr auto move_default_case_to_the_end( Cnds &&... cnds )
         {
@@ -315,8 +354,12 @@ namespace eswitch_v5
             
             return ( combine( Index_< Is >{}, std::get< Is >( std::move( values ) ) ) && ... );
         }        
+    /// @}
     } // namespace details
-    
+        
+    /// \addtogroup concepts
+    /// @{
+
     template< typename T >
     concept has_type = requires{ typename T::type; };
 
@@ -324,7 +367,7 @@ namespace eswitch_v5
     concept has_value = requires{ T::value; };
 
     template< typename T >
-    concept ComparableExceptAnyAndVariant = 
+    concept ComparableExceptAnyAndVariant =
         !details::is_std_any_v< T > || 
         !details::is_std_variant_v< T > || 
         requires( T a, T b ) {
@@ -358,12 +401,18 @@ namespace eswitch_v5
 
     template< typename T >
     concept StdPair = details::is_std_pair_v< T >;
+    /// @}
 
+    /// \addtogroup condition-modules
+    /// @{
+
+    /// \brief **CaseModule** to support for _matching_ and _withdrawing_
+    /// of values for and from **regular expression**.
     template< Comparison_operators CmpOperator, typename CaseEntry >
     struct regex_support
     {
         template< typename TupleEntry >
-        inline static auto execute( TupleEntry && tuple_entry, const CaseEntry & value ) 
+        inline static auto execute( TupleEntry && tuple_entry, const CaseEntry & value )
             requires std::is_same_v< std::decay_t< CaseEntry >, std::regex >
         {
             if( std::smatch match; std::regex_match( tuple_entry, match, value ) )
@@ -381,6 +430,8 @@ namespace eswitch_v5
         }
     };
 
+    /// \brief **CaseModule** to support for _matching_ for various
+    /// **polymorphic types**.
     template< Comparison_operators CmpOperator, typename CaseEntry >
     struct Polymorphism_support
     {
@@ -414,6 +465,8 @@ namespace eswitch_v5
         }
     };
 
+    /// \brief **CaseModule** to support for _matching_ and _withdrawing_ 
+    /// of values from std::any and std::variant.
     template< Comparison_operators CmpOperator, typename CaseEntry >
     struct Any_and_Variant_support
     {
@@ -442,7 +495,12 @@ namespace eswitch_v5
             return std::optional< std::reference_wrapper< const type > >{};
         }
     };
+    /// @}
 
+    /// \addtogroup main-components
+    /// @{
+
+    /// \brief Compares value with corresponding entry in std::tuple.
     template< Comparison_operators CmpOperator, Index TIndex, typename CaseEntry, typename ... Modules >
     class condition_impl : public Modules...
     { 
@@ -535,7 +593,8 @@ namespace eswitch_v5
         }
     };
 
-    // Customization point
+    /// \brief **Customization point**: to connect modules, which extend various type
+    /// of acceptable **conditions**.
     template< Comparison_operators CmpOperator, Index TIndex, typename CaseEntry >
     class condition
         : public 
@@ -562,6 +621,7 @@ namespace eswitch_v5
 
     };
 
+    /// \brief Container which holds arbitrary number of **condition**.
     template< Logical_operators LogicalOperator, Condition ... Cnds >
     class conditions
     {
@@ -675,6 +735,10 @@ namespace eswitch_v5
         return condition< Comparison_operators::less_or_equal, std::decay_t< Idx >, T >( std::forward< T >( rhv ) );
     }
 
+    /// \brief Accept arbitrary number of **Case**'s and test each of them
+    /// sequentially. If match was found then executes **Case** body, also
+    /// based on **Case** falling option decides whether to execute next 
+    /// body or finish work.
     template< typename ... Args >
     class eswitch_impl
     {
@@ -793,16 +857,32 @@ namespace eswitch_v5
             }
         }
     };
+    /// @}
+
+    /// \addtogroup deduction-guides
+    /// @{
 
     template< typename ... Ts >
     eswitch_impl( Ts &&... ) -> eswitch_impl< Ts... >;
+    /// @}
 
+    /// \addtogroup main-components
+    /// @{
+
+    /// \brief This function is responsible for passing
+    /// arguments for class `eswitch_impl` with overloaded
+    /// **operator()**, which accepts arbitrary number of 
+    /// **Case**'s.
     template< typename ... Ts >
     inline static constexpr auto eswitch( Ts && ... ts )
     {
         return eswitch_impl( std::forward< Ts >( ts )... );
     }
 
+    /// \brief This overload expand std::pair. 
+    /// Simplifies following form **eswitch( pair.first, pair.second )**
+    /// to **eswitch( pair )**. Moreover there is similar overload
+    /// for **std::tuple**.
     template< StdPair T >
     inline static constexpr auto eswitch( T && pair )
     {
@@ -837,16 +917,24 @@ namespace eswitch_v5
         Func func;
         bool fallthrough = false;
     };
+    /// @}
+
+    /// \addtogroup deduction-guides
+    /// @{
 
     template< typename T, typename F >
     condition_with_predicate( T, F ) -> condition_with_predicate< T, F >;
+    /// @}
+
+    /// \addtogroup main-components
+    /// @{
 
     template< Condition T, Callable Func >
     inline static constexpr auto operator%( T && cnd, Func && f )
     {
         return condition_with_predicate{ std::move( cnd ), std::move( f ) };
     }
-    
+
     struct Fallthrough {};
 
     template< typename Cnd, ReturnValueNoneVoid Func >
@@ -910,6 +998,10 @@ namespace eswitch_v5
     {
         return decltype( compose_new_predicate_condition_type( pred, idx ) )( std::move( pred.pred_ ) );
     }
+    /// @}
+
+    /// \addtogroup main-components
+    /// @{
 
     template< Condition Cnd >
     inline static constexpr auto case_( Cnd && cnd )
@@ -922,8 +1014,8 @@ namespace eswitch_v5
     {
         auto lmbd = []< typename T, T ... ints >( std::index_sequence< ints... >&&, auto &&... values )
         {
-            /// I intentionally avoided std::make_tuple, because the former change type of string literals
-            /// from "const char[some_size]&" to "const char*" and this significantly impacts the performance.
+            // I intentionally avoided std::make_tuple, because the former change type of string literals
+            // from "const char[some_size]&" to "const char*" and this significantly impacts the performance.
             return details::create_indexed_condition< ints... >( 
                 std::tuple< Ts... >( std::forward< Ts >( values )... ) ); 
         };
@@ -932,28 +1024,47 @@ namespace eswitch_v5
             std::forward< Ts >( values )... );
     }
 
+    /// \brief Helper function which allows to find if something
+    /// is within the list( passed arguments ).
     template< typename ... Args >
     inline static constexpr auto any_from( Args &&... args )
     {
         return extension::Any_from_impl( std::forward< Args >( args )... );
     }
 
+    /// \brief Used to match for type of active entry 
+    /// in **std::any**, **std::variant<...>** and **polymorphic types**.
     template< typename T >
     struct is
     {
         using type = T;
     };
 
+    /// \brief User-defined literals for std::regex
     auto operator ""_r( const char * rgx, const std::size_t sz )
     {
         return std::regex{ rgx };
     }
+    /// @}
 
-    /// static declarations
+    /// \addtogroup other-variables
+    /// @{
+
+    /// \brief Indicates fall through from previous **Case**
+    /// without testing condition of following **Case**.
     static constexpr Fallthrough fallthrough_;
+
+    /// \brief Used in **Case** to match for any input.
     static constexpr extension::any _;
+    /// @}
 
+    /// \addtogroup macroses
+    /// @{
+
+    /// \brief Accepts conditions of various forms.
     #define Case( ... ) case_( __VA_ARGS__ ) % [&]
-    #define Default  ( _1 == extension::any{} ) % [&]
 
+    /// \brief Declares body which will be executed in case of no other matches.
+    #define Default ( _1 == extension::any{} ) % [&]    
+    /// @}
 } // namespace eswitch_v5

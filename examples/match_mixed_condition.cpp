@@ -7,10 +7,9 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #undef NDEBUG
-#include <assert.h>
-
-#include "eswitch_v5.hpp"
-#include <iostream>
+///[match_mixed_condition]
+#include <cassert>
+#include <eswitch_v5.hpp>
 
 enum Place{ california, washington, new_york, new_jersey, las_vegas };
 
@@ -31,3 +30,4 @@ int main()
 
     assert( executed );
 }
+///[match_mixed_condition]

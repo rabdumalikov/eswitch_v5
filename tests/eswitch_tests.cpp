@@ -6,7 +6,7 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include "eswitch_v5.hpp"
+#include <eswitch_v5.hpp>
 #include <memory>
 #include <sstream>
 #include <iostream>
@@ -525,6 +525,18 @@ TEST_CASE( "eswitch_v5::default_match", "" )
         REQUIRE( r == 57.5 );    
     }
 
+    SECTION( "no_match_default_case" )
+    {
+        bool default_executed = false;
+        eswitch( new_jersey )
+        (
+            Case( _1 == washington ) {},
+            Case( _1 == new_jersey ) {} ^ fallthrough_,
+            Default { default_executed = true; }
+        );
+
+        REQUIRE( default_executed );    
+    }
 }
 
 TEST_CASE( "eswitch_v5::not_equal_match2", "" ) 

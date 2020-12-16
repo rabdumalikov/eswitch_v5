@@ -7,9 +7,9 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #undef NDEBUG
-#include <assert.h>
-
-#include "eswitch_v5.hpp"
+///[match_in_range]
+#include <cassert>
+#include <eswitch_v5.hpp>
 
 int main()
 {
@@ -69,3 +69,4 @@ int main()
         assert( executed );
     }
 }
+///[match_in_range]
