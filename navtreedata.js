@@ -1,3 +1,25 @@
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this file.
+
+Copyright (C) 1997-2019 by Dimitri van Heesch
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License as published by
+the Free Software Foundation
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+@licend  The above is the entire license notice
+for the JavaScript code in this file
+*/
 var NAVTREE =
 [
   [ "eswitch_v5", "index.html", [
@@ -7,7 +29,27 @@ var NAVTREE =
         [ "License", "index.html#tutorial-license", null ],
         [ "Supported Compilers", "index.html#tutorial-compilers", null ]
       ] ],
-      [ "Quick Start", "index.html#tutorial-quick-start", null ]
+      [ "Quick Start", "index.html#tutorial-quick-start", [
+        [ "Motivation", "index.html#autotoc_md5", null ],
+        [ "Conventions used in this document:", "index.html#autotoc_md6", null ],
+        [ "Similarities", "index.html#autotoc_md7", null ],
+        [ "Keywords", "index.html#autotoc_md8", null ],
+        [ "Syntax", "index.html#autotoc_md9", null ],
+        [ "Features", "index.html#autotoc_md10", [
+          [ "Params referencing via indexes", "index.html#autotoc_md11", null ],
+          [ "If indexes aren't provided, then it is assummed that they're sequential", "index.html#autotoc_md12", null ],
+          [ "Matching via predicates:(it could be either a lambda or a free function)", "index.html#autotoc_md13", null ],
+          [ "Check in range via predicate", "index.html#autotoc_md14", null ],
+          [ "Any_from helper function", "index.html#autotoc_md15", null ],
+          [ "Default case", "index.html#autotoc_md16", null ],
+          [ "Return value from Case", "index.html#autotoc_md17", null ],
+          [ "Match for std::any or std::variant", "index.html#autotoc_md18", null ],
+          [ "Match and withdraw value from std::any or std::variant", "index.html#autotoc_md19", null ],
+          [ "Match for polymorphic types", "index.html#autotoc_md20", null ],
+          [ "Match for std::regex", "index.html#autotoc_md21", null ],
+          [ "Match and withdraw values from std::regex", "index.html#autotoc_md22", null ]
+        ] ]
+      ] ]
     ] ],
     [ "Examples", "md_examples.html", [
       [ "Examples: Matching", "md_examples.html#example-matching", [

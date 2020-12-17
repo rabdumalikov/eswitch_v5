@@ -1,4 +1,4 @@
 var structeswitch__v5_1_1details_1_1amount__args_3_01T_00_01std_1_1void__t_3_01decltype_07_6T_1_1operator_07_08_08_01_4_01_4 =
 [
-    [ "value", "structeswitch__v5_1_1details_1_1amount__args_3_01T_00_01std_1_1void__t_3_01decltype_07_6T_1_1operator_07_08_08_01_4_01_4.html#a20a9a2f74c24bb2c1e1106f33b6b29b8", null ]
+    [ "value", "structeswitch__v5_1_1details_1_1amount__args_3_01T_00_01std_1_1void__t_3_01decltype_07_6T_1_1operator_07_08_08_01_4_01_4.html#a73bc15f4cf340b7002a57444524579b3", null ]
 ];

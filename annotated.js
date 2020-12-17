@@ -38,6 +38,6 @@ var annotated =
       [ "is", "structeswitch__v5_1_1is.html", "structeswitch__v5_1_1is" ],
       [ "Polymorphism_support", "structeswitch__v5_1_1Polymorphism__support.html", "structeswitch__v5_1_1Polymorphism__support" ],
       [ "predicate_condition", "classeswitch__v5_1_1predicate__condition.html", "classeswitch__v5_1_1predicate__condition" ],
-      [ "regex_support", "structeswitch__v5_1_1regex__support.html", "structeswitch__v5_1_1regex__support" ]
+      [ "regex_support", "structeswitch__v5_1_1regex__support.html", null ]
     ] ]
 ];

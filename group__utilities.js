@@ -5,7 +5,7 @@ var group__utilities =
     ] ],
     [ "amount_args", "structeswitch__v5_1_1details_1_1amount__args.html", null ],
     [ "amount_args< T, std::void_t< decltype(&T::operator()) > >", "structeswitch__v5_1_1details_1_1amount__args_3_01T_00_01std_1_1void__t_3_01decltype_07_6T_1_1operator_07_08_08_01_4_01_4.html", [
-      [ "value", "structeswitch__v5_1_1details_1_1amount__args_3_01T_00_01std_1_1void__t_3_01decltype_07_6T_1_1operator_07_08_08_01_4_01_4.html#a20a9a2f74c24bb2c1e1106f33b6b29b8", null ]
+      [ "value", "structeswitch__v5_1_1details_1_1amount__args_3_01T_00_01std_1_1void__t_3_01decltype_07_6T_1_1operator_07_08_08_01_4_01_4.html#a73bc15f4cf340b7002a57444524579b3", null ]
     ] ],
     [ "amount_args_function_has", "structeswitch__v5_1_1details_1_1amount__args__function__has.html", null ],
     [ "amount_args_function_has< R(C::*)(Args...) >", "structeswitch__v5_1_1details_1_1amount__args__function__has_3_01R_07C_1_1_5_08_07Args_8_8_8_08_01_4.html", [
