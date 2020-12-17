@@ -1,0 +1,4 @@
+var structeswitch__v5_1_1details_1_1invoke__result_3_01T_00_01std_1_1void__t_3_01decltype_07_6T_1_1operator_07_08_08_01_4_01_4 =
+[
+    [ "type", "structeswitch__v5_1_1details_1_1invoke__result_3_01T_00_01std_1_1void__t_3_01decltype_07_6T_1_1operator_07_08_08_01_4_01_4.html#a7dbc2526fcae42fee840c13fa2955156", null ]
+];
