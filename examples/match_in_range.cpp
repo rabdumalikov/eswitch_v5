@@ -9,7 +9,7 @@
 #undef NDEBUG
 ///[match_in_range]
 #include <cassert>
-#include "eswitch_v5.hpp"
+#include <eswitch_v5.hpp>
 
 int main()
 {

@@ -10,7 +10,7 @@
 ///[match_via_regex]
 #include <cassert>
 #include <string>
-#include "eswitch_v5.hpp"
+#include <eswitch_v5.hpp>
 
 int main()
 {

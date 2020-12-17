@@ -11,7 +11,7 @@
 #include <cassert>
 
 #include "benchmark/benchmark.h"
-#include "eswitch_v5.hpp"
+#include <eswitch_v5.hpp>
 
 #define BENCHMARK_IT( name, function_to_benchmark, ... )\
 void name(benchmark::State& state)\

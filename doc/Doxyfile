@@ -21,9 +21,12 @@ FILE_PATTERNS           = *.cpp *.hpp *.md
 RECURSIVE               = YES
 
 EXCLUDE                 = @CMAKE_CURRENT_SOURCE_DIR@/../tests \
-                          @CMAKE_CURRENT_SOURCE_DIR@/../benchmarks
+                          @CMAKE_CURRENT_SOURCE_DIR@/../benchmarks \
+                          @CMAKE_CURRENT_SOURCE_DIR@/../examples
 
 EXAMPLE_PATH            = @CMAKE_CURRENT_SOURCE_DIR@/../examples
+
+EXTRACT_STATIC          = YES
 
 EXAMPLE_RECURSIVE       = YES
 WARN_IF_UNDOCUMENTED    = NO
@@ -80,6 +83,8 @@ SORT_BY_SCOPE_NAME      = YES
 ALPHABETICAL_INDEX      = NO
 COLS_IN_ALPHA_INDEX     = 1
 
+# EXTRACT_ALL = YES
+
 # Preprocessing
 ENABLE_PREPROCESSING    = YES
 MACRO_EXPANSION         = YES
@@ -91,14 +96,14 @@ INCLUDE_FILE_PATTERNS   =
 SKIP_FUNCTION_MACROS    = NO
 
 # Source browsing
-SOURCE_BROWSER          = NO
-INLINE_SOURCES          = NO
+SOURCE_BROWSER          = YES
+INLINE_SOURCES          = YES
 STRIP_CODE_COMMENTS     = YES
-REFERENCED_BY_RELATION  = YES
-REFERENCES_RELATION     = YES
+REFERENCED_BY_RELATION  = NO
+REFERENCES_RELATION     = NO
 REFERENCES_LINK_SOURCE  = YES
 USE_HTAGS               = NO
-VERBATIM_HEADERS        = NO
+VERBATIM_HEADERS        = YES
 
 # HTML output
 HTML_OUTPUT             = html

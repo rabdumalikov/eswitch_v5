@@ -1,3 +1,6 @@
+/// \file
+/// \brief implementation
+
 //  Copyright (c) 2019-2021 Rustam Abdumalikov
 //
 //  "eswitch_v5" library
@@ -23,6 +26,8 @@
 
 namespace eswitch_v5
 {
+    /// \addtogroup concepts
+    /// @{
     template< typename T >
     concept Index = requires( T ){ std::decay_t< T >::eswitch_index; };
 
@@ -32,18 +37,24 @@ namespace eswitch_v5
         t( std::make_tuple() ); 
         std::decay_t< T >::template is_out_of_range< std::size_t{} >(); 
     };
+    /// @}
 
-    template< typename, std::size_t ... >
-    class predicate_condition;
-
+    /// \addtogroup main-components
+    /// @{
     enum class Logical_operators{ and_, or_ };
     enum class Comparison_operators{ equal, not_equal, greater, greater_or_equal, less, less_or_equal };
+    /// @}
 
     template< Comparison_operators, Index, typename >
     class condition;
 
+    template< typename, std::size_t ... >
+    class predicate_condition;
+
     namespace extension
     {
+        /// \addtogroup underlying-details
+        /// @{
         enum class range{ open, close };
 
         template< range RangeType >
@@ -67,7 +78,6 @@ namespace eswitch_v5
             }
         };
 
-        // any
         struct any 
         {
             template< typename T >
@@ -102,12 +112,17 @@ namespace eswitch_v5
                 #endif
             }
         };        
+        /// @}
 
+        /// \addtogroup deduction-guides
+        /// @{
         template< typename ... Args >
         Any_from_impl( Args &&... ) -> Any_from_impl< std::common_type_t< std::decay_t< Args >... >, sizeof...( Args ) >;        
+        /// @}
     }
 
-
+    /// \addtogroup underlying-details
+    /// @{
     template< std::size_t Idx >
     struct Index_
     { 
@@ -129,7 +144,10 @@ namespace eswitch_v5
             return condition< Comparison_operators::equal, Index_< Idx >, Rng_t >( Rng_t( start, end ) );
         }
     };
+    /// @}
 
+    /// \addtogroup variables
+    /// @{
     constexpr Index_< 0 > _1;    constexpr Index_< 10 > _11;    constexpr Index_< 20 > _21;  
     constexpr Index_< 1 > _2;    constexpr Index_< 11 > _12;    constexpr Index_< 21 > _22;
     constexpr Index_< 2 > _3;    constexpr Index_< 12 > _13;    constexpr Index_< 22 > _23;
@@ -140,9 +158,12 @@ namespace eswitch_v5
     constexpr Index_< 7 > _8;    constexpr Index_< 17 > _18;    constexpr Index_< 27 > _28;
     constexpr Index_< 8 > _9;    constexpr Index_< 18 > _19;    constexpr Index_< 28 > _29;
     constexpr Index_< 9 > _10;   constexpr Index_< 19 > _20;    constexpr Index_< 29 > _30;           
-         
+    /// @}
+
     namespace details 
     {        
+        /// \addtogroup utilities
+        /// @{
         template< typename T >
         struct is_default_case : std::false_type {};
 
@@ -291,7 +312,7 @@ namespace eswitch_v5
                 return std::tuple_cat( std::move( tup ), std::make_tuple( std::forward< Cnd >( cnd ) ) );
             }                        
         }
-
+        
         template< typename ... Cnds >
         constexpr auto move_default_case_to_the_end( Cnds &&... cnds )
         {
@@ -315,8 +336,11 @@ namespace eswitch_v5
             
             return ( combine( Index_< Is >{}, std::get< Is >( std::move( values ) ) ) && ... );
         }        
+    /// @}
     } // namespace details
-    
+        
+    /// \addtogroup concepts
+    /// @{
     template< typename T >
     concept has_type = requires{ typename T::type; };
 
@@ -324,7 +348,7 @@ namespace eswitch_v5
     concept has_value = requires{ T::value; };
 
     template< typename T >
-    concept ComparableExceptAnyAndVariant = 
+    concept ComparableExceptAnyAndVariant =
         !details::is_std_any_v< T > || 
         !details::is_std_variant_v< T > || 
         requires( T a, T b ) {
@@ -358,12 +382,15 @@ namespace eswitch_v5
 
     template< typename T >
     concept StdPair = details::is_std_pair_v< T >;
+    /// @}
 
+    /// \addtogroup condition-modules
+    /// @{
     template< Comparison_operators CmpOperator, typename CaseEntry >
     struct regex_support
     {
         template< typename TupleEntry >
-        inline static auto execute( TupleEntry && tuple_entry, const CaseEntry & value ) 
+        inline static auto execute( TupleEntry && tuple_entry, const CaseEntry & value )
             requires std::is_same_v< std::decay_t< CaseEntry >, std::regex >
         {
             if( std::smatch match; std::regex_match( tuple_entry, match, value ) )
@@ -442,7 +469,10 @@ namespace eswitch_v5
             return std::optional< std::reference_wrapper< const type > >{};
         }
     };
+    /// @}
 
+    /// \addtogroup main-components
+    /// @{
     template< Comparison_operators CmpOperator, Index TIndex, typename CaseEntry, typename ... Modules >
     class condition_impl : public Modules...
     { 
@@ -793,16 +823,23 @@ namespace eswitch_v5
             }
         }
     };
+    /// @}
 
+    /// \addtogroup deduction-guides
+    /// @{
     template< typename ... Ts >
     eswitch_impl( Ts &&... ) -> eswitch_impl< Ts... >;
+    /// @}
 
+    /// \addtogroup main-components
+    /// @{
     template< typename ... Ts >
     inline static constexpr auto eswitch( Ts && ... ts )
     {
         return eswitch_impl( std::forward< Ts >( ts )... );
     }
 
+    /// \overload
     template< StdPair T >
     inline static constexpr auto eswitch( T && pair )
     {
@@ -816,6 +853,7 @@ namespace eswitch_v5
         }
     }
 
+    /// \overload
     template< StdTuple T >
     inline static constexpr auto eswitch( T && tup )
     {
@@ -827,7 +865,10 @@ namespace eswitch_v5
 
         return expand_tuple( std::make_index_sequence< std::tuple_size_v< std::decay_t< T > > >{}, tup );
     }
+    /// @}
 
+    /// \addtogroup main-components
+    /// @{
     template< Condition Cnd, Callable Func >
     struct condition_with_predicate
     {
@@ -837,16 +878,22 @@ namespace eswitch_v5
         Func func;
         bool fallthrough = false;
     };
+    /// @}
 
+    /// \addtogroup deduction-guides
+    /// @{
     template< typename T, typename F >
     condition_with_predicate( T, F ) -> condition_with_predicate< T, F >;
+    /// @}
 
+    /// \addtogroup main-components
+    /// @{
     template< Condition T, Callable Func >
     inline static constexpr auto operator%( T && cnd, Func && f )
     {
         return condition_with_predicate{ std::move( cnd ), std::move( f ) };
     }
-    
+
     struct Fallthrough {};
 
     template< typename Cnd, ReturnValueNoneVoid Func >
@@ -910,7 +957,10 @@ namespace eswitch_v5
     {
         return decltype( compose_new_predicate_condition_type( pred, idx ) )( std::move( pred.pred_ ) );
     }
+    /// @}
 
+    /// \addtogroup main-components
+    /// @{
     template< Condition Cnd >
     inline static constexpr auto case_( Cnd && cnd )
     { 
@@ -948,12 +998,21 @@ namespace eswitch_v5
     {
         return std::regex{ rgx };
     }
+    /// @}
 
+    /// \addtogroup variables
+    /// @{
     /// static declarations
     static constexpr Fallthrough fallthrough_;
     static constexpr extension::any _;
+    /// @}
 
+    /// \addtogroup macroses
+    /// @{
+    /// \brief accepts conditions in various forms
     #define Case( ... ) case_( __VA_ARGS__ ) % [&]
-    #define Default  ( _1 == extension::any{} ) % [&]
 
+    /// \brief correspond to default case
+    #define Default  ( _1 == extension::any{} ) % [&]
+    /// @}
 } // namespace eswitch_v5

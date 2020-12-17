@@ -9,7 +9,7 @@
 #undef NDEBUG
 ///[explicit_fallthrough]
 #include <cassert>
-#include "eswitch_v5.hpp"
+#include <eswitch_v5.hpp>
 
 enum Place{ california, washington, new_york, new_jersey, las_vegas };
 

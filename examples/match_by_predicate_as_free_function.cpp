@@ -9,7 +9,7 @@
 #undef NDEBUG
 ///[match_by_predicate_as_free_function]
 #include <cassert>
-#include "eswitch_v5.hpp"
+#include <eswitch_v5.hpp>
 
 enum Place{ california, washington, new_york, new_jersey, las_vegas };
 

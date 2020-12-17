@@ -12,7 +12,7 @@ User Manual       {#mainpage}
 
 --------------------------------------------
 Since this library is header-only and on top of that whole library was implemented within single file,
-thus you can get that file from [eswitch_v5 repository](https://github.com/rabdumalikov/eswitch_v5/tree/main/include/eswitch) on github. And in order to compile with eswitch_v5, just `#include "eswitch_v5.hpp"`.
+thus you can get that file from [eswitch_v5 repository](https://github.com/rabdumalikov/eswitch_v5/tree/main/include/eswitch) on github. And in order to compile with eswitch_v5, just `#include <eswitch_v5.hpp>`.
 
 \subsection tutorial-license License
 
