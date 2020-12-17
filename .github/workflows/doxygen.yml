@@ -1,32 +1,54 @@
-name: Doxygen Action
+name: Doxygen generate documentation and deploy to gh-pages
 
-on:
+on: 
   push:
     branches: [ doxygen_documentation ]
 
-
-  
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-        
-    - name: Doxygen Action
-      uses: mattnotmitt/doxygen-action@v1.1.0
+
+    - name: Install Clang 12 and libc++
+      id: install_clang_12
+      shell: bash
+      working-directory: ${{ env.HOME }}
+      run: |
+        wget https://apt.llvm.org/llvm.sh
+        chmod +x llvm.sh
+        sudo ./llvm.sh 12
+        sudo apt-get install libc++-12-dev libc++abi-12-dev
+        ls
+
+    - name: CLANG check
+      run: clang++-12 -v
+
+    - name: Install Doxygen
+      id: install_doxygen
+      shell: bash
+      working-directory: ${{ env.HOME }}
+      run: |
+        sudo apt-get install doxygen
+
+    - name: Doxygen check
+      run: doxygen -v
+
+    - name: Build clang
+      working-directory: ${{ env.HOME }}
+      shell: bash
+      run: |
+           cmake . -DCMAKE_BUILD_TYPE=Release  
+           make
+      env:
+        CXX: clang++-12
+        CC: clang-12         
+           
+    - name: Deploy(🚀) generated documentation to gh-pages
+      uses: JamesIves/github-pages-deploy-action@3.7.1
       with:
-        doxyfile-path: "./Doxyfile"
-    
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        # Default Doxyfile build documentation to html directory. 
-        # Change the directory if changes in Doxyfile
-        publish_dir: ./html
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages # The branch the action should deploy to.
+        FOLDER: doc/doc_doxygen/html # The folder the action should deploy.
+        CLEAN: true # Automatically remove deleted files from the deploy branch
