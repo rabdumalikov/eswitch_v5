@@ -11,7 +11,7 @@ ENABLED_SECTIONS        =
 
 
 # Resources
-OUTPUT_DIRECTORY        = .
+OUTPUT_DIRECTORY        = ./doc/docs
 INPUT                   = @eswitch-v5_SOURCE_DIR@/include/eswitch \
                           @eswitch-v5_SOURCE_DIR@/doc/index.md \
                           @eswitch-v5_SOURCE_DIR@/doc/examples.md
