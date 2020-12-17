@@ -1,32 +1,31 @@
-PROJECT_NAME            = "eswitch-v5"
+PROJECT_NAME            = "eswitch_v5"
 PROJECT_BRIEF           = "This header-only library enhance functionality of Native C++ switch statement"
 PROJECT_LOGO            =
 PROJECT_NUMBER          =
 
-STRIP_FROM_PATH         = @eswitch-v5_SOURCE_DIR@/include/eswitch @eswitch-v5_SOURCE_DIR@/doc
+STRIP_FROM_PATH         = @CMAKE_CURRENT_SOURCE_DIR@/../include/eswitch @CMAKE_CURRENT_SOURCE_DIR@
 BUILTIN_STL_SUPPORT     = YES
-STRIP_FROM_INC_PATH     = @eswitch-v5_SOURCE_DIR@/include/eswitch
+STRIP_FROM_INC_PATH     = @CMAKE_CURRENT_SOURCE_DIR@/../include/eswitch
 ALIASES                 =
 ENABLED_SECTIONS        =
 
 
 # Resources
-OUTPUT_DIRECTORY        = ./doc/docs
-INPUT                   = @eswitch-v5_SOURCE_DIR@/include/eswitch \
-                          @eswitch-v5_SOURCE_DIR@/doc/index.md \
-                          @eswitch-v5_SOURCE_DIR@/doc/examples.md
+OUTPUT_DIRECTORY        = @CMAKE_CURRENT_BINARY_DIR@/doc_doxygen/
+INPUT                   = @CMAKE_CURRENT_SOURCE_DIR@/../include/eswitch \
+                          @CMAKE_CURRENT_SOURCE_DIR@/index.md \
+                          @CMAKE_CURRENT_SOURCE_DIR@/examples.md \
+                          @CMAKE_CURRENT_SOURCE_DIR@/../examples
                           
 FILE_PATTERNS           = *.cpp *.hpp *.md
 RECURSIVE               = YES
 
-EXCLUDE                 = @eswitch-v5_SOURCE_DIR@/tests \
-                          @eswitch-v5_SOURCE_DIR@/benchmarks
+EXCLUDE                 = @CMAKE_CURRENT_SOURCE_DIR@/../tests \
+                          @CMAKE_CURRENT_SOURCE_DIR@/../benchmarks
 
-EXAMPLE_PATH            = @eswitch-v5_SOURCE_DIR@/examples
+EXAMPLE_PATH            = @CMAKE_CURRENT_SOURCE_DIR@/../examples
 
 EXAMPLE_RECURSIVE       = YES
-#IMAGE_PATH              = @eswitch-v5_BINARY_DIR@/image
-#FILTER_PATTERNS         = *.hpp="\"@eswitch-v5_BINARY_DIR@/doc/preprocess.sh\""
 WARN_IF_UNDOCUMENTED    = NO
 
 SHOW_GROUPED_MEMB_INC   = YES
@@ -55,7 +54,7 @@ GENERATE_DEPRECATEDLIST = YES
 SHOW_USED_FILES         = NO
 SHOW_FILES              = YES
 SHOW_NAMESPACES         = YES
-#LAYOUT_FILE             = @eswitch-v5_SOURCE_DIR@/doc/layout.xml
+LAYOUT_FILE             = @CMAKE_CURRENT_SOURCE_DIR@/../doc/layout.xml
 
 
 CLASS_DIAGRAMS          = YES
@@ -86,7 +85,7 @@ ENABLE_PREPROCESSING    = YES
 MACRO_EXPANSION         = YES
 EXPAND_ONLY_PREDEF      = NO
 SEARCH_INCLUDES         = YES
-INCLUDE_PATH            = @eswitch-v5_SOURCE_DIR@/include
+INCLUDE_PATH            = @CMAKE_CURRENT_SOURCE_DIR@/../include/eswitch
 INCLUDE_FILE_PATTERNS   =
 
 SKIP_FUNCTION_MACROS    = NO
@@ -100,8 +99,6 @@ REFERENCES_RELATION     = YES
 REFERENCES_LINK_SOURCE  = YES
 USE_HTAGS               = NO
 VERBATIM_HEADERS        = NO
-# CLANG_ASSISTED_PARSING  = NO
-# CLANG_OPTIONS           =
 
 # HTML output
 HTML_OUTPUT             = html

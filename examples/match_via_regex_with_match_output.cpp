@@ -7,10 +7,9 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #undef NDEBUG
-#include <assert.h>
-
+///[match_via_regex_with_match_output]
+#include <cassert>
 #include "eswitch_v5.hpp"
-#include <iostream>
 #include <map>
 
 std::vector< std::string > get_tokenized_http_response()
@@ -51,3 +50,4 @@ int main()
     assert( fields[ std::string{"Content-Lenght"} ] == std::string{"88"} );
     assert( fields[ std::string{"Content-Type"} ] == std::string{"text/html"} );
 }
+///[match_via_regex_with_match_output]

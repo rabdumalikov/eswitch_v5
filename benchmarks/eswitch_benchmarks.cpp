@@ -8,7 +8,7 @@
 
 
 #undef NDEBUG
-#include <assert.h>
+#include <cassert>
 
 #include "benchmark/benchmark.h"
 #include "eswitch_v5.hpp"

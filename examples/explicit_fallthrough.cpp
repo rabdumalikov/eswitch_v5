@@ -7,8 +7,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #undef NDEBUG
-#include <assert.h>
-
+///[explicit_fallthrough]
+#include <cassert>
 #include "eswitch_v5.hpp"
 
 enum Place{ california, washington, new_york, new_jersey, las_vegas };
@@ -49,3 +49,4 @@ int main()
         assert( executed_1st_case && executed_2nd_case && executed_default_case );
     }    
 }
+///[explicit_fallthrough]

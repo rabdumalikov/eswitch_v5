@@ -7,10 +7,10 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #undef NDEBUG
-#include <assert.h>
-
+///[match_via_regex]
+#include <cassert>
+#include <string>
 #include "eswitch_v5.hpp"
-#include <iostream>
 
 int main()
 {
@@ -47,3 +47,4 @@ int main()
         assert( executed );
     }
 }
+///[match_via_regex]

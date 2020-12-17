@@ -7,10 +7,9 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #undef NDEBUG
-#include <assert.h>
-
+///[match_by_predicate_as_free_function]
+#include <cassert>
 #include "eswitch_v5.hpp"
-#include <iostream>
 
 enum Place{ california, washington, new_york, new_jersey, las_vegas };
 
@@ -46,3 +45,4 @@ int main()
 
     }
 }
+///[match_by_predicate_as_free_function]

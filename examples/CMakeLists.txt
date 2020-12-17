@@ -7,7 +7,7 @@ set(run_examples_list
   default
   implicit_break
   explicit_fallthrough
-  multiple_arguments
+  match_by_multiple_parameters
   any_from
   matching_arguments_in_any_order
   partial_match

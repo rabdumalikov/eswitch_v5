@@ -7,8 +7,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #undef NDEBUG
-#include <assert.h>
-
+///[partial_match]
+#include <cassert>
 #include "eswitch_v5.hpp"
 #include <iostream>
 
@@ -22,15 +22,16 @@ int main()
     const Place p2 = washington;
     const Place p3 = new_york;
 
-    eswitch( p1, p2, p3 )
+    auto status = eswitch( p1, p2, p3 )
     (
-        Case( _1 == california )                                      {},
-        Case( _2 == washington )                                      {},
-        Case( _3 == new_york )                                        {},
-        Case( _1 == california && _3 == new_york )                    {},       
-        Case( _2 == washington && _3 == new_york )                    {},       
-        Case( _1 == california && _2 == washington )                  {},
-        Case( _1 == california && _2 == washington && _3 == new_york ){},
-        Default { assert( false ); }
+        Case( _3 == new_york )                                        { return true; },
+        Case( _1 == california && _3 == new_york )                    { return false; },       
+        Case( _2 == washington && _3 == new_york )                    { return false; },       
+        Case( _1 == california && _2 == washington )                  { return false; },
+        Case( _1 == california && _2 == washington && _3 == new_york ){ return false; },
+        Default { assert( false ); return false; }
     );
+
+    assert( status );
 }
+///[partial_match]
