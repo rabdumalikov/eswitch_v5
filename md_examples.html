@@ -110,14 +110,14 @@ free function predicate</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">using namespace </span>eswitch_v5;</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
 <div class="line"> </div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordtype">bool</span> executed = <span class="keyword">false</span>;</div>
 <div class="line"> </div>
-<div class="line">        eswitch( 0, 1 ) </div>
+<div class="line">        <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 0, 1 ) </div>
 <div class="line">        (</div>
-<div class="line">            Case( ( is_nonzero, _1 ) || ( is_nonzero, _2 )  ) { executed = <span class="keyword">true</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( ( is_nonzero, <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> ) || ( is_nonzero, <a class="code" href="group__variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> )  ) { executed = <span class="keyword">true</span>; },</div>
 <div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { assert( <span class="keyword">false</span> ); }  </div>
 <div class="line">        );</div>
 <div class="line"> </div>
@@ -127,9 +127,9 @@ free function predicate</h2>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordtype">bool</span> executed = <span class="keyword">false</span>;</div>
 <div class="line"> </div>
-<div class="line">        eswitch( 1, 2 ) </div>
+<div class="line">        <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 1, 2 ) </div>
 <div class="line">        (</div>
-<div class="line">            Case( ( is_positive, _1, _2 ) ) { executed = <span class="keyword">true</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( ( is_positive, <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a>, <a class="code" href="group__variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> ) ) { executed = <span class="keyword">true</span>; },</div>
 <div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { assert( <span class="keyword">false</span> ); }  </div>
 <div class="line">        );</div>
 <div class="line"> </div>
@@ -146,16 +146,16 @@ lambda predicate</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">using namespace </span>eswitch_v5;</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">auto</span> is_nonzero  = []( <span class="keyword">const</span> <span class="keywordtype">int</span> i ) { <span class="keywordflow">return</span> i != 0; };</div>
 <div class="line"> </div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordtype">bool</span> executed = <span class="keyword">false</span>;</div>
 <div class="line"> </div>
-<div class="line">        eswitch( 1 )</div>
+<div class="line">        <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 1 )</div>
 <div class="line">        (</div>
-<div class="line">            Case( ( is_nonzero, _1 ) ) { executed = <span class="keyword">true</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( ( is_nonzero, <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> ) ) { executed = <span class="keyword">true</span>; },</div>
 <div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { assert( <span class="keyword">false</span> ); }</div>
 <div class="line">        );</div>
 <div class="line"> </div>
@@ -165,9 +165,9 @@ lambda predicate</h2>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordtype">bool</span> executed = <span class="keyword">false</span>;</div>
 <div class="line"> </div>
-<div class="line">        eswitch( 0, 1 )</div>
+<div class="line">        <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 0, 1 )</div>
 <div class="line">        (</div>
-<div class="line">            Case( ( is_nonzero, _1 ) || ( is_nonzero, _2 ) ) { executed = <span class="keyword">true</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( ( is_nonzero, <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> ) || ( is_nonzero, <a class="code" href="group__variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> ) ) { executed = <span class="keyword">true</span>; },</div>
 <div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { assert( <span class="keyword">false</span> ); }</div>
 <div class="line">        );</div>
 <div class="line"> </div>
@@ -179,9 +179,9 @@ lambda predicate</h2>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordtype">bool</span> executed = <span class="keyword">false</span>;</div>
 <div class="line"> </div>
-<div class="line">        eswitch( 1, 2 )</div>
+<div class="line">        <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 1, 2 )</div>
 <div class="line">        (</div>
-<div class="line">            Case( ( is_positive, _1, _2 ) ) { executed = <span class="keyword">true</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( ( is_positive, <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a>, <a class="code" href="group__variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> ) ) { executed = <span class="keyword">true</span>; },</div>
 <div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { assert( <span class="keyword">false</span> ); }</div>
 <div class="line">        );</div>
 <div class="line"> </div>
@@ -200,13 +200,13 @@ mixed conditions</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">using namespace </span>eswitch_v5;</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordtype">bool</span> executed = <span class="keyword">false</span>;</div>
 <div class="line"> </div>
-<div class="line">    eswitch( 7, 1 )</div>
+<div class="line">    <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 7, 1 )</div>
 <div class="line">    (</div>
-<div class="line">        Case( _1 != 0 &amp;&amp; ( is_positive, _1 ) &amp;&amp; ( is_odd, _1 ) ) { executed = <span class="keyword">true</span>; },</div>
+<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> != 0 &amp;&amp; ( is_positive, <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> ) &amp;&amp; ( is_odd, <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> ) ) { executed = <span class="keyword">true</span>; },</div>
 <div class="line">        <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { assert( <span class="keyword">false</span> ); }</div>
 <div class="line">    );</div>
 <div class="line"> </div>
@@ -220,7 +220,7 @@ regex match</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">using namespace </span>eswitch_v5;</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> phone_number = <span class="stringliteral">&quot;^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$&quot;</span>_r;</div>
 <div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> email = <span class="stringliteral">&quot;[\\w-]+@([\\w-]+\\.)+[\\w-]+&quot;</span>_r;</div>
@@ -228,12 +228,12 @@ regex match</h2>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordtype">bool</span> executed = <span class="keyword">false</span>;</div>
 <div class="line"> </div>
-<div class="line">        std::string text{ <span class="stringliteral">&quot;joe@aol.com&quot;</span> };</div>
+<div class="line">        <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> text{ <span class="stringliteral">&quot;joe@aol.com&quot;</span> };</div>
 <div class="line"> </div>
-<div class="line">        eswitch( text ) </div>
+<div class="line">        <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( text ) </div>
 <div class="line">        (</div>
-<div class="line">            Case( phone_number ) { assert( <span class="keyword">false</span> ); },</div>
-<div class="line">            Case( email )        { executed = <span class="keyword">true</span>; }</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( phone_number ) { assert( <span class="keyword">false</span> ); },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( email )        { executed = <span class="keyword">true</span>; }</div>
 <div class="line">        );</div>
 <div class="line">    </div>
 <div class="line">        assert( executed );</div>
@@ -242,12 +242,12 @@ regex match</h2>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordtype">bool</span> executed = <span class="keyword">false</span>;</div>
 <div class="line"> </div>
-<div class="line">        std::string text{ <span class="stringliteral">&quot;+(123)-456-78-90&quot;</span> };</div>
+<div class="line">        <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> text{ <span class="stringliteral">&quot;+(123)-456-78-90&quot;</span> };</div>
 <div class="line"> </div>
-<div class="line">        eswitch( text ) </div>
+<div class="line">        <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( text ) </div>
 <div class="line">        (</div>
-<div class="line">            Case( phone_number ) { executed = <span class="keyword">true</span>; },</div>
-<div class="line">            Case( email )        { assert( <span class="keyword">false</span> ); }</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( phone_number ) { executed = <span class="keyword">true</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( email )        { assert( <span class="keyword">false</span> ); }</div>
 <div class="line">        );</div>
 <div class="line"> </div>
 <div class="line">        assert( executed );</div>
@@ -259,9 +259,9 @@ regex match and withdraw</h2>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;map&gt;</span></div>
 <div class="line"> </div>
-<div class="line">std::vector&lt; std::string &gt; get_tokenized_http_response()</div>
+<div class="line"><a class="codeRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt; std::string &gt;</a> get_tokenized_http_response()</div>
 <div class="line">{</div>
-<div class="line">    std::vector&lt; std::string &gt; v = </div>
+<div class="line">    <a class="codeRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt; std::string &gt;</a> v = </div>
 <div class="line">    {</div>
 <div class="line">        { <span class="stringliteral">&quot;HTTP/1.1 200 OK&quot;</span> },</div>
 <div class="line">        { <span class="stringliteral">&quot;Content-Lenght: 88&quot;</span> },</div>
@@ -273,17 +273,17 @@ regex match and withdraw</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">using namespace </span>eswitch_v5;</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
 <div class="line"> </div>
-<div class="line">    std::map&lt; std::string, std::string &gt; fields;</div>
+<div class="line">    <a class="codeRef" href="http://en.cppreference.com/w/cpp/container/map.html">std::map&lt; std::string, std::string &gt;</a> fields;</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">for</span>( <span class="keyword">const</span> <span class="keyword">auto</span> &amp; line : get_tokenized_http_response() )</div>
 <div class="line">    {       </div>
 <div class="line">        <span class="keyword">const</span> <span class="keywordtype">bool</span> to_continue = </div>
-<div class="line">            eswitch( line )</div>
+<div class="line">            <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( line )</div>
 <div class="line">            (</div>
-<div class="line">                Case( <span class="stringliteral">&quot;^.+ 200 .+$&quot;</span>_r ) { <span class="keywordflow">return</span> <span class="keyword">true</span>; },</div>
-<div class="line">                Case( <span class="stringliteral">&quot;^(.+): (.+)$&quot;</span>_r )( <span class="keyword">const</span> std::vector&lt; std::string &gt; &amp; match ){ </div>
+<div class="line">                <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <span class="stringliteral">&quot;^.+ 200 .+$&quot;</span>_r ) { <span class="keywordflow">return</span> <span class="keyword">true</span>; },</div>
+<div class="line">                <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <span class="stringliteral">&quot;^(.+): (.+)$&quot;</span>_r )( <span class="keyword">const</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt; std::string &gt;</a> &amp; match ){ </div>
 <div class="line">                    fields[ match[ 1 ] ] = match[ 2 ];</div>
 <div class="line">                    <span class="keywordflow">return</span> <span class="keyword">true</span>; </div>
 <div class="line">                },</div>
@@ -293,9 +293,9 @@ regex match and withdraw</h2>
 <div class="line">        <span class="keywordflow">if</span>( !to_continue ) <span class="keywordflow">break</span>;</div>
 <div class="line">    }</div>
 <div class="line"> </div>
-<div class="line">    assert( fields.size() == 2 );</div>
-<div class="line">    assert( fields[ std::string{<span class="stringliteral">&quot;Content-Lenght&quot;</span>} ] == std::string{<span class="stringliteral">&quot;88&quot;</span>} );</div>
-<div class="line">    assert( fields[ std::string{<span class="stringliteral">&quot;Content-Type&quot;</span>} ] == std::string{<span class="stringliteral">&quot;text/html&quot;</span>} );</div>
+<div class="line">    assert( fields.<a class="codeRef" href="http://en.cppreference.com/w/cpp/container/map/size.html">size</a>() == 2 );</div>
+<div class="line">    assert( fields[ <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>{<span class="stringliteral">&quot;Content-Lenght&quot;</span>} ] == <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>{<span class="stringliteral">&quot;88&quot;</span>} );</div>
+<div class="line">    assert( fields[ <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>{<span class="stringliteral">&quot;Content-Type&quot;</span>} ] == <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>{<span class="stringliteral">&quot;text/html&quot;</span>} );</div>
 <div class="line">}</div>
 </div><!-- fragment --> <h2><a class="anchor" id="example-out-of-order"></a>
 out of order match</h2>
@@ -306,7 +306,7 @@ out of order match</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">using namespace </span>eswitch_v5;</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">const</span> Place p1 = california;</div>
 <div class="line">    <span class="keyword">const</span> Place p2 = washington;</div>
@@ -315,9 +315,9 @@ out of order match</h2>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordtype">bool</span> executed = <span class="keyword">true</span>;</div>
 <div class="line"> </div>
-<div class="line">        eswitch( p1, p2, p3 )</div>
+<div class="line">        <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1, p2, p3 )</div>
 <div class="line">        (</div>
-<div class="line">            Case( _1 == california &amp;&amp; _3 == new_york &amp;&amp; _2 == washington ) { executed = <span class="keyword">true</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == california &amp;&amp; <a class="code" href="group__variables.html#gaeae650f6542c704d82a19ee6a16b7b9f">_3</a> == new_york &amp;&amp; <a class="code" href="group__variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> == washington ) { executed = <span class="keyword">true</span>; },</div>
 <div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { assert( <span class="keyword">false</span> ); }</div>
 <div class="line">        );</div>
 <div class="line"> </div>
@@ -327,9 +327,9 @@ out of order match</h2>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordtype">bool</span> executed = <span class="keyword">true</span>;</div>
 <div class="line"> </div>
-<div class="line">        eswitch( p1, p2, p3 )</div>
+<div class="line">        <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1, p2, p3 )</div>
 <div class="line">        (</div>
-<div class="line">            Case( _3 == new_york &amp;&amp; _1 == california &amp;&amp; _2 == washington ) { executed = <span class="keyword">true</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__variables.html#gaeae650f6542c704d82a19ee6a16b7b9f">_3</a> == new_york &amp;&amp; <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == california &amp;&amp; <a class="code" href="group__variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> == washington ) { executed = <span class="keyword">true</span>; },</div>
 <div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { assert( <span class="keyword">false</span> ); }</div>
 <div class="line">        );</div>
 <div class="line"> </div>
@@ -339,9 +339,9 @@ out of order match</h2>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordtype">bool</span> executed = <span class="keyword">true</span>;</div>
 <div class="line"> </div>
-<div class="line">        eswitch( p1, p2, p3 )</div>
+<div class="line">        <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1, p2, p3 )</div>
 <div class="line">        (</div>
-<div class="line">            Case( _3 == new_york &amp;&amp; _2 == washington &amp;&amp; _1 == california ) { executed = <span class="keyword">true</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__variables.html#gaeae650f6542c704d82a19ee6a16b7b9f">_3</a> == new_york &amp;&amp; <a class="code" href="group__variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> == washington &amp;&amp; <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == california ) { executed = <span class="keyword">true</span>; },</div>
 <div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { assert( <span class="keyword">false</span> ); }</div>
 <div class="line">        );</div>
 <div class="line"> </div>
@@ -357,18 +357,18 @@ default case match</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">using namespace </span>eswitch_v5;</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">const</span> Place p = las_vegas;</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordtype">bool</span> executed = <span class="keyword">false</span>;</div>
 <div class="line"> </div>
-<div class="line">    eswitch( p )</div>
+<div class="line">    <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p )</div>
 <div class="line">    ( </div>
-<div class="line">        Case( california ) { assert( <span class="keyword">false</span> ); },</div>
-<div class="line">        Case( washington ) { assert( <span class="keyword">false</span> ); },</div>
-<div class="line">        Case( new_york )   { assert( <span class="keyword">false</span> ); },</div>
-<div class="line">        Case( new_jersey ) { assert( <span class="keyword">false</span> ); },</div>
+<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( california ) { assert( <span class="keyword">false</span> ); },</div>
+<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( washington ) { assert( <span class="keyword">false</span> ); },</div>
+<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( new_york )   { assert( <span class="keyword">false</span> ); },</div>
+<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( new_jersey ) { assert( <span class="keyword">false</span> ); },</div>
 <div class="line">        <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { executed = <span class="keyword">true</span>; }</div>
 <div class="line">    );</div>
 <div class="line"> </div>
@@ -384,19 +384,19 @@ partial match</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">using namespace </span>eswitch_v5;</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">const</span> Place p1 = california;</div>
 <div class="line">    <span class="keyword">const</span> Place p2 = washington;</div>
 <div class="line">    <span class="keyword">const</span> Place p3 = new_york;</div>
 <div class="line"> </div>
-<div class="line">    <span class="keyword">auto</span> status = eswitch( p1, p2, p3 )</div>
+<div class="line">    <span class="keyword">auto</span> status = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1, p2, p3 )</div>
 <div class="line">    (</div>
-<div class="line">        Case( _3 == new_york )                                        { <span class="keywordflow">return</span> <span class="keyword">true</span>; },</div>
-<div class="line">        Case( _1 == california &amp;&amp; _3 == new_york )                    { <span class="keywordflow">return</span> <span class="keyword">false</span>; },       </div>
-<div class="line">        Case( _2 == washington &amp;&amp; _3 == new_york )                    { <span class="keywordflow">return</span> <span class="keyword">false</span>; },       </div>
-<div class="line">        Case( _1 == california &amp;&amp; _2 == washington )                  { <span class="keywordflow">return</span> <span class="keyword">false</span>; },</div>
-<div class="line">        Case( _1 == california &amp;&amp; _2 == washington &amp;&amp; _3 == new_york ){ <span class="keywordflow">return</span> <span class="keyword">false</span>; },</div>
+<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__variables.html#gaeae650f6542c704d82a19ee6a16b7b9f">_3</a> == new_york )                                        { <span class="keywordflow">return</span> <span class="keyword">true</span>; },</div>
+<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == california &amp;&amp; <a class="code" href="group__variables.html#gaeae650f6542c704d82a19ee6a16b7b9f">_3</a> == new_york )                    { <span class="keywordflow">return</span> <span class="keyword">false</span>; },       </div>
+<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> == washington &amp;&amp; <a class="code" href="group__variables.html#gaeae650f6542c704d82a19ee6a16b7b9f">_3</a> == new_york )                    { <span class="keywordflow">return</span> <span class="keyword">false</span>; },       </div>
+<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == california &amp;&amp; <a class="code" href="group__variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> == washington )                  { <span class="keywordflow">return</span> <span class="keyword">false</span>; },</div>
+<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == california &amp;&amp; <a class="code" href="group__variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> == washington &amp;&amp; <a class="code" href="group__variables.html#gaeae650f6542c704d82a19ee6a16b7b9f">_3</a> == new_york ){ <span class="keywordflow">return</span> <span class="keyword">false</span>; },</div>
 <div class="line">        <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { assert( <span class="keyword">false</span> ); <span class="keywordflow">return</span> <span class="keyword">false</span>; }</div>
 <div class="line">    );</div>
 <div class="line"> </div>
@@ -414,35 +414,35 @@ match by multiple parameters</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">using namespace </span>eswitch_v5;</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
 <div class="line"> </div>
 <div class="line">    {</div>
-<div class="line">        std::unique_ptr&lt; Parser &gt; parser( <span class="keyword">new</span> Parser{} );</div>
+<div class="line">        <a class="codeRef" href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html">std::unique_ptr&lt; Parser &gt;</a> parser( <span class="keyword">new</span> Parser{} );</div>
 <div class="line">        </div>
 <div class="line">        <span class="keyword">const</span> Place p = california;</div>
 <div class="line"> </div>
 <div class="line">        <span class="keywordtype">bool</span> executed = <span class="keyword">false</span>;</div>
 <div class="line"> </div>
-<div class="line">        eswitch( p, parser )</div>
+<div class="line">        <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p, parser )</div>
 <div class="line">        (</div>
-<div class="line">            Case( _1 == california &amp;&amp; _2 == <span class="keyword">nullptr</span> ) { assert( <span class="keyword">false</span> ); },</div>
-<div class="line">            Case( _1 == california &amp;&amp; _2 != <span class="keyword">nullptr</span> ) { executed = <span class="keyword">true</span>; }</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == california &amp;&amp; <a class="code" href="group__variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> == <span class="keyword">nullptr</span> ) { assert( <span class="keyword">false</span> ); },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == california &amp;&amp; <a class="code" href="group__variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> != <span class="keyword">nullptr</span> ) { executed = <span class="keyword">true</span>; }</div>
 <div class="line">        );</div>
 <div class="line"> </div>
 <div class="line">        assert( executed );</div>
 <div class="line">    }    </div>
 <div class="line"> </div>
 <div class="line">    {</div>
-<div class="line">        std::unique_ptr&lt; Parser &gt; parser( <span class="keyword">new</span> Parser{} );</div>
+<div class="line">        <a class="codeRef" href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html">std::unique_ptr&lt; Parser &gt;</a> parser( <span class="keyword">new</span> Parser{} );</div>
 <div class="line">        </div>
 <div class="line">        <span class="keyword">const</span> Place p = california;</div>
 <div class="line"> </div>
 <div class="line">        <span class="keywordtype">bool</span> executed = <span class="keyword">false</span>;</div>
 <div class="line"> </div>
-<div class="line">        eswitch( p, parser )</div>
+<div class="line">        <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p, parser )</div>
 <div class="line">        ( </div>
-<div class="line">            Case( _1 == california || _2 == <span class="keyword">nullptr</span> ) { executed = <span class="keyword">true</span>; },</div>
-<div class="line">            Case( _1 == california &amp;&amp; _2 != <span class="keyword">nullptr</span> ) { assert( <span class="keyword">false</span> ); }</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == california || <a class="code" href="group__variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> == <span class="keyword">nullptr</span> ) { executed = <span class="keyword">true</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == california &amp;&amp; <a class="code" href="group__variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> != <span class="keyword">nullptr</span> ) { assert( <span class="keyword">false</span> ); }</div>
 <div class="line">        );</div>
 <div class="line"> </div>
 <div class="line">        assert( executed );</div>
@@ -459,7 +459,7 @@ explicit fallthrough</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{    </div>
-<div class="line">    <span class="keyword">using namespace </span>eswitch_v5;</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
 <div class="line"> </div>
 <div class="line">    Place p = california;</div>
 <div class="line"> </div>
@@ -467,10 +467,10 @@ explicit fallthrough</h2>
 <div class="line">        <span class="keywordtype">bool</span> executed_1st_case = <span class="keyword">false</span>;</div>
 <div class="line">        <span class="keywordtype">bool</span> executed_2nd_case = <span class="keyword">false</span>;</div>
 <div class="line"> </div>
-<div class="line">        eswitch( p )</div>
+<div class="line">        <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p )</div>
 <div class="line">        ( </div>
-<div class="line">            Case( california ) { executed_1st_case = <span class="keyword">true</span>; } ^ fallthrough_,</div>
-<div class="line">            Case( new_york )   { executed_2nd_case = <span class="keyword">true</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( california ) { executed_1st_case = <span class="keyword">true</span>; } ^ <a class="code" href="group__variables.html#ga23e83b648756cadca9232aaf9d7d3d03">fallthrough_</a>,</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( new_york )   { executed_2nd_case = <span class="keyword">true</span>; },</div>
 <div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a>            { assert( <span class="keyword">false</span> ); }</div>
 <div class="line">        );</div>
 <div class="line"> </div>
@@ -482,10 +482,10 @@ explicit fallthrough</h2>
 <div class="line">        <span class="keywordtype">bool</span> executed_2nd_case = <span class="keyword">false</span>;</div>
 <div class="line">        <span class="keywordtype">bool</span> executed_default_case = <span class="keyword">false</span>;</div>
 <div class="line"> </div>
-<div class="line">        eswitch( p )</div>
+<div class="line">        <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p )</div>
 <div class="line">        ( </div>
-<div class="line">            Case( california ) { executed_1st_case = <span class="keyword">true</span>; } ^ fallthrough_,</div>
-<div class="line">            Case( new_york )   { executed_2nd_case = <span class="keyword">true</span>; } ^ fallthrough_,</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( california ) { executed_1st_case = <span class="keyword">true</span>; } ^ <a class="code" href="group__variables.html#ga23e83b648756cadca9232aaf9d7d3d03">fallthrough_</a>,</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( new_york )   { executed_2nd_case = <span class="keyword">true</span>; } ^ <a class="code" href="group__variables.html#ga23e83b648756cadca9232aaf9d7d3d03">fallthrough_</a>,</div>
 <div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a>            { executed_default_case = <span class="keyword">true</span>; }</div>
 <div class="line">        );</div>
 <div class="line"> </div>
@@ -502,14 +502,14 @@ implicit break</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{    </div>
-<div class="line">    <span class="keyword">using namespace </span>eswitch_v5;</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
 <div class="line"> </div>
 <div class="line">    Place p = california;</div>
 <div class="line"> </div>
-<div class="line">    eswitch( p )</div>
+<div class="line">    <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p )</div>
 <div class="line">    (</div>
-<div class="line">        Case( _1 == california ) {},</div>
-<div class="line">        Case( _1 == california ) { assert( <span class="keyword">false</span> ); },</div>
+<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == california ) {},</div>
+<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == california ) { assert( <span class="keyword">false</span> ); },</div>
 <div class="line">        <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a>                  { assert( <span class="keyword">false</span> ); }</div>
 <div class="line">    );</div>
 <div class="line">}</div>
@@ -524,15 +524,15 @@ any_from</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">using namespace </span>eswitch_v5;</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">for</span>( <span class="keyword">const</span> <span class="keyword">auto</span> p : { california, washington, new_york } )</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordtype">bool</span> executed = <span class="keyword">false</span>;</div>
 <div class="line"> </div>
-<div class="line">        eswitch( p )</div>
+<div class="line">        <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p )</div>
 <div class="line">        (</div>
-<div class="line">            Case( _1 == any_from( california, washington, new_york ) ) { executed = <span class="keyword">true</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == <a class="code" href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">any_from</a>( california, washington, new_york ) ) { executed = <span class="keyword">true</span>; },</div>
 <div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { assert( <span class="keyword">false</span> ); }</div>
 <div class="line">        );</div>
 <div class="line"> </div>
@@ -549,34 +549,48 @@ enum to string</h2>
 <div class="line"> </div>
 <div class="line"><span class="keyword">enum</span> Place{ california, washington, new_york, new_jersey, las_vegas };</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span> * to_string( <span class="keyword">const</span> Place p )</div>
+<div class="line"><span class="keyword">const</span> <span class="keywordtype">char</span> * <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string/to_string.html">to_string</a>( <span class="keyword">const</span> Place p )</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">using namespace </span>eswitch_v5;</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
 <div class="line"> </div>
-<div class="line">    <span class="keywordflow">return</span> eswitch( p ) </div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p ) </div>
 <div class="line">        (   </div>
-<div class="line">            Case( california ) { <span class="keywordflow">return</span> <span class="stringliteral">&quot;california&quot;</span>; },</div>
-<div class="line">            Case( washington ) { <span class="keywordflow">return</span> <span class="stringliteral">&quot;washington&quot;</span>; },</div>
-<div class="line">            Case( new_york )   { <span class="keywordflow">return</span> <span class="stringliteral">&quot;new_york&quot;</span>; },</div>
-<div class="line">            Case( new_jersey ) { <span class="keywordflow">return</span> <span class="stringliteral">&quot;new_jersey&quot;</span>; },</div>
-<div class="line">            Case( las_vegas )  { <span class="keywordflow">return</span> <span class="stringliteral">&quot;las_vegas&quot;</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( california ) { <span class="keywordflow">return</span> <span class="stringliteral">&quot;california&quot;</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( washington ) { <span class="keywordflow">return</span> <span class="stringliteral">&quot;washington&quot;</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( new_york )   { <span class="keywordflow">return</span> <span class="stringliteral">&quot;new_york&quot;</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( new_jersey ) { <span class="keywordflow">return</span> <span class="stringliteral">&quot;new_jersey&quot;</span>; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( las_vegas )  { <span class="keywordflow">return</span> <span class="stringliteral">&quot;las_vegas&quot;</span>; },</div>
 <div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a>            { <span class="keywordflow">return</span> <span class="stringliteral">&quot;unknown&quot;</span>; }</div>
 <div class="line">        );</div>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">const</span> std::string actualResult[] = { <span class="stringliteral">&quot;california&quot;</span>, <span class="stringliteral">&quot;washington&quot;</span>, <span class="stringliteral">&quot;new_york&quot;</span>, <span class="stringliteral">&quot;new_jersey&quot;</span>, <span class="stringliteral">&quot;las_vegas&quot;</span> };</div>
+<div class="line">    <span class="keyword">const</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> actualResult[] = { <span class="stringliteral">&quot;california&quot;</span>, <span class="stringliteral">&quot;washington&quot;</span>, <span class="stringliteral">&quot;new_york&quot;</span>, <span class="stringliteral">&quot;new_jersey&quot;</span>, <span class="stringliteral">&quot;las_vegas&quot;</span> };</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">for</span>( <span class="keyword">const</span> <span class="keyword">auto</span> p : { california, washington, new_york, new_jersey, las_vegas } )</div>
 <div class="line">    {</div>
-<div class="line">        assert( std::string{ to_string( p ) } == actualResult[ <span class="keyword">static_cast&lt;</span> <span class="keywordtype">int</span> <span class="keyword">&gt;</span>( p ) ] );</div>
+<div class="line">        assert( <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>{ <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string/to_string.html">to_string</a>( p ) } == actualResult[ <span class="keyword">static_cast&lt;</span> <span class="keywordtype">int</span> <span class="keyword">&gt;</span>( p ) ] );</div>
 <div class="line">    }</div>
 <div class="line">}</div>
 </div><!-- fragment --></div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->
-<div class="ttc" id="agroup__macroses_html_gaff2b0c246e6111e260e650b0ff4a8eb5"><div class="ttname"><a href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a></div><div class="ttdeci">#define Default</div><div class="ttdoc">correspond to default case</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01016">eswitch_v5.hpp:1016</a></div></div>
+<div class="ttc" id="abasic_string_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a></div><div class="ttdoc">STL class.</div></div>
+<div class="ttc" id="agroup__variables_html_gacc83659898439dd14b78fc60be68ce28"><div class="ttname"><a href="group__variables.html#gacc83659898439dd14b78fc60be68ce28">eswitch_v5::_2</a></div><div class="ttdeci">constexpr Index_&lt; 1 &gt; _2</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00158">eswitch_v5.hpp:158</a></div></div>
+<div class="ttc" id="agroup__variables_html_ga0467e341724f219d72f18c1c0885442a"><div class="ttname"><a href="group__variables.html#ga0467e341724f219d72f18c1c0885442a">eswitch_v5::_1</a></div><div class="ttdeci">constexpr Index_&lt; 0 &gt; _1</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00157">eswitch_v5.hpp:157</a></div></div>
+<div class="ttc" id="avector_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a></div><div class="ttdoc">STL class.</div></div>
+<div class="ttc" id="asize_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/map/size.html">std::map::size</a></div><div class="ttdeci">T size(T... args)</div></div>
+<div class="ttc" id="agroup__variables_html_gaeae650f6542c704d82a19ee6a16b7b9f"><div class="ttname"><a href="group__variables.html#gaeae650f6542c704d82a19ee6a16b7b9f">eswitch_v5::_3</a></div><div class="ttdeci">constexpr Index_&lt; 2 &gt; _3</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00159">eswitch_v5.hpp:159</a></div></div>
+<div class="ttc" id="agroup__main-components_html_ga11dfab51a8955d42153603db05629b59"><div class="ttname"><a href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">eswitch_v5::any_from</a></div><div class="ttdeci">static constexpr auto any_from(Args &amp;&amp;... args)</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01002">eswitch_v5.hpp:1002</a></div></div>
+<div class="ttc" id="ato_string_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string/to_string.html">std::to_string</a></div><div class="ttdeci">T to_string(T... args)</div></div>
+<div class="ttc" id="amap_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/map.html">std::map</a></div><div class="ttdoc">STL class.</div></div>
+<div class="ttc" id="agroup__macroses_html_gaff2b0c246e6111e260e650b0ff4a8eb5"><div class="ttname"><a href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a></div><div class="ttdeci">#define Default</div><div class="ttdoc">correspond to default case</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01034">eswitch_v5.hpp:1034</a></div></div>
+<div class="ttc" id="agroup__variables_html_ga23e83b648756cadca9232aaf9d7d3d03"><div class="ttname"><a href="group__variables.html#ga23e83b648756cadca9232aaf9d7d3d03">eswitch_v5::fallthrough_</a></div><div class="ttdeci">static constexpr Fallthrough fallthrough_</div><div class="ttdoc">static declarations</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01023">eswitch_v5.hpp:1023</a></div></div>
+<div class="ttc" id="agroup__macroses_html_gae733eb4e00d6306a21422f02ef7e8ca4"><div class="ttname"><a href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a></div><div class="ttdeci">#define Case(...)</div><div class="ttdoc">accepts conditions in various forms</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01031">eswitch_v5.hpp:1031</a></div></div>
+<div class="ttc" id="agroup__main-components_html_ga82f93fb22725d76bb016b488742331d1"><div class="ttname"><a href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch_v5::eswitch</a></div><div class="ttdeci">static constexpr auto eswitch(Ts &amp;&amp;... ts)</div><div class="ttdoc">This function is responsible for passing arguments for class eswitch_impl with overloaded operator(),...</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00855">eswitch_v5.hpp:855</a></div></div>
+<div class="ttc" id="aunique_ptr_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html">std::unique_ptr</a></div><div class="ttdoc">STL class.</div></div>
+<div class="ttc" id="anamespaceeswitch__v5_html"><div class="ttname"><a href="namespaceeswitch__v5.html">eswitch_v5</a></div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00027">eswitch_v5.hpp:27</a></div></div>
 <div class="ttc" id="aeswitch__v5_8hpp_html"><div class="ttname"><a href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a></div><div class="ttdoc">implementation</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

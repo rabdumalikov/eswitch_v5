@@ -105,26 +105,116 @@ $(document).ready(function(){initNavTree('classeswitch__v5_1_1extension_1_1Range
 class eswitch_v5::extension::Range&lt; RangeType &gt;</h3>
 
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00061">61</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00064">64</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:a058f62a4ea5d269ec757841888f4588e"><td class="memItemLeft" align="right" valign="top"><a id="a058f62a4ea5d269ec757841888f4588e"></a>
-constexpr friend bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const std::size_t val, const <a class="el" href="classeswitch__v5_1_1extension_1_1Range.html">Range</a> rm)</td></tr>
+<tr class="memitem:a058f62a4ea5d269ec757841888f4588e"><td class="memItemLeft" align="right" valign="top">constexpr friend bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeswitch__v5_1_1extension_1_1Range.html#a058f62a4ea5d269ec757841888f4588e">operator==</a> (const <a class="elRef" href="http://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a> val, const <a class="el" href="classeswitch__v5_1_1extension_1_1Range.html">Range</a> rm)</td></tr>
 <tr class="separator:a058f62a4ea5d269ec757841888f4588e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1b370a04c51ee9fa3be6c26b974d4572"><td class="memItemLeft" align="right" valign="top"><a id="a1b370a04c51ee9fa3be6c26b974d4572"></a>
-constexpr&#160;</td><td class="memItemRight" valign="bottom"><b>Range</b> (const std::size_t start, const std::size_t end)</td></tr>
+<tr class="memitem:a1b370a04c51ee9fa3be6c26b974d4572"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeswitch__v5_1_1extension_1_1Range.html#a1b370a04c51ee9fa3be6c26b974d4572">Range</a> (const <a class="elRef" href="http://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a> start, const <a class="elRef" href="http://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a> end)</td></tr>
 <tr class="separator:a1b370a04c51ee9fa3be6c26b974d4572"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Methods</h2>
+<a id="a058f62a4ea5d269ec757841888f4588e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a058f62a4ea5d269ec757841888f4588e">&#9670;&nbsp;</a></span>operator==</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;range RangeType&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr friend bool operator== </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="elRef" href="http://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a>&#160;</td>
+          <td class="paramname"><em>val</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classeswitch__v5_1_1extension_1_1Range.html">Range</a>&lt; RangeType &gt;&#160;</td>
+          <td class="paramname"><em>rm</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00075">75</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            {</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                <span class="keywordflow">if</span> constexpr( RangeType == <a class="code" href="group__underlying-details.html#gga7a5215c0c1466c28d549a94cddab1b7aa716f6b30598ba30945d84485e61c1027">range::close</a> ) </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                    <span class="keywordflow">return</span> val &gt;= rm.start_ &amp;&amp; val &lt;= rm.end_;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                    <span class="keywordflow">return</span> val &gt; rm.start_ &amp;&amp; val &lt; rm.end_;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            }</div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a1b370a04c51ee9fa3be6c26b974d4572"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b370a04c51ee9fa3be6c26b974d4572">&#9670;&nbsp;</a></span>Range()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;range RangeType&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="classeswitch__v5_1_1extension_1_1Range.html">eswitch_v5::extension::Range</a>&lt; RangeType &gt;::<a class="el" href="classeswitch__v5_1_1extension_1_1Range.html">Range</a> </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="elRef" href="http://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a>&#160;</td>
+          <td class="paramname"><em>start</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="elRef" href="http://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a>&#160;</td>
+          <td class="paramname"><em>end</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00070">70</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                : start_( start ), end_( end )</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                {                </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                }</div>
+</div><!-- fragment -->
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="agroup__underlying-details_html_gga7a5215c0c1466c28d549a94cddab1b7aa716f6b30598ba30945d84485e61c1027"><div class="ttname"><a href="group__underlying-details.html#gga7a5215c0c1466c28d549a94cddab1b7aa716f6b30598ba30945d84485e61c1027">eswitch_v5::extension::range::close</a></div><div class="ttdeci">@ close</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>eswitch_v5</b></li><li class="navelem"><b>extension</b></li><li class="navelem"><a class="el" href="classeswitch__v5_1_1extension_1_1Range.html">Range</a></li>
+    <li class="navelem"><a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a></li><li class="navelem"><a class="el" href="namespaceeswitch__v5_1_1extension.html">extension</a></li><li class="navelem"><a class="el" href="classeswitch__v5_1_1extension_1_1Range.html">Range</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>

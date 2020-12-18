@@ -104,21 +104,84 @@ $(document).ready(function(){initNavTree('structeswitch__v5_1_1Any__and__Variant
 struct eswitch_v5::Any_and_Variant_support&lt; CmpOperator, CaseEntry &gt;</h3>
 
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00445">445</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00457">457</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:accd2e8bfcaf08ba0a13c7ea45eb67976"><td class="memTemplParams" colspan="2"><a id="accd2e8bfcaf08ba0a13c7ea45eb67976"></a>
-template&lt;typename TupleEntry &gt; </td></tr>
-<tr class="memitem:accd2e8bfcaf08ba0a13c7ea45eb67976"><td class="memTemplItemLeft" align="right" valign="top">static constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>execute</b> (TupleEntry &amp;&amp;tuple_entry, const CaseEntry &amp;) noexcept requires has_type&lt; CaseEntry &gt; &amp;&amp;(details</td></tr>
+<tr class="memitem:accd2e8bfcaf08ba0a13c7ea45eb67976"><td class="memTemplParams" colspan="2">template&lt;typename TupleEntry &gt; </td></tr>
+<tr class="memitem:accd2e8bfcaf08ba0a13c7ea45eb67976"><td class="memTemplItemLeft" align="right" valign="top">static constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structeswitch__v5_1_1Any__and__Variant__support.html#accd2e8bfcaf08ba0a13c7ea45eb67976">execute</a> (TupleEntry &amp;&amp;tuple_entry, const CaseEntry &amp;) noexcept requires <a class="el" href="group__concepts.html#ga172e1153460f09d65aa747fea9241cd3">has_type</a>&lt; CaseEntry &gt; &amp;&amp;(details</td></tr>
 <tr class="separator:accd2e8bfcaf08ba0a13c7ea45eb67976"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="accd2e8bfcaf08ba0a13c7ea45eb67976"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#accd2e8bfcaf08ba0a13c7ea45eb67976">&#9670;&nbsp;</a></span>execute()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;Comparison_operators CmpOperator, typename CaseEntry &gt; </div>
+<div class="memtemplate">
+template&lt;typename TupleEntry &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static constexpr auto <a class="el" href="structeswitch__v5_1_1Any__and__Variant__support.html">eswitch_v5::Any_and_Variant_support</a>&lt; CmpOperator, CaseEntry &gt;::execute </td>
+          <td>(</td>
+          <td class="paramtype">TupleEntry &amp;&amp;&#160;</td>
+          <td class="paramname"><em>tuple_entry</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const CaseEntry &amp;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> &amp;&amp;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00460">460</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;        {</div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;            <span class="keyword">using</span> type = <span class="keyword">typename</span> CaseEntry::type;</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;         </div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;            <span class="keywordflow">if</span> constexpr( details::is_std_any_v&lt; TupleEntry &gt; )</div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;            {</div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;                <span class="keywordflow">if</span>( <span class="keyword">auto</span> * val = std::any_cast&lt; type &gt;( &amp;tuple_entry ) )</div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;                {            </div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;                    <span class="keywordflow">return</span> std::make_optional( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/functional/ref.html">std::cref</a>( *val ) );</div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;                }</div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;            }</div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr( details::is_std_variant_v&lt; TupleEntry &gt; ) </div>
+<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;            {</div>
+<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;                <span class="keywordflow">if</span>( <span class="keyword">auto</span> * val = std::get_if&lt; type &gt;( &amp;tuple_entry ) )</div>
+<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;                {</div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;                    <span class="keywordflow">return</span> std::make_optional( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/functional/ref.html">std::cref</a>( *val ) );</div>
+<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;                }</div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;            }            </div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;                        </div>
+<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;            <span class="keywordflow">return</span> std::optional&lt; std::reference_wrapper&lt; const type &gt; &gt;{};</div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;        }</div>
+</div><!-- fragment -->
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="aref_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/functional/ref.html">std::cref</a></div><div class="ttdeci">T cref(T... args)</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>eswitch_v5</b></li><li class="navelem"><a class="el" href="structeswitch__v5_1_1Any__and__Variant__support.html">Any_and_Variant_support</a></li>
+    <li class="navelem"><a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a></li><li class="navelem"><a class="el" href="structeswitch__v5_1_1Any__and__Variant__support.html">Any_and_Variant_support</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>

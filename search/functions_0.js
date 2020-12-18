@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['case_5f_85',['case_',['../group__main-components.html#ga27fc16f619f63a56d6782c97ef3fab3b',1,'eswitch_v5']]]
+  ['_5fexit_2179',['_Exit',['http://en.cppreference.com/w/cpp/utility/program/_Exit.html',1,'std']]]
 ];

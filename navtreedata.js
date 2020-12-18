@@ -76,6 +76,13 @@ var NAVTREE =
     ] ],
     [ "Reference", "modules.html", "modules" ],
     [ "Indexes", "usergroup0.html", [
+      [ "Methods", "functions.html", [
+        [ "All", "functions.html", null ],
+        [ "Functions", "functions_func.html", null ],
+        [ "Variables", "functions_vars.html", null ],
+        [ "Typedefs", "functions_type.html", null ],
+        [ "Related Functions", "functions_rela.html", null ]
+      ] ],
       [ "Classes", "annotated.html", "annotated" ],
       [ "Files", "files.html", "files" ]
     ] ]
@@ -84,7 +91,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-".html"
+"annotated.html",
+"index.html#autotoc_md15"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

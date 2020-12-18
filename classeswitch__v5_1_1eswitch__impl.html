@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('classeswitch__v5_1_1eswitch__impl.html
 class eswitch_v5::eswitch_impl&lt; Args &gt;</h3>
 
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00709">709</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00722">722</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Instances and minimal complete definitions</h2></td></tr>
@@ -115,36 +115,176 @@ Instances and minimal complete definitions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a90aa270849ad26ed6462dec27baff482"><td class="memTemplParams" colspan="2"><a id="a90aa270849ad26ed6462dec27baff482"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a90aa270849ad26ed6462dec27baff482"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>args_t</b> = <a class="el" href="structeswitch__v5_1_1details_1_1amount__args.html">details::amount_args</a>&lt; typename T::F &gt;</td></tr>
+<tr class="memitem:a90aa270849ad26ed6462dec27baff482"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a90aa270849ad26ed6462dec27baff482"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classeswitch__v5_1_1eswitch__impl.html#a90aa270849ad26ed6462dec27baff482">args_t</a> = <a class="el" href="structeswitch__v5_1_1details_1_1amount__args.html">details::amount_args</a>&lt; typename T::F &gt;</td></tr>
 <tr class="separator:a90aa270849ad26ed6462dec27baff482"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa246eefe63801ea34ed54d2fc8eec71f"><td class="memTemplParams" colspan="2"><a id="aa246eefe63801ea34ed54d2fc8eec71f"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:aa246eefe63801ea34ed54d2fc8eec71f"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>underlying</b> = <a class="el" href="structeswitch__v5_1_1details_1_1invoke__result.html">details::invoke_result</a>&lt; typename T::F &gt;</td></tr>
+<tr class="memitem:aa246eefe63801ea34ed54d2fc8eec71f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:aa246eefe63801ea34ed54d2fc8eec71f"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classeswitch__v5_1_1eswitch__impl.html#aa246eefe63801ea34ed54d2fc8eec71f">underlying</a> = <a class="el" href="structeswitch__v5_1_1details_1_1invoke__result.html">details::invoke_result</a>&lt; typename T::F &gt;</td></tr>
 <tr class="separator:aa246eefe63801ea34ed54d2fc8eec71f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4be3d3364ceadb40c3ffc553c6f833b2"><td class="memTemplParams" colspan="2"><a id="a4be3d3364ceadb40c3ffc553c6f833b2"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a4be3d3364ceadb40c3ffc553c6f833b2"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>underlying_t</b> = details::invoke_result_t&lt; typename T::F &gt;</td></tr>
+<tr class="memitem:a4be3d3364ceadb40c3ffc553c6f833b2"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a4be3d3364ceadb40c3ffc553c6f833b2"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classeswitch__v5_1_1eswitch__impl.html#a4be3d3364ceadb40c3ffc553c6f833b2">underlying_t</a> = <a class="el" href="group__utilities.html#gaf3cca5c69ebb3a94514c6cec8a04029a">details::invoke_result_t</a>&lt; typename T::F &gt;</td></tr>
 <tr class="separator:a4be3d3364ceadb40c3ffc553c6f833b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a5b716475f8b9a51bd4c0d9cae4aee79b"><td class="memTemplParams" colspan="2"><a id="a5b716475f8b9a51bd4c0d9cae4aee79b"></a>
-template&lt;typename ... Ts&gt; </td></tr>
-<tr class="memitem:a5b716475f8b9a51bd4c0d9cae4aee79b"><td class="memTemplItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memTemplItemRight" valign="bottom"><b>eswitch_impl</b> (Ts &amp;&amp;... ts)</td></tr>
+<tr class="memitem:a5b716475f8b9a51bd4c0d9cae4aee79b"><td class="memTemplParams" colspan="2">template&lt;typename ... Ts&gt; </td></tr>
+<tr class="memitem:a5b716475f8b9a51bd4c0d9cae4aee79b"><td class="memTemplItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classeswitch__v5_1_1eswitch__impl.html#a5b716475f8b9a51bd4c0d9cae4aee79b">eswitch_impl</a> (Ts &amp;&amp;... ts)</td></tr>
 <tr class="separator:a5b716475f8b9a51bd4c0d9cae4aee79b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a552b3ff4f57958fc092e25da912ef70d"><td class="memTemplParams" colspan="2"><a id="a552b3ff4f57958fc092e25da912ef70d"></a>
-template&lt;typename ... Cnds&gt; </td></tr>
-<tr class="memitem:a552b3ff4f57958fc092e25da912ef70d"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator()</b> (Cnds &amp;&amp;... cnds)</td></tr>
+<tr class="memitem:a552b3ff4f57958fc092e25da912ef70d"><td class="memTemplParams" colspan="2">template&lt;typename ... Cnds&gt; </td></tr>
+<tr class="memitem:a552b3ff4f57958fc092e25da912ef70d"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classeswitch__v5_1_1eswitch__impl.html#a552b3ff4f57958fc092e25da912ef70d">operator()</a> (Cnds &amp;&amp;... cnds)</td></tr>
 <tr class="separator:a552b3ff4f57958fc092e25da912ef70d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a552b3ff4f57958fc092e25da912ef70d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a552b3ff4f57958fc092e25da912ef70d">&#9670;&nbsp;</a></span>operator()()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ... Args&gt; </div>
+<div class="memtemplate">
+template&lt;typename ... Cnds&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto <a class="el" href="classeswitch__v5_1_1eswitch__impl.html">eswitch_v5::eswitch_impl</a>&lt; Args &gt;::operator() </td>
+          <td>(</td>
+          <td class="paramtype">Cnds &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>cnds</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00744">744</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160;        {</div>
+<div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160;            <span class="keywordflow">if</span> constexpr( ( !<a class="code" href="group__concepts.html#ga97cd9ea2f8d399b75092fe3518e5a3b8">has_value</a>&lt; args_t&lt; Cnds &gt; &gt; || ... ) )</div>
+<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;            {</div>
+<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160;                static_assert( !( !<a class="code" href="group__concepts.html#ga97cd9ea2f8d399b75092fe3518e5a3b8">has_value</a>&lt; args_t&lt; Cnds &gt; &gt; || ... ), </div>
+<div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;                    <span class="stringliteral">&quot;Predicate with &#39;auto&#39; argument aren&#39;t ALLOWED!&quot;</span> );</div>
+<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;            }        </div>
+<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr( ( <a class="code" href="group__concepts.html#ga172e1153460f09d65aa747fea9241cd3">has_type</a>&lt; underlying&lt; Cnds &gt; &gt; &amp;&amp; ... ) )</div>
+<div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160;            {</div>
+<div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160;                static_assert( <a class="code" href="group__concepts.html#ga172e1153460f09d65aa747fea9241cd3">has_type</a>&lt; <a class="codeRef" href="http://en.cppreference.com/w/cpp/types/common_type.html">std::common_type</a>&lt; underlying_t&lt; Cnds &gt;... &gt; &gt;, </div>
+<div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160;                    <span class="stringliteral">&quot;Inconsistent &#39;Return type&#39;!&quot;</span> );</div>
+<div class="line"><a name="l00755"></a><span class="lineno">  755</span>&#160;            }</div>
+<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160;        }</div>
+</div><!-- fragment -->
+</div>
+</div>
+<h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a90aa270849ad26ed6462dec27baff482"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90aa270849ad26ed6462dec27baff482">&#9670;&nbsp;</a></span>args_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ... Args&gt; </div>
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classeswitch__v5_1_1eswitch__impl.html">eswitch_v5::eswitch_impl</a>&lt; Args &gt;::<a class="el" href="classeswitch__v5_1_1eswitch__impl.html#a90aa270849ad26ed6462dec27baff482">args_t</a> =  <a class="el" href="structeswitch__v5_1_1details_1_1amount__args.html">details::amount_args</a>&lt; typename T::F &gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00741">741</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aa246eefe63801ea34ed54d2fc8eec71f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa246eefe63801ea34ed54d2fc8eec71f">&#9670;&nbsp;</a></span>underlying</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ... Args&gt; </div>
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classeswitch__v5_1_1eswitch__impl.html">eswitch_v5::eswitch_impl</a>&lt; Args &gt;::<a class="el" href="classeswitch__v5_1_1eswitch__impl.html#aa246eefe63801ea34ed54d2fc8eec71f">underlying</a> =  <a class="el" href="structeswitch__v5_1_1details_1_1invoke__result.html">details::invoke_result</a>&lt; typename T::F &gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00735">735</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a4be3d3364ceadb40c3ffc553c6f833b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4be3d3364ceadb40c3ffc553c6f833b2">&#9670;&nbsp;</a></span>underlying_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ... Args&gt; </div>
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classeswitch__v5_1_1eswitch__impl.html">eswitch_v5::eswitch_impl</a>&lt; Args &gt;::<a class="el" href="classeswitch__v5_1_1eswitch__impl.html#a4be3d3364ceadb40c3ffc553c6f833b2">underlying_t</a> =  <a class="el" href="group__utilities.html#gaf3cca5c69ebb3a94514c6cec8a04029a">details::invoke_result_t</a>&lt; typename T::F &gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00738">738</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a5b716475f8b9a51bd4c0d9cae4aee79b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b716475f8b9a51bd4c0d9cae4aee79b">&#9670;&nbsp;</a></span>eswitch_impl()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ... Args&gt; </div>
+<div class="memtemplate">
+template&lt;typename ... Ts&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="classeswitch__v5_1_1eswitch__impl.html">eswitch_v5::eswitch_impl</a>&lt; Args &gt;::<a class="el" href="classeswitch__v5_1_1eswitch__impl.html">eswitch_impl</a> </td>
+          <td>(</td>
+          <td class="paramtype">Ts &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>ts</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00730">730</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00730"></a><span class="lineno">  730</span>&#160;                                              : tup_( std::forward&lt; Ts &gt;( ts )... )</div>
+<div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;        {            </div>
+<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;        }</div>
+</div><!-- fragment -->
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="agroup__concepts_html_ga172e1153460f09d65aa747fea9241cd3"><div class="ttname"><a href="group__concepts.html#ga172e1153460f09d65aa747fea9241cd3">eswitch_v5::has_type</a></div><div class="ttdeci">concept has_type</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00353">eswitch_v5.hpp:353</a></div></div>
+<div class="ttc" id="acommon_type_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/types/common_type.html">std::common_type</a></div></div>
+<div class="ttc" id="agroup__concepts_html_ga97cd9ea2f8d399b75092fe3518e5a3b8"><div class="ttname"><a href="group__concepts.html#ga97cd9ea2f8d399b75092fe3518e5a3b8">eswitch_v5::has_value</a></div><div class="ttdeci">concept has_value</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00356">eswitch_v5.hpp:356</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>eswitch_v5</b></li><li class="navelem"><a class="el" href="classeswitch__v5_1_1eswitch__impl.html">eswitch_impl</a></li>
+    <li class="navelem"><a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a></li><li class="navelem"><a class="el" href="classeswitch__v5_1_1eswitch__impl.html">eswitch_impl</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
