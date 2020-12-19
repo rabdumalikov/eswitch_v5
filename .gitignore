@@ -1,2 +1,3 @@
 build/
 /bench.txt
+*/doc_doxygen/*

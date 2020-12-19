@@ -70,5 +70,5 @@ endfunction(build_source_file)
  list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/)
  #include (gcovr)
 
- #add_subdirectory("examples")
+ add_subdirectory("examples")
  add_subdirectory("doc")

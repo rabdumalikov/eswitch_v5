@@ -1,4 +1,4 @@
-//  Copyright (c) 2019-2021 Rustam Abdumalikov
+//  Copyright (c) 2019-present Rustam Abdumalikov
 //
 //  "eswitch_v5" library
 //
@@ -22,7 +22,7 @@ int main()
 
     bool executed = false;
 
-    eswitch( 7, 1 )
+    eswitch( 7 )
     (
         Case( _1 != 0 && ( is_positive, _1 ) && ( is_odd, _1 ) ) { executed = true; },
         Default { assert( false ); }
