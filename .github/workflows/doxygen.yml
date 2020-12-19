@@ -1,4 +1,4 @@
-name: Doxygen generate documentation and deploy to gh-pages
+name: Docs generation
 
 on: 
   push:
