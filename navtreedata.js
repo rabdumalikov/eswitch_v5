@@ -48,7 +48,8 @@ var NAVTREE =
           [ "Match for polymorphic types", "index.html#autotoc_md20", null ],
           [ "Match for std::regex", "index.html#autotoc_md21", null ],
           [ "Match and withdraw values from std::regex", "index.html#autotoc_md22", null ]
-        ] ]
+        ] ],
+        [ "Custom Extention", "index.html#autotoc_md23", null ]
       ] ]
     ] ],
     [ "Examples", "md_examples.html", [
@@ -61,7 +62,10 @@ var NAVTREE =
         [ "out of order match", "md_examples.html#example-out-of-order", null ],
         [ "default case match", "md_examples.html#example-default", null ],
         [ "partial match", "md_examples.html#example-partial-match", null ],
-        [ "match by multiple parameters", "md_examples.html#example-multiple-args", null ]
+        [ "match by multiple parameters", "md_examples.html#example-multiple-args", null ],
+        [ "match for std::any", "md_examples.html#example-std-any-match", null ],
+        [ "match for std::variant<...>", "md_examples.html#example-std-variant-match", null ],
+        [ "match for polymorphic types", "md_examples.html#example-polymorphic-types-match", null ]
       ] ],
       [ "Examples: Falling properties", "md_examples.html#example-falling-properties", [
         [ "explicit fallthrough", "md_examples.html#example-fallthrough", null ],
@@ -92,7 +96,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"index.html#autotoc_md15"
+"index.html#autotoc_md14"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

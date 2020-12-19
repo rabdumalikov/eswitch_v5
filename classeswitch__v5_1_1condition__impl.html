@@ -106,8 +106,9 @@ $(document).ready(function(){initNavTree('classeswitch__v5_1_1condition__impl.ht
 <div class="textblock"><h3>template&lt;Comparison_operators CmpOperator, Index TIndex, typename CaseEntry, typename ... Modules&gt;<br />
 class eswitch_v5::condition_impl&lt; CmpOperator, TIndex, CaseEntry, Modules &gt;</h3>
 
+<p>Compares value with corresponding entry in <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/tuple.html">std::tuple</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00490">490</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00505">505</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 </div><div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-0-trigger" src="closed.png" alt="+"/> Inheritance diagram for eswitch_v5::condition_impl&lt; CmpOperator, TIndex, CaseEntry, Modules &gt;:</div>
 <div id="dynsection-0-summary" class="dynsummary" style="display:block;">
@@ -176,7 +177,7 @@ template&lt;Comparison_operators , Index , typename , typename... &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00493">493</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00508">508</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -208,10 +209,10 @@ template&lt;std::size_t MaxIndex&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00524">524</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;        { </div>
-<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;            <span class="keywordflow">return</span> TIndex::eswitch_index &gt;= MaxIndex; </div>
-<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;        }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00539">539</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;        { </div>
+<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;            <span class="keywordflow">return</span> TIndex::eswitch_index &gt;= MaxIndex; </div>
+<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;        }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -243,13 +244,13 @@ template&lt;StdTuple TSrcTuple&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00508">508</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;        {</div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;            static_assert( !<a class="code" href="classeswitch__v5_1_1condition__impl.html#afe0f069bb4a22db1c72d83b215d97534">is_out_of_range</a>&lt; std::tuple_size_v&lt; TSrcTuple &gt; &gt;(), </div>
-<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;                    <span class="stringliteral">&quot;Case Index is OUT OF RANGE&quot;</span> ); </div>
-<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160; </div>
-<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;            <span class="keywordflow">return</span> execute( std::get&lt; TIndex::eswitch_index &gt;( src_tuple ), value_ );</div>
-<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;        }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00523">523</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;        {</div>
+<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;            static_assert( !<a class="code" href="classeswitch__v5_1_1condition__impl.html#afe0f069bb4a22db1c72d83b215d97534">is_out_of_range</a>&lt; std::tuple_size_v&lt; TSrcTuple &gt; &gt;(), </div>
+<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;                    <span class="stringliteral">&quot;Case Index is OUT OF RANGE&quot;</span> ); </div>
+<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160; </div>
+<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;            <span class="keywordflow">return</span> execute( std::get&lt; TIndex::eswitch_index &gt;( src_tuple ), value_ );</div>
+<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;        }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -281,10 +282,10 @@ template&lt;StdTuple TSrcTuple&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00517">517</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;        {</div>
-<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;        }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00532">532</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;        {</div>
+<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;        }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -303,7 +304,7 @@ template&lt;Comparison_operators CmpOperator, Index TIndex, typename CaseEntry ,
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00499">499</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00514">514</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -321,7 +322,7 @@ template&lt;Comparison_operators CmpOperator, Index TIndex, typename CaseEntry ,
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00498">498</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00513">513</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -354,16 +355,16 @@ template&lt;typename Arg &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00502">502</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;            : value_( std::forward&lt; Arg &gt;( value ) )</div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;            { </div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;            }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00517">517</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;            : value_( std::forward&lt; Arg &gt;( value ) )</div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;            { </div>
+<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;            }</div>
 </div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="aclasseswitch__v5_1_1condition__impl_html_afe0f069bb4a22db1c72d83b215d97534"><div class="ttname"><a href="classeswitch__v5_1_1condition__impl.html#afe0f069bb4a22db1c72d83b215d97534">eswitch_v5::condition_impl::is_out_of_range</a></div><div class="ttdeci">static constexpr bool is_out_of_range()</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00524">eswitch_v5.hpp:524</a></div></div>
+<div class="ttc" id="aclasseswitch__v5_1_1condition__impl_html_afe0f069bb4a22db1c72d83b215d97534"><div class="ttname"><a href="classeswitch__v5_1_1condition__impl.html#afe0f069bb4a22db1c72d83b215d97534">eswitch_v5::condition_impl::is_out_of_range</a></div><div class="ttdeci">static constexpr bool is_out_of_range()</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00539">eswitch_v5.hpp:539</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

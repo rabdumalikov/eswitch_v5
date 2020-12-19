@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['variables_3517',['Variables',['../group__variables.html',1,'']]]
+  ['other_2dvariables_3517',['Other-variables',['../group__other-variables.html',1,'']]]
 ];
