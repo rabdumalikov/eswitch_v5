@@ -1,0 +1,55 @@
+name: Doxygen generate documentation and deploy to gh-pages
+
+on: 
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Clang 12 and libc++
+      id: install_clang_12
+      shell: bash
+      working-directory: ${{ env.HOME }}
+      run: |
+        wget https://apt.llvm.org/llvm.sh
+        chmod +x llvm.sh
+        sudo ./llvm.sh 12
+        sudo apt-get install libc++-12-dev libc++abi-12-dev
+        ls
+
+    - name: CLANG check
+      run: clang++-12 -v
+
+    - name: Install Doxygen
+      id: install_doxygen
+      shell: bash
+      working-directory: ${{ env.HOME }}
+      run: |
+        sudo apt-get install doxygen
+
+    - name: Doxygen check
+      run: doxygen -v
+
+    - name: Generate Documentation
+      working-directory: ${{ env.HOME }}
+      shell: bash
+      run: |
+           cd doc
+           cmake . 
+           make
+      env:
+        CXX: clang++-12
+        CC: clang-12         
+           
+    - name: Deploy(🚀) generated documentation to gh-pages
+      uses: JamesIves/github-pages-deploy-action@3.7.1
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages # The branch the action should deploy to.
+        FOLDER: doc/doc_doxygen/html # The folder the action should deploy.
+        CLEAN: true # Automatically remove deleted files from the deploy branch

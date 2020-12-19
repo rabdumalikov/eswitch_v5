@@ -7,15 +7,14 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #undef NDEBUG
-#include <assert.h>
-
-#include "eswitch_v5.hpp"
-#include "memory"
-#include <iostream>
+///[stringify_enum]
+#include <cassert>
+#include <string>
+#include <eswitch_v5.hpp>
 
 enum Place{ california, washington, new_york, new_jersey, las_vegas };
 
-const char * example_ENUM_TO_STRING_via_lambda( const Place p )
+const char * to_string( const Place p )
 {
     using namespace eswitch_v5;
 
@@ -26,19 +25,17 @@ const char * example_ENUM_TO_STRING_via_lambda( const Place p )
             Case( new_york )   { return "new_york"; },
             Case( new_jersey ) { return "new_jersey"; },
             Case( las_vegas )  { return "las_vegas"; },
-            Default { return "unknown"; }
+            Default            { return "unknown"; }
         );
 }
 
-int main( /* EXAMPLE: Stringify with eswitch */ )
+int main()
 {
     const std::string actualResult[] = { "california", "washington", "new_york", "new_jersey", "las_vegas" };
 
     for( const auto p : { california, washington, new_york, new_jersey, las_vegas } )
     {
-        assert( std::string{ example_ENUM_TO_STRING_via_lambda( p ) } == 
-            actualResult[ static_cast< int >( p ) ] );
-
-        std::cout << example_ENUM_TO_STRING_via_lambda( p ) << std::endl;
+        assert( std::string{ to_string( p ) } == actualResult[ static_cast< int >( p ) ] );
     }
 }
+///[stringify_enum]
