@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('classeswitch__v5_1_1predicate__conditi
 class eswitch_v5::predicate_condition&lt; TPred, Is &gt;</h3>
 
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00054">54</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00057">57</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -156,12 +156,12 @@ template&lt;std::size_t MaxIndex&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00971">971</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00972"></a><span class="lineno">  972</span>&#160;        {</div>
-<div class="line"><a name="l00973"></a><span class="lineno">  973</span>&#160;            constexpr <a class="codeRef" href="http://en.cppreference.com/w/cpp/container/array.html">std::array</a>&lt; bool, <span class="keyword">sizeof</span>...( Is ) &gt; list{ ( Is &gt;= MaxIndex )... };</div>
-<div class="line"><a name="l00974"></a><span class="lineno">  974</span>&#160; </div>
-<div class="line"><a name="l00975"></a><span class="lineno">  975</span>&#160;            <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/algorithm/find.html">std::find</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/iterator/begin.html">std::begin</a>( list ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/iterator/end.html">std::end</a>( list ), <span class="keyword">true</span> ) != <a class="codeRef" href="http://en.cppreference.com/w/cpp/iterator/end.html">std::end</a>( list );</div>
-<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;        }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00937">937</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00938"></a><span class="lineno">  938</span>&#160;        {</div>
+<div class="line"><a name="l00939"></a><span class="lineno">  939</span>&#160;            constexpr <a class="codeRef" href="http://en.cppreference.com/w/cpp/container/array.html">std::array</a>&lt; bool, <span class="keyword">sizeof</span>...( Is ) &gt; list{ ( Is &gt;= MaxIndex )... };</div>
+<div class="line"><a name="l00940"></a><span class="lineno">  940</span>&#160; </div>
+<div class="line"><a name="l00941"></a><span class="lineno">  941</span>&#160;            <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/algorithm/find.html">std::find</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/iterator/begin.html">std::begin</a>( list ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/iterator/end.html">std::end</a>( list ), <span class="keyword">true</span> ) != <a class="codeRef" href="http://en.cppreference.com/w/cpp/iterator/end.html">std::end</a>( list );</div>
+<div class="line"><a name="l00942"></a><span class="lineno">  942</span>&#160;        }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -193,13 +193,13 @@ template&lt;StdTuple TSrcTuple&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00962">962</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00963"></a><span class="lineno">  963</span>&#160;        {</div>
-<div class="line"><a name="l00964"></a><span class="lineno">  964</span>&#160;            static_assert( !<a class="code" href="classeswitch__v5_1_1predicate__condition.html#a89d3c9b53e7efadc21e072f5bf905d62">is_out_of_range</a>&lt; std::tuple_size_v&lt; TSrcTuple &gt; &gt;(), </div>
-<div class="line"><a name="l00965"></a><span class="lineno">  965</span>&#160;                <span class="stringliteral">&quot;Case Index is OUT OF RANGE&quot;</span> ); </div>
-<div class="line"><a name="l00966"></a><span class="lineno">  966</span>&#160; </div>
-<div class="line"><a name="l00967"></a><span class="lineno">  967</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="classeswitch__v5_1_1predicate__condition.html#ad53386733b9f8828836d68deb182496f">pred_</a>( std::get&lt; Is &gt;( src_tuple )... );</div>
-<div class="line"><a name="l00968"></a><span class="lineno">  968</span>&#160;        }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00928">928</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00929"></a><span class="lineno">  929</span>&#160;        {</div>
+<div class="line"><a name="l00930"></a><span class="lineno">  930</span>&#160;            static_assert( !<a class="code" href="classeswitch__v5_1_1predicate__condition.html#a89d3c9b53e7efadc21e072f5bf905d62">is_out_of_range</a>&lt; std::tuple_size_v&lt; TSrcTuple &gt; &gt;(), </div>
+<div class="line"><a name="l00931"></a><span class="lineno">  931</span>&#160;                <span class="stringliteral">&quot;Case Index is OUT OF RANGE&quot;</span> ); </div>
+<div class="line"><a name="l00932"></a><span class="lineno">  932</span>&#160; </div>
+<div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="classeswitch__v5_1_1predicate__condition.html#ad53386733b9f8828836d68deb182496f">pred_</a>( std::get&lt; Is &gt;( src_tuple )... );</div>
+<div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160;        }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -218,7 +218,7 @@ template&lt;typename TPred , std::size_t ... Is&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00953">953</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00919">919</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -251,18 +251,18 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00956">956</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00957"></a><span class="lineno">  957</span>&#160;            : <a class="code" href="classeswitch__v5_1_1predicate__condition.html#ad53386733b9f8828836d68deb182496f">pred_</a>( std::forward&lt; T &gt;( pred ) )</div>
-<div class="line"><a name="l00958"></a><span class="lineno">  958</span>&#160;            {                    </div>
-<div class="line"><a name="l00959"></a><span class="lineno">  959</span>&#160;            }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00922">922</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00923"></a><span class="lineno">  923</span>&#160;            : <a class="code" href="classeswitch__v5_1_1predicate__condition.html#ad53386733b9f8828836d68deb182496f">pred_</a>( std::forward&lt; T &gt;( pred ) )</div>
+<div class="line"><a name="l00924"></a><span class="lineno">  924</span>&#160;            {                    </div>
+<div class="line"><a name="l00925"></a><span class="lineno">  925</span>&#160;            }</div>
 </div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="aclasseswitch__v5_1_1predicate__condition_html_a89d3c9b53e7efadc21e072f5bf905d62"><div class="ttname"><a href="classeswitch__v5_1_1predicate__condition.html#a89d3c9b53e7efadc21e072f5bf905d62">eswitch_v5::predicate_condition::is_out_of_range</a></div><div class="ttdeci">static constexpr bool is_out_of_range()</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00971">eswitch_v5.hpp:971</a></div></div>
+<div class="ttc" id="aclasseswitch__v5_1_1predicate__condition_html_a89d3c9b53e7efadc21e072f5bf905d62"><div class="ttname"><a href="classeswitch__v5_1_1predicate__condition.html#a89d3c9b53e7efadc21e072f5bf905d62">eswitch_v5::predicate_condition::is_out_of_range</a></div><div class="ttdeci">static constexpr bool is_out_of_range()</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00937">eswitch_v5.hpp:937</a></div></div>
 <div class="ttc" id="afind_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/algorithm/find.html">std::find</a></div><div class="ttdeci">T find(T... args)</div></div>
-<div class="ttc" id="aclasseswitch__v5_1_1predicate__condition_html_ad53386733b9f8828836d68deb182496f"><div class="ttname"><a href="classeswitch__v5_1_1predicate__condition.html#ad53386733b9f8828836d68deb182496f">eswitch_v5::predicate_condition::pred_</a></div><div class="ttdeci">TPred pred_</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00953">eswitch_v5.hpp:953</a></div></div>
+<div class="ttc" id="aclasseswitch__v5_1_1predicate__condition_html_ad53386733b9f8828836d68deb182496f"><div class="ttname"><a href="classeswitch__v5_1_1predicate__condition.html#ad53386733b9f8828836d68deb182496f">eswitch_v5::predicate_condition::pred_</a></div><div class="ttdeci">TPred pred_</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00919">eswitch_v5.hpp:919</a></div></div>
 <div class="ttc" id="aarray_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/array.html">std::array</a></div><div class="ttdoc">STL class.</div></div>
 <div class="ttc" id="abegin_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/iterator/begin.html">std::begin</a></div><div class="ttdeci">T begin(T... args)</div></div>
 <div class="ttc" id="aend_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/iterator/end.html">std::end</a></div><div class="ttdeci">T end(T... args)</div></div>

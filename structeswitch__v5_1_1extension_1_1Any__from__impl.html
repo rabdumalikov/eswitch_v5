@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('structeswitch__v5_1_1extension_1_1Any_
 struct eswitch_v5::extension::Any_from_impl&lt; T, Sz &gt;</h3>
 
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00098">98</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00101">101</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -164,14 +164,14 @@ template&lt;typename T_ &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00109">109</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            {</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="preprocessor">                #ifdef __cpp_lib_ranges</span></div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                    <span class="keywordflow">return</span> std::ranges::find( st.anythings, value ) != <a class="codeRef" href="http://en.cppreference.com/w/cpp/iterator/end.html">std::end</a>( st.anythings  );</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="preprocessor">                #else</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                    <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/algorithm/find.html">std::find</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/iterator/begin.html">std::begin</a>( st.anythings ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/iterator/end.html">std::end</a>( st.anythings ), value ) != <a class="codeRef" href="http://en.cppreference.com/w/cpp/iterator/end.html">std::end</a>( st.anythings  );</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="preprocessor">                #endif</span></div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00112">112</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            {</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="preprocessor">                #ifdef __cpp_lib_ranges</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                    <span class="keywordflow">return</span> std::ranges::find( st.anythings, value ) != <a class="codeRef" href="http://en.cppreference.com/w/cpp/iterator/end.html">std::end</a>( st.anythings  );</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="preprocessor">                #else</span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                    <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/algorithm/find.html">std::find</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/iterator/begin.html">std::begin</a>( st.anythings ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/iterator/end.html">std::end</a>( st.anythings ), value ) != <a class="codeRef" href="http://en.cppreference.com/w/cpp/iterator/end.html">std::end</a>( st.anythings  );</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="preprocessor">                #endif</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;            }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -190,7 +190,7 @@ template&lt;typename T , std::size_t Sz&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00100">100</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00103">103</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -223,17 +223,17 @@ template&lt;typename ... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00103">103</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                : <a class="code" href="structeswitch__v5_1_1extension_1_1Any__from__impl.html#a53ab06db12b07a3b6a62c7e766572815">anythings</a>{ std::forward&lt; Args &gt;( args )... }</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                {</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00106">106</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                : <a class="code" href="structeswitch__v5_1_1extension_1_1Any__from__impl.html#a53ab06db12b07a3b6a62c7e766572815">anythings</a>{ std::forward&lt; Args &gt;( args )... }</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                {</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                }</div>
 </div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="afind_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/algorithm/find.html">std::find</a></div><div class="ttdeci">T find(T... args)</div></div>
-<div class="ttc" id="astructeswitch__v5_1_1extension_1_1Any__from__impl_html_a53ab06db12b07a3b6a62c7e766572815"><div class="ttname"><a href="structeswitch__v5_1_1extension_1_1Any__from__impl.html#a53ab06db12b07a3b6a62c7e766572815">eswitch_v5::extension::Any_from_impl::anythings</a></div><div class="ttdeci">std::array&lt; T, Sz &gt; anythings</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00100">eswitch_v5.hpp:100</a></div></div>
+<div class="ttc" id="astructeswitch__v5_1_1extension_1_1Any__from__impl_html_a53ab06db12b07a3b6a62c7e766572815"><div class="ttname"><a href="structeswitch__v5_1_1extension_1_1Any__from__impl.html#a53ab06db12b07a3b6a62c7e766572815">eswitch_v5::extension::Any_from_impl::anythings</a></div><div class="ttdeci">std::array&lt; T, Sz &gt; anythings</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00103">eswitch_v5.hpp:103</a></div></div>
 <div class="ttc" id="abegin_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/iterator/begin.html">std::begin</a></div><div class="ttdeci">T begin(T... args)</div></div>
 <div class="ttc" id="aend_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/iterator/end.html">std::end</a></div><div class="ttdeci">T end(T... args)</div></div>
 <!-- start footer part -->

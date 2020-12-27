@@ -31,51 +31,62 @@ var NAVTREE =
       ] ],
       [ "Quick Start", "index.html#tutorial-quick-start", [
         [ "Motivation", "index.html#autotoc_md5", null ],
-        [ "Conventions used in this document:", "index.html#autotoc_md6", null ],
+        [ "Conventions used in this document", "index.html#autotoc_md6", null ],
         [ "Similarities", "index.html#autotoc_md7", null ],
         [ "Keywords", "index.html#autotoc_md8", null ],
-        [ "Syntax", "index.html#autotoc_md9", null ],
-        [ "Features", "index.html#autotoc_md10", [
-          [ "Params referencing via indexes", "index.html#autotoc_md11", null ],
-          [ "If indexes aren't provided, then it is assummed that they're sequential", "index.html#autotoc_md12", null ],
-          [ "Matching via predicates:(it could be either a lambda or a free function)", "index.html#autotoc_md13", null ],
-          [ "Check in range via predicate", "index.html#autotoc_md14", null ],
-          [ "Any_from helper function", "index.html#autotoc_md15", null ],
-          [ "Default case", "index.html#autotoc_md16", null ],
-          [ "Return value from Case", "index.html#autotoc_md17", null ],
-          [ "Match for std::any or std::variant", "index.html#autotoc_md18", null ],
-          [ "Match and withdraw value from std::any or std::variant", "index.html#autotoc_md19", null ],
-          [ "Match for polymorphic types", "index.html#autotoc_md20", null ],
-          [ "Match for std::regex", "index.html#autotoc_md21", null ],
-          [ "Match and withdraw values from std::regex", "index.html#autotoc_md22", null ]
+        [ "Syntax", "index.html#syntax", null ],
+        [ "Features", "index.html#autotoc_md9", [
+          [ "Params referencing via indexes", "index.html#autotoc_md10", null ],
+          [ "If indexes aren't provided, then it is assummed that they're sequential", "index.html#autotoc_md11", null ],
+          [ "Matching via predicates:(it could be either a lambda or a free function)", "index.html#autotoc_md12", null ],
+          [ "Check in range via predicate", "index.html#autotoc_md13", null ],
+          [ "Any_from helper function", "index.html#autotoc_md14", null ],
+          [ "Default case", "index.html#autotoc_md15", null ],
+          [ "Return value from Case", "index.html#autotoc_md16", null ],
+          [ "Match for std::any or std::variant", "index.html#autotoc_md17", null ],
+          [ "Match and withdraw value from std::any or std::variant", "index.html#autotoc_md18", null ],
+          [ "Match for polymorphic types", "index.html#autotoc_md19", null ],
+          [ "Match for std::regex", "index.html#autotoc_md20", null ],
+          [ "Match and withdraw values from std::regex", "index.html#autotoc_md21", null ]
         ] ],
-        [ "Custom Extention", "index.html#autotoc_md23", null ]
+        [ "How to write Custom Extentions?", "index.html#autotoc_md22", null ],
+        [ "Rationalities", "index.html#autotoc_md23", null ]
       ] ]
     ] ],
     [ "Examples", "md_examples.html", [
-      [ "Examples: Matching", "md_examples.html#example-matching", [
-        [ "free function predicate", "md_examples.html#example-predicate-free-function", null ],
-        [ "lambda predicate", "md_examples.html#example-predicates", null ],
-        [ "mixed conditions", "md_examples.html#example-mixed-condition", null ],
-        [ "regex match", "md_examples.html#example-regex", null ],
-        [ "regex match and withdraw", "md_examples.html#example-regex-withdraw", null ],
-        [ "out of order match", "md_examples.html#example-out-of-order", null ],
-        [ "default case match", "md_examples.html#example-default", null ],
-        [ "partial match", "md_examples.html#example-partial-match", null ],
-        [ "match by multiple parameters", "md_examples.html#example-multiple-args", null ],
-        [ "match for std::any", "md_examples.html#example-std-any-match", null ],
-        [ "match for std::variant<...>", "md_examples.html#example-std-variant-match", null ],
-        [ "match for polymorphic types", "md_examples.html#example-polymorphic-types-match", null ]
+      [ "Matching", "md_examples.html#example-matching", [
+        [ "Default case match", "md_examples.html#example-default", null ],
+        [ "Match by multiple parameters", "md_examples.html#example-multiple-args", null ],
+        [ "Out of order match", "md_examples.html#example-out-of-order", null ],
+        [ "Partial match", "md_examples.html#example-partial-match", null ],
+        [ "Mixed conditions", "md_examples.html#example-mixed-condition", null ],
+        [ "Predicates", "md_examples.html#Predicate", [
+          [ "Free function predicate", "md_examples.html#example-predicate-free-function", null ],
+          [ "Lambda predicate", "md_examples.html#example-predicates", null ]
+        ] ],
+        [ "Regex", "md_examples.html#Regex", [
+          [ "Just match", "md_examples.html#example-regex", null ],
+          [ "Match and withdraw", "md_examples.html#example-regex-withdraw", null ]
+        ] ],
+        [ "Withdrawing underlying value", "md_examples.html#Withdrawing", [
+          [ "Match for std::any", "md_examples.html#example-std-any-match", null ],
+          [ "Match for std::variant<...>", "md_examples.html#example-std-variant-match", null ],
+          [ "Match for polymorphic types", "md_examples.html#example-polymorphic-types-match", null ]
+        ] ]
       ] ],
-      [ "Examples: Falling properties", "md_examples.html#example-falling-properties", [
-        [ "explicit fallthrough", "md_examples.html#example-fallthrough", null ],
-        [ "implicit break", "md_examples.html#example-break", null ]
+      [ "Falling properties", "md_examples.html#example-falling-properties", [
+        [ "Explicit fallthrough", "md_examples.html#example-fallthrough", null ],
+        [ "Implicit break", "md_examples.html#example-break", null ]
       ] ],
-      [ "Examples: Utilities", "md_examples.html#example-utilities", [
+      [ "Utilities", "md_examples.html#example-utilities", [
         [ "any_from", "md_examples.html#example-any-from", null ]
       ] ],
-      [ "Examples: Real world", "md_examples.html#example-stringify", [
-        [ "enum to string", "md_examples.html#example-enum-to-string", null ]
+      [ "Stringification", "md_examples.html#example-stringify", [
+        [ "Enum to string", "md_examples.html#example-enum-to-string", null ]
+      ] ],
+      [ "Customization", "md_examples.html#example-extension", [
+        [ "Floating point comparison", "md_examples.html#example-floating-point-comparison", null ],
+        [ "Value and Type transferring", "md_examples.html#example-value-and-type-transferring", null ]
       ] ]
     ] ],
     [ "Reference", "modules.html", "modules" ],
@@ -96,7 +107,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"index.html#autotoc_md14"
+"index.html#autotoc_md12"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -105,15 +105,15 @@ Variables</h2></td></tr>
 <tr class="memitem:ga57a8c7916a2de5e798b48e2519eedacd"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga57a8c7916a2de5e798b48e2519eedacd"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga57a8c7916a2de5e798b48e2519eedacd">eswitch_v5::Callable</a> = <a class="el" href="group__utilities.html#ga512ecd4e1a373170588dccf85dacca24">details::is_callable_v</a>&lt; T &gt;</td></tr>
 <tr class="separator:ga57a8c7916a2de5e798b48e2519eedacd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga6a3d3c44f3d56e66bb9fcbd9af0d54ae"><td class="memTemplParams" colspan="2">template&lt;typename T , typename U &gt; </td></tr>
-<tr class="memitem:ga6a3d3c44f3d56e66bb9fcbd9af0d54ae"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga6a3d3c44f3d56e66bb9fcbd9af0d54ae">eswitch_v5::Comparable</a></td></tr>
-<tr class="separator:ga6a3d3c44f3d56e66bb9fcbd9af0d54ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad6df8636b7cc6410b1d35e8dc37ae10e"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:gad6df8636b7cc6410b1d35e8dc37ae10e"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#gad6df8636b7cc6410b1d35e8dc37ae10e">eswitch_v5::ComparableExceptAnyAndVariant</a></td></tr>
 <tr class="separator:gad6df8636b7cc6410b1d35e8dc37ae10e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga086fe3ab6cffc3145cf06b0ae241c184"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga086fe3ab6cffc3145cf06b0ae241c184"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga086fe3ab6cffc3145cf06b0ae241c184">eswitch_v5::Condition</a></td></tr>
 <tr class="separator:ga086fe3ab6cffc3145cf06b0ae241c184"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac88a43b9d7010f224d656cb35b7ba2af"><td class="memTemplParams" colspan="2">template&lt;typename T , typename U &gt; </td></tr>
+<tr class="memitem:gac88a43b9d7010f224d656cb35b7ba2af"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#gac88a43b9d7010f224d656cb35b7ba2af">eswitch_v5::EqualityComparable</a></td></tr>
+<tr class="separator:gac88a43b9d7010f224d656cb35b7ba2af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga172e1153460f09d65aa747fea9241cd3"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga172e1153460f09d65aa747fea9241cd3"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga172e1153460f09d65aa747fea9241cd3">eswitch_v5::has_type</a> = requires{ typename T::type; }</td></tr>
 <tr class="separator:ga172e1153460f09d65aa747fea9241cd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -129,6 +129,9 @@ Variables</h2></td></tr>
 <tr class="memitem:ga942e389b540a1c2cb0e11c2b264561d3"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga942e389b540a1c2cb0e11c2b264561d3"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga942e389b540a1c2cb0e11c2b264561d3">eswitch_v5::IsNotCndPredicate</a> = !<a class="el" href="group__concepts.html#ga12592032b6c450dafe7d579482bbf438">IsCndPredicate</a>&lt; T &gt;</td></tr>
 <tr class="separator:ga942e389b540a1c2cb0e11c2b264561d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaaf34341fff036a90bd405d3c764c8c7b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:gaaf34341fff036a90bd405d3c764c8c7b"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#gaaf34341fff036a90bd405d3c764c8c7b">eswitch_v5::NoneIndex</a> = ( <a class="el" href="group__concepts.html#ga20fabd0691af6078dca8748791786828">Index</a>&lt; T &gt; == false )</td></tr>
+<tr class="separator:gaaf34341fff036a90bd405d3c764c8c7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0878bca80e14e7b601f7c1648594a2b1"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga0878bca80e14e7b601f7c1648594a2b1"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga0878bca80e14e7b601f7c1648594a2b1">eswitch_v5::ReturnValueNoneVoid</a></td></tr>
 <tr class="separator:ga0878bca80e14e7b601f7c1648594a2b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -156,32 +159,7 @@ template&lt;typename T &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00397">397</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-
-</div>
-</div>
-<a id="ga6a3d3c44f3d56e66bb9fcbd9af0d54ae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga6a3d3c44f3d56e66bb9fcbd9af0d54ae">&#9670;&nbsp;</a></span>Comparable</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T , typename U &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">concept eswitch_v5::Comparable</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
-<b>Initial value:</b><div class="fragment"><div class="line">= </div>
-<div class="line">        requires( T a, U b ) {</div>
-<div class="line">        { a == b };</div>
-<div class="line">        { a != b };</div>
-<div class="line">    }</div>
-</div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00379">379</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00393">393</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -208,7 +186,7 @@ template&lt;typename T &gt; </div>
 <div class="line">        { a != b };</div>
 <div class="line">    }</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00370">370</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00373">373</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -233,7 +211,30 @@ template&lt;typename T &gt; </div>
 <div class="line">        std::decay_t&lt; T &gt;::template is_out_of_range&lt; <a class="codeRef" href="http://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a>{} &gt;(); </div>
 <div class="line">    }</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00036">36</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00039">39</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+
+</div>
+</div>
+<a id="gac88a43b9d7010f224d656cb35b7ba2af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac88a43b9d7010f224d656cb35b7ba2af">&#9670;&nbsp;</a></span>EqualityComparable</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename U &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">concept eswitch_v5::EqualityComparable</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
+<b>Initial value:</b><div class="fragment"><div class="line">= </div>
+<div class="line">        requires( T a, U b ) </div>
+<div class="line">            { a == b; }</div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00497">497</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -253,7 +254,7 @@ template&lt;typename T &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00364">364</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00367">367</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -273,7 +274,7 @@ template&lt;typename T &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00367">367</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00370">370</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -313,7 +314,7 @@ template&lt;typename T &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00391">391</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00387">387</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -333,7 +334,27 @@ template&lt;typename T &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00394">394</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00390">390</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+
+</div>
+</div>
+<a id="gaaf34341fff036a90bd405d3c764c8c7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaaf34341fff036a90bd405d3c764c8c7b">&#9670;&nbsp;</a></span>NoneIndex</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">concept eswitch_v5::NoneIndex = ( <a class="el" href="group__concepts.html#ga20fabd0691af6078dca8748791786828">Index</a>&lt; T &gt; == false )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
+
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00036">36</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -357,7 +378,7 @@ template&lt;typename T &gt; </div>
 <div class="line">        <span class="keywordtype">void</span> </div>
 <div class="line">    &gt;</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00386">386</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00382">382</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -377,7 +398,7 @@ template&lt;typename T &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00403">403</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00399">399</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -397,7 +418,7 @@ template&lt;typename T &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00400">400</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00396">396</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>

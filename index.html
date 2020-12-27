@@ -103,25 +103,26 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </ul>
 </li>
 <li class="level1"><a href="#tutorial-quick-start">Quick Start</a><ul><li class="level2"><a href="#autotoc_md5">Motivation</a></li>
-<li class="level2"><a href="#autotoc_md6">Conventions used in this document:</a></li>
+<li class="level2"><a href="#autotoc_md6">Conventions used in this document</a></li>
 <li class="level2"><a href="#autotoc_md7">Similarities</a></li>
 <li class="level2"><a href="#autotoc_md8">Keywords</a></li>
-<li class="level2"><a href="#autotoc_md9">Syntax</a></li>
-<li class="level2"><a href="#autotoc_md10">Features</a><ul><li class="level3"><a href="#autotoc_md11">Params referencing via indexes</a></li>
-<li class="level3"><a href="#autotoc_md12">If indexes aren&#39;t provided, then it is assummed that they&#39;re sequential</a></li>
-<li class="level3"><a href="#autotoc_md13">Matching via predicates:(it could be either a lambda or a free function)</a></li>
-<li class="level3"><a href="#autotoc_md14">Check in range via predicate</a></li>
-<li class="level3"><a href="#autotoc_md15">Any_from helper function</a></li>
-<li class="level3"><a href="#autotoc_md16">Default case</a></li>
-<li class="level3"><a href="#autotoc_md17">Return value from Case</a></li>
-<li class="level3"><a href="#autotoc_md18">Match for std::any or std::variant</a></li>
-<li class="level3"><a href="#autotoc_md19">Match and withdraw value from std::any or std::variant</a></li>
-<li class="level3"><a href="#autotoc_md20">Match for polymorphic types</a></li>
-<li class="level3"><a href="#autotoc_md21">Match for std::regex</a></li>
-<li class="level3"><a href="#autotoc_md22">Match and withdraw values from std::regex</a></li>
+<li class="level2"><a href="#syntax">Syntax</a></li>
+<li class="level2"><a href="#autotoc_md9">Features</a><ul><li class="level3"><a href="#autotoc_md10">Params referencing via indexes</a></li>
+<li class="level3"><a href="#autotoc_md11">If indexes aren&#39;t provided, then it is assummed that they&#39;re sequential</a></li>
+<li class="level3"><a href="#autotoc_md12">Matching via predicates:(it could be either a lambda or a free function)</a></li>
+<li class="level3"><a href="#autotoc_md13">Check in range via predicate</a></li>
+<li class="level3"><a href="#autotoc_md14">Any_from helper function</a></li>
+<li class="level3"><a href="#autotoc_md15">Default case</a></li>
+<li class="level3"><a href="#autotoc_md16">Return value from Case</a></li>
+<li class="level3"><a href="#autotoc_md17">Match for std::any or std::variant</a></li>
+<li class="level3"><a href="#autotoc_md18">Match and withdraw value from std::any or std::variant</a></li>
+<li class="level3"><a href="#autotoc_md19">Match for polymorphic types</a></li>
+<li class="level3"><a href="#autotoc_md20">Match for std::regex</a></li>
+<li class="level3"><a href="#autotoc_md21">Match and withdraw values from std::regex</a></li>
 </ul>
 </li>
-<li class="level2"><a href="#autotoc_md23">Custom Extention</a></li>
+<li class="level2"><a href="#autotoc_md22">How to write Custom Extentions?</a></li>
+<li class="level2"><a href="#autotoc_md23">Rationalities</a></li>
 </ul>
 </li>
 </ul>
@@ -174,7 +175,7 @@ Motivation</h2>
 <p>For modern language like <b>swift</b> it is not an issue, because they have pretty advanced <b>switch statement</b>.</p>
 <p>Based on those factors I decided to write my own implementation of <b>enhanced switch</b> or just <b>eswitch</b>. In my implementation I tried to aim all the <b>limitations</b> and leave the syntax of <b>eswitch</b> as close as possible to <em>native C++</em> <b>switch statement</b>. And last but not least, another my priority was the performance of <b>eswitch</b>, which shouldn't differ by much from <b>native switch</b>.</p>
 <h2><a class="anchor" id="autotoc_md6"></a>
-Conventions used in this document:</h2>
+Conventions used in this document</h2>
 <p>In all code examples, I omit the namespace prefixes for names in the <b><a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a></b> and <b>std</b> namespaces. Also I'm going to use following name conventions:</p><ul>
 <li><b>native switch</b> =&gt; <em>native C++</em> <b>switch statement</b></li>
 <li><b>eswitch</b> =&gt; my custom implementation of <b>enhanced switch statement</b></li>
@@ -230,11 +231,11 @@ Keywords</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyCenter"><em><b>_r</b></em> </td><td class="markdownTableBodyCenter"><em>user defined literal for <b><a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></b></em>  </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md9"></a>
+<h2><a class="anchor" id="syntax"></a>
 Syntax</h2>
 <div class="fragment"><div class="line">eswitch( __params__ )</div>
 <div class="line">( </div>
-<div class="line">    Case( __conditions__ )( __value__ ) { ... } ^ __options__,</div>
+<div class="line">    Case( __conditions__ )( __input_value__ ) { ... } ^ __options__,</div>
 <div class="line">    Default { ... }</div>
 <div class="line">);</div>
 </div><!-- fragment --><p>Where</p>
@@ -249,7 +250,7 @@ or match via <b>any_from</b>( i.e. _1 == <b>any_from</b>( smth1, smth1, ... )<br
 or match via <b>predicate</b>( i.e. ( pred1, _1 ) &amp;&amp; ( pred2, _2 ) &amp;&amp; ... )  </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyCenter"><em><b>Optional:</b></em><br  />
-<span style="color:blue">__value__</span> </td><td class="markdownTableBodyCenter">withdrawn values from: <b>std::any</b>, <b>std::variant&lt;...&gt;</b>,<br  />
+<span style="color:blue">__input_value__</span> </td><td class="markdownTableBodyCenter">withdrawn values from: <b>std::any</b>, <b>std::variant&lt;...&gt;</b>,<br  />
  <b>polymorphic match</b> or <b><a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a> match</b>.  </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyCenter"><em><b>Optional:</b></em><br  />
@@ -257,7 +258,7 @@ or match via <b>predicate</b>( i.e. ( pred1, _1 ) &amp;&amp; ( pred2, _2 ) &amp;
  [<b>fallthrough_</b> =&gt; <em>execute body of the following case</em>] or <br  />
  [<b>likely_</b> which will be introduced in future]  </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md10"></a>
+<h2><a class="anchor" id="autotoc_md9"></a>
 Features</h2>
 <ul>
 <li><b>implicit break</b> - you don't have to specify it</li>
@@ -268,7 +269,7 @@ Features</h2>
 <li><b>match for</b>: <em>std::any, std::variant, <a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></em></li>
 <li><b>match and withdraw value from</b>: <em>std::any, std::variant, <a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></em></li>
 </ul>
-<h3><a class="anchor" id="autotoc_md11"></a>
+<h3><a class="anchor" id="autotoc_md10"></a>
 Params referencing via indexes</h3>
 <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1, p2 )</div>
 <div class="line">(</div>
@@ -278,14 +279,14 @@ Params referencing via indexes</h3>
 <div class="line"><span class="comment">// i.e.</span></div>
 <div class="line">     <span class="keywordflow">if</span>( p1 == <span class="keyword">true</span> &amp;&amp; p2 == <span class="keyword">true</span> ) {...}</div>
 <div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span>( p1 == <span class="keyword">true</span> || p2 == <span class="keyword">true</span> ) {...}</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md12"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md11"></a>
 If indexes aren't provided, then it is assummed that they're sequential</h3>
 <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1, p2 )</div>
 <div class="line">(</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <span class="keyword">true</span>, <span class="keyword">false</span> ) {...}, <span class="comment">// same as &quot;Case( _1 == true &amp;&amp; _2 == false )&quot; </span></div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <span class="keyword">false</span> ){...}</div>
 <div class="line">);</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md13"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md12"></a>
 Matching via predicates:(it could be either a lambda or a free function)</h3>
 <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1, p2 )</div>
 <div class="line">(</div>
@@ -296,7 +297,7 @@ Matching via predicates:(it could be either a lambda or a free function)</h3>
 <div class="line"><span class="comment">// i.e.</span></div>
 <div class="line">     <span class="keywordflow">if</span>( is_odd( p1 ) &amp;&amp; is_odd( p2) ) {...}</div>
 <div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span>( is_negative( p1, p2 ) ) {...}</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md14"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md13"></a>
 Check in range via predicate</h3>
 <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1 )</div>
 <div class="line">(</div>
@@ -313,7 +314,7 @@ Check in range via predicate</h3>
 <div class="line"><span class="comment">// i.e.</span></div>
 <div class="line">     <span class="keywordflow">if</span>( p1 &gt;  1  &amp;&amp; p1 &lt; 10 )  {...}</div>
 <div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span>( p1 &gt;= 11 &amp;&amp; p1 &lt;= 20 ) {...}</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md15"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md14"></a>
 Any_from helper function</h3>
 <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( file_extention )</div>
 <div class="line">(</div>
@@ -321,34 +322,34 @@ Any_from helper function</h3>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">any_from</a>( <span class="stringliteral">&quot;h&quot;</span>, <span class="stringliteral">&quot;hpp&quot;</span>, <span class="stringliteral">&quot;hh&quot;</span>, <span class="stringliteral">&quot;h++&quot;</span>, <span class="stringliteral">&quot;hxx&quot;</span>, <span class="stringliteral">&quot;H&quot;</span> ) ) {...},</div>
 <div class="line">    <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> {...}</div>
 <div class="line">);</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md16"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md15"></a>
 Default case</h3>
 <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1 )</div>
 <div class="line">(</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <span class="keyword">false</span> ) {...},</div>
 <div class="line">    <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> {...}</div>
 <div class="line">);</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md17"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md16"></a>
 Return value from Case</h3>
 <div class="fragment"><div class="line"><span class="keywordtype">bool</span> val = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1 ) </div>
 <div class="line">(</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1 ) { <span class="keywordflow">return</span> <span class="keyword">true</span>; }</div>
 <div class="line">);</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md18"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md17"></a>
 Match for std::any or std::variant</h3>
 <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( any_ ) </div>
 <div class="line">(</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; int &gt;{} ) {...}, <span class="comment">// will be executed in &#39;std::any&#39; contain &#39;int&#39;</span></div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; string &gt;{} ) {...} <span class="comment">// will be executed in &#39;std::any&#39; contain &#39;std::string&#39;</span></div>
 <div class="line">);</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md19"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md18"></a>
 Match and withdraw value from std::any or std::variant</h3>
 <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( any ) </div>
 <div class="line">(</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; int &gt;{} )( <span class="keyword">const</span> <span class="keywordtype">int</span> value ) {...}, <span class="comment">// Note that keyword &#39;auto&#39; isn&#39;t allowed( i.e. code won&#39;t compile )</span></div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; string &gt;{} )( <span class="keyword">const</span> <span class="keywordtype">string</span> &amp; value ) {...}</div>
 <div class="line">);</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md20"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md19"></a>
 Match for polymorphic types</h3>
 <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( base_ptr ) </div>
 <div class="line">(</div>
@@ -361,35 +362,94 @@ Match for polymorphic types</h3>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; circle &gt;{} )( circle &amp; c ) { c.draw(); },</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; square &gt;{} )( square &amp; s ) { s.draw(); }</div>
 <div class="line">);</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md21"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md20"></a>
 Match for std::regex</h3>
 <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( text ) </div>
 <div class="line">(</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;(\w*)&quot;_r ) { </span><span class="keywordflow">return</span> <span class="stringliteral">&quot;message&quot;</span>; },</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;(\d*)&quot;_r ) { </span><span class="keywordflow">return</span> <span class="stringliteral">&quot;number&quot;</span>; }</div>
 <div class="line">);</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md22"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md21"></a>
 Match and withdraw values from std::regex</h3>
 <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( text ) </div>
 <div class="line">(</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;((\w*))&quot;_r )( vector&lt; string &gt; &amp;&amp; match ){ </span><span class="keywordflow">return</span> match[1]; } </div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;((\d*))&quot;_r )( vector&lt; string &gt; &amp;&amp; match ){ </span><span class="keywordflow">return</span> match[1]; } </div>
 <div class="line">);</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md23"></a>
-Custom Extention</h2>
-<p>It is possible to extend various types of condtions which can be matched in </p>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md22"></a>
+How to write Custom Extentions?</h2>
+<p>This guide is about how to <u>use</u> <em>custom types</em> in <b>Case</b> or <u>define</u> <em>custom behavior</em> for some types. We will implement <b>custom extension</b> and I walk you through all the steps and details.</p>
+<p><b>Thing to know:</b></p>
+<p>The only things which we can be customized are all the <b>comparison</b> <code>operators</code> such as '==', '!=', '&gt;', '&lt;' and so on.</p>
+<p><b>Let's begin:</b></p>
+<p>As you may already know that comparing <b>floating points</b> is a tricky thing. <b>For example</b> following code fails( because of the <em>precision</em> ). </p><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 2 - 0.7000000001 )</div>
+<div class="line">(</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1.3 )</div>
+<div class="line">    {</div>
+<div class="line">        ...</div>
+<div class="line">    },</div>
+<div class="line">    <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> </div>
+<div class="line">    { </div>
+<div class="line">        assert( <span class="keyword">false</span> ); </div>
+<div class="line">    }</div>
+<div class="line">);</div>
+</div><!-- fragment --><p>So standard way of comparing <b>floating points</b> doesn't work properly. On top of that, simple overloading <code>operator==</code> for primitives is <a href="https://eel.is/c++draft/over.oper#general-7">forbidden</a>.</p>
+<div class="fragment"><div class="line"><span class="keywordtype">bool</span> <a class="code" href="namespaceeswitch__v5_1_1modules.html#abee60b146ec19b7a694959af430f5760">operator==</a>( <span class="keyword">const</span> <span class="keywordtype">double</span> d1, <span class="keyword">const</span> <span class="keywordtype">double</span> d1 )</div>
+<div class="line">{</div>
+<div class="line">    ...</div>
+<div class="line">}</div>
+<div class="line"><span class="comment">/// Compilation ERROR: overloaded &#39;operator==&#39; must have at least one parameter of class or enumeration type</span></div>
+</div><!-- fragment --><p>To overcome this we need to use an <b>intermediate class</b> which will hold our value. Like that: </p><div class="fragment"><div class="line"><span class="keyword">struct </span>double_value</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordtype">double</span> value;</div>
+<div class="line">};</div>
+</div><!-- fragment --><p>Then we can use <b>double_value</b> in our <code>operator==</code> : </p><div class="fragment"><div class="line"><span class="keywordtype">bool</span> <a class="code" href="namespaceeswitch__v5_1_1modules.html#abee60b146ec19b7a694959af430f5760">operator==</a>( <span class="keyword">const</span> <span class="keywordtype">double</span> d1, <span class="keyword">const</span> double_value d2 )</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/numeric/math/fabs.html">fabs</a>( d1 - d2.value ) &lt; __FLT_EPSILON__;</div>
+<div class="line">}</div>
+</div><!-- fragment --><p>And now code below will work as we desired( since using <b>double_value</b> allows for compiler through <b>name lookup</b> to find our custom <code>operator==</code> ). </p><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 2 - 0.7000000001 )</div>
+<div class="line">(</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( double_value{ 1.3 } ) </div>
+<div class="line">    {</div>
+<div class="line">        ...</div>
+<div class="line">    },</div>
+<div class="line">    <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> </div>
+<div class="line">    { </div>
+<div class="line">        assert( <span class="keyword">false</span> ); </div>
+<div class="line">    }</div>
+<div class="line">);</div>
+</div><!-- fragment --><p><b>Full example</b>: <a class="el" href="md_examples.html#example-floating-point-comparison">Floating point comparison</a></p>
+<p><b>NOTE THAT:</b></p>
+<ul>
+<li>An <b>intermediate class</b> should be used all the time( not only for primitives due to compiler restrictions ), since otherwise it won't be possible for compiler to find custom <code>operator</code>( unless this <code>operator</code> will be defined before <code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html" title="implementation">eswitch_v5.hpp</a>&gt;</code>, only then <b>intermediate class</b> won't be needed ).</li>
+<li>Also example below demonstrate if certain value should be returned from custom <code>operator</code> and transferred to <b>Case</b> <a href="#syntax">input value/argument</a>, then the value should be wrapped into <code>std::optional</code>.</li>
+</ul>
+<p><b>For example:</b> <a class="el" href="md_examples.html#example-value-and-type-transferring">Value and Type transferring</a></p>
+<h2><a class="anchor" id="autotoc_md23"></a>
+Rationalities</h2>
+<ul>
+<li>Using macroses for <b>Case</b> and <b>Default</b> allowed me to be as close as possible to <b>C++ switch statement</b> regarding syntax, otherwise there was no way to hide <b>lambda</b> declaration.</li>
+<li>Setting properties via <code>operator^</code> - It is the only <code>operator</code> which is used to set certain properties for <b>values/matrices</b>( in <b>matlab</b> ) and which I find reasonable. Thus I incorporated this notation in my library, like that: <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( some_var )</div>
+<div class="line">(</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( some_value_1 ) {} ^ likely_,</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( some_value_2 ) {} ^ <a class="code" href="group__other-variables.html#ga23e83b648756cadca9232aaf9d7d3d03">fallthrough_</a></div>
+<div class="line">);</div>
+</div><!-- fragment --> </li>
+</ul>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="agroup__index-variables_html_ga0467e341724f219d72f18c1c0885442a"><div class="ttname"><a href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">eswitch_v5::_1</a></div><div class="ttdeci">constexpr Index_&lt; 0 &gt; _1</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00168">eswitch_v5.hpp:168</a></div></div>
-<div class="ttc" id="agroup__other-variables_html_ga23e83b648756cadca9232aaf9d7d3d03"><div class="ttname"><a href="group__other-variables.html#ga23e83b648756cadca9232aaf9d7d3d03">eswitch_v5::fallthrough_</a></div><div class="ttdeci">static constexpr Fallthrough fallthrough_</div><div class="ttdoc">Indicates fall through from previous Case without testing condition of following Case.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01055">eswitch_v5.hpp:1055</a></div></div>
-<div class="ttc" id="agroup__main-components_html_ga11dfab51a8955d42153603db05629b59"><div class="ttname"><a href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">eswitch_v5::any_from</a></div><div class="ttdeci">static constexpr auto any_from(Args &amp;&amp;... args)</div><div class="ttdoc">Helper function which allows to find if something is within the list( passed arguments ).</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01030">eswitch_v5.hpp:1030</a></div></div>
+<div class="ttc" id="agroup__index-variables_html_ga0467e341724f219d72f18c1c0885442a"><div class="ttname"><a href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">eswitch_v5::_1</a></div><div class="ttdeci">constexpr Index_&lt; 0 &gt; _1</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00171">eswitch_v5.hpp:171</a></div></div>
+<div class="ttc" id="afabs_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/numeric/math/fabs.html">std::fabs</a></div><div class="ttdeci">T fabs(T... args)</div></div>
+<div class="ttc" id="agroup__other-variables_html_ga23e83b648756cadca9232aaf9d7d3d03"><div class="ttname"><a href="group__other-variables.html#ga23e83b648756cadca9232aaf9d7d3d03">eswitch_v5::fallthrough_</a></div><div class="ttdeci">static constexpr Fallthrough fallthrough_</div><div class="ttdoc">Indicates fall through from previous Case without testing condition of following Case.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01021">eswitch_v5.hpp:1021</a></div></div>
+<div class="ttc" id="agroup__main-components_html_ga11dfab51a8955d42153603db05629b59"><div class="ttname"><a href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">eswitch_v5::any_from</a></div><div class="ttdeci">static constexpr auto any_from(Args &amp;&amp;... args)</div><div class="ttdoc">Helper function which allows to find if something is within the list( passed arguments ).</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00996">eswitch_v5.hpp:996</a></div></div>
+<div class="ttc" id="anamespaceeswitch__v5_1_1modules_html_abee60b146ec19b7a694959af430f5760"><div class="ttname"><a href="namespaceeswitch__v5_1_1modules.html#abee60b146ec19b7a694959af430f5760">eswitch_v5::modules::operator==</a></div><div class="ttdeci">static auto operator==(const std::string &amp;tuple_entry, const regexter &amp;value)</div><div class="ttdoc">CaseModule to support for matching and withdrawing of values for and from regular expression.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00411">eswitch_v5.hpp:411</a></div></div>
 <div class="ttc" id="abasic_regex_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></div></div>
-<div class="ttc" id="agroup__macroses_html_gaff2b0c246e6111e260e650b0ff4a8eb5"><div class="ttname"><a href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a></div><div class="ttdeci">#define Default</div><div class="ttdoc">Declares body which will be executed in case of no other matches.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01068">eswitch_v5.hpp:1068</a></div></div>
-<div class="ttc" id="agroup__macroses_html_gae733eb4e00d6306a21422f02ef7e8ca4"><div class="ttname"><a href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a></div><div class="ttdeci">#define Case(...)</div><div class="ttdoc">Accepts conditions of various forms.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01065">eswitch_v5.hpp:1065</a></div></div>
-<div class="ttc" id="agroup__main-components_html_ga82f93fb22725d76bb016b488742331d1"><div class="ttname"><a href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch_v5::eswitch</a></div><div class="ttdeci">static constexpr auto eswitch(Ts &amp;&amp;... ts)</div><div class="ttdoc">This function is responsible for passing arguments for class eswitch_impl with overloaded operator(),...</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00877">eswitch_v5.hpp:877</a></div></div>
+<div class="ttc" id="agroup__macroses_html_gaff2b0c246e6111e260e650b0ff4a8eb5"><div class="ttname"><a href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a></div><div class="ttdeci">#define Default</div><div class="ttdoc">Declares body which will be executed in case of no other matches.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01034">eswitch_v5.hpp:1034</a></div></div>
+<div class="ttc" id="agroup__macroses_html_gae733eb4e00d6306a21422f02ef7e8ca4"><div class="ttname"><a href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a></div><div class="ttdeci">#define Case(...)</div><div class="ttdoc">Accepts conditions of various forms.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01031">eswitch_v5.hpp:1031</a></div></div>
+<div class="ttc" id="agroup__main-components_html_ga82f93fb22725d76bb016b488742331d1"><div class="ttname"><a href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch_v5::eswitch</a></div><div class="ttdeci">static constexpr auto eswitch(Ts &amp;&amp;... ts)</div><div class="ttdoc">This function is responsible for passing arguments for class eswitch_impl with overloaded operator(),...</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00843">eswitch_v5.hpp:843</a></div></div>
 <div class="ttc" id="amatch_results_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/regex/match_results.html">std::smatch</a></div></div>
-<div class="ttc" id="agroup__index-variables_html_gacc83659898439dd14b78fc60be68ce28"><div class="ttname"><a href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">eswitch_v5::_2</a></div><div class="ttdeci">constexpr Index_&lt; 1 &gt; _2</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00169">eswitch_v5.hpp:169</a></div></div>
+<div class="ttc" id="agroup__index-variables_html_gacc83659898439dd14b78fc60be68ce28"><div class="ttname"><a href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">eswitch_v5::_2</a></div><div class="ttdeci">constexpr Index_&lt; 1 &gt; _2</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00172">eswitch_v5.hpp:172</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

@@ -1,16 +1,13 @@
 var group__main_components =
 [
     [ "condition", "classeswitch__v5_1_1condition.html", [
+      [ "condition", "classeswitch__v5_1_1condition.html#a49835135eca5333f5718c5ccca38f01a", null ],
+      [ "is_out_of_range", "classeswitch__v5_1_1condition.html#a014690105a8fa2a2d0c701e91e88e3f4", null ],
+      [ "operator()", "classeswitch__v5_1_1condition.html#a11cadc3cc5d3d717d27516ed3f6f6ef0", null ],
+      [ "operator()", "classeswitch__v5_1_1condition.html#a3318f10746167cfc4c92342e3bc6ad2a", null ],
+      [ "idx", "classeswitch__v5_1_1condition.html#ad37f74fac9886eca6f206bca14cbff0f", null ],
+      [ "value_type", "classeswitch__v5_1_1condition.html#a911bc77b2b43dfc1c718d5c4f877f84e", null ],
       [ "condition", "classeswitch__v5_1_1condition.html#abf8cad9f4d1985c1326c778366ca9c0a", null ]
-    ] ],
-    [ "condition_impl", "classeswitch__v5_1_1condition__impl.html", [
-      [ "condition_impl", "classeswitch__v5_1_1condition__impl.html#a78d0e9b653d5cb6c1e31f6daa041e1e4", null ],
-      [ "is_out_of_range", "classeswitch__v5_1_1condition__impl.html#afe0f069bb4a22db1c72d83b215d97534", null ],
-      [ "operator()", "classeswitch__v5_1_1condition__impl.html#a63c35b486b48a2e42aab9d1b8c5d7752", null ],
-      [ "operator()", "classeswitch__v5_1_1condition__impl.html#ad3de5019862e13053710ace722733476", null ],
-      [ "idx", "classeswitch__v5_1_1condition__impl.html#a67f4b2ccacded9e314f9353e835e5f0d", null ],
-      [ "value_type", "classeswitch__v5_1_1condition__impl.html#a6c75bde82abd4568a76e32c0c5529eda", null ],
-      [ "condition_impl", "classeswitch__v5_1_1condition__impl.html#ad9e7c7584f88da49ad9731cceacc0e5a", null ]
     ] ],
     [ "condition_with_predicate", "structeswitch__v5_1_1condition__with__predicate.html", [
       [ "cnd", "structeswitch__v5_1_1condition__with__predicate.html#a4e1398b12a0d512e6faa544a6bb7b9d8", null ],

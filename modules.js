@@ -6,7 +6,7 @@ var modules =
     [ "Deduction-guides", "group__deduction-guides.html", "group__deduction-guides" ],
     [ "Index-variables", "group__index-variables.html", "group__index-variables" ],
     [ "Utilities", "group__utilities.html", "group__utilities" ],
-    [ "Condition-modules", "group__condition-modules.html", "group__condition-modules" ],
+    [ "Modules", "group__modules.html", "group__modules" ],
     [ "Other-variables", "group__other-variables.html", "group__other-variables" ],
     [ "Macroses", "group__macroses.html", "group__macroses" ]
 ];
