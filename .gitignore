@@ -1,3 +1,5 @@
 build/
 /bench.txt
 */doc_doxygen/*
+*/CMakeFiles/*
+/doc_doxygen/*
