@@ -110,10 +110,10 @@ Functions</h2></td></tr>
 <tr class="memitem:abee60b146ec19b7a694959af430f5760"><td class="memItemLeft" align="right" valign="top">static auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceeswitch__v5_1_1modules.html#abee60b146ec19b7a694959af430f5760">operator==</a> (const <a class="elRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a> &amp;tuple_entry, const <a class="el" href="structeswitch__v5_1_1modules_1_1regexter.html">regexter</a> &amp;value)</td></tr>
 <tr class="memdesc:abee60b146ec19b7a694959af430f5760"><td class="mdescLeft">&#160;</td><td class="mdescRight"><b>CaseModule</b> to support for <em>matching</em> and <em>withdrawing</em> of values for and from <b>regular expression</b>.  <a href="namespaceeswitch__v5_1_1modules.html#abee60b146ec19b7a694959af430f5760">More...</a><br /></td></tr>
 <tr class="separator:abee60b146ec19b7a694959af430f5760"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6379787daf6963723f3ab0f298a027d3"><td class="memTemplParams" colspan="2">template&lt;typename TupleEntry , typename CaseEntry &gt; </td></tr>
-<tr class="memitem:a6379787daf6963723f3ab0f298a027d3"><td class="memTemplItemLeft" align="right" valign="top">static constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceeswitch__v5_1_1modules.html#a6379787daf6963723f3ab0f298a027d3">operator==</a> (TupleEntry &amp;&amp;tuple_entry, const CaseEntry &amp;) noexcept requires <a class="el" href="group__concepts.html#ga172e1153460f09d65aa747fea9241cd3">has_type</a>&lt; CaseEntry &gt;</td></tr>
-<tr class="memdesc:a6379787daf6963723f3ab0f298a027d3"><td class="mdescLeft">&#160;</td><td class="mdescRight"><b>CaseModule</b> to support for <em>matching</em> for various <b>polymorphic types</b>.  <a href="namespaceeswitch__v5_1_1modules.html#a6379787daf6963723f3ab0f298a027d3">More...</a><br /></td></tr>
-<tr class="separator:a6379787daf6963723f3ab0f298a027d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b145037bc57a8511242fd19ddf41f9e"><td class="memTemplParams" colspan="2">template&lt;typename TupleEntry , typename UnderlyingType &gt; </td></tr>
+<tr class="memitem:a5b145037bc57a8511242fd19ddf41f9e"><td class="memTemplItemLeft" align="right" valign="top">static constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceeswitch__v5_1_1modules.html#a5b145037bc57a8511242fd19ddf41f9e">operator==</a> (TupleEntry &amp;&amp;tuple_entry, const <a class="el" href="structeswitch__v5_1_1is.html">is</a>&lt; UnderlyingType &gt; &amp;) noexcept</td></tr>
+<tr class="memdesc:a5b145037bc57a8511242fd19ddf41f9e"><td class="mdescLeft">&#160;</td><td class="mdescRight"><b>CaseModule</b> to support for <em>matching</em> for various <b>polymorphic types</b>.  <a href="namespaceeswitch__v5_1_1modules.html#a5b145037bc57a8511242fd19ddf41f9e">More...</a><br /></td></tr>
+<tr class="separator:a5b145037bc57a8511242fd19ddf41f9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="abee60b146ec19b7a694959af430f5760"></a>
@@ -152,31 +152,31 @@ Functions</h2></td></tr>
 
 <p><b>CaseModule</b> to support for <em>matching</em> and <em>withdrawing</em> of values for and from <b>regular expression</b>. </p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00411">411</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;        {</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;            <span class="keywordflow">if</span>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/match_results.html">std::smatch</a> match; <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/regex_match.html">std::regex_match</a>( tuple_entry, match, value.value ) )</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;            {              </div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;                <a class="codeRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt; std::string &gt;</a> vs;</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;                vs.<a class="codeRef" href="http://en.cppreference.com/w/cpp/container/vector/reserve.html">reserve</a>( match.size() );</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160; </div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;                <span class="keywordflow">for</span>( <span class="keyword">const</span> <span class="keyword">auto</span> &amp; v : match )  </div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;                    vs.<a class="codeRef" href="http://en.cppreference.com/w/cpp/container/vector/push_back.html">push_back</a>( v );</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00414">414</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;        {</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;            <span class="keywordflow">if</span>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/match_results.html">std::smatch</a> match; <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/regex_match.html">std::regex_match</a>( tuple_entry, match, value.value ) )</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;            {              </div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;                <a class="codeRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt; std::string &gt;</a> vs;</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;                vs.<a class="codeRef" href="http://en.cppreference.com/w/cpp/container/vector/reserve.html">reserve</a>( match.size() );</div>
 <div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160; </div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;                <span class="keywordflow">return</span> std::make_optional( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( vs ) );</div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;            }</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;                <span class="keywordflow">for</span>( <span class="keyword">const</span> <span class="keyword">auto</span> &amp; v : match )  </div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;                    vs.<a class="codeRef" href="http://en.cppreference.com/w/cpp/container/vector/push_back.html">push_back</a>( v );</div>
 <div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160; </div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;            <span class="keywordflow">return</span> std::optional&lt; std::vector&lt; std::string &gt; &gt;{};</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;        }</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;                <span class="keywordflow">return</span> std::make_optional( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( vs ) );</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;            }</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160; </div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;            <span class="keywordflow">return</span> std::optional&lt; std::vector&lt; std::string &gt; &gt;{};</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;        }</div>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="a6379787daf6963723f3ab0f298a027d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6379787daf6963723f3ab0f298a027d3">&#9670;&nbsp;</a></span>operator==() <span class="overload">[2/2]</span></h2>
+<a id="a5b145037bc57a8511242fd19ddf41f9e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b145037bc57a8511242fd19ddf41f9e">&#9670;&nbsp;</a></span>operator==() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename TupleEntry , typename CaseEntry &gt; </div>
+template&lt;typename TupleEntry , typename UnderlyingType &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -190,7 +190,7 @@ template&lt;typename TupleEntry , typename CaseEntry &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const CaseEntry &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structeswitch__v5_1_1is.html">is</a>&lt; UnderlyingType &gt; &amp;&#160;</td>
           <td class="paramname">&#160;</td>
         </tr>
         <tr>
@@ -208,32 +208,32 @@ template&lt;typename TupleEntry , typename CaseEntry &gt; </div>
 
 <p><b>CaseModule</b> to support for <em>matching</em> for various <b>polymorphic types</b>. </p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00430">430</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;        {</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;            <span class="keyword">using</span> _T = std::remove_reference_t&lt; TupleEntry &gt;;</div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160; </div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;            <span class="keyword">using</span> type = std::conditional_t&lt; std::is_const_v&lt; std::remove_pointer_t&lt; _T &gt; &gt;, </div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;                    <span class="keyword">const</span> <span class="keyword">typename</span> CaseEntry::type, <span class="keyword">typename</span> CaseEntry::type &gt;;</div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160; </div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;            <span class="keywordflow">if</span> constexpr( std::is_pointer_v&lt; _T &gt; )</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;            {</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;                <span class="keyword">auto</span> * d = <span class="keyword">dynamic_cast&lt;</span> type* <span class="keyword">&gt;</span>( tuple_entry );</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160; </div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;                <span class="keywordflow">return</span> d != <span class="keyword">nullptr</span> ? std::make_optional( d ) : <a class="code" href="namespacestd.html">std</a>::optional&lt; type* &gt;{};                </div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;            }</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;            <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;            {</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;                <span class="keywordflow">try</span></div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;                {</div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;                    <span class="keyword">auto</span> &amp; d = <span class="keyword">dynamic_cast&lt;</span> type&amp; <span class="keyword">&gt;</span>( tuple_entry );</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;                    <span class="keywordflow">return</span> std::make_optional( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/functional/ref.html">std::ref</a>( d ) );</div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;                }</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;                <span class="keywordflow">catch</span>( <span class="keyword">const</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/types/bad_cast.html">std::bad_cast</a> &amp; )</div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;                {                    </div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;                    <span class="keywordflow">return</span> std::optional&lt; std::reference_wrapper&lt; type &gt; &gt;{};</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;                }</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;            }</div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;        }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00433">433</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;        {</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;            <span class="keyword">using</span> _T = std::remove_reference_t&lt; TupleEntry &gt;;</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160; </div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;            <span class="keyword">using</span> type = std::conditional_t&lt; std::is_const_v&lt; std::remove_pointer_t&lt; _T &gt; &gt;, </div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;                    <span class="keyword">const</span> UnderlyingType, UnderlyingType &gt;;</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160; </div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;            <span class="keywordflow">if</span> constexpr( std::is_pointer_v&lt; _T &gt; )</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;            {</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;                <span class="keyword">auto</span> * d = <span class="keyword">dynamic_cast&lt;</span> type* <span class="keyword">&gt;</span>( tuple_entry );</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160; </div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;                <span class="keywordflow">return</span> d != <span class="keyword">nullptr</span> ? std::make_optional( d ) : <a class="code" href="namespacestd.html">std</a>::optional&lt; type* &gt;{};                </div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;            }</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;            {</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;                <span class="keywordflow">try</span></div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;                {</div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;                    <span class="keyword">auto</span> &amp; d = <span class="keyword">dynamic_cast&lt;</span> type&amp; <span class="keyword">&gt;</span>( tuple_entry );</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;                    <span class="keywordflow">return</span> std::make_optional( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/functional/ref.html">std::ref</a>( d ) );</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;                }</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;                <span class="keywordflow">catch</span>( <span class="keyword">const</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/types/bad_cast.html">std::bad_cast</a> &amp; )</div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;                {                    </div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;                    <span class="keywordflow">return</span> std::optional&lt; std::reference_wrapper&lt; type &gt; &gt;{};</div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;                }</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;            }</div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;        }</div>
 </div><!-- fragment -->
 </div>
 </div>

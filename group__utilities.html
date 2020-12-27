@@ -214,7 +214,7 @@ template&lt;typename T &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00307">307</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00310">310</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -247,21 +247,21 @@ template&lt;std::size_t ... Is, typename Tup &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00345">345</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;        {</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;            <span class="keyword">auto</span> combine = []&lt; <span class="keyword">typename</span> T1, <span class="keyword">typename</span> T2 &gt;( T1 &amp;&amp; t1, T2 &amp;&amp; t2 )</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;            {</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                <span class="keywordflow">if</span> constexpr( Condition&lt; T2 &gt; &amp;&amp; Index&lt; T1 &gt; )</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                {</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                    static_assert( T1::eswitch_index == T2::idx::eswitch_index, <span class="stringliteral">&quot;Wrong Index!&quot;</span> );</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                    <span class="keywordflow">return</span> std::forward&lt; T2 &gt;( t2 );</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                }</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                    <span class="keywordflow">return</span> std::forward&lt; T1 &gt;( t1 ) == std::forward&lt; T2 &gt;( t2 );</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;            };</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;            </div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;            <span class="keywordflow">return</span> ( combine( Index_&lt; Is &gt;{}, std::get&lt; Is &gt;( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( values ) ) ) &amp;&amp; ... );</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        }        </div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00348">348</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;        {</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;            <span class="keyword">auto</span> combine = []&lt; <span class="keyword">typename</span> T1, <span class="keyword">typename</span> T2 &gt;( T1 &amp;&amp; t1, T2 &amp;&amp; t2 )</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;            {</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                <span class="keywordflow">if</span> constexpr( Condition&lt; T2 &gt; &amp;&amp; Index&lt; T1 &gt; )</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                {</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                    static_assert( T1::eswitch_index == T2::idx::eswitch_index, <span class="stringliteral">&quot;Wrong Index!&quot;</span> );</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                    <span class="keywordflow">return</span> std::forward&lt; T2 &gt;( t2 );</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                }</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;                    <span class="keywordflow">return</span> std::forward&lt; T1 &gt;( t1 ) == std::forward&lt; T2 &gt;( t2 );</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;            };</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;            </div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;            <span class="keywordflow">return</span> ( combine( Index_&lt; Is &gt;{}, std::get&lt; Is &gt;( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( values ) ) ) &amp;&amp; ... );</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        }        </div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -353,11 +353,11 @@ template&lt;typename ... Cnds&gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00338">338</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;        {</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="group__utilities.html#ga180f8c6763e98b8d9996d6b57610910c">move_default_case_to_the_end_impl</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>(),</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;                std::forward&lt; Cnds &gt;( cnds )... );</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;        }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00341">341</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;        {</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="group__utilities.html#ga180f8c6763e98b8d9996d6b57610910c">move_default_case_to_the_end_impl</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>(),</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;                std::forward&lt; Cnds &gt;( cnds )... );</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -405,26 +405,26 @@ template&lt;typename ... TupleCnds, typename Cnd , typename ... Cnds&gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00316">316</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        {</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;            <span class="keywordflow">if</span> constexpr( <a class="code" href="group__utilities.html#gad8d9b4cca0303f9eb8af0e8ea7d3af45">is_default_case_v</a>&lt; decltype( std::declval&lt; Cnd &gt;().cnd ) &gt; )</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;            {</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;                <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/tuple_cat.html">std::tuple_cat</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( tup ), </div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;                    <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>( </div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;                        std::forward&lt; Cnds &gt;( cnds )..., </div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;                        std::forward&lt; Cnd &gt;( cnd ) ) );</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;            }</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr( <span class="keyword">sizeof</span>...( Cnds ) &gt; 0 )</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;            {</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="group__utilities.html#ga180f8c6763e98b8d9996d6b57610910c">move_default_case_to_the_end_impl</a>( </div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;                    <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/tuple_cat.html">std::tuple_cat</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( tup ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>( std::forward&lt; Cnd &gt;( cnd ) ) ), </div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;                    std::forward&lt; Cnds &gt;( cnds )... );</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;            }</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;            <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;            {</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;                <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/tuple_cat.html">std::tuple_cat</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( tup ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>( std::forward&lt; Cnd &gt;( cnd ) ) );</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;            }                        </div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;        }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00319">319</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        {</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;            <span class="keywordflow">if</span> constexpr( <a class="code" href="group__utilities.html#gad8d9b4cca0303f9eb8af0e8ea7d3af45">is_default_case_v</a>&lt; decltype( std::declval&lt; Cnd &gt;().cnd ) &gt; )</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;            {</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;                <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/tuple_cat.html">std::tuple_cat</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( tup ), </div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;                    <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>( </div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;                        std::forward&lt; Cnds &gt;( cnds )..., </div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;                        std::forward&lt; Cnd &gt;( cnd ) ) );</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;            }</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr( <span class="keyword">sizeof</span>...( Cnds ) &gt; 0 )</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;            {</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="group__utilities.html#ga180f8c6763e98b8d9996d6b57610910c">move_default_case_to_the_end_impl</a>( </div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;                    <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/tuple_cat.html">std::tuple_cat</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( tup ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>( std::forward&lt; Cnd &gt;( cnd ) ) ), </div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;                    std::forward&lt; Cnds &gt;( cnds )... );</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;            }</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;            {</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/tuple_cat.html">std::tuple_cat</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( tup ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>( std::forward&lt; Cnd &gt;( cnd ) ) );</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;            }                        </div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;        }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -453,12 +453,12 @@ template&lt;typename ... TupleCnds, typename Cnd , typename ... Cnds&gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00245">245</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        { </div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;            <span class="keywordflow">if</span>( !std::is_constant_evaluated() ) assert( <span class="keyword">false</span> ); </div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160; </div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>; </div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;        }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00248">248</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        { </div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;            <span class="keywordflow">if</span>( !std::is_constant_evaluated() ) assert( <span class="keyword">false</span> ); </div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>; </div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -487,7 +487,7 @@ template&lt;typename T &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00295">295</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00298">298</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -515,7 +515,7 @@ template&lt;typename T &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00243">243</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00246">246</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -543,7 +543,7 @@ template&lt;typename T &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00195">195</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00198">198</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -571,7 +571,7 @@ template&lt;typename T &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00264">264</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00267">267</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -599,7 +599,7 @@ template&lt;typename T &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00231">231</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00234">234</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -627,7 +627,7 @@ template&lt;typename T &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00216">216</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00219">219</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -655,7 +655,7 @@ template&lt;typename T &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00228">228</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00231">231</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -683,16 +683,16 @@ template&lt;typename T &gt; </div>
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00204">204</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00207">207</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="amake_tuple_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a></div><div class="ttdeci">T make_tuple(T... args)</div></div>
-<div class="ttc" id="agroup__utilities_html_ga180f8c6763e98b8d9996d6b57610910c"><div class="ttname"><a href="group__utilities.html#ga180f8c6763e98b8d9996d6b57610910c">eswitch_v5::details::move_default_case_to_the_end_impl</a></div><div class="ttdeci">constexpr auto move_default_case_to_the_end_impl(std::tuple&lt; TupleCnds... &gt; &amp;&amp;tup, Cnd &amp;&amp;cnd, Cnds &amp;&amp;...cnds)</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00316">eswitch_v5.hpp:316</a></div></div>
+<div class="ttc" id="agroup__utilities_html_ga180f8c6763e98b8d9996d6b57610910c"><div class="ttname"><a href="group__utilities.html#ga180f8c6763e98b8d9996d6b57610910c">eswitch_v5::details::move_default_case_to_the_end_impl</a></div><div class="ttdeci">constexpr auto move_default_case_to_the_end_impl(std::tuple&lt; TupleCnds... &gt; &amp;&amp;tup, Cnd &amp;&amp;cnd, Cnds &amp;&amp;...cnds)</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00319">eswitch_v5.hpp:319</a></div></div>
 <div class="ttc" id="amove_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a></div><div class="ttdeci">T move(T... args)</div></div>
-<div class="ttc" id="agroup__utilities_html_gad8d9b4cca0303f9eb8af0e8ea7d3af45"><div class="ttname"><a href="group__utilities.html#gad8d9b4cca0303f9eb8af0e8ea7d3af45">eswitch_v5::details::is_default_case_v</a></div><div class="ttdeci">constexpr bool is_default_case_v</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00195">eswitch_v5.hpp:195</a></div></div>
+<div class="ttc" id="agroup__utilities_html_gad8d9b4cca0303f9eb8af0e8ea7d3af45"><div class="ttname"><a href="group__utilities.html#gad8d9b4cca0303f9eb8af0e8ea7d3af45">eswitch_v5::details::is_default_case_v</a></div><div class="ttdeci">constexpr bool is_default_case_v</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00198">eswitch_v5.hpp:198</a></div></div>
 <div class="ttc" id="atuple_cat_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/tuple/tuple_cat.html">std::tuple_cat</a></div><div class="ttdeci">T tuple_cat(T... args)</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

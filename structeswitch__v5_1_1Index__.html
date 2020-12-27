@@ -106,7 +106,7 @@ struct eswitch_v5::Index_&lt; Idx &gt;</h3>
 
 <p>This structure is used as a reference to a specific parameter inside <b>eswitch</b>. </p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00138">138</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00141">141</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -154,13 +154,13 @@ template&lt;std::size_t Idx&gt; </div>
 
 <p>Helper method which defines <b>open set</b> of <b>integers</b>. Then this <b>set</b> is used to determine whether certain <em>value</em> is <b>in</b> that <b>set</b>. </p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00147">147</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        {</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;            <span class="keyword">using namespace </span>extension;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;            </div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;            <span class="keyword">using</span> Rng_t = Range&lt; range::open &gt;;</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            <span class="keywordflow">return</span> condition&lt; Comparison_operators::equal, Index_&lt; Idx &gt;, Rng_t &gt;( Rng_t( start, end ) );</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00150">150</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        {</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            <span class="keyword">using namespace </span>extension;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;            </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;            <span class="keyword">using</span> Rng_t = Range&lt; range::open &gt;;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;            <span class="keywordflow">return</span> condition&lt; Comparison_operators::equal, Index_&lt; Idx &gt;, Rng_t &gt;( Rng_t( start, end ) );</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -194,13 +194,13 @@ template&lt;std::size_t Idx&gt; </div>
 
 <p>Helper method which defines <b>close set</b> of <b>integers</b>. Then this <b>set</b> is used to determine whether certain <em>value</em> is <b>within</b> that <b>set</b>. </p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00158">158</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        {</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;            <span class="keyword">using namespace </span>extension;</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;            <span class="keyword">using</span> Rng_t = Range&lt; range::close &gt;;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;            <span class="keywordflow">return</span> condition&lt; Comparison_operators::equal, Index_&lt; Idx &gt;, Rng_t &gt;( Rng_t( start, end ) );</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00161">161</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        {</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;            <span class="keyword">using namespace </span>extension;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;            <span class="keyword">using</span> Rng_t = Range&lt; range::close &gt;;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;            <span class="keywordflow">return</span> condition&lt; Comparison_operators::equal, Index_&lt; Idx &gt;, Rng_t &gt;( Rng_t( start, end ) );</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -229,7 +229,7 @@ template&lt;std::size_t Idx&gt; </div>
 
 <p>Refer to some element in <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/tuple.html">std::tuple</a>( where <b>eswitch</b> keep all the parameters ). </p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00142">142</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00145">145</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>

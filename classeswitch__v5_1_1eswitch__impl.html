@@ -107,7 +107,7 @@ class eswitch_v5::eswitch_impl&lt; Args &gt;</h3>
 
 <p>Accept arbitrary number of <b>Case</b>'s and test each of them sequentially. If match was found then executes <b>Case</b> body, also based on <b>Case</b> falling option decides whether to execute next body or finish work. </p>
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00709">709</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00708">708</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Instances and minimal complete definitions</h2></td></tr>
@@ -164,19 +164,19 @@ template&lt;typename ... Cnds&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00731">731</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;        {</div>
-<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;            <span class="keywordflow">if</span> constexpr( ( !<a class="code" href="group__concepts.html#ga97cd9ea2f8d399b75092fe3518e5a3b8">has_value</a>&lt; args_t&lt; Cnds &gt; &gt; || ... ) )</div>
-<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;            {</div>
-<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;                static_assert( !( !<a class="code" href="group__concepts.html#ga97cd9ea2f8d399b75092fe3518e5a3b8">has_value</a>&lt; args_t&lt; Cnds &gt; &gt; || ... ), </div>
-<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;                    <span class="stringliteral">&quot;Predicate with &#39;auto&#39; argument aren&#39;t ALLOWED!&quot;</span> );</div>
-<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;            }        </div>
-<div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr( ( <a class="code" href="group__concepts.html#ga172e1153460f09d65aa747fea9241cd3">has_type</a>&lt; underlying&lt; Cnds &gt; &gt; &amp;&amp; ... ) )</div>
-<div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160;            {</div>
-<div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160;                static_assert( <a class="code" href="group__concepts.html#ga172e1153460f09d65aa747fea9241cd3">has_type</a>&lt; <a class="codeRef" href="http://en.cppreference.com/w/cpp/types/common_type.html">std::common_type</a>&lt; underlying_t&lt; Cnds &gt;... &gt; &gt;, </div>
-<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;                    <span class="stringliteral">&quot;Inconsistent &#39;Return type&#39;!&quot;</span> );</div>
-<div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160;            }</div>
-<div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;        }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00730">730</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;        {</div>
+<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;            <span class="keywordflow">if</span> constexpr( ( !<a class="code" href="group__concepts.html#ga97cd9ea2f8d399b75092fe3518e5a3b8">has_value</a>&lt; args_t&lt; Cnds &gt; &gt; || ... ) )</div>
+<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;            {</div>
+<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;                static_assert( !( !<a class="code" href="group__concepts.html#ga97cd9ea2f8d399b75092fe3518e5a3b8">has_value</a>&lt; args_t&lt; Cnds &gt; &gt; || ... ), </div>
+<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;                    <span class="stringliteral">&quot;Predicate with &#39;auto&#39; argument aren&#39;t ALLOWED!&quot;</span> );</div>
+<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;            }        </div>
+<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr( ( <a class="code" href="group__concepts.html#ga172e1153460f09d65aa747fea9241cd3">has_type</a>&lt; underlying&lt; Cnds &gt; &gt; &amp;&amp; ... ) )</div>
+<div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160;            {</div>
+<div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160;                static_assert( <a class="code" href="group__concepts.html#ga172e1153460f09d65aa747fea9241cd3">has_type</a>&lt; <a class="codeRef" href="http://en.cppreference.com/w/cpp/types/common_type.html">std::common_type</a>&lt; underlying_t&lt; Cnds &gt;... &gt; &gt;, </div>
+<div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160;                    <span class="stringliteral">&quot;Inconsistent &#39;Return type&#39;!&quot;</span> );</div>
+<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;            }</div>
+<div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160;        }</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -197,7 +197,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00728">728</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00727">727</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -217,7 +217,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00722">722</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00721">721</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -237,7 +237,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00725">725</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00724">724</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>
@@ -270,18 +270,18 @@ template&lt;typename ... Ts&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00717">717</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;                                              : tup_( std::forward&lt; Ts &gt;( ts )... )</div>
-<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;        {            </div>
-<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;        }</div>
+<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00716">716</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;                                              : tup_( std::forward&lt; Ts &gt;( ts )... )</div>
+<div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;        {            </div>
+<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;        }</div>
 </div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="agroup__concepts_html_ga172e1153460f09d65aa747fea9241cd3"><div class="ttname"><a href="group__concepts.html#ga172e1153460f09d65aa747fea9241cd3">eswitch_v5::has_type</a></div><div class="ttdeci">concept has_type</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00367">eswitch_v5.hpp:367</a></div></div>
+<div class="ttc" id="agroup__concepts_html_ga172e1153460f09d65aa747fea9241cd3"><div class="ttname"><a href="group__concepts.html#ga172e1153460f09d65aa747fea9241cd3">eswitch_v5::has_type</a></div><div class="ttdeci">concept has_type</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00370">eswitch_v5.hpp:370</a></div></div>
 <div class="ttc" id="acommon_type_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/types/common_type.html">std::common_type</a></div></div>
-<div class="ttc" id="agroup__concepts_html_ga97cd9ea2f8d399b75092fe3518e5a3b8"><div class="ttname"><a href="group__concepts.html#ga97cd9ea2f8d399b75092fe3518e5a3b8">eswitch_v5::has_value</a></div><div class="ttdeci">concept has_value</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00370">eswitch_v5.hpp:370</a></div></div>
+<div class="ttc" id="agroup__concepts_html_ga97cd9ea2f8d399b75092fe3518e5a3b8"><div class="ttname"><a href="group__concepts.html#ga97cd9ea2f8d399b75092fe3518e5a3b8">eswitch_v5::has_value</a></div><div class="ttdeci">concept has_value</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00373">eswitch_v5.hpp:373</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
