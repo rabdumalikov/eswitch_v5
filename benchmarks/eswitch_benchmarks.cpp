@@ -378,7 +378,7 @@ int __attribute__ ((noinline)) E_SWITCH_std_regex_match( const std::string & val
 
     return eswitch( value )
     (
-        Case( rgx_for_match ) { return true; },
+        Case( regexter{ rgx_for_match } ) { return true; },
         Default { return false; }
     );
 }
@@ -409,7 +409,7 @@ int __attribute__ ((noinline)) E_SWITCH_std_regex_match_with_withdrawal( const s
 
     auto res = eswitch( value )
     (
-        Case( rgx_for_match_with_withdrawal )( std::vector< std::string > && vs ) { return std::move( vs ); },
+        Case( regexter{ rgx_for_match_with_withdrawal } )( std::vector< std::string > && vs ) { return std::move( vs ); },
         Default { return std::vector< std::string >{}; }
     );
 
