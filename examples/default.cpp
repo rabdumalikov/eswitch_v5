@@ -27,7 +27,7 @@ int main()
         Case( washington ) { assert( false ); },
         Case( new_york )   { assert( false ); },
         Case( new_jersey ) { assert( false ); },
-        Default { executed = true; }
+        Default            { executed = true; }
     );
 
     assert( executed );

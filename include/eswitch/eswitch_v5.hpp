@@ -1,5 +1,5 @@
 /// \file eswitch_v5.hpp
-/// \brief implementation
+/// \brief implementation which enhance switch statement
 
 //  Copyright (c) 2019-present Rustam Abdumalikov
 //
@@ -402,92 +402,88 @@ namespace eswitch_v5
     concept StdPair = details::is_std_pair_v< T >;
     /// @}
 
+
     /// \addtogroup modules
     /// @{
-        
-    namespace modules
+  
+    struct regexter { std::regex value; };
+
+    /// \brief **CaseModule** to support for _matching_ and _withdrawing_
+    /// of values for and from **regular expression**.
+    inline static auto operator==( const std::string & tuple_entry, const regexter & value )
     {
-        struct regexter { std::regex value; };
+        if( std::smatch match; std::regex_match( tuple_entry, match, value.value ) )
+        {              
+            std::vector< std::string > vs;
+            vs.reserve( match.size() );
 
-        /// \brief **CaseModule** to support for _matching_ and _withdrawing_
-        /// of values for and from **regular expression**.
-        inline static auto operator==( const std::string & tuple_entry, const regexter & value )
-        {
-            if( std::smatch match; std::regex_match( tuple_entry, match, value.value ) )
-            {              
-                std::vector< std::string > vs;
-                vs.reserve( match.size() );
+            for( const auto & v : match )  
+                vs.push_back( v );
 
-                for( const auto & v : match )  
-                    vs.push_back( v );
-
-                return std::make_optional( std::move( vs ) );
-            }
-
-            return std::optional< std::vector< std::string > >{};
+            return std::make_optional( std::move( vs ) );
         }
 
-        /// \brief **CaseModule** to support for _matching_ for various
-        /// **polymorphic types**.
-        template< typename TupleEntry, typename UnderlyingType >
-        inline static constexpr auto operator==( TupleEntry && tuple_entry, const is< UnderlyingType > & ) noexcept
+        return std::optional< std::vector< std::string > >{};
+    }
+
+    /// \brief **CaseModule** to support for _matching_ for various
+    /// **polymorphic types**.
+    template< typename TupleEntry, typename UnderlyingType >
+    inline static constexpr auto operator==( TupleEntry && tuple_entry, const is< UnderlyingType > & ) noexcept
+    {
+        using _T = std::remove_reference_t< TupleEntry >;
+
+        using type = std::conditional_t< std::is_const_v< std::remove_pointer_t< _T > >, 
+                const UnderlyingType, UnderlyingType >;
+
+        if constexpr( std::is_pointer_v< _T > )
         {
-            using _T = std::remove_reference_t< TupleEntry >;
+            auto * d = dynamic_cast< type* >( tuple_entry );
 
-            using type = std::conditional_t< std::is_const_v< std::remove_pointer_t< _T > >, 
-                    const UnderlyingType, UnderlyingType >;
-
-            if constexpr( std::is_pointer_v< _T > )
-            {
-                auto * d = dynamic_cast< type* >( tuple_entry );
-
-                return d != nullptr ? std::make_optional( d ) : std::optional< type* >{};                
-            }
-            else
-            {
-                try
-                {
-                    auto & d = dynamic_cast< type& >( tuple_entry );
-                    return std::make_optional( std::ref( d ) );
-                }
-                catch( const std::bad_cast & )
-                {                    
-                    return std::optional< std::reference_wrapper< type > >{};
-                }
-            }
+            return d != nullptr ? std::make_optional( d ) : std::optional< type* >{};                
         }
-
-        /// \brief **CaseModule** to support for _matching_ and _withdrawing_ 
-        /// of values from std::any.
-        template< typename TupleEntry, typename UnderlyingType >
-        inline static constexpr auto operator==( TupleEntry && tuple_entry, const is< UnderlyingType > & ) noexcept
-            requires details::is_std_any_v< TupleEntry >
+        else
         {
-            if( auto * val = std::any_cast< UnderlyingType >( &tuple_entry ) )
-            {            
-                return std::make_optional( std::cref( *val ) );
-            }
-                        
-            return std::optional< std::reference_wrapper< const UnderlyingType > >{};
-        }
-
-        /// \brief **CaseModule** to support for _matching_ and _withdrawing_ 
-        /// of values from std::variant.
-        template< typename TupleEntry, typename UnderlyingType >
-        inline static constexpr auto operator==( TupleEntry && tuple_entry, const is< UnderlyingType > & ) noexcept
-            requires details::is_std_variant_v< TupleEntry >
-        {         
-            if( auto * val = std::get_if< UnderlyingType >( &tuple_entry ) )
+            try
             {
-                return std::make_optional( std::cref( *val ) );
+                auto & d = dynamic_cast< type& >( tuple_entry );
+                return std::make_optional( std::ref( d ) );
             }
-      
-            return std::optional< std::reference_wrapper< const UnderlyingType > >{};
+            catch( const std::bad_cast & )
+            {                    
+                return std::optional< std::reference_wrapper< type > >{};
+            }
         }
     }
-    /// @}
 
-    using namespace modules;
+    /// \brief **CaseModule** to support for _matching_ and _withdrawing_ 
+    /// of values from std::any.
+    template< typename TupleEntry, typename UnderlyingType >
+    inline static constexpr auto operator==( TupleEntry && tuple_entry, const is< UnderlyingType > & ) noexcept
+        requires details::is_std_any_v< TupleEntry >
+    {
+        if( auto * val = std::any_cast< UnderlyingType >( &tuple_entry ) )
+        {            
+            return std::make_optional( std::cref( *val ) );
+        }
+                    
+        return std::optional< std::reference_wrapper< const UnderlyingType > >{};
+    }
+
+    /// \brief **CaseModule** to support for _matching_ and _withdrawing_ 
+    /// of values from std::variant.
+    template< typename TupleEntry, typename UnderlyingType >
+    inline static constexpr auto operator==( TupleEntry && tuple_entry, const is< UnderlyingType > & ) noexcept
+        requires details::is_std_variant_v< TupleEntry >
+    {         
+        if( auto * val = std::get_if< UnderlyingType >( &tuple_entry ) )
+        {
+            return std::make_optional( std::cref( *val ) );
+        }
+    
+        return std::optional< std::reference_wrapper< const UnderlyingType > >{};
+    }
+    /// @}
 
     /// \addtogroup concepts
     /// @{
