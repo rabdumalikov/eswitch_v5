@@ -12,7 +12,7 @@ User Manual       {#mainpage}
 
 --------------------------------------------
 Since this library is header-only and on top of that whole library was implemented within single file,
-thus you can get that file from [eswitch_v5 repository](https://github.com/rabdumalikov/eswitch_v5/tree/main/include/eswitch) on github. And in order to compile with eswitch_v5, just `#include <eswitch_v5.hpp>`.
+thus you can get that file from **eswitch_v5** repository on [github](https://github.com/rabdumalikov/eswitch_v5/blob/main/include/eswitch/eswitch_v5.hpp). And in order to compile with eswitch_v5, just `#include <eswitch_v5.hpp>`.
 
 \subsection tutorial-license License
 
@@ -57,8 +57,8 @@ within **if statement** like this:
 if( std::smatch mt; std::regex( text, mt, rgx ) ) {...}
 ```
 On top of that the internet is full of questions:
-- [Why strings cannot be used in **switch statement**](https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings),
-- [How to compose complex condition in **switch statement**](https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement)
+- [Why strings cannot be used in **switch statement**?](https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings)
+- [How to compose complex condition in **switch statement**?](https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement)
 - etc.
  
 And there was even the [proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html) for **C++ standard committee** to allow to use _complex types_( like **string**, **complex numbers**, etc ) within **switch statement** and **committee** <span style="color:green"> *agreed* </span> about **importance of this topic**. 
