@@ -56,6 +56,9 @@ namespace eswitch_v5
     template< typename, std::size_t ... >
     class predicate_condition;
 
+    template< typename T >
+    struct is;
+
     namespace extension
     {
         /// \addtogroup underlying-details
@@ -426,14 +429,13 @@ namespace eswitch_v5
 
         /// \brief **CaseModule** to support for _matching_ for various
         /// **polymorphic types**.
-        template< typename TupleEntry, typename CaseEntry >
-        inline static constexpr auto operator==( TupleEntry && tuple_entry, const CaseEntry & ) noexcept
-            requires has_type< CaseEntry >
+        template< typename TupleEntry, typename UnderlyingType >
+        inline static constexpr auto operator==( TupleEntry && tuple_entry, const is< UnderlyingType > & ) noexcept
         {
             using _T = std::remove_reference_t< TupleEntry >;
 
             using type = std::conditional_t< std::is_const_v< std::remove_pointer_t< _T > >, 
-                    const typename CaseEntry::type, typename CaseEntry::type >;
+                    const UnderlyingType, UnderlyingType >;
 
             if constexpr( std::is_pointer_v< _T > )
             {
@@ -457,34 +459,30 @@ namespace eswitch_v5
 
         /// \brief **CaseModule** to support for _matching_ and _withdrawing_ 
         /// of values from std::any.
-        template< typename TupleEntry, typename CaseEntry >
-        inline static constexpr auto operator==( TupleEntry && tuple_entry, const CaseEntry & ) noexcept
-            requires has_type< CaseEntry > && details::is_std_any_v< TupleEntry >
+        template< typename TupleEntry, typename UnderlyingType >
+        inline static constexpr auto operator==( TupleEntry && tuple_entry, const is< UnderlyingType > & ) noexcept
+            requires details::is_std_any_v< TupleEntry >
         {
-            using type = typename CaseEntry::type;
-         
-            if( auto * val = std::any_cast< type >( &tuple_entry ) )
+            if( auto * val = std::any_cast< UnderlyingType >( &tuple_entry ) )
             {            
                 return std::make_optional( std::cref( *val ) );
             }
                         
-            return std::optional< std::reference_wrapper< const type > >{};
+            return std::optional< std::reference_wrapper< const UnderlyingType > >{};
         }
 
         /// \brief **CaseModule** to support for _matching_ and _withdrawing_ 
         /// of values from std::variant.
-        template< typename TupleEntry, typename CaseEntry >
-        inline static constexpr auto operator==( TupleEntry && tuple_entry, const CaseEntry & ) noexcept
-            requires has_type< CaseEntry > && details::is_std_variant_v< TupleEntry >
-        {
-            using type = typename CaseEntry::type;
-         
-            if( auto * val = std::get_if< type >( &tuple_entry ) )
+        template< typename TupleEntry, typename UnderlyingType >
+        inline static constexpr auto operator==( TupleEntry && tuple_entry, const is< UnderlyingType > & ) noexcept
+            requires details::is_std_variant_v< TupleEntry >
+        {         
+            if( auto * val = std::get_if< UnderlyingType >( &tuple_entry ) )
             {
                 return std::make_optional( std::cref( *val ) );
             }
       
-            return std::optional< std::reference_wrapper< const type > >{};
+            return std::optional< std::reference_wrapper< const UnderlyingType > >{};
         }
     }
     /// @}
@@ -493,6 +491,7 @@ namespace eswitch_v5
 
     /// \addtogroup concepts
     /// @{
+
     template< typename T, typename U >
     concept EqualityComparable = 
         requires( T a, U b ) 
@@ -547,7 +546,7 @@ namespace eswitch_v5
 
         template< typename TupleEntry >
         inline static constexpr auto compare( TupleEntry && t1, const CaseEntry & t2 ) 
-            requires EqualityComparable< TupleEntry, decltype( t2 ) >
+            requires EqualityComparable< decltype( t1 ), decltype( t2 ) >
         {                            
             switch( CmpOperator )
             {
