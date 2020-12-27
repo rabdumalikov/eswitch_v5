@@ -1,4 +1,4 @@
-//  Copyright (c) 2019-2021 Rustam Abdumalikov
+//  Copyright (c) 2019-present Rustam Abdumalikov
 //
 //  "eswitch_v5" library
 //
@@ -15,6 +15,7 @@
 int main()
 {
     using namespace eswitch_v5;
+    using namespace std::string_literals;
 
     const auto phone_number = "^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$"_r;
     const auto email = "[\\w-]+@([\\w-]+\\.)+[\\w-]+"_r;
@@ -22,9 +23,7 @@ int main()
     {
         bool executed = false;
 
-        std::string text{ "joe@aol.com" };
-
-        eswitch( text ) 
+        eswitch( "joe@aol.com"s ) 
         (
             Case( phone_number ) { assert( false ); },
             Case( email )        { executed = true; }
@@ -36,9 +35,7 @@ int main()
     {
         bool executed = false;
 
-        std::string text{ "+(123)-456-78-90" };
-
-        eswitch( text ) 
+        eswitch( "+(123)-456-78-90"s ) 
         (
             Case( phone_number ) { executed = true; },
             Case( email )        { assert( false ); }

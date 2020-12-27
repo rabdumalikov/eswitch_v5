@@ -1,7 +1,7 @@
 /// \file eswitch_v5.hpp
 /// \brief implementation
 
-//  Copyright (c) 2019-2021 Rustam Abdumalikov
+//  Copyright (c) 2019-present Rustam Abdumalikov
 //
 //  "eswitch_v5" library
 //
@@ -31,6 +31,9 @@ namespace eswitch_v5
 
     template< typename T >
     concept Index = requires( T ){ std::decay_t< T >::eswitch_index; };
+
+    template< typename T >
+    concept NoneIndex = ( Index< T > == false );
 
     template< typename T >
     concept Condition = requires( T t )
@@ -375,13 +378,6 @@ namespace eswitch_v5
         { a != b };
     };
 
-    template< typename T, typename U >
-    concept Comparable = 
-        requires( T a, U b ) {
-        { a == b };
-        { a != b };
-    };
-
     template< typename T >
     concept ReturnValueNoneVoid = std::is_same_v< 
         std::invoke_result_t< std::remove_reference_t< T > >,
@@ -403,19 +399,18 @@ namespace eswitch_v5
     concept StdPair = details::is_std_pair_v< T >;
     /// @}
 
-    /// \addtogroup condition-modules
+    /// \addtogroup modules
     /// @{
-
-    /// \brief **CaseModule** to support for _matching_ and _withdrawing_
-    /// of values for and from **regular expression**.
-    template< Comparison_operators CmpOperator, typename CaseEntry >
-    struct regex_support
+        
+    namespace modules
     {
-        template< typename TupleEntry >
-        inline static auto execute( TupleEntry && tuple_entry, const CaseEntry & value )
-            requires std::is_same_v< std::decay_t< CaseEntry >, std::regex >
+        struct regexter { std::regex value; };
+
+        /// \brief **CaseModule** to support for _matching_ and _withdrawing_
+        /// of values for and from **regular expression**.
+        inline static auto operator==( const std::string & tuple_entry, const regexter & value )
         {
-            if( std::smatch match; std::regex_match( tuple_entry, match, value ) )
+            if( std::smatch match; std::regex_match( tuple_entry, match, value.value ) )
             {              
                 std::vector< std::string > vs;
                 vs.reserve( match.size() );
@@ -428,16 +423,12 @@ namespace eswitch_v5
 
             return std::optional< std::vector< std::string > >{};
         }
-    };
 
-    /// \brief **CaseModule** to support for _matching_ for various
-    /// **polymorphic types**.
-    template< Comparison_operators CmpOperator, typename CaseEntry >
-    struct Polymorphism_support
-    {
-        template< typename TupleEntry >
-        inline static constexpr auto execute( TupleEntry && tuple_entry, const CaseEntry & ) noexcept
-            requires has_type< CaseEntry > 
+        /// \brief **CaseModule** to support for _matching_ for various
+        /// **polymorphic types**.
+        template< typename TupleEntry, typename CaseEntry >
+        inline static constexpr auto operator==( TupleEntry && tuple_entry, const CaseEntry & ) noexcept
+            requires has_type< CaseEntry >
         {
             using _T = std::remove_reference_t< TupleEntry >;
 
@@ -463,49 +454,60 @@ namespace eswitch_v5
                 }
             }
         }
-    };
 
-    /// \brief **CaseModule** to support for _matching_ and _withdrawing_ 
-    /// of values from std::any and std::variant.
-    template< Comparison_operators CmpOperator, typename CaseEntry >
-    struct Any_and_Variant_support
-    {
-        template< typename TupleEntry >
-        inline static constexpr auto execute( TupleEntry && tuple_entry, const CaseEntry & ) noexcept
-            requires has_type< CaseEntry > && 
-                ( details::is_std_any_v< TupleEntry > || details::is_std_variant_v< TupleEntry > )
+        /// \brief **CaseModule** to support for _matching_ and _withdrawing_ 
+        /// of values from std::any.
+        template< typename TupleEntry, typename CaseEntry >
+        inline static constexpr auto operator==( TupleEntry && tuple_entry, const CaseEntry & ) noexcept
+            requires has_type< CaseEntry > && details::is_std_any_v< TupleEntry >
         {
             using type = typename CaseEntry::type;
          
-            if constexpr( details::is_std_any_v< TupleEntry > )
-            {
-                if( auto * val = std::any_cast< type >( &tuple_entry ) )
-                {            
-                    return std::make_optional( std::cref( *val ) );
-                }
+            if( auto * val = std::any_cast< type >( &tuple_entry ) )
+            {            
+                return std::make_optional( std::cref( *val ) );
             }
-            else if constexpr( details::is_std_variant_v< TupleEntry > ) 
-            {
-                if( auto * val = std::get_if< type >( &tuple_entry ) )
-                {
-                    return std::make_optional( std::cref( *val ) );
-                }
-            }            
                         
             return std::optional< std::reference_wrapper< const type > >{};
         }
-    };
+
+        /// \brief **CaseModule** to support for _matching_ and _withdrawing_ 
+        /// of values from std::variant.
+        template< typename TupleEntry, typename CaseEntry >
+        inline static constexpr auto operator==( TupleEntry && tuple_entry, const CaseEntry & ) noexcept
+            requires has_type< CaseEntry > && details::is_std_variant_v< TupleEntry >
+        {
+            using type = typename CaseEntry::type;
+         
+            if( auto * val = std::get_if< type >( &tuple_entry ) )
+            {
+                return std::make_optional( std::cref( *val ) );
+            }
+      
+            return std::optional< std::reference_wrapper< const type > >{};
+        }
+    }
+    /// @}
+
+    using namespace modules;
+
+    /// \addtogroup concepts
+    /// @{
+    template< typename T, typename U >
+    concept EqualityComparable = 
+        requires( T a, U b ) 
+            { a == b; };
     /// @}
 
     /// \addtogroup main-components
     /// @{
 
     /// \brief Compares value with corresponding entry in std::tuple.
-    template< Comparison_operators CmpOperator, Index TIndex, typename CaseEntry, typename ... Modules >
-    class condition_impl : public Modules...
+    template< Comparison_operators CmpOperator, Index TIndex, typename CaseEntry >
+    class condition
     { 
-        template< Comparison_operators, Index, typename, typename... >
-        friend class condition_impl;
+        template< Comparison_operators, Index, typename >
+        friend class condition;
         
         CaseEntry value_;
     public:
@@ -514,7 +516,7 @@ namespace eswitch_v5
         using idx = TIndex;
 
         template< typename Arg >
-        constexpr condition_impl( Arg && value ) 
+        constexpr condition( Arg && value ) 
             : value_( std::forward< Arg >( value ) )
             { 
             }
@@ -525,7 +527,7 @@ namespace eswitch_v5
             static_assert( !is_out_of_range< std::tuple_size_v< TSrcTuple > >(), 
                     "Case Index is OUT OF RANGE" ); 
 
-            return execute( std::get< TIndex::eswitch_index >( src_tuple ), value_ );
+            return compare( std::get< TIndex::eswitch_index >( src_tuple ), value_ );
         }
 
         template< StdTuple TSrcTuple >
@@ -541,19 +543,11 @@ namespace eswitch_v5
             return TIndex::eswitch_index >= MaxIndex; 
         }
 
-    private:
-        
-        using Modules::execute...;
+    private:        
 
         template< typename TupleEntry >
-        inline static constexpr bool execute( TupleEntry && tuple_entry, const CaseEntry & value )
-        {
-            return compare( tuple_entry, value );         
-        }
-
-        template< typename TupleEntry >
-        inline static constexpr bool compare( TupleEntry && t1, const CaseEntry & t2 ) 
-            requires Comparable< TupleEntry, CaseEntry >
+        inline static constexpr auto compare( TupleEntry && t1, const CaseEntry & t2 ) 
+            requires EqualityComparable< TupleEntry, decltype( t2 ) >
         {                            
             switch( CmpOperator )
             {
@@ -563,7 +557,7 @@ namespace eswitch_v5
                 }
                 case Comparison_operators::not_equal:
                 {
-                    if constexpr( requires{ !( t1 == t2 ); } ) return !( t1 == t2 );
+                    if constexpr( requires{ t1 != t2; } ) return t1 != t2;
                 }
                 case Comparison_operators::greater:
                 {
@@ -587,38 +581,10 @@ namespace eswitch_v5
         template< typename T1, typename T2 >
         inline static constexpr bool compare( T1 && t1, T2 && t2 ) 
         {                
-            static_assert( Comparable< T1, T2 >, "Types are not COMPARABLE!" );
+            static_assert( EqualityComparable< T1, T2 >, "Types are not COMPARABLE!" );
             
             return false;
         }
-    };
-
-    /// \brief **Customization point**: to connect modules, which extend various type
-    /// of acceptable **conditions**.
-    template< Comparison_operators CmpOperator, Index TIndex, typename CaseEntry >
-    class condition
-        : public 
-            condition_impl< CmpOperator, TIndex, CaseEntry,
-                regex_support< CmpOperator, CaseEntry >,
-                Polymorphism_support< CmpOperator, CaseEntry >,
-                Any_and_Variant_support< CmpOperator, CaseEntry >
-            >
-    {
-        using base =             
-            condition_impl< CmpOperator, TIndex, CaseEntry,
-                regex_support< CmpOperator, CaseEntry >,
-                Polymorphism_support< CmpOperator, CaseEntry >,
-                Any_and_Variant_support< CmpOperator, CaseEntry >                
-            >;
-
-        public:
-
-        template< typename Arg >
-        constexpr condition( Arg && value ) 
-            : base( std::forward< Arg >( value ) )
-            { 
-            }
-
     };
 
     /// \brief Container which holds arbitrary number of **condition**.
@@ -1043,7 +1009,7 @@ namespace eswitch_v5
     /// \brief User-defined literals for std::regex
     auto operator ""_r( const char * rgx, const std::size_t sz )
     {
-        return std::regex{ rgx };
+        return regexter{ std::regex{ rgx } };
     }
     /// @}
 
@@ -1067,4 +1033,6 @@ namespace eswitch_v5
     /// \brief Declares body which will be executed in case of no other matches.
     #define Default ( _1 == extension::any{} ) % [&]    
     /// @}
+
+
 } // namespace eswitch_v5

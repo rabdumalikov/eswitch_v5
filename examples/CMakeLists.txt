@@ -20,6 +20,8 @@ set(run_examples_list
   match_for_std_any
   match_for_std_variant
   match_for_polymorphic_types
+  extension_floating_point_comparison
+  extension_value_and_type_transferring
 )
 
 foreach(example_name ${run_examples_list})

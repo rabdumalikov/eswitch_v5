@@ -83,7 +83,7 @@ In my implementation I tried to aim all the **limitations** and leave the syntax
 possible to *native C++* **switch statement**. And last but not least, another my priority was the performance 
 of **eswitch**, which shouldn't differ by much from **native switch**. 
 
-### Conventions used in this document:
+### Conventions used in this document
 
 In all code examples, I omit the namespace prefixes for names in the **eswitch_v5** and **std** namespaces. Also I'm going to use following name conventions:
 - **native switch** => *native C++* **switch statement**
@@ -153,12 +153,12 @@ eswitch( num )
 
 
 
-### Syntax
+### Syntax {#syntax}
 
 ``` cpp
 eswitch( __params__ )
 ( 
-    Case( __conditions__ )( __value__ ) { ... } ^ __options__,
+    Case( __conditions__ )( __input_value__ ) { ... } ^ __options__,
     Default { ... }
 );
 ```
@@ -169,7 +169,7 @@ Where
 | :---: | :---: |
 | <span style="color:blue">__params__</span> | list of parameters( i.e. param1, param2, ..., param_n ) |
 | <span style="color:blue">__conditions__</span> | match **in order**( i.e. \_1 == smth1 \|\| \_2 == smth2 \|\| ... )<br>or match via **any_from**( i.e. \_1 == **any_from**( smth1, smth1, ... )<br>or match via **predicate**( i.e. ( pred1, \_1 ) && ( pred2, \_2 ) && ... ) |
-| _**Optional:**_<br><span style="color:blue">__value__</span> | withdrawn values from: **std::any**, **std::variant<...>**,<br> **polymorphic match** or **std::regex match**. |                
+| _**Optional:**_<br><span style="color:blue">__input_value__</span> | withdrawn values from: **std::any**, **std::variant<...>**,<br> **polymorphic match** or **std::regex match**. |                
 | _**Optional:**_<br><span style="color:blue">__options__</span> | [**left empty** => _break_] or <br> [**fallthrough_** => _execute body of the following case_] or <br> [**likely_** which will be introduced in future] |
 
 ### Features
@@ -328,8 +328,86 @@ eswitch( text )
     Case( R"((\d*))"_r )( vector< string > && match ){ return match[1]; } 
 );
 ```
-### Custom Extention
+### How to write Custom Extentions?
 
-It is possible to extend various types of condtions which can be matched
-in 
+This guide is about how to <u>use</u> _custom types_ in **Case** or <u>define</u> _custom behavior_ for some types. We will implement **custom extension** and I walk you through all the steps and details.
 
+**Thing to know:**
+
+The only things which we can be customized are all the **comparison** `operators` such as '==', '!=', '>', '<' and so on.
+
+**Let's begin:**
+
+As you may already know that comparing **floating points** is a tricky thing. **For example** following code fails( because of the _precision_ ).
+```cpp
+eswitch( 2 - 0.7000000001 )
+(
+    Case( 1.3 )
+    {
+        ...
+    },
+    Default 
+    { 
+        assert( false ); 
+    }
+);
+```
+So standard way of comparing **floating points** doesn't work properly. On top of that, simple overloading `operator==` for primitives is [forbidden](https://eel.is/c++draft/over.oper#general-7).
+
+```cpp
+bool operator==( const double d1, const double d1 )
+{
+    ...
+}
+/// Compilation ERROR: overloaded 'operator==' must have at least one parameter of class or enumeration type
+```
+To overcome this we need to use an **intermediate class** which will hold our value. Like that: 
+```cpp
+struct double_value
+{
+    double value;
+};
+```
+Then we can use **double_value** in our `operator==` :
+```cpp
+bool operator==( const double d1, const double_value d2 )
+{
+    return fabs( d1 - d2.value ) < __FLT_EPSILON__;
+}
+```
+And now code below will work as we desired( since using **double_value** allows for compiler through **name lookup** to find our custom `operator==` ).
+```cpp
+eswitch( 2 - 0.7000000001 )
+(
+    Case( double_value{ 1.3 } ) 
+    {
+        ...
+    },
+    Default 
+    { 
+        assert( false ); 
+    }
+);
+```
+**Full example**: [Floating point comparison](@ref example-floating-point-comparison)
+
+**NOTE THAT:**
+
+- An **intermediate class** should be used all the time( not only for primitives due to compiler restrictions ), since otherwise it won't be possible for compiler to find custom `operator`( unless this `operator` will be defined before `#include <eswitch_v5.hpp>`, only then **intermediate class** won't be needed ).
+
+- Also example below demonstrate if certain value should be returned from custom `operator` and transferred to **Case** [input value/argument](#syntax), then the value should be wrapped into `std::optional`. 
+
+**For example:** [Value and Type transferring](@ref example-value-and-type-transferring)
+
+### Rationalities
+
+- Using macroses for **Case** and **Default** allowed me to be as close as possible to **C++ switch statement** regarding syntax, otherwise there was no way to hide **lambda** declaration.
+- Setting properties via `operator^` - It is the only `operator` which is used to set 
+certain properties for **values/matrices**( in **matlab** ) and which I find reasonable. Thus I incorporated this notation in my library, like that:
+```cpp 
+eswitch( some_var )
+(
+    Case( some_value_1 ) {} ^ likely_,
+    Case( some_value_2 ) {} ^ fallthrough_
+);
+```

@@ -1,4 +1,4 @@
-//  Copyright (c) 2019-2021 Rustam Abdumalikov
+//  Copyright (c) 2019-present Rustam Abdumalikov
 //
 //  "eswitch_v5" library
 //
@@ -10,7 +10,6 @@
 ///[partial_match]
 #include <cassert>
 #include <eswitch_v5.hpp>
-#include <iostream>
 
 enum Place{ california, washington, new_york, new_jersey, las_vegas };
 

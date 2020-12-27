@@ -1,4 +1,4 @@
-//  Copyright (c) 2019-2021 Rustam Abdumalikov
+//  Copyright (c) 2019-present Rustam Abdumalikov
 //
 //  "eswitch_v5" library
 //
@@ -9,8 +9,8 @@
 #undef NDEBUG
 ///[match_via_regex_with_match_output]
 #include <cassert>
-#include <eswitch_v5.hpp>
 #include <map>
+#include <eswitch_v5.hpp>
 
 std::vector< std::string > get_tokenized_http_response()
 {
@@ -27,6 +27,7 @@ std::vector< std::string > get_tokenized_http_response()
 int main()
 {
     using namespace eswitch_v5;
+    using namespace std::string_literals;
 
     std::map< std::string, std::string > fields;
 
@@ -47,7 +48,7 @@ int main()
     }
 
     assert( fields.size() == 2 );
-    assert( fields[ std::string{"Content-Lenght"} ] == std::string{"88"} );
-    assert( fields[ std::string{"Content-Type"} ] == std::string{"text/html"} );
+    assert( fields[ "Content-Lenght"s ] == "88"s );
+    assert( fields[ "Content-Type"s ] == "text/html"s );
 }
 ///[match_via_regex_with_match_output]
