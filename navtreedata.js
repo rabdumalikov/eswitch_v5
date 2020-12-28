@@ -22,7 +22,7 @@ for the JavaScript code in this file
 */
 var NAVTREE =
 [
-  [ "eswitch_v5", "index.html", [
+  [ "eswitch-v5", "index.html", [
     [ "User Manual", "index.html", [
       [ "Preface", "index.html#tutorial-preface", [
         [ "Installation", "index.html#tutorial-installation", null ],

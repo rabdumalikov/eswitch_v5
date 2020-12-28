@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>eswitch_v5: User Manual</title>
+<title>eswitch-v5: User Manual</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">eswitch_v5
+   <div id="projectname">eswitch-v5
    </div>
    <div id="projectbrief">This header-only library enhance functionality of Native C++ switch statement</div>
   </td>
@@ -134,7 +134,7 @@ Preface</h1>
 <h2><a class="anchor" id="tutorial-installation"></a>
 Installation</h2>
 <hr  />
-<p> Since this library is header-only and on top of that whole library was implemented within single file, thus you can get that file from <a href="https://github.com/rabdumalikov/eswitch_v5/tree/main/include/eswitch">eswitch_v5 repository</a> on github. And in order to compile with <a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a>, just <code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html" title="implementation">eswitch_v5.hpp</a>&gt;</code>.</p>
+<p> Since this library is header-only and on top of that whole library was implemented within single file, thus you can get that file from <b><a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a></b> repository on <a href="https://github.com/rabdumalikov/eswitch_v5/blob/main/include/eswitch/eswitch_v5.hpp">github</a>. And in order to compile with <a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a>, just <code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html" title="implementation which enhance switch statement">eswitch_v5.hpp</a>&gt;</code>.</p>
 <h2><a class="anchor" id="tutorial-license"></a>
 License</h2>
 <hr  />
@@ -161,8 +161,8 @@ Quick Start</h1>
 Motivation</h2>
 <p>I don't see any good reason why <b>switch statement</b> in <b>C++</b> is so limited, whereas other statements such as <b>if, while, for</b> have no such limitations and they allow to compose and test complex condition. Moreover in terms of <em><b>assembler</b></em> output, <b>if</b> and <b>switch</b> statements give the same output, thus the performance also the same. If there isn't any benefits to keep <b>switch statement</b> limited, so why the things the way they are? I also don't think that <b>switch statement</b> is limited because of compatability with <b>C</b>, because syntax of <b>if statement</b> is still compatible with <b>C</b> even though it was extended in <b>C++17</b>, this extention allows to declare variable within <b>if statement</b> like this: </p><div class="fragment"><div class="line"><span class="keywordflow">if</span>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/match_results.html">std::smatch</a> mt; <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a>( text, mt, rgx ) ) {...}</div>
 </div><!-- fragment --><p>On top of that the internet is full of questions:</p><ul>
-<li><a href="https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings">Why strings cannot be used in <b>switch statement</b></a>,</li>
-<li><a href="https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement">How to compose complex condition in <b>switch statement</b></a></li>
+<li><a href="https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings">Why strings cannot be used in <b>switch statement</b>?</a></li>
+<li><a href="https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement">How to compose complex condition in <b>switch statement</b>?</a></li>
 <li>etc.</li>
 </ul>
 <p>And there was even the <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html">proposal</a> for <b>C++ standard committee</b> to allow to use <em>complex types</em>( like <b>string</b>, <b>complex numbers</b>, etc ) within <b>switch statement</b> and <b>committee</b> <span style="color:green"> <em>agreed</em> </span> about <b>importance of this topic</b>. But somehow the author stopped his work toward this direction.</p>
@@ -394,7 +394,7 @@ How to write Custom Extentions?</h2>
 <div class="line">    }</div>
 <div class="line">);</div>
 </div><!-- fragment --><p>So standard way of comparing <b>floating points</b> doesn't work properly. On top of that, simple overloading <code>operator==</code> for primitives is <a href="https://eel.is/c++draft/over.oper#general-7">forbidden</a>.</p>
-<div class="fragment"><div class="line"><span class="keywordtype">bool</span> <a class="code" href="namespaceeswitch__v5_1_1modules.html#abee60b146ec19b7a694959af430f5760">operator==</a>( <span class="keyword">const</span> <span class="keywordtype">double</span> d1, <span class="keyword">const</span> <span class="keywordtype">double</span> d1 )</div>
+<div class="fragment"><div class="line"><span class="keywordtype">bool</span> <a class="code" href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">operator==</a>( <span class="keyword">const</span> <span class="keywordtype">double</span> d1, <span class="keyword">const</span> <span class="keywordtype">double</span> d1 )</div>
 <div class="line">{</div>
 <div class="line">    ...</div>
 <div class="line">}</div>
@@ -403,7 +403,7 @@ How to write Custom Extentions?</h2>
 <div class="line">{</div>
 <div class="line">    <span class="keywordtype">double</span> value;</div>
 <div class="line">};</div>
-</div><!-- fragment --><p>Then we can use <b>double_value</b> in our <code>operator==</code> : </p><div class="fragment"><div class="line"><span class="keywordtype">bool</span> <a class="code" href="namespaceeswitch__v5_1_1modules.html#abee60b146ec19b7a694959af430f5760">operator==</a>( <span class="keyword">const</span> <span class="keywordtype">double</span> d1, <span class="keyword">const</span> double_value d2 )</div>
+</div><!-- fragment --><p>Then we can use <b>double_value</b> in our <code>operator==</code> : </p><div class="fragment"><div class="line"><span class="keywordtype">bool</span> <a class="code" href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">operator==</a>( <span class="keyword">const</span> <span class="keywordtype">double</span> d1, <span class="keyword">const</span> double_value d2 )</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/numeric/math/fabs.html">fabs</a>( d1 - d2.value ) &lt; __FLT_EPSILON__;</div>
 <div class="line">}</div>
@@ -421,7 +421,7 @@ How to write Custom Extentions?</h2>
 </div><!-- fragment --><p><b>Full example</b>: <a class="el" href="md_examples.html#example-floating-point-comparison">Floating point comparison</a></p>
 <p><b>NOTE THAT:</b></p>
 <ul>
-<li>An <b>intermediate class</b> should be used all the time( not only for primitives due to compiler restrictions ), since otherwise it won't be possible for compiler to find custom <code>operator</code>( unless this <code>operator</code> will be defined before <code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html" title="implementation">eswitch_v5.hpp</a>&gt;</code>, only then <b>intermediate class</b> won't be needed ).</li>
+<li>An <b>intermediate class</b> should be used all the time( not only for primitives due to compiler restrictions ), since otherwise it won't be possible for compiler to find custom <code>operator</code>( unless this <code>operator</code> will be defined before <code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html" title="implementation which enhance switch statement">eswitch_v5.hpp</a>&gt;</code>, only then <b>intermediate class</b> won't be needed ).</li>
 <li>Also example below demonstrate if certain value should be returned from custom <code>operator</code> and transferred to <b>Case</b> <a href="#syntax">input value/argument</a>, then the value should be wrapped into <code>std::optional</code>.</li>
 </ul>
 <p><b>For example:</b> <a class="el" href="md_examples.html#example-value-and-type-transferring">Value and Type transferring</a></p>
@@ -441,14 +441,14 @@ Rationalities</h2>
 </div><!-- doc-content -->
 <div class="ttc" id="agroup__index-variables_html_ga0467e341724f219d72f18c1c0885442a"><div class="ttname"><a href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">eswitch_v5::_1</a></div><div class="ttdeci">constexpr Index_&lt; 0 &gt; _1</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00174">eswitch_v5.hpp:174</a></div></div>
 <div class="ttc" id="afabs_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/numeric/math/fabs.html">std::fabs</a></div><div class="ttdeci">T fabs(T... args)</div></div>
-<div class="ttc" id="agroup__other-variables_html_ga23e83b648756cadca9232aaf9d7d3d03"><div class="ttname"><a href="group__other-variables.html#ga23e83b648756cadca9232aaf9d7d3d03">eswitch_v5::fallthrough_</a></div><div class="ttdeci">static constexpr Fallthrough fallthrough_</div><div class="ttdoc">Indicates fall through from previous Case without testing condition of following Case.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01020">eswitch_v5.hpp:1020</a></div></div>
-<div class="ttc" id="agroup__main-components_html_ga11dfab51a8955d42153603db05629b59"><div class="ttname"><a href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">eswitch_v5::any_from</a></div><div class="ttdeci">static constexpr auto any_from(Args &amp;&amp;... args)</div><div class="ttdoc">Helper function which allows to find if something is within the list( passed arguments ).</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00995">eswitch_v5.hpp:995</a></div></div>
-<div class="ttc" id="anamespaceeswitch__v5_1_1modules_html_abee60b146ec19b7a694959af430f5760"><div class="ttname"><a href="namespaceeswitch__v5_1_1modules.html#abee60b146ec19b7a694959af430f5760">eswitch_v5::modules::operator==</a></div><div class="ttdeci">static auto operator==(const std::string &amp;tuple_entry, const regexter &amp;value)</div><div class="ttdoc">CaseModule to support for matching and withdrawing of values for and from regular expression.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00414">eswitch_v5.hpp:414</a></div></div>
+<div class="ttc" id="agroup__other-variables_html_ga23e83b648756cadca9232aaf9d7d3d03"><div class="ttname"><a href="group__other-variables.html#ga23e83b648756cadca9232aaf9d7d3d03">eswitch_v5::fallthrough_</a></div><div class="ttdeci">static constexpr Fallthrough fallthrough_</div><div class="ttdoc">Indicates fall through from previous Case without testing condition of following Case.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01016">eswitch_v5.hpp:1016</a></div></div>
+<div class="ttc" id="agroup__main-components_html_ga11dfab51a8955d42153603db05629b59"><div class="ttname"><a href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">eswitch_v5::any_from</a></div><div class="ttdeci">static constexpr auto any_from(Args &amp;&amp;... args)</div><div class="ttdoc">Helper function which allows to find if something is within the list( passed arguments ).</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00991">eswitch_v5.hpp:991</a></div></div>
 <div class="ttc" id="abasic_regex_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></div></div>
-<div class="ttc" id="agroup__macroses_html_gaff2b0c246e6111e260e650b0ff4a8eb5"><div class="ttname"><a href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a></div><div class="ttdeci">#define Default</div><div class="ttdoc">Declares body which will be executed in case of no other matches.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01033">eswitch_v5.hpp:1033</a></div></div>
-<div class="ttc" id="agroup__macroses_html_gae733eb4e00d6306a21422f02ef7e8ca4"><div class="ttname"><a href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a></div><div class="ttdeci">#define Case(...)</div><div class="ttdoc">Accepts conditions of various forms.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01030">eswitch_v5.hpp:1030</a></div></div>
-<div class="ttc" id="agroup__main-components_html_ga82f93fb22725d76bb016b488742331d1"><div class="ttname"><a href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch_v5::eswitch</a></div><div class="ttdeci">static constexpr auto eswitch(Ts &amp;&amp;... ts)</div><div class="ttdoc">This function is responsible for passing arguments for class eswitch_impl with overloaded operator(),...</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00842">eswitch_v5.hpp:842</a></div></div>
+<div class="ttc" id="agroup__macroses_html_gaff2b0c246e6111e260e650b0ff4a8eb5"><div class="ttname"><a href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a></div><div class="ttdeci">#define Default</div><div class="ttdoc">Declares body which will be executed in case of no other matches.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01029">eswitch_v5.hpp:1029</a></div></div>
+<div class="ttc" id="agroup__macroses_html_gae733eb4e00d6306a21422f02ef7e8ca4"><div class="ttname"><a href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a></div><div class="ttdeci">#define Case(...)</div><div class="ttdoc">Accepts conditions of various forms.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01026">eswitch_v5.hpp:1026</a></div></div>
+<div class="ttc" id="agroup__main-components_html_ga82f93fb22725d76bb016b488742331d1"><div class="ttname"><a href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch_v5::eswitch</a></div><div class="ttdeci">static constexpr auto eswitch(Ts &amp;&amp;... ts)</div><div class="ttdoc">This function is responsible for passing arguments for class eswitch_impl with overloaded operator(),...</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00838">eswitch_v5.hpp:838</a></div></div>
 <div class="ttc" id="amatch_results_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/regex/match_results.html">std::smatch</a></div></div>
+<div class="ttc" id="agroup__modules_html_ga620be0eec7b29eb300458a049bde6abe"><div class="ttname"><a href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">eswitch_v5::operator==</a></div><div class="ttdeci">static auto operator==(const std::string &amp;tuple_entry, const regexter &amp;value)</div><div class="ttdoc">CaseModule to support for matching and withdrawing of values for and from regular expression.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00413">eswitch_v5.hpp:413</a></div></div>
 <div class="ttc" id="agroup__index-variables_html_gacc83659898439dd14b78fc60be68ce28"><div class="ttname"><a href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">eswitch_v5::_2</a></div><div class="ttdeci">constexpr Index_&lt; 1 &gt; _2</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00175">eswitch_v5.hpp:175</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

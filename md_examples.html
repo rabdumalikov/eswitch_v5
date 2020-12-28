@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>eswitch_v5: Examples</title>
+<title>eswitch-v5: Examples</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">eswitch_v5
+   <div id="projectname">eswitch-v5
    </div>
    <div id="projectbrief">This header-only library enhance functionality of Native C++ switch statement</div>
   </td>
@@ -119,7 +119,7 @@ Default case match</h2>
 <div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( washington ) { assert( <span class="keyword">false</span> ); },</div>
 <div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( new_york )   { assert( <span class="keyword">false</span> ); },</div>
 <div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( new_jersey ) { assert( <span class="keyword">false</span> ); },</div>
-<div class="line">        <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { executed = <span class="keyword">true</span>; }</div>
+<div class="line">        <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a>            { executed = <span class="keyword">true</span>; }</div>
 <div class="line">    );</div>
 <div class="line"> </div>
 <div class="line">    assert( executed );</div>
@@ -699,7 +699,7 @@ Floating point comparison</h2>
 <div class="line">    <span class="keywordtype">double</span> value;</div>
 <div class="line">};</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">bool</span> <a class="code" href="namespaceeswitch__v5_1_1modules.html#abee60b146ec19b7a694959af430f5760">operator==</a>( <span class="keyword">const</span> <span class="keywordtype">double</span> d, <span class="keyword">const</span> double_value f )</div>
+<div class="line"><span class="keywordtype">bool</span> <a class="code" href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">operator==</a>( <span class="keyword">const</span> <span class="keywordtype">double</span> d, <span class="keyword">const</span> double_value f )</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/numeric/math/fabs.html">fabs</a>( d - f.value ) &lt; __FLT_EPSILON__;</div>
 <div class="line">}</div>
@@ -743,7 +743,7 @@ Value and Type transferring</h2>
 <div class="line"><span class="comment">//     compiler won&#39;t be able to match for this overload.</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">template</span>&lt; eswitch_v5::NoneIndex T &gt;</div>
-<div class="line"><span class="keyword">auto</span> <a class="code" href="namespaceeswitch__v5_1_1modules.html#abee60b146ec19b7a694959af430f5760">operator==</a>( T&amp;&amp;, <span class="keyword">const</span> Has_value )</div>
+<div class="line"><span class="keyword">auto</span> <a class="code" href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">operator==</a>( T&amp;&amp;, <span class="keyword">const</span> Has_value )</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">if</span> constexpr( requires{ T::value; } ) </div>
 <div class="line">        <span class="keywordflow">return</span> std::make_optional( T::value );</div>
@@ -752,7 +752,7 @@ Value and Type transferring</h2>
 <div class="line">}</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">template</span>&lt; eswitch_v5::NoneIndex T &gt;</div>
-<div class="line"><span class="keyword">auto</span> <a class="code" href="namespaceeswitch__v5_1_1modules.html#abee60b146ec19b7a694959af430f5760">operator==</a>( T&amp;&amp;, <span class="keyword">const</span> Has_type )</div>
+<div class="line"><span class="keyword">auto</span> <a class="code" href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">operator==</a>( T&amp;&amp;, <span class="keyword">const</span> Has_type )</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">if</span> constexpr( requires{ <span class="keyword">typename</span> T::type; } ) </div>
 <div class="line">        <span class="keywordflow">return</span> std::make_optional( Holder&lt; typename T::type &gt;{} );</div>
@@ -787,20 +787,20 @@ Value and Type transferring</h2>
 <div class="ttc" id="afabs_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/numeric/math/fabs.html">std::fabs</a></div><div class="ttdeci">T fabs(T... args)</div></div>
 <div class="ttc" id="avector_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a></div><div class="ttdoc">STL class.</div></div>
 <div class="ttc" id="asize_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/map/size.html">std::map::size</a></div><div class="ttdeci">T size(T... args)</div></div>
-<div class="ttc" id="agroup__other-variables_html_ga23e83b648756cadca9232aaf9d7d3d03"><div class="ttname"><a href="group__other-variables.html#ga23e83b648756cadca9232aaf9d7d3d03">eswitch_v5::fallthrough_</a></div><div class="ttdeci">static constexpr Fallthrough fallthrough_</div><div class="ttdoc">Indicates fall through from previous Case without testing condition of following Case.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01020">eswitch_v5.hpp:1020</a></div></div>
+<div class="ttc" id="agroup__other-variables_html_ga23e83b648756cadca9232aaf9d7d3d03"><div class="ttname"><a href="group__other-variables.html#ga23e83b648756cadca9232aaf9d7d3d03">eswitch_v5::fallthrough_</a></div><div class="ttdeci">static constexpr Fallthrough fallthrough_</div><div class="ttdoc">Indicates fall through from previous Case without testing condition of following Case.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01016">eswitch_v5.hpp:1016</a></div></div>
 <div class="ttc" id="agroup__index-variables_html_gaeae650f6542c704d82a19ee6a16b7b9f"><div class="ttname"><a href="group__index-variables.html#gaeae650f6542c704d82a19ee6a16b7b9f">eswitch_v5::_3</a></div><div class="ttdeci">constexpr Index_&lt; 2 &gt; _3</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00176">eswitch_v5.hpp:176</a></div></div>
 <div class="ttc" id="astructeswitch__v5_1_1is_html"><div class="ttname"><a href="structeswitch__v5_1_1is.html">eswitch_v5::is</a></div><div class="ttdoc">Used to match for type of active entry in std::any, std::variant&lt;...&gt; and polymorphic types.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00060">eswitch_v5.hpp:60</a></div></div>
-<div class="ttc" id="agroup__main-components_html_ga11dfab51a8955d42153603db05629b59"><div class="ttname"><a href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">eswitch_v5::any_from</a></div><div class="ttdeci">static constexpr auto any_from(Args &amp;&amp;... args)</div><div class="ttdoc">Helper function which allows to find if something is within the list( passed arguments ).</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00995">eswitch_v5.hpp:995</a></div></div>
+<div class="ttc" id="agroup__main-components_html_ga11dfab51a8955d42153603db05629b59"><div class="ttname"><a href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">eswitch_v5::any_from</a></div><div class="ttdeci">static constexpr auto any_from(Args &amp;&amp;... args)</div><div class="ttdoc">Helper function which allows to find if something is within the list( passed arguments ).</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00991">eswitch_v5.hpp:991</a></div></div>
 <div class="ttc" id="ato_string_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string/to_string.html">std::to_string</a></div><div class="ttdeci">T to_string(T... args)</div></div>
-<div class="ttc" id="anamespaceeswitch__v5_1_1modules_html_abee60b146ec19b7a694959af430f5760"><div class="ttname"><a href="namespaceeswitch__v5_1_1modules.html#abee60b146ec19b7a694959af430f5760">eswitch_v5::modules::operator==</a></div><div class="ttdeci">static auto operator==(const std::string &amp;tuple_entry, const regexter &amp;value)</div><div class="ttdoc">CaseModule to support for matching and withdrawing of values for and from regular expression.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00414">eswitch_v5.hpp:414</a></div></div>
 <div class="ttc" id="amap_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/map.html">std::map</a></div><div class="ttdoc">STL class.</div></div>
 <div class="ttc" id="adecay_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay</a></div></div>
-<div class="ttc" id="agroup__macroses_html_gaff2b0c246e6111e260e650b0ff4a8eb5"><div class="ttname"><a href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a></div><div class="ttdeci">#define Default</div><div class="ttdoc">Declares body which will be executed in case of no other matches.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01033">eswitch_v5.hpp:1033</a></div></div>
-<div class="ttc" id="agroup__macroses_html_gae733eb4e00d6306a21422f02ef7e8ca4"><div class="ttname"><a href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a></div><div class="ttdeci">#define Case(...)</div><div class="ttdoc">Accepts conditions of various forms.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01030">eswitch_v5.hpp:1030</a></div></div>
-<div class="ttc" id="agroup__main-components_html_ga82f93fb22725d76bb016b488742331d1"><div class="ttname"><a href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch_v5::eswitch</a></div><div class="ttdeci">static constexpr auto eswitch(Ts &amp;&amp;... ts)</div><div class="ttdoc">This function is responsible for passing arguments for class eswitch_impl with overloaded operator(),...</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00842">eswitch_v5.hpp:842</a></div></div>
+<div class="ttc" id="agroup__macroses_html_gaff2b0c246e6111e260e650b0ff4a8eb5"><div class="ttname"><a href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a></div><div class="ttdeci">#define Default</div><div class="ttdoc">Declares body which will be executed in case of no other matches.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01029">eswitch_v5.hpp:1029</a></div></div>
+<div class="ttc" id="agroup__macroses_html_gae733eb4e00d6306a21422f02ef7e8ca4"><div class="ttname"><a href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a></div><div class="ttdeci">#define Case(...)</div><div class="ttdoc">Accepts conditions of various forms.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01026">eswitch_v5.hpp:1026</a></div></div>
+<div class="ttc" id="agroup__main-components_html_ga82f93fb22725d76bb016b488742331d1"><div class="ttname"><a href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch_v5::eswitch</a></div><div class="ttdeci">static constexpr auto eswitch(Ts &amp;&amp;... ts)</div><div class="ttdoc">This function is responsible for passing arguments for class eswitch_impl with overloaded operator(),...</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00838">eswitch_v5.hpp:838</a></div></div>
+<div class="ttc" id="agroup__modules_html_ga620be0eec7b29eb300458a049bde6abe"><div class="ttname"><a href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">eswitch_v5::operator==</a></div><div class="ttdeci">static auto operator==(const std::string &amp;tuple_entry, const regexter &amp;value)</div><div class="ttdoc">CaseModule to support for matching and withdrawing of values for and from regular expression.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00413">eswitch_v5.hpp:413</a></div></div>
 <div class="ttc" id="aunique_ptr_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html">std::unique_ptr</a></div><div class="ttdoc">STL class.</div></div>
 <div class="ttc" id="anamespaceeswitch__v5_html"><div class="ttname"><a href="namespaceeswitch__v5.html">eswitch_v5</a></div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00027">eswitch_v5.hpp:27</a></div></div>
-<div class="ttc" id="aeswitch__v5_8hpp_html"><div class="ttname"><a href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a></div><div class="ttdoc">implementation</div></div>
+<div class="ttc" id="aeswitch__v5_8hpp_html"><div class="ttname"><a href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a></div><div class="ttdoc">implementation which enhance switch statement</div></div>
 <div class="ttc" id="agroup__index-variables_html_gacc83659898439dd14b78fc60be68ce28"><div class="ttname"><a href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">eswitch_v5::_2</a></div><div class="ttdeci">constexpr Index_&lt; 1 &gt; _2</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00175">eswitch_v5.hpp:175</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>eswitch_v5: Concepts</title>
+<title>eswitch-v5: Concepts</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">eswitch_v5
+   <div id="projectname">eswitch-v5
    </div>
    <div id="projectbrief">This header-only library enhance functionality of Native C++ switch statement</div>
   </td>
@@ -111,9 +111,6 @@ Variables</h2></td></tr>
 <tr class="memitem:ga086fe3ab6cffc3145cf06b0ae241c184"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga086fe3ab6cffc3145cf06b0ae241c184"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga086fe3ab6cffc3145cf06b0ae241c184">eswitch_v5::Condition</a></td></tr>
 <tr class="separator:ga086fe3ab6cffc3145cf06b0ae241c184"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gac88a43b9d7010f224d656cb35b7ba2af"><td class="memTemplParams" colspan="2">template&lt;typename T , typename U &gt; </td></tr>
-<tr class="memitem:gac88a43b9d7010f224d656cb35b7ba2af"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#gac88a43b9d7010f224d656cb35b7ba2af">eswitch_v5::EqualityComparable</a></td></tr>
-<tr class="separator:gac88a43b9d7010f224d656cb35b7ba2af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga172e1153460f09d65aa747fea9241cd3"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga172e1153460f09d65aa747fea9241cd3"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga172e1153460f09d65aa747fea9241cd3">eswitch_v5::has_type</a> = requires{ typename T::type; }</td></tr>
 <tr class="separator:ga172e1153460f09d65aa747fea9241cd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -212,29 +209,6 @@ template&lt;typename T &gt; </div>
 <div class="line">    }</div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00039">39</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
-
-</div>
-</div>
-<a id="gac88a43b9d7010f224d656cb35b7ba2af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gac88a43b9d7010f224d656cb35b7ba2af">&#9670;&nbsp;</a></span>EqualityComparable</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T , typename U &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">concept eswitch_v5::EqualityComparable</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
-<b>Initial value:</b><div class="fragment"><div class="line">= </div>
-<div class="line">        requires( T a, U b ) </div>
-<div class="line">            { a == b; }</div>
-</div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00496">496</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 
 </div>
 </div>

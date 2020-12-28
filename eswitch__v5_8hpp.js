@@ -1,7 +1,6 @@
 var eswitch__v5_8hpp =
 [
     [ "Padding", "structeswitch__v5_1_1eswitch__impl_1_1Padding.html", null ],
-    [ "regexter", "structeswitch__v5_1_1modules_1_1regexter.html", "structeswitch__v5_1_1modules_1_1regexter" ],
     [ "Case", "group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4", null ],
     [ "Default", "group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5", null ],
     [ "invoke_result_t", "eswitch__v5_8hpp.html#gaf3cca5c69ebb3a94514c6cec8a04029a", null ],
@@ -44,9 +43,9 @@ var eswitch__v5_8hpp =
     [ "operator,", "eswitch__v5_8hpp.html#gaa5df9fd69ee9e63eda170343b117ed1c", null ],
     [ "operator<", "eswitch__v5_8hpp.html#ga53141f44ca21b9bd3417e6e738071b66", null ],
     [ "operator<=", "eswitch__v5_8hpp.html#ga778308d81dc07f17515fd466acb090a7", null ],
-    [ "operator==", "eswitch__v5_8hpp.html#abee60b146ec19b7a694959af430f5760", null ],
+    [ "operator==", "eswitch__v5_8hpp.html#ga620be0eec7b29eb300458a049bde6abe", null ],
     [ "operator==", "eswitch__v5_8hpp.html#gaae5f6e28cd0654c3e19b35875ed3190d", null ],
-    [ "operator==", "eswitch__v5_8hpp.html#a5b145037bc57a8511242fd19ddf41f9e", null ],
+    [ "operator==", "eswitch__v5_8hpp.html#ga1e330224e372aaecb8c6f5763b0e058e", null ],
     [ "operator>", "eswitch__v5_8hpp.html#gafe9ec70b8e36693b8984a336be3a1c04", null ],
     [ "operator>=", "eswitch__v5_8hpp.html#ga93a7d55635ad65684dc441e572e0cf01", null ],
     [ "operator^", "eswitch__v5_8hpp.html#ga1d597e1e88d27ec9cfbe7a2f2772c350", null ],
@@ -88,7 +87,6 @@ var eswitch__v5_8hpp =
     [ "Callable", "eswitch__v5_8hpp.html#ga57a8c7916a2de5e798b48e2519eedacd", null ],
     [ "ComparableExceptAnyAndVariant", "eswitch__v5_8hpp.html#gad6df8636b7cc6410b1d35e8dc37ae10e", null ],
     [ "Condition", "eswitch__v5_8hpp.html#ga086fe3ab6cffc3145cf06b0ae241c184", null ],
-    [ "EqualityComparable", "eswitch__v5_8hpp.html#gac88a43b9d7010f224d656cb35b7ba2af", null ],
     [ "fallthrough_", "eswitch__v5_8hpp.html#ga23e83b648756cadca9232aaf9d7d3d03", null ],
     [ "has_type", "eswitch__v5_8hpp.html#ga172e1153460f09d65aa747fea9241cd3", null ],
     [ "has_value", "eswitch__v5_8hpp.html#ga97cd9ea2f8d399b75092fe3518e5a3b8", null ],
