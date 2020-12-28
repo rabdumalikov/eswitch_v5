@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5.1)
 
-project(ESWITCH)
+project(eswitch)
 
 add_compile_options( -std=c++20 )
 
@@ -47,7 +47,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 endif()
 
 add_executable(test_eswitch tests/eswitch_tests.cpp)
-target_include_directories(test_eswitch PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)
+target_include_directories(test_eswitch PUBLIC $<BUILD_INTERFACE:${eswitch_SOURCE_DIR}/include/eswitch>)
 target_include_directories(test_eswitch PUBLIC $<BUILD_INTERFACE:${catchtest_SOURCE_DIR}/single_include/>)
 
 
@@ -56,14 +56,14 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 
 add_executable(benchmark_eswitch benchmarks/eswitch_benchmarks.cpp)
-target_include_directories(benchmark_eswitch PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)
+target_include_directories(benchmark_eswitch PUBLIC $<BUILD_INTERFACE:${eswitch_SOURCE_DIR}/include/eswitch>)
 target_include_directories(benchmark_eswitch PUBLIC $<BUILD_INTERFACE:${googlebench_SOURCE_DIR}/include/>)
 target_link_libraries(benchmark_eswitch benchmark)
 
 function(build_source_file base_name )
   message(STATUS ${base_name})
   add_executable(${base_name} ${base_name}.cpp)
-  target_include_directories(${base_name} PUBLIC $<BUILD_INTERFACE:${ESWITCH_SOURCE_DIR}/include/eswitch>)
+  target_include_directories(${base_name} PUBLIC $<BUILD_INTERFACE:${eswitch_SOURCE_DIR}/include/eswitch>)
 endfunction(build_source_file)
 
 
