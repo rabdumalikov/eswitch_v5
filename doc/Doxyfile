@@ -3,28 +3,28 @@ PROJECT_BRIEF           = "This header-only library enhance functionality of Nat
 PROJECT_LOGO            =
 PROJECT_NUMBER          =
 
-STRIP_FROM_PATH         = @eswitch_SOURCE_DIR@/include/eswitch @eswitch_SOURCE_DIR@
+STRIP_FROM_PATH         = @eswitch_docs_SOURCE_DIR@/../include/eswitch @eswitch_docs_SOURCE_DIR@
 BUILTIN_STL_SUPPORT     = YES
-STRIP_FROM_INC_PATH     = @eswitch_SOURCE_DIR@/include/eswitch
+STRIP_FROM_INC_PATH     = @eswitch_docs_SOURCE_DIR@/../include/eswitch
 ALIASES                 =
 ENABLED_SECTIONS        =
 
 
 # Resources
-OUTPUT_DIRECTORY        = @eswitch_SOURCE_DIR@/doc/doc_doxygen/
-INPUT                   = @eswitch_SOURCE_DIR@/include/eswitch \
-                          @eswitch_SOURCE_DIR@/doc/index.md \
-                          @eswitch_SOURCE_DIR@/doc/examples.md \
-                          @eswitch_SOURCE_DIR@/examples
+OUTPUT_DIRECTORY        = @eswitch_docs_SOURCE_DIR@/../doc/doc_doxygen/
+INPUT                   = @eswitch_docs_SOURCE_DIR@/../include/eswitch \
+                          @eswitch_docs_SOURCE_DIR@/../doc/index.md \
+                          @eswitch_docs_SOURCE_DIR@/../doc/examples.md \
+                          @eswitch_docs_SOURCE_DIR@/../examples
                           
 FILE_PATTERNS           = *.cpp *.hpp *.md
 RECURSIVE               = YES
 
-EXCLUDE                 = @eswitch_SOURCE_DIR@/tests \
-                          @eswitch_SOURCE_DIR@/benchmarks \
-                          @eswitch_SOURCE_DIR@/examples
+EXCLUDE                 = @eswitch_docs_SOURCE_DIR@/../tests \
+                          @eswitch_docs_SOURCE_DIR@/../benchmarks \
+                          @eswitch_docs_SOURCE_DIR@/../examples
 
-EXAMPLE_PATH            = @eswitch_SOURCE_DIR@/examples
+EXAMPLE_PATH            = @eswitch_docs_SOURCE_DIR@/../examples
 
 EXTRACT_STATIC          = YES
 
@@ -57,7 +57,7 @@ GENERATE_DEPRECATEDLIST = YES
 SHOW_USED_FILES         = NO
 SHOW_FILES              = YES
 SHOW_NAMESPACES         = YES
-LAYOUT_FILE             = @eswitch_SOURCE_DIR@/doc/layout.xml
+LAYOUT_FILE             = @eswitch_docs_SOURCE_DIR@/../doc/layout.xml
 
 
 CLASS_DIAGRAMS          = YES
@@ -84,7 +84,7 @@ ALPHABETICAL_INDEX      = NO
 COLS_IN_ALPHA_INDEX     = 1
 
 EXTRACT_ALL = YES
-TAGFILES += "@eswitch_SOURCE_DIR@/doc/cppreference-doxygen-web.tag.xml=http://en.cppreference.com/w/"
+TAGFILES += "@eswitch_docs_SOURCE_DIR@/../doc/cppreference-doxygen-web.tag.xml=http://en.cppreference.com/w/"
 
 # Preprocessing
 ENABLE_PREPROCESSING    = YES
@@ -93,7 +93,7 @@ EXPAND_ONLY_PREDEF      = NO
 PREDEFINED              = DOXYGEN_SHOULD_SKIP_THIS=1
 
 SEARCH_INCLUDES         = YES
-INCLUDE_PATH            = @eswitch_SOURCE_DIR@/include/eswitch
+INCLUDE_PATH            = @eswitch_docs_SOURCE_DIR@/../include/eswitch
 INCLUDE_FILE_PATTERNS   =
 
 SKIP_FUNCTION_MACROS    = NO
