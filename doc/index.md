@@ -6,7 +6,7 @@ User Manual       {#mainpage}
 \section tutorial-preface Preface
 
 --------------------------------------------
-**eswitch_v5** it is header-only library which was written on **c++20**. This library is my attempt to _enhance_ **switch statement** capability with similar syntax.
+**eswitch_v5** it is header-only library which was written in **c++20**. This library emulates **C++ switch statement** and also enhance its capability,  
 
 \subsection tutorial-installation Installation
 
@@ -178,9 +178,9 @@ Where
 
 - **fallthrough** - is *explicit*
 
-- **composing condition** with: **&&** , **\|\|** , **==** , **!=** , **>** , **<** , **<=** , **>=** 
+- **composing condition** with: '`&&`', '`||`', '`==`', '`!=`', '`>`', '`<`', '`<=`', '`>=`' 
 - **param matching via indexing and without**
-- **comparison made easy**
+- **validation in/within range made easy**
 - **match for**: _std::any, std::variant, std::regex_
 - **match and withdraw value from**: _std::any, std::variant, std::regex_
  
