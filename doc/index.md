@@ -260,15 +260,16 @@ eswitch( __arguments__ )
 
 ### Features
 
-- **implicit break** - you don't have to specify it 
+- **implicit break** - it is default behavior,  which doesn't required explicit declaration.
 
-- **fallthrough** - is *explicit*
+- **explicit fallthrough** - required explicit declaration.
 
 - **composing condition** with: '`&&`', '`||`', '`==`', '`!=`', '`>`', '`<`', '`<=`', '`>=`' 
-- **param matching via indexing and without**
-- **validation in/within range made easy**
+- **argument matching with and without explicit indexing**
+- **easy check in range**
 - **match for**: _std::any, std::variant, std::regex_
 - **match and withdraw value from**: _std::any, std::variant, std::regex_
+- **return value from Case**
  
 #### Params referencing via indexes
 
@@ -308,7 +309,7 @@ eswitch( p1, p2 )
 else if( is_negative( p1, p2 ) ) {...}
 ```
 
-#### Check in range via predicate
+#### Check in range
 
 ```cpp
 eswitch( p1 )
@@ -328,7 +329,7 @@ eswitch( p1 )
 else if( p1 >= 11 && p1 <= 20 ) {...}
 ```
 
-#### Any_from helper function
+#### any_from helper function
 
 ```cpp
 eswitch( file_extention )
@@ -361,7 +362,7 @@ bool val = eswitch( p1 )
 #### Match for std::any or std::variant
 
 ```cpp
-eswitch( any_ ) 
+eswitch( any_or_variant ) 
 (
     Case( is< int >{} ) {...}, // will be executed in 'std::any' contain 'int'
     Case( is< string >{} ) {...} // will be executed in 'std::any' contain 'std::string'
@@ -371,7 +372,7 @@ eswitch( any_ )
 #### Match and withdraw value from std::any or std::variant
 
 ```cpp
-eswitch( any ) 
+eswitch( any_or_variant ) 
 (
     Case( is< int >{} )( const int value ) {...}, // Note that keyword 'auto' isn't allowed( i.e. code won't compile )
     Case( is< string >{} )( const string & value ) {...}
@@ -479,17 +480,17 @@ eswitch( 2 - 0.7000000001 )
 
 **NOTE THAT:**
 
-- An **intermediate class** should be used all the time( not only for primitives due to compiler restrictions ), since otherwise it won't be possible for compiler to find custom `operator`( unless this `operator` will be defined before `#include <eswitch_v5.hpp>`, only then **intermediate class** won't be needed ).
+- An **intermediate class** should be used all the time( not only for primitives due to compiler restrictions ), otherwise it won't be possible for compiler to find custom `operator`( unless this `operator` will be defined before `#include <eswitch_v5.hpp>`, only then **intermediate class** won't be needed ).
 
-- Also example below demonstrate if certain value should be returned from custom `operator` and transferred to **Case** [input value/argument](#syntax), then the value should be wrapped into `std::optional`. 
+- Also example below demonstrate if certain value should be returned from custom `operator` and transferred to **Case** as [input parameter](#syntax), then the value should be wrapped into `std::optional`. 
 
 **For example:** [Value and Type transferring](@ref example-value-and-type-transferring)
 
 ### Rationalities
 
-- Using macroses for **Case** and **Default** allowed me to be as close as possible to **C++ switch statement** regarding syntax, otherwise there was no way to hide **lambda** declaration.
+- Using macroses for **Case** and **Default** allowed me to be as close as possible to **C++ switch statement** regarding syntax, otherwise there was no way to hide **lambda** declaration. 
 - Setting properties via `operator^` - It is the only `operator` which is used to set 
-certain properties for **values/matrices**( in **matlab** ) and which I find reasonable. Thus I incorporated this notation in my library, like that:
+certain properties for **values/matrices**( in **matlab** ), which I find reasonable. Thus I used this notation in my library, like this:
 ```cpp 
 eswitch( some_var )
 (
