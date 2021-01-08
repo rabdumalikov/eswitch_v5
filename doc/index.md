@@ -6,7 +6,7 @@ User Manual       {#mainpage}
 \section tutorial-preface Preface
 
 --------------------------------------------
-**eswitch_v5** it is header-only library which was written in **c++20**. This library emulates **C++ switch statement** and also enhance its capability,  
+**eswitch_v5** it is header-only library which was written in **c++20**. This library is enhanced **switch statement**, which extends capability of **C++ switch statement**.  
 
 \subsection tutorial-installation Installation
 
@@ -28,17 +28,17 @@ Should work on all major compilers which support **C++20**. I personally tested 
 
 - **clang++-11** (or later)
 - **g++-10.2** (or later)
-- **Visual Studio 2019** - isn't supported for now, just because not all the features from **c++20** were implemented by _Microsoft_ compiler.
+- **Visual Studio 2019** - isn't supported for now, just because [familiar template syntax for generic lambdas](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0428r2.pdf) from **C++20** wasn't implemented by _Microsoft_ compiler.
 
 \section tutorial-quick-start Quick Start
 
 --------------------------------------------------------------------------------
 **eswitch_v5** is a library which emulate _C++_ functionality i.e. **switch statement** and through this emulation I was able to overcome  **native switch** limitations:
 
-- one parameter per **native switch**
-- the parameter restricted to only _integral_ types( **int**, **char**, **enum** ... ).
+- one _argument_ per **native switch**
+- the _argument_ restricted to only _integral_ types( **int**, **char**, **enum** ... ).
 
-**eswitch_v5** supports any number of _parameters_ and almost without restriction on their _type_
+**eswitch_v5** supports any number of _arguments_ and almost without restriction on their _type_
  as long as the _type_ is **comparable**( i.e. has **operator==**, **operator!=** and so on ).
  Additionally, my library allow to match for **std::any, std::variant<...>, polymorphic type match** and
  **std::regex**. Also it allows to withdraw values from those types, of course if match was successful.
@@ -155,22 +155,108 @@ eswitch( num )
 
 ### Syntax {#syntax}
 
-``` cpp
-eswitch( __params__ )
+**1. Full declaration**
+```cpp
+eswitch( __arguments__ )
 ( 
-    Case( __conditions__ )( __input_value__ ) { ... } ^ __options__,
-    Default { ... }
+    Case( __conditions__ )( __param__ ) { __body__ } ^ __options__,
+    Default { __body__ }
+);
+```
+**2. Omitted parameter**: same as lambda without **parameter**.
+```cpp
+eswitch( __arguments__ )
+( 
+    Case( __conditions__ ) { __body__ } ^ __options__,
+    Default { __body__ }
+);
+```
+**3. Omitted setting options**: default option( **break** ) will be used.
+```cpp
+eswitch( __arguments__ )
+( 
+    Case( __conditions__ ) { __body__ },
+    Default { __body__ }
+);
+```
+**4. Omitted 'Default'**: no fallback
+```cpp
+eswitch( __arguments__ )
+( 
+    Case( __conditions__ ) { __body__ }
 );
 ```
 
-Where
+**Explanation**
 
-| Name | Details |
-| :---: | :---: |
-| <span style="color:blue">__params__</span> | list of parameters( i.e. param1, param2, ..., param_n ) |
-| <span style="color:blue">__conditions__</span> | match **in order**( i.e. \_1 == smth1 \|\| \_2 == smth2 \|\| ... )<br>or match via **any_from**( i.e. \_1 == **any_from**( smth1, smth1, ... )<br>or match via **predicate**( i.e. ( pred1, \_1 ) && ( pred2, \_2 ) && ... ) |
-| _**Optional:**_<br><span style="color:blue">__input_value__</span> | withdrawn values from: **std::any**, **std::variant<...>**,<br> **polymorphic match** or **std::regex match**. |                
-| _**Optional:**_<br><span style="color:blue">__options__</span> | [**left empty** => _break_] or <br> [**fallthrough_** => _execute body of the following case_] or <br> [**likely_** which will be introduced in future] |
+<table>
+<tr><th>Name<th>Details
+<tr>
+    <td>
+        <span style="color:blue">__arguments__</span>
+    <td>
+        <div align="left">
+            The list of arguments( i.e. <b>arg_1</b>, <b>arg_2</b>, ..., <b>arg_n</b> )
+        </div>
+<tr>
+    <td rowspan="2">
+        <span style="color:blue">__conditions__</span>
+    <td>
+        <div align="left">
+            Case( <b>_1</b> == smth1 || <b>_2</b> == smth2 || ... )<br>
+            Case( <b>_1</b> == <b>any_from</b>( smth1, smth1, ... ) )<br>
+            Case( ( pred1, <b>_1</b> ) && ( pred2, <b>_2</b> ) && ... )
+        </div>
+    <td>
+        <ol>
+            <li>
+            <li>
+            <li>
+        </ol>
+<tr>
+    <td>
+        <div align="left">
+        <ol>
+            <li>Match **in order**<br> 
+            <li>Match via **any_from**<br>
+            <li>Match via **predicate**
+        </ol>
+        </div>
+<tr>
+    <td>
+        <div align="center">
+            <span style="color:blue">__body__</span>
+        </div>
+    <td>
+        <div align="left">
+            Function body
+        </div>
+<tr>
+    <td>
+        <div align="center">
+            <i><b>Optional:</b></i><br>
+            <span style="color:blue">__param__</span>
+        </div>
+    <td>
+        <div align="left">Correspond to withdrawn value from: **std::any**, **std::variant<...>**,<br> 
+            **polymorphic match** or **std::regex match**. But also it correspond to<br>
+            **returned value** wrapped into `std::optional<...>` from custom extensions.<br><br>  
+            **NOTE THAT:** Keyword [_auto_](https://en.cppreference.com/w/cpp/language/auto) here is forbidden,<br>
+            i.e. type of <b>__param__</b> should be specified explicitly.
+        </div>
+<tr>
+    <td>
+        <div align="center">
+            <i><b>Optional:</b></i><br>
+            <span style="color:blue">__options__</span>
+        </div>
+    <td>
+        <div align="left">
+            [**left empty** => _break_] or<br>
+            [**fallthrough_** => _execute body of the following case_] or<br>
+            [**likely_** which will be introduced in future]
+        </div>
+</table>
 
 ### Features
 
