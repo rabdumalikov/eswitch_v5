@@ -37,10 +37,10 @@ var NAVTREE =
         [ "Syntax", "index.html#syntax", null ],
         [ "Features", "index.html#autotoc_md9", [
           [ "Params referencing via indexes", "index.html#autotoc_md10", null ],
-          [ "If indexes aren't provided, then it is assummed that they're sequential", "index.html#autotoc_md11", null ],
+          [ "If indexes aren't provided, then it is assumed that they're sequential", "index.html#autotoc_md11", null ],
           [ "Matching via predicates:(it could be either a lambda or a free function)", "index.html#autotoc_md12", null ],
-          [ "Check in range via predicate", "index.html#autotoc_md13", null ],
-          [ "Any_from helper function", "index.html#autotoc_md14", null ],
+          [ "Check in range", "index.html#autotoc_md13", null ],
+          [ "any_from helper function", "index.html#autotoc_md14", null ],
           [ "Default case", "index.html#autotoc_md15", null ],
           [ "Return value from Case", "index.html#autotoc_md16", null ],
           [ "Match for std::any or std::variant", "index.html#autotoc_md17", null ],
@@ -49,7 +49,7 @@ var NAVTREE =
           [ "Match for std::regex", "index.html#autotoc_md20", null ],
           [ "Match and withdraw values from std::regex", "index.html#autotoc_md21", null ]
         ] ],
-        [ "How to write Custom Extentions?", "index.html#autotoc_md22", null ],
+        [ "How to write Custom extensions?", "index.html#autotoc_md22", null ],
         [ "Rationalities", "index.html#autotoc_md23", null ]
       ] ]
     ] ],
