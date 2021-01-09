@@ -33,25 +33,25 @@ Should work on all major compilers which support **C++20**. I personally tested 
 \section tutorial-quick-start Quick Start
 
 --------------------------------------------------------------------------------
-**eswitch_v5** is a library which emulate _C++_ functionality i.e. **switch statement** and through this emulation I was able to overcome  **native switch** limitations:
-
+**eswitch_v5** is a library, which is an improved version of **switch statement** in **C++**. The main idea behind this library is to be able to overcome **native switch** limitations, such as:
 - one _argument_ per **native switch**
-- the _argument_ restricted to only _integral_ types( **int**, **char**, **enum** ... ).
+- the _argument_ restricted to only _integral_ types( **int**, **char**, **enum** ... )
+- impossibility to _compose complex conditions_, as opposed to other **statements** like **if**, **else if**, along with **loops** such as **while** and **for**.
 
 **eswitch_v5** supports any number of _arguments_ and almost without restriction on their _type_
  as long as the _type_ is **comparable**( i.e. has **operator==**, **operator!=** and so on ).
- Additionally, my library allow to match for **std::any, std::variant<...>, polymorphic type match** and
- **std::regex**. Also it allows to withdraw values from those types, of course if match was successful.
+ Additionally, my library allows to match for **std::any, std::variant<...>, polymorphic type match** and
+ **std::regex**. Also it allows to withdraw values from those types, of course if the match was successful.
 
 ### Motivation
 
 I don't see any good reason why **switch statement**  in **C++** is so limited, whereas other 
-statements such as **if, while, for** have no such limitations and they allow to compose and
+statements such as **if, else if** including _loops_ **while** and **for** have no such limitations and they allow to compose and
 test complex condition. Moreover in terms of _**assembler**_ output, **if** and **switch** 
 statements give the same output, thus the performance also the same. If there isn't any
-benefits to keep **switch statement** limited, so why the things the way they are? I also
-don't think that **switch statement** is limited because of compatability with **C**, because
-syntax of **if statement** is still compatible with **C** even though it was extended in **C++17**, this extention allows to declare variable 
+benefits to keep **switch statement** limited, so why the things the way they are? Also I
+don't think that **switch statement** is limited because of compatibility  with **C**, since
+syntax of **if statement** is still compatible with **C** even though it was extended in **C++17**, this extension allows to declare variable 
 within **if statement** like this: 
 ```cpp
 if( std::smatch mt; std::regex( text, mt, rgx ) ) {...}
@@ -61,11 +61,11 @@ On top of that the internet is full of questions:
 - [How to compose complex condition in **switch statement**?](https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement)
 - etc.
  
-And there was even the [proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html) for **C++ standard committee** to allow to use _complex types_( like **string**, **complex numbers**, etc ) within **switch statement** and **committee** <span style="color:green"> *agreed* </span> about **importance of this topic**. 
+And there was even the [proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html) for **C++ standard committee**: ''To allow to use _complex types_( like **strings**, **complex numbers**, etc ) within **switch statement**''. And **committee** <span style="color:green"> *agreed* </span> about **importance of this topic**. 
 But somehow the author stopped his work toward this direction.
 
 
-There is more, compilers such as **clang** and **gcc** have non-standard extention for matching [**case ranges**](https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html).
+There is more, compilers such as **clang** and **gcc** have non-standard extension for matching [**case ranges**](https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html).
 ```cpp
 switch( num )                              switch( ch )
 {                                          {
@@ -73,8 +73,8 @@ switch( num )                              switch( ch )
     case 10 ... 99: break;                     case 'a' ... 'z': break;      
 };                                         };
 ```
-The evidence above tell us that people don't like limitations of **switch statement**, and they're trying to overcome 
-them with different approaches( by implementing **non-standard extension** or writing  **proposals** or just **wondering** ).
+The evidence above tell us that people don't like limitations of **switch statement**, and they were trying to overcome 
+them with different approaches( by implementing **non-standard extension**, writing **proposals** or just **searching for the solution/workaround in the internet** ).
 
 For modern language like **swift** it is not an issue, because they have pretty advanced **switch statement**.
 
@@ -114,7 +114,7 @@ eswitch( num )
 );
 ```
 **Note That:** _Native_ **switch statement** in _C++_ has _explicit_ **break** and _implicit_ **fallthrough** 
-which proven to be error-prone approach. Since developers sometimes forget to use 
+which was proven to be an error-prone approach. Since developers sometimes forget to use 
 **break** and because of this their code doesn't work the way it was intended. 
 Thus in my implementation I reversed this concept i.e. **eswitch** has _implicit_ **break** 
 and _explicit_ **fallthrough**. Compare:
@@ -260,7 +260,7 @@ eswitch( __arguments__ )
 
 ### Features
 
-- **implicit break** - it is default behavior,  which doesn't required explicit declaration.
+- **implicit break** - it is default behavior,  which doesn't require explicit declaration.
 
 - **explicit fallthrough** - required explicit declaration.
 
@@ -285,7 +285,7 @@ else if( p1 == true || p2 == true ) {...}
 ```
 
 
-#### If indexes aren't provided, then it is assummed that they're sequential
+#### If indexes aren't provided, then it is assumed that they're sequential
 
 ```cpp
 eswitch( p1, p2 )
@@ -332,7 +332,7 @@ else if( p1 >= 11 && p1 <= 20 ) {...}
 #### any_from helper function
 
 ```cpp
-eswitch( file_extention )
+eswitch( file_extension )
 (
     Case( any_from( "cpp", "cc", "c++", "cxx", "C" ) ) {...},
     Case( any_from( "h", "hpp", "hh", "h++", "hxx", "H" ) ) {...},
@@ -415,7 +415,7 @@ eswitch( text )
     Case( R"((\d*))"_r )( vector< string > && match ){ return match[1]; } 
 );
 ```
-### How to write Custom Extentions?
+### How to write Custom extensions?
 
 This guide is about how to <u>use</u> _custom types_ in **Case** or <u>define</u> _custom behavior_ for some types. We will implement **custom extension** and I walk you through all the steps and details.
 
