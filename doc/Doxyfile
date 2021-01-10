@@ -1,5 +1,5 @@
 PROJECT_NAME            = "eswitch-v5"
-PROJECT_BRIEF           = "This is header-only library which enhance functionality of Native C++ switch statement"
+PROJECT_BRIEF           = "Advanced counterpart for switch statement in C++"
 PROJECT_LOGO            =
 PROJECT_NUMBER          =
 
