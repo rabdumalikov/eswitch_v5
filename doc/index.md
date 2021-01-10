@@ -3,10 +3,19 @@ User Manual       {#mainpage}
 
 \tableofcontents
 
-\section tutorial-preface Preface
+\section tutorial-overview Overview
 
 --------------------------------------------
-**eswitch_v5** it is header-only library which was written on **c++20**. This library is my attempt to _enhance_ **switch statement** capability with similar syntax.
+
+**eswitch_v5** is a library, which is an improved version of **switch statement** in **C++**( or just **native switch**). The main idea behind this library is to be able to overcome **native switch** limitations, such as:
+- one _argument_ per **native switch**
+- the _argument_ restricted to only _integral_ types( **int**, **char**, **enum** ... )
+- impossibility to _compose complex conditions_, as opposed to other **statements** like **if**, **else if**, along with **loops** such as **while** and **for**.
+
+**eswitch_v5** supports any number of _arguments_ and almost without restriction on their _type_
+ as long as the _type_ is **comparable**( i.e. has **operator==**, **operator!=** and so on ).
+ Additionally, my library allows to match for **std::any, std::variant<...>, polymorphic type match** and
+ **std::regex**. Also it allows to withdraw values from those types, of course if the match was successful.
 
 \subsection tutorial-installation Installation
 
@@ -28,44 +37,31 @@ Should work on all major compilers which support **C++20**. I personally tested 
 
 - **clang++-11** (or later)
 - **g++-10.2** (or later)
-- **Visual Studio 2019** - isn't supported for now, just because not all the features from **c++20** were implemented by _Microsoft_ compiler.
+- **Visual Studio 2019** - isn't supported for now, just because [familiar template syntax for generic lambdas](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0428r2.pdf) from **C++20** wasn't implemented by _Microsoft_ compiler.
 
-\section tutorial-quick-start Quick Start
+\section tutorial-implementation-details Implementation Details
 
 --------------------------------------------------------------------------------
-**eswitch_v5** is a library which emulate _C++_ functionality i.e. **switch statement** and through this emulation I was able to overcome  **native switch** limitations:
-
-- one parameter per **native switch**
-- the parameter restricted to only _integral_ types( **int**, **char**, **enum** ... ).
-
-**eswitch_v5** supports any number of _parameters_ and almost without restriction on their _type_
- as long as the _type_ is **comparable**( i.e. has **operator==**, **operator!=** and so on ).
- Additionally, my library allow to match for **std::any, std::variant<...>, polymorphic type match** and
- **std::regex**. Also it allows to withdraw values from those types, of course if match was successful.
+This section contains all the details, which user need to know in order to use this library successfully.
 
 ### Motivation
 
-I don't see any good reason why **switch statement**  in **C++** is so limited, whereas other 
-statements such as **if, while, for** have no such limitations and they allow to compose and
-test complex condition. Moreover in terms of _**assembler**_ output, **if** and **switch** 
-statements give the same output, thus the performance also the same. If there isn't any
-benefits to keep **switch statement** limited, so why the things the way they are? I also
-don't think that **switch statement** is limited because of compatability with **C**, because
-syntax of **if statement** is still compatible with **C** even though it was extended in **C++17**, this extention allows to declare variable 
-within **if statement** like this: 
+--------------------------------------------
+
+I don't see any good reason why **switch statement** in **C++** is so limited, whereas other 
+statements such as **if, else if** including _loops_ **while** and **for** have no such limitations and they allow to compose and
+test complex condition. And here is why:
+- In terms of _**assembler**_ output, **if** and **switch** 
+statements give the same output, thus the performance also the same. 
+- Also I don't think that **switch statement** is limited because of compatibility  with **C**, since syntax of **if statement** is still compatible with **C** even though it was extended in **C++17**, this extension allows to declare variable  within **if statement** like this: 
 ```cpp
 if( std::smatch mt; std::regex( text, mt, rgx ) ) {...}
 ```
-On top of that the internet is full of questions:
-- [Why strings cannot be used in **switch statement**?](https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings)
-- [How to compose complex condition in **switch statement**?](https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement)
-- etc.
- 
-And there was even the [proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html) for **C++ standard committee** to allow to use _complex types_( like **string**, **complex numbers**, etc ) within **switch statement** and **committee** <span style="color:green"> *agreed* </span> about **importance of this topic**. 
+- And there was even the [proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html) for **C++ standard committee**: ''To allow to use _complex types_( like **strings**, **complex numbers**, etc ) within **switch statement**''. And **committee** <span style="color:green"> *agreed* </span> about **importance of this topic**. 
 But somehow the author stopped his work toward this direction.
 
 
-There is more, compilers such as **clang** and **gcc** have non-standard extention for matching [**case ranges**](https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html).
+- There is more, compilers such as **clang** and **gcc** have non-standard extension for matching [**case ranges**](https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html).
 ```cpp
 switch( num )                              switch( ch )
 {                                          {
@@ -73,23 +69,31 @@ switch( num )                              switch( ch )
     case 10 ... 99: break;                     case 'a' ... 'z': break;      
 };                                         };
 ```
-The evidence above tell us that people don't like limitations of **switch statement**, and they're trying to overcome 
-them with different approaches( by implementing **non-standard extension** or writing  **proposals** or just **wondering** ).
+
+On top of that the internet is full of questions:
+    - [Why strings cannot be used in **switch statement**?](https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings)
+    - [How to compose complex condition in **switch statement**?](https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement)
+    - etc.
+
+The evidence above tell us that people don't like limitations of **switch statement**, and they were trying to overcome 
+them with different approaches( by implementing **non-standard extension**, writing **proposals** or just **searching for the solution/workaround in the internet** ).
 
 For modern language like **swift** it is not an issue, because they have pretty advanced **switch statement**.
 
-Based on those factors I decided to write my own implementation of **enhanced switch** or just **eswitch**.
+Based on those factors I decided to write my own implementation of **enhanced switch**( or just **eswitch** ).
 In my implementation I tried to aim all the **limitations** and leave the syntax of **eswitch** as close as 
 possible to *native C++* **switch statement**. And last but not least, another my priority was the performance 
 of **eswitch**, which shouldn't differ by much from **native switch**. 
 
 ### Conventions used in this document
 
-In all code examples, I omit the namespace prefixes for names in the **eswitch_v5** and **std** namespaces. Also I'm going to use following name conventions:
-- **native switch** => *native C++* **switch statement**
-- **eswitch** => my custom implementation of **enhanced switch statement**
+--------------------------------------------
+
+In all code examples, I omit the namespace prefixes for names in the **eswitch_v5** and **std** namespaces.
 
 ### Similarities
+
+--------------------------------------------
 
 As I have mentioned that I've tried within my implementation to resemble _C++_ **switch statement** syntax. And I think I was able to achieve this, except the places where I was either limited by language
 or intentionally tried to avoid certain behavior of **switch statement** in _C++_ like default **fallthrough**. Compare:  
@@ -113,9 +117,11 @@ eswitch( num )
     Default   {...}
 );
 ```
-**Note That:** _Native_ **switch statement** in _C++_ has _explicit_ **break** and _implicit_ **fallthrough** 
-which proven to be error-prone approach. Since developers sometimes forget to use 
+@note
+ _Native_ **switch statement** in _C++_ has _explicit_ **break** and _implicit_ **fallthrough** 
+which was proven to be an error-prone approach. Since developers sometimes forget to use 
 **break** and because of this their code doesn't work the way it was intended. 
+
 Thus in my implementation I reversed this concept i.e. **eswitch** has _implicit_ **break** 
 and _explicit_ **fallthrough**. Compare:
 
@@ -141,9 +147,11 @@ eswitch( num )
 
 ### Keywords
 
+--------------------------------------------
+
 | Name | Description |
 | :---: | :---: |
-| ***eswitch*** | _accepts list of input parameters_ |
+| ***eswitch*** | _accepts list of arguments_ |
 | ***Case*** | _accepts **condition** to check and body next to it will be executed if **condition** matched_ |
 | ***Default*** | _body next to it will be executed if nothing else matched_ |
 | ***fallthrough_*** | _next body will be executed without checking its **condition**_ |
@@ -155,34 +163,126 @@ eswitch( num )
 
 ### Syntax {#syntax}
 
-``` cpp
-eswitch( __params__ )
+--------------------------------------------
+
+**1. Full declaration**
+```cpp
+eswitch( __arguments__ )
 ( 
-    Case( __conditions__ )( __input_value__ ) { ... } ^ __options__,
-    Default { ... }
+    Case( __conditions__ )( __param__ ) { __body__ } ^ __options__,
+    Default { __body__ }
+);
+```
+**2. Omitted parameter**: same as lambda without **parameter**.
+```cpp
+eswitch( __arguments__ )
+( 
+    Case( __conditions__ ) { __body__ } ^ __options__,
+    Default { __body__ }
+);
+```
+**3. Omitted setting options**: default option( **break** ) will be used.
+```cpp
+eswitch( __arguments__ )
+( 
+    Case( __conditions__ ) { __body__ },
+    Default { __body__ }
+);
+```
+**4. Omitted 'Default'**: no fallback
+```cpp
+eswitch( __arguments__ )
+( 
+    Case( __conditions__ ) { __body__ }
 );
 ```
 
-Where
+**Explanation**
 
-| Name | Details |
-| :---: | :---: |
-| <span style="color:blue">__params__</span> | list of parameters( i.e. param1, param2, ..., param_n ) |
-| <span style="color:blue">__conditions__</span> | match **in order**( i.e. \_1 == smth1 \|\| \_2 == smth2 \|\| ... )<br>or match via **any_from**( i.e. \_1 == **any_from**( smth1, smth1, ... )<br>or match via **predicate**( i.e. ( pred1, \_1 ) && ( pred2, \_2 ) && ... ) |
-| _**Optional:**_<br><span style="color:blue">__input_value__</span> | withdrawn values from: **std::any**, **std::variant<...>**,<br> **polymorphic match** or **std::regex match**. |                
-| _**Optional:**_<br><span style="color:blue">__options__</span> | [**left empty** => _break_] or <br> [**fallthrough_** => _execute body of the following case_] or <br> [**likely_** which will be introduced in future] |
+<table>
+<tr><th>Name<th>Details
+<tr>
+    <td>
+        <span style="color:blue">__arguments__</span>
+    <td>
+        <div align="left">
+            The list of arguments( i.e. <b>arg_1</b>, <b>arg_2</b>, ..., <b>arg_n</b> )
+        </div>
+<tr>
+    <td rowspan="2">
+        <span style="color:blue">__conditions__</span>
+    <td>
+        <div align="left">
+            Case( <b>_1</b> == smth1 || <b>_2</b> == smth2 || ... )<br>
+            Case( <b>_1</b> == <b>any_from</b>( smth1, smth1, ... ) )<br>
+            Case( ( pred1, <b>_1</b> ) && ( pred2, <b>_2</b> ) && ... )
+        </div>
+    <td>
+        <ol>
+            <li>
+            <li>
+            <li>
+        </ol>
+<tr>
+    <td>
+        <div align="left">
+        <ol>
+            <li>Match **in order**<br> 
+            <li>Match via **any_from**<br>
+            <li>Match via **predicate**
+        </ol>
+        </div>
+<tr>
+    <td>
+        <div align="center">
+            <span style="color:blue">__body__</span>
+        </div>
+    <td>
+        <div align="left">
+            Function body
+        </div>
+<tr>
+    <td>
+        <div align="center">
+            <i><b>Optional:</b></i><br>
+            <span style="color:blue">__param__</span>
+        </div>
+    <td>
+        <div align="left">Correspond to withdrawn value from: **std::any**, **std::variant<...>**,<br> 
+            **polymorphic match** or **std::regex match**. But also it correspond to<br>
+            **returned value** wrapped into `std::optional<...>` from custom extensions.<br>
+            @note
+            Keyword [_auto_](https://en.cppreference.com/w/cpp/language/auto) here is forbidden,<br>
+            i.e. type of <b>__param__</b> should be specified explicitly.
+        </div>
+<tr>
+    <td>
+        <div align="center">
+            <i><b>Optional:</b></i><br>
+            <span style="color:blue">__options__</span>
+        </div>
+    <td>
+        <div align="left">
+            [**left empty** => _break_] or<br>
+            [**fallthrough_** => _execute body of the following case_] or<br>
+            [**likely_** which will be introduced in future]
+        </div>
+</table>
 
 ### Features
 
-- **implicit break** - you don't have to specify it 
+--------------------------------------------
 
-- **fallthrough** - is *explicit*
+- **implicit break** - it is default behavior,  which doesn't require explicit declaration.
 
-- **composing condition** with: **&&** , **\|\|** , **==** , **!=** , **>** , **<** , **<=** , **>=** 
-- **param matching via indexing and without**
-- **comparison made easy**
+- **explicit fallthrough** - required explicit declaration.
+
+- **composing condition** with: '`&&`', '`||`', '`==`', '`!=`', '`>`', '`<`', '`<=`', '`>=`' 
+- **argument matching with and without explicit indexing**
+- **easy check in range**
 - **match for**: _std::any, std::variant, std::regex_
 - **match and withdraw value from**: _std::any, std::variant, std::regex_
+- **return value from Case**
  
 #### Params referencing via indexes
 
@@ -198,7 +298,7 @@ else if( p1 == true || p2 == true ) {...}
 ```
 
 
-#### If indexes aren't provided, then it is assummed that they're sequential
+#### If indexes aren't provided, then it is assumed that they're sequential
 
 ```cpp
 eswitch( p1, p2 )
@@ -222,7 +322,7 @@ eswitch( p1, p2 )
 else if( is_negative( p1, p2 ) ) {...}
 ```
 
-#### Check in range via predicate
+#### Check in range
 
 ```cpp
 eswitch( p1 )
@@ -242,10 +342,10 @@ eswitch( p1 )
 else if( p1 >= 11 && p1 <= 20 ) {...}
 ```
 
-#### Any_from helper function
+#### any_from helper function
 
 ```cpp
-eswitch( file_extention )
+eswitch( file_extension )
 (
     Case( any_from( "cpp", "cc", "c++", "cxx", "C" ) ) {...},
     Case( any_from( "h", "hpp", "hh", "h++", "hxx", "H" ) ) {...},
@@ -275,7 +375,7 @@ bool val = eswitch( p1 )
 #### Match for std::any or std::variant
 
 ```cpp
-eswitch( any_ ) 
+eswitch( any_or_variant ) 
 (
     Case( is< int >{} ) {...}, // will be executed in 'std::any' contain 'int'
     Case( is< string >{} ) {...} // will be executed in 'std::any' contain 'std::string'
@@ -285,9 +385,9 @@ eswitch( any_ )
 #### Match and withdraw value from std::any or std::variant
 
 ```cpp
-eswitch( any ) 
+eswitch( any_or_variant ) 
 (
-    Case( is< int >{} )( const int value ) {...}, // Note that keyword 'auto' isn't allowed( i.e. code won't compile )
+    Case( is< int >{} )( const int value ) {...}, // Note That: keyword 'auto' isn't allowed( i.e. code won't compile )
     Case( is< string >{} )( const string & value ) {...}
 );
 ```
@@ -328,7 +428,9 @@ eswitch( text )
     Case( R"((\d*))"_r )( vector< string > && match ){ return match[1]; } 
 );
 ```
-### How to write Custom Extentions?
+## How to write Custom extensions?
+
+--------------------------------------------
 
 This guide is about how to <u>use</u> _custom types_ in **Case** or <u>define</u> _custom behavior_ for some types. We will implement **custom extension** and I walk you through all the steps and details.
 
@@ -391,19 +493,20 @@ eswitch( 2 - 0.7000000001 )
 ```
 **Full example**: [Floating point comparison](@ref example-floating-point-comparison)
 
-**NOTE THAT:**
+@note
+- An **intermediate class** should be used all the time( not only for primitives due to compiler restrictions ), otherwise it won't be possible for compiler to find custom `operator`( unless this `operator` will be defined before `#include <eswitch_v5.hpp>`, only then **intermediate class** won't be needed ).
 
-- An **intermediate class** should be used all the time( not only for primitives due to compiler restrictions ), since otherwise it won't be possible for compiler to find custom `operator`( unless this `operator` will be defined before `#include <eswitch_v5.hpp>`, only then **intermediate class** won't be needed ).
-
-- Also example below demonstrate if certain value should be returned from custom `operator` and transferred to **Case** [input value/argument](#syntax), then the value should be wrapped into `std::optional`. 
+- Also example below demonstrate if certain value should be returned from custom `operator` and transferred to **Case** as [input parameter](#syntax), then the value should be wrapped into `std::optional`. 
 
 **For example:** [Value and Type transferring](@ref example-value-and-type-transferring)
 
-### Rationalities
+## Rationalities
 
-- Using macroses for **Case** and **Default** allowed me to be as close as possible to **C++ switch statement** regarding syntax, otherwise there was no way to hide **lambda** declaration.
+--------------------------------------------
+
+- Using macroses for **Case** and **Default** allowed me to be as close as possible to **C++ switch statement** regarding syntax, otherwise there was no way to hide **lambda** declaration. 
 - Setting properties via `operator^` - It is the only `operator` which is used to set 
-certain properties for **values/matrices**( in **matlab** ) and which I find reasonable. Thus I incorporated this notation in my library, like that:
+certain properties for **values/matrices**( in **matlab** ), which I find reasonable. Thus I used this notation in my library, like this:
 ```cpp 
 eswitch( some_var )
 (

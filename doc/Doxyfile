@@ -1,5 +1,5 @@
-PROJECT_NAME            = "eswitch_v5"
-PROJECT_BRIEF           = "This header-only library enhance functionality of Native C++ switch statement"
+PROJECT_NAME            = "eswitch-v5"
+PROJECT_BRIEF           = "Advanced counterpart for switch statement in C++"
 PROJECT_LOGO            =
 PROJECT_NUMBER          =
 
@@ -57,7 +57,6 @@ GENERATE_DEPRECATEDLIST = YES
 SHOW_USED_FILES         = NO
 SHOW_FILES              = YES
 SHOW_NAMESPACES         = YES
-
 LAYOUT_FILE             = @eswitch_docs_SOURCE_DIR@/../doc/layout.xml
 
 

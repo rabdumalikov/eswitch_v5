@@ -3,6 +3,7 @@ Examples
 
 \section example-matching Matching
 
+--------------------------------------------
 \subsection example-default Default case match
 
 \snippet default.cpp default
@@ -59,6 +60,7 @@ Examples
 
 \section example-falling-properties Falling properties
 
+--------------------------------------------
 \subsection example-fallthrough Explicit fallthrough
 
 \snippet explicit_fallthrough.cpp explicit_fallthrough
@@ -69,18 +71,21 @@ Examples
 
 \section example-utilities Utilities
 
+--------------------------------------------
 \subsection example-any-from any_from
 
 \snippet any_from.cpp any_from
 
 \section example-stringify Stringification
 
+--------------------------------------------
 \subsection example-enum-to-string Enum to string
 
 \snippet stringify_enum.cpp stringify_enum
 
 \section example-extension Customization
 
+--------------------------------------------
 \subsection example-floating-point-comparison Floating point comparison
 
 \snippet extension_floating_point_comparison.cpp extension_floating_point_comparison
