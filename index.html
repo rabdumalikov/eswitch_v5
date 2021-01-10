@@ -161,8 +161,29 @@ Implementation Details</h1>
 Motivation</h2>
 <hr  />
 <p>I don't see any good reason why <b>switch statement</b> in <b>C++</b> is so limited, whereas other statements such as <b>if, else if</b> including <em>loops</em> <b>while</b> and <b>for</b> have no such limitations and they allow to compose and test complex condition. And here is why:</p><ul>
-<li>In terms of <em><b>assembler</b></em> output, <b>if</b> and <b>switch</b> statements give the same output, thus the performance also the same.</li>
-<li>Also I don't think that <b>switch statement</b> is limited because of compatibility with <b>C</b>, since syntax of <b>if statement</b> is still compatible with <b>C</b> even though it was extended in <b>C++17</b>, this extension allows to declare variable within <b>if statement</b> like this: <div class="fragment"><div class="line"><span class="keywordflow">if</span>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/match_results.html">std::smatch</a> mt; <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a>( text, mt, rgx ) ) {...}</div>
+<li>In terms of <em><b>assembler</b></em> output, <b>if</b> and <b>switch</b> statements give the same <a href="https://godbolt.org/z/G3Woj6">output</a>, thus the performance also the same. <div class="fragment"><div class="line"> ============================================================================                          </div>
+<div class="line">|                                       |   foo(<span class="keywordtype">int</span>):            # @foo(int) |                           </div>
+<div class="line">|  int foo(int num)                     |       xor     ecx, ecx             |               </div>
+<div class="line">|  {                                    |       cmp     edi, 15              |              </div>
+<div class="line">|      <span class="keywordflow">if</span>     ( num == 10 ) <span class="keywordflow">return</span> 1;   |       sete    cl                   |         </div>
+<div class="line">|      <span class="keywordflow">else</span> <span class="keywordflow">if</span>( num == 15 ) <span class="keywordflow">return</span> 2;   |       xor     ecx, 3               |             </div>
+<div class="line">|      <span class="keywordflow">else</span>                 <span class="keywordflow">return</span> 3;   |       cmp     edi, 10              |              </div>
+<div class="line">|  }                                    |       mov     eax, 1               |             </div>
+<div class="line">|                                       |       cmovne  eax, ecx             |               </div>
+<div class="line">|                                       |       ret                          |                            </div>
+<div class="line">|=======================================+====================================|                                </div>
+<div class="line">|  <span class="keywordtype">int</span> bar(<span class="keywordtype">int</span> num)                     |    bar(<span class="keywordtype">int</span>):           # @bar(int) |                                                                    </div>
+<div class="line">|  {                                    |       xor     ecx, ecx             |                   </div>
+<div class="line">|      <span class="keywordflow">switch</span>( num )                    |       cmp     edi, 15              |                                  </div>
+<div class="line">|      {                                |       sete    cl                   |                 </div>
+<div class="line">|          <span class="keywordflow">case</span> 10: <span class="keywordflow">return</span> 1;           |       xor     ecx, 3               |                                          </div>
+<div class="line">|          <span class="keywordflow">case</span> 15: <span class="keywordflow">return</span> 2;           |       cmp     edi, 10              |                                           </div>
+<div class="line">|          <span class="keywordflow">default</span>: <span class="keywordflow">return</span> 3;           |       mov     eax, 1               |                                          </div>
+<div class="line">|      };                               |       cmovne  eax, ecx             |                        </div>
+<div class="line">|  }                                    |       ret                          |      </div>
+<div class="line"> ============================================================================                                </div>
+</div><!-- fragment --></li>
+<li>Also I don't think that limitation related to compatibility with <b>C</b>, since syntax of <b>if statement</b> is still compatible with <b>C</b> even though it was extended in <b>C++17</b>, this extension allows to declare variable within <b>if statement</b> like this: <div class="fragment"><div class="line"><span class="keywordflow">if</span>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/match_results.html">std::smatch</a> mt; <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a>( text, mt, rgx ) ) {...}</div>
 </div><!-- fragment --></li>
 <li>And there was even the <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html">proposal</a> for <b>C++ standard committee</b>: ''To allow to use <em>complex types</em>( like <b>strings</b>, <b>complex numbers</b>, etc ) within <b>switch statement</b>''. And <b>committee</b> <span style="color:green"> <em>agreed</em> </span> about <b>importance of this topic</b>. But somehow the author stopped his work toward this direction.</li>
 <li>There is more, compilers such as <b>clang</b> and <b>gcc</b> have non-standard extension for matching <a href="https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html"><b>case ranges</b></a>. <div class="fragment"><div class="line"><span class="keywordflow">switch</span>( num )                              <span class="keywordflow">switch</span>( ch )</div>
