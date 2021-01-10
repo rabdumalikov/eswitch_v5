@@ -52,8 +52,32 @@ I don't see any good reason why **switch statement** in **C++** is so limited, w
 statements such as **if, else if** including _loops_ **while** and **for** have no such limitations and they allow to compose and
 test complex condition. And here is why:
 - In terms of _**assembler**_ output, **if** and **switch** 
-statements give the same output, thus the performance also the same. 
-- Also I don't think that **switch statement** is limited because of compatibility  with **C**, since syntax of **if statement** is still compatible with **C** even though it was extended in **C++17**, this extension allows to declare variable  within **if statement** like this: 
+statements give the same [output](https://godbolt.org/z/G3Woj6), thus the performance also the same.
+```cpp
+ ============================================================================                          
+|                                       |   foo(int):            # @foo(int) |                           
+|  int foo(int num)                     |       xor     ecx, ecx             |               
+|  {                                    |       cmp     edi, 15              |              
+|      if     ( num == 10 ) return 1;   |       sete    cl                   |         
+|      else if( num == 15 ) return 2;   |       xor     ecx, 3               |             
+|      else                 return 3;   |       cmp     edi, 10              |              
+|  }                                    |       mov     eax, 1               |             
+|                                       |       cmovne  eax, ecx             |               
+|                                       |       ret                          |                            
+|=======================================+====================================|                                
+|  int bar(int num)                     |    bar(int):           # @bar(int) |                                                                    
+|  {                                    |       xor     ecx, ecx             |                   
+|      switch( num )                    |       cmp     edi, 15              |                                  
+|      {                                |       sete    cl                   |                 
+|          case 10: return 1;           |       xor     ecx, 3               |                                          
+|          case 15: return 2;           |       cmp     edi, 10              |                                           
+|          default: return 3;           |       mov     eax, 1               |                                          
+|      };                               |       cmovne  eax, ecx             |                        
+|  }                                    |       ret                          |      
+ ============================================================================                                
+```
+
+- Also I don't think that limitation related to compatibility with **C**, since syntax of **if statement** is still compatible with **C** even though it was extended in **C++17**, this extension allows to declare variable  within **if statement** like this: 
 ```cpp
 if( std::smatch mt; std::regex( text, mt, rgx ) ) {...}
 ```
