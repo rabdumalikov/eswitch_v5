@@ -15,6 +15,7 @@ To overcome **native switch** limitations:
 [![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/gcc%20CI/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
 [![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/gcc%20TESTS/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
 [![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/Docs%20generation/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
+[![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/clang%20Examples/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
 
 
 ## Feature comparison:

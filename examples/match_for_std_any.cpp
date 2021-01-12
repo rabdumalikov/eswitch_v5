@@ -16,7 +16,7 @@ int main()
 {
     using namespace eswitch_v5;
 
-    {   /// match
+    { // match
     std::any a = 888;
 
     auto result = eswitch( a )
@@ -35,7 +35,7 @@ int main()
     assert( result == 888 );
     }
 
-    { /// no-match
+    { // no-match
     std::any a = std::string{"Hello"};
 
     auto result = eswitch( a )

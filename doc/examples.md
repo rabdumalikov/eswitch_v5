@@ -24,8 +24,21 @@ Examples
 
 \snippet match_mixed_condition.cpp match_mixed_condition
 
+\subsection example-individual-entries Individual entries
+
+--------------------------------------------
+\subsubsection example-match-for-std-pair Match for std::pair
+
+\snippet match_for_std_pair.cpp match_for_std_pair
+
+\subsubsection example-match-for-std-tuple Match for std::tuple
+
+\snippet match_for_std_tuple.cpp match_for_std_tuple
+
+
 \subsection Predicate Predicates
 
+--------------------------------------------
 \subsubsection example-predicate-free-function Free function predicate
 
 \snippet match_by_predicate_as_free_function.cpp match_by_predicate_as_free_function
@@ -36,6 +49,7 @@ Examples
 
 \subsection Regex Regex
 
+--------------------------------------------
 \subsubsection example-regex Just match
 
 \snippet match_via_regex.cpp match_via_regex
@@ -46,6 +60,7 @@ Examples
 
 \subsection Withdrawing Withdrawing underlying value
 
+--------------------------------------------
 \subsubsection example-std-any-match Match for std::any
 
 \snippet match_for_std_any.cpp match_for_std_any

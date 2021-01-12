@@ -238,11 +238,15 @@ eswitch( __arguments__ )
     <td>
         <div align="left">
             Case( <b>_1</b> == smth1 || <b>_2</b> == smth2 || ... )<br>
+            Case( smth1 || smth2 || ... )<br>
             Case( <b>_1</b> == <b>any_from</b>( smth1, smth1, ... ) )<br>
+            Case( <b>any_from</b>( smth1, smth1, ... ) )<br>
             Case( ( pred1, <b>_1</b> ) && ( pred2, <b>_2</b> ) && ... )
         </div>
     <td>
         <ol>
+            <li>
+            <li>
             <li>
             <li>
             <li>
@@ -252,7 +256,9 @@ eswitch( __arguments__ )
         <div align="left">
         <ol>
             <li>Match **in order**<br> 
+            <li>Same as <b>1st</b> one, but less verbose<br> 
             <li>Match via **any_from**<br>
+            <li>Same as <b>3rd</b> one, but less verbose<br> 
             <li>Match via **predicate**
         </ol>
         </div>
@@ -306,6 +312,7 @@ eswitch( __arguments__ )
 - **easy check in range**
 - **match for**: _std::any, std::variant, std::regex_
 - **match and withdraw value from**: _std::any, std::variant, std::regex_
+- **match for individual entries of**: _std::pair, std::tuple_
 - **return value from Case**
  
 #### Params referencing via indexes
@@ -452,6 +459,26 @@ eswitch( text )
     Case( R"((\d*))"_r )( vector< string > && match ){ return match[1]; } 
 );
 ```
+
+#### Match for entries in std::pair
+
+```cpp
+eswitch( std::make_pair( 10, string{"Text"} ) ) 
+(    
+    Case( 10, "Text" ){ ... }
+);
+```
+
+#### Match for entries in std::tuple
+
+```cpp
+eswitch( std::make_tuple( 1, 0, 0, 1 ) ) 
+(    
+    Case( 1, 0, 0, 1 ) { return 9; },
+    Case( 1, 1, 1, 1 ) { return 15; }
+);
+```
+
 ## How to write Custom extensions?
 
 --------------------------------------------
