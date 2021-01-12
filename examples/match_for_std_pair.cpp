@@ -15,41 +15,41 @@
 int main()
 {
     using namespace eswitch_v5;
+    using namespace std::string_literals;
+
+    auto pr = std::make_pair( 10, "H"s );
 
     { // match
-    auto pr = std::make_pair( 10, std::string{"H"} );
 
-    auto result = eswitch( pr )
-    (
-        Case( 10, "H" ) { return true; },        
-        Default { return false; }
-    );
+        auto result = eswitch( pr )
+        (
+            Case( 10, "H" ) { return true; },        
+            Default { return false; }
+        );
 
-    assert( result );
+        assert( result );
     }
 
     { // partial-match
-    auto pr = std::make_pair( 10, std::string{"H"} );
 
-    auto result = eswitch( pr )
-    (
-        Case( _2 == "Hello" ) { return true; },        
-        Default { return false; }
-    );
-    
-    assert( !result );
+        auto result = eswitch( pr )
+        (
+            Case( _2 == "Hello" ) { return true; },        
+            Default { return false; }
+        );
+        
+        assert( !result );
     }
 
     { // no-match
-    auto pr = std::make_pair( 10, std::string{"H"} );
 
-    auto result = eswitch( pr )
-    (
-        Case( 10, "Hello" ) { return true; },        
-        Default { return false; }
-    );
+        auto result = eswitch( pr )
+        (
+            Case( 10, "Hello" ) { return true; },        
+            Default { return false; }
+        );
 
-    assert( !result );
+        assert( !result );
     }
 }
 ///[match_for_std_pair]
