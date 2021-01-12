@@ -26,9 +26,7 @@ jobs:
     - name: Build clang
       working-directory: ${{ env.HOME }}
       shell: bash
-      run: |
-           cmake . -DCMAKE_BUILD_TYPE=Release  
-           make
+      run: ./build.sh clang++-12 
       env:
         CXX: clang++-12
         CC: clang-12         
@@ -36,4 +34,6 @@ jobs:
     - name: Example
       working-directory: ${{ env.HOME }}
       shell: bash
-      run: for filename in examples/*; do if [[ -f $filename && -x $filename ]]; then echo $filename; ./$filename; fi; done
+      run: |
+           cd build/release/examples;
+           for filename in *; do if [[ -f $filename && -x $filename ]]; then echo $filename; ./$filename; fi; done
