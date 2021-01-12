@@ -285,41 +285,41 @@ Match for std::pair</h3>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
 <div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
+<div class="line">    <span class="keyword">using namespace </span>std::string_literals;</div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">auto</span> pr = <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/pair/make_pair.html">std::make_pair</a>( 10, <span class="stringliteral">&quot;H&quot;</span>s );</div>
 <div class="line"> </div>
 <div class="line">    { <span class="comment">// match</span></div>
-<div class="line">    <span class="keyword">auto</span> pr = <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/pair/make_pair.html">std::make_pair</a>( 10, <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>{<span class="stringliteral">&quot;H&quot;</span>} );</div>
 <div class="line"> </div>
-<div class="line">    <span class="keyword">auto</span> result = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( pr )</div>
-<div class="line">    (</div>
-<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 10, <span class="stringliteral">&quot;H&quot;</span> ) { <span class="keywordflow">return</span> <span class="keyword">true</span>; },        </div>
-<div class="line">        <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { <span class="keywordflow">return</span> <span class="keyword">false</span>; }</div>
-<div class="line">    );</div>
+<div class="line">        <span class="keyword">auto</span> result = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( pr )</div>
+<div class="line">        (</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 10, <span class="stringliteral">&quot;H&quot;</span> ) { <span class="keywordflow">return</span> <span class="keyword">true</span>; },        </div>
+<div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { <span class="keywordflow">return</span> <span class="keyword">false</span>; }</div>
+<div class="line">        );</div>
 <div class="line"> </div>
-<div class="line">    assert( result );</div>
+<div class="line">        assert( result );</div>
 <div class="line">    }</div>
 <div class="line"> </div>
 <div class="line">    { <span class="comment">// partial-match</span></div>
-<div class="line">    <span class="keyword">auto</span> pr = <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/pair/make_pair.html">std::make_pair</a>( 10, <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>{<span class="stringliteral">&quot;H&quot;</span>} );</div>
 <div class="line"> </div>
-<div class="line">    <span class="keyword">auto</span> result = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( pr )</div>
-<div class="line">    (</div>
-<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> == <span class="stringliteral">&quot;Hello&quot;</span> ) { <span class="keywordflow">return</span> <span class="keyword">true</span>; },        </div>
-<div class="line">        <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { <span class="keywordflow">return</span> <span class="keyword">false</span>; }</div>
-<div class="line">    );</div>
-<div class="line">    </div>
-<div class="line">    assert( !result );</div>
+<div class="line">        <span class="keyword">auto</span> result = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( pr )</div>
+<div class="line">        (</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> == <span class="stringliteral">&quot;Hello&quot;</span> ) { <span class="keywordflow">return</span> <span class="keyword">true</span>; },        </div>
+<div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { <span class="keywordflow">return</span> <span class="keyword">false</span>; }</div>
+<div class="line">        );</div>
+<div class="line">        </div>
+<div class="line">        assert( !result );</div>
 <div class="line">    }</div>
 <div class="line"> </div>
 <div class="line">    { <span class="comment">// no-match</span></div>
-<div class="line">    <span class="keyword">auto</span> pr = <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/pair/make_pair.html">std::make_pair</a>( 10, <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>{<span class="stringliteral">&quot;H&quot;</span>} );</div>
 <div class="line"> </div>
-<div class="line">    <span class="keyword">auto</span> result = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( pr )</div>
-<div class="line">    (</div>
-<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 10, <span class="stringliteral">&quot;Hello&quot;</span> ) { <span class="keywordflow">return</span> <span class="keyword">true</span>; },        </div>
-<div class="line">        <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { <span class="keywordflow">return</span> <span class="keyword">false</span>; }</div>
-<div class="line">    );</div>
+<div class="line">        <span class="keyword">auto</span> result = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( pr )</div>
+<div class="line">        (</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 10, <span class="stringliteral">&quot;Hello&quot;</span> ) { <span class="keywordflow">return</span> <span class="keyword">true</span>; },        </div>
+<div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { <span class="keywordflow">return</span> <span class="keyword">false</span>; }</div>
+<div class="line">        );</div>
 <div class="line"> </div>
-<div class="line">    assert( !result );</div>
+<div class="line">        assert( !result );</div>
 <div class="line">    }</div>
 <div class="line">}</div>
 </div><!-- fragment --> <h3><a class="anchor" id="example-match-for-std-tuple"></a>
@@ -332,43 +332,42 @@ Match for std::tuple</h3>
 <div class="line">{</div>
 <div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
 <div class="line"> </div>
-<div class="line">    { <span class="comment">// match</span></div>
 <div class="line">    <span class="keyword">auto</span> tup = <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>( 1, 0, 0, 1 );</div>
 <div class="line"> </div>
-<div class="line">    <span class="keyword">auto</span> result = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( tup )</div>
-<div class="line">    (</div>
-<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1, 0, 0, 1 ) { <span class="keywordflow">return</span> 9; },</div>
-<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1, 1, 1, 1 ) { <span class="keywordflow">return</span> 15; },     </div>
-<div class="line">        <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { <span class="keywordflow">return</span> -1; }</div>
-<div class="line">    );</div>
+<div class="line">    { <span class="comment">// match</span></div>
 <div class="line"> </div>
-<div class="line">    assert( result == 9 );</div>
+<div class="line">        <span class="keyword">auto</span> result = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( tup )</div>
+<div class="line">        (</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1, 0, 0, 1 ) { <span class="keywordflow">return</span> 9; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1, 1, 1, 1 ) { <span class="keywordflow">return</span> 15; },     </div>
+<div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { <span class="keywordflow">return</span> -1; }</div>
+<div class="line">        );</div>
+<div class="line"> </div>
+<div class="line">        assert( result == 9 );</div>
 <div class="line">    }</div>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line">    { <span class="comment">// partial-match</span></div>
-<div class="line">    <span class="keyword">auto</span> tup = <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>( 1, 0, 0, 1 );</div>
 <div class="line"> </div>
-<div class="line">    <span class="keyword">auto</span> result = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( tup )</div>
-<div class="line">    (</div>
-<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> == 0 &amp;&amp; <a class="code" href="group__index-variables.html#gaeae650f6542c704d82a19ee6a16b7b9f">_3</a> == 0 ) { <span class="keywordflow">return</span> <span class="keyword">true</span>; },   </div>
-<div class="line">        <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { <span class="keywordflow">return</span> <span class="keyword">false</span>; }</div>
-<div class="line">    );</div>
+<div class="line">        <span class="keyword">auto</span> result = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( tup )</div>
+<div class="line">        (</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> == 0 &amp;&amp; <a class="code" href="group__index-variables.html#gaeae650f6542c704d82a19ee6a16b7b9f">_3</a> == 0 ) { <span class="keywordflow">return</span> <span class="keyword">true</span>; },   </div>
+<div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { <span class="keywordflow">return</span> <span class="keyword">false</span>; }</div>
+<div class="line">        );</div>
 <div class="line"> </div>
-<div class="line">    assert( result );</div>
+<div class="line">        assert( result );</div>
 <div class="line">    }</div>
 <div class="line"> </div>
 <div class="line">    { <span class="comment">// no-match</span></div>
-<div class="line">    <span class="keyword">auto</span> tup = <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>( 1, 0, 0, 1 );</div>
 <div class="line"> </div>
-<div class="line">    <span class="keyword">auto</span> result = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( tup )</div>
-<div class="line">    (</div>
-<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1, 1, 0, 1 ) { <span class="keywordflow">return</span> 13; },</div>
-<div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1, 1, 1, 1 ) { <span class="keywordflow">return</span> 15; },     </div>
-<div class="line">        <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { <span class="keywordflow">return</span> -1; }</div>
-<div class="line">    );</div>
+<div class="line">        <span class="keyword">auto</span> result = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( tup )</div>
+<div class="line">        (</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1, 1, 0, 1 ) { <span class="keywordflow">return</span> 13; },</div>
+<div class="line">            <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1, 1, 1, 1 ) { <span class="keywordflow">return</span> 15; },     </div>
+<div class="line">            <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { <span class="keywordflow">return</span> -1; }</div>
+<div class="line">        );</div>
 <div class="line"> </div>
-<div class="line">    assert( result == -1 );</div>
+<div class="line">        assert( result == -1 );</div>
 <div class="line">    }</div>
 <div class="line">}</div>
 </div><!-- fragment --><h2><a class="anchor" id="Predicate"></a>
