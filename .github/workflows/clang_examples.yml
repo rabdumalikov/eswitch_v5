@@ -38,5 +38,8 @@ jobs:
       shell: bash
       run: |
            for filename in examples/*; do
-            ./$filename
+             if [ -x $file ]; then
+               echo $filename
+               ./$filename
+             fi
            done

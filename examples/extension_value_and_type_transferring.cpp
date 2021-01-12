@@ -32,8 +32,10 @@ struct Has_type {};
 template< eswitch_v5::NoneIndex T >
 auto operator==( T&&, const Has_value )
 {
-    if constexpr( requires{ T::value; } ) 
-        return std::make_optional( T::value );
+    using T_ = std::decay_t< T >;
+
+    if constexpr( requires{ T_::value; } ) 
+        return std::make_optional( T_::value );
     else
         return false;
 }
@@ -41,8 +43,10 @@ auto operator==( T&&, const Has_value )
 template< eswitch_v5::NoneIndex T >
 auto operator==( T&&, const Has_type )
 {
-    if constexpr( requires{ typename T::type; } ) 
-        return std::make_optional( Holder< typename T::type >{} );
+    using T_ = std::decay_t< T >;
+
+    if constexpr( requires{ typename T_::type; } )
+        return std::make_optional( Holder< typename T_::type >{} );
     else
         return false;
 }
