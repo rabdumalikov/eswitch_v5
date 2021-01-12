@@ -47,11 +47,13 @@ var NAVTREE =
           [ "Match and withdraw value from std::any or std::variant", "index.html#autotoc_md24", null ],
           [ "Match for polymorphic types", "index.html#autotoc_md25", null ],
           [ "Match for std::regex", "index.html#autotoc_md26", null ],
-          [ "Match and withdraw values from std::regex", "index.html#autotoc_md27", null ]
+          [ "Match and withdraw values from std::regex", "index.html#autotoc_md27", null ],
+          [ "Match for entries in std::pair", "index.html#autotoc_md28", null ],
+          [ "Match for entries in std::tuple", "index.html#autotoc_md29", null ]
         ] ]
       ] ],
-      [ "How to write Custom extensions?", "index.html#autotoc_md28", null ],
-      [ "Rationalities", "index.html#autotoc_md30", null ]
+      [ "How to write Custom extensions?", "index.html#autotoc_md30", null ],
+      [ "Rationalities", "index.html#autotoc_md32", null ]
     ] ],
     [ "Examples", "md_examples.html", [
       [ "Matching", "md_examples.html#example-matching", [
@@ -60,6 +62,10 @@ var NAVTREE =
         [ "Out of order match", "md_examples.html#example-out-of-order", null ],
         [ "Partial match", "md_examples.html#example-partial-match", null ],
         [ "Mixed conditions", "md_examples.html#example-mixed-condition", null ],
+        [ "Individual entries", "md_examples.html#example-individual-entries", [
+          [ "Match for std::pair", "md_examples.html#example-match-for-std-pair", null ],
+          [ "Match for std::tuple", "md_examples.html#example-match-for-std-tuple", null ]
+        ] ],
         [ "Predicates", "md_examples.html#Predicate", [
           [ "Free function predicate", "md_examples.html#example-predicate-free-function", null ],
           [ "Lambda predicate", "md_examples.html#example-predicates", null ]

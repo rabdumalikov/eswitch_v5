@@ -119,12 +119,14 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <li class="level3"><a href="#autotoc_md25">Match for polymorphic types</a></li>
 <li class="level3"><a href="#autotoc_md26">Match for std::regex</a></li>
 <li class="level3"><a href="#autotoc_md27">Match and withdraw values from std::regex</a></li>
+<li class="level3"><a href="#autotoc_md28">Match for entries in std::pair</a></li>
+<li class="level3"><a href="#autotoc_md29">Match for entries in std::tuple</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="level1"><a href="#autotoc_md28">How to write Custom extensions?</a></li>
-<li class="level1"><a href="#autotoc_md30">Rationalities</a></li>
+<li class="level1"><a href="#autotoc_md30">How to write Custom extensions?</a></li>
+<li class="level1"><a href="#autotoc_md32">Rationalities</a></li>
 </ul>
 </div>
 <div class="textblock"><h1><a class="anchor" id="tutorial-overview"></a>
@@ -289,8 +291,14 @@ Syntax</h2>
 <td><span style="color:blue">__arguments__</span> </td><td><div align="left"> The list of arguments( i.e. <b>arg_1</b>, <b>arg_2</b>, ..., <b>arg_n</b> ) </div> </td></tr>
 <tr>
 <td rowspan="2"><span style="color:blue">__conditions__</span> </td><td><div align="left"> Case( <b>_1</b> == smth1 || <b>_2</b> == smth2 || ... )<br  />
+ Case( smth1 || smth2 || ... )<br  />
  Case( <b>_1</b> == <b>any_from</b>( smth1, smth1, ... ) )<br  />
+ Case( <b>any_from</b>( smth1, smth1, ... ) )<br  />
  Case( ( pred1, <b>_1</b> ) &amp;&amp; ( pred2, <b>_2</b> ) &amp;&amp; ... ) </div> </td><td><ol>
+<li>
+</li>
+<li>
+</li>
 <li>
 </li>
 <li>
@@ -305,7 +313,13 @@ Syntax</h2>
 Match <b>in order</b><br  />
  </li>
 <li>
+Same as <b>1st</b> one, but less verbose<br  />
+ </li>
+<li>
 Match via <b>any_from</b><br  />
+ </li>
+<li>
+Same as <b>3rd</b> one, but less verbose<br  />
  </li>
 <li>
 Match via <b>predicate</b> </li>
@@ -338,6 +352,7 @@ Features</h2>
 <li><b>easy check in range</b></li>
 <li><b>match for</b>: <em>std::any, std::variant, <a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></em></li>
 <li><b>match and withdraw value from</b>: <em>std::any, std::variant, <a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></em></li>
+<li><b>match for individual entries of</b>: <em><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair</a>, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/tuple.html">std::tuple</a></em></li>
 <li><b>return value from Case</b></li>
 </ul>
 </div><div align="left"></div><h3><a class="anchor" id="autotoc_md16"></a>
@@ -447,7 +462,20 @@ Match and withdraw values from std::regex</h3>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;((\w*))&quot;_r )( vector&lt; string &gt; &amp;&amp; match ){ </span><span class="keywordflow">return</span> match[1]; } </div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;((\d*))&quot;_r )( vector&lt; string &gt; &amp;&amp; match ){ </span><span class="keywordflow">return</span> match[1]; } </div>
 <div class="line">);</div>
-</div><!-- fragment --></div><div align="left"></div><h1><a class="anchor" id="autotoc_md28"></a>
+</div><!-- fragment --></div><div align="left"></div><h3><a class="anchor" id="autotoc_md28"></a>
+Match for entries in std::pair</h3>
+<div align="left"> <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/pair/make_pair.html">std::make_pair</a>( 10, <span class="keywordtype">string</span>{<span class="stringliteral">&quot;Text&quot;</span>} ) ) </div>
+<div class="line">(    </div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 10, <span class="stringliteral">&quot;Text&quot;</span> ){ ... }</div>
+<div class="line">);</div>
+</div><!-- fragment --></div><div align="left"></div><h3><a class="anchor" id="autotoc_md29"></a>
+Match for entries in std::tuple</h3>
+<div align="left"> <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>( 1, 0, 0, 1 ) ) </div>
+<div class="line">(    </div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1, 0, 0, 1 ) { <span class="keywordflow">return</span> 9; },</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1, 1, 1, 1 ) { <span class="keywordflow">return</span> 15; }</div>
+<div class="line">);</div>
+</div><!-- fragment --></div><div align="left"></div><h1><a class="anchor" id="autotoc_md30"></a>
 How to write Custom extensions?</h1>
 <div align="left"> <hr  />
 </div><div align="left">This guide is about how to <u>use</u> <em>custom types</em> in <b>Case</b> or <u>define</u> <em>custom behavior</em> for some types. We will implement <b>custom extension</b> and I walk you through all the steps and details.</div><div align="left"><b>Thing to know:</b></div><div align="left">The only things which we can be customized are all the <b>comparison</b> <code>operators</code> such as '==', '!=', '&gt;', '&lt;' and so on.</div><div align="left"><b>Let's begin:</b></div><div align="left">As you may already know that comparing <b>floating points</b> is a tricky thing. <b>For example</b> following code fails( because of the <em>precision</em> ). <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 2 - 0.7000000001 )</div>
@@ -490,7 +518,7 @@ How to write Custom extensions?</h1>
 <li>Also example below demonstrate if certain value should be returned from custom <code>operator</code> and transferred to <b>Case</b> as <a href="#syntax">input parameter</a>, then the value should be wrapped into <code>std::optional</code>.</li>
 </ul>
 </dd></dl>
-<b>For example:</b> <a class="el" href="md_examples.html#example-value-and-type-transferring">Value and Type transferring</a></div><div align="left"></div><h1><a class="anchor" id="autotoc_md30"></a>
+<b>For example:</b> <a class="el" href="md_examples.html#example-value-and-type-transferring">Value and Type transferring</a></div><div align="left"></div><h1><a class="anchor" id="autotoc_md32"></a>
 Rationalities</h1>
 <div align="left"> <hr  />
 </div><div align="left"><ul>
@@ -505,6 +533,7 @@ Rationalities</h1>
 </div></div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="amake_tuple_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a></div><div class="ttdeci">T make_tuple(T... args)</div></div>
 <div class="ttc" id="agroup__index-variables_html_ga0467e341724f219d72f18c1c0885442a"><div class="ttname"><a href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">eswitch_v5::_1</a></div><div class="ttdeci">constexpr Index_&lt; 0 &gt; _1</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00174">eswitch_v5.hpp:174</a></div></div>
 <div class="ttc" id="afabs_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/numeric/math/fabs.html">std::fabs</a></div><div class="ttdeci">T fabs(T... args)</div></div>
 <div class="ttc" id="agroup__other-variables_html_ga23e83b648756cadca9232aaf9d7d3d03"><div class="ttname"><a href="group__other-variables.html#ga23e83b648756cadca9232aaf9d7d3d03">eswitch_v5::fallthrough_</a></div><div class="ttdeci">static constexpr Fallthrough fallthrough_</div><div class="ttdoc">Indicates fall through from previous Case without testing condition of following Case.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01016">eswitch_v5.hpp:1016</a></div></div>
@@ -513,6 +542,7 @@ Rationalities</h1>
 <div class="ttc" id="agroup__macroses_html_gaff2b0c246e6111e260e650b0ff4a8eb5"><div class="ttname"><a href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a></div><div class="ttdeci">#define Default</div><div class="ttdoc">Declares body which will be executed in case of no other matches.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01029">eswitch_v5.hpp:1029</a></div></div>
 <div class="ttc" id="agroup__macroses_html_gae733eb4e00d6306a21422f02ef7e8ca4"><div class="ttname"><a href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a></div><div class="ttdeci">#define Case(...)</div><div class="ttdoc">Accepts conditions of various forms.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01026">eswitch_v5.hpp:1026</a></div></div>
 <div class="ttc" id="agroup__main-components_html_ga82f93fb22725d76bb016b488742331d1"><div class="ttname"><a href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch_v5::eswitch</a></div><div class="ttdeci">static constexpr auto eswitch(Ts &amp;&amp;... ts)</div><div class="ttdoc">This function is responsible for passing arguments for class eswitch_impl with overloaded operator(),...</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00838">eswitch_v5.hpp:838</a></div></div>
+<div class="ttc" id="amake_pair_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/pair/make_pair.html">std::make_pair</a></div><div class="ttdeci">T make_pair(T... args)</div></div>
 <div class="ttc" id="amatch_results_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/regex/match_results.html">std::smatch</a></div></div>
 <div class="ttc" id="agroup__modules_html_ga620be0eec7b29eb300458a049bde6abe"><div class="ttname"><a href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">eswitch_v5::operator==</a></div><div class="ttdeci">static auto operator==(const std::string &amp;tuple_entry, const regexter &amp;value)</div><div class="ttdoc">CaseModule to support for matching and withdrawing of values for and from regular expression.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00413">eswitch_v5.hpp:413</a></div></div>
 <div class="ttc" id="agroup__index-variables_html_gacc83659898439dd14b78fc60be68ce28"><div class="ttname"><a href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">eswitch_v5::_2</a></div><div class="ttdeci">constexpr Index_&lt; 1 &gt; _2</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00175">eswitch_v5.hpp:175</a></div></div>
