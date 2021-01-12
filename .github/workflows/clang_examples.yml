@@ -36,4 +36,4 @@ jobs:
     - name: Example
       working-directory: ${{ env.HOME }}
       shell: bash
-      run: for filename in examples/*; do if [[ -f $filename && -x $filename ]] then echo $filename; ./$filename; fi; done
+      run: for filename in examples/*; do if [[ -f $filename && -x $filename ]]; then echo $filename; ./$filename; fi; done
