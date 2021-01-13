@@ -6,14 +6,13 @@ User Manual       {#mainpage}
 \section tutorial-overview Overview
 
 --------------------------------------------
-
-**eswitch_v5** is a library, which is an improved version of **switch statement** in **C++**( or just **native switch**). The main idea behind this library is to be able to overcome **native switch** limitations, such as:
+**eswitch_v5** is a library, which is an improved version of **switch statement** in C++(or just **native switch**). The main idea behind this library is to be able to overcome **native switch** limitations, such as:
 - one _argument_ per **native switch**
-- the _argument_ restricted to only _integral_ types( **int**, **char**, **enum** ... )
-- impossibility to _compose complex conditions_, as opposed to other **statements** like **if**, **else if**, along with **loops** such as **while** and **for**.
+- the _argument_ restricted to only _integral_ types( <span style="color:orange">int</span>, <span style="color:orange">char</span>, <span style="color:orange">enum</span> ... )
+- impossibility to _compose complex conditions_, as opposed to other **statements** like <span style="color:orange">if</span>, <span style="color:orange">else if</span>, along with *loops* such as <span style="color:orange">while</span> and <span style="color:orange">for</span>.
 
 **eswitch_v5** supports any number of _arguments_ and almost without restriction on their _type_
- as long as the _type_ is **comparable**( i.e. has **operator==**, **operator!=** and so on ).
+ as long as the _type_ is **comparable**( i.e. has <span style="color:orange">operator==</span>, <span style="color:orange">operator!=</span> and so on ).
  Additionally, my library allows to match for **std::any, std::variant<...>, polymorphic type match** and
  **std::regex**. Also it allows to withdraw values from those types, of course if the match was successful.
 
@@ -48,7 +47,7 @@ This section contains all the details, which user need to know in order to use t
 
 --------------------------------------------
 
-I don't see any good reason why **switch statement** in **C++** is so limited, whereas other 
+I don't see any good reason why **switch statement** in C++ is so limited, whereas other 
 statements such as **if, else if** including _loops_ **while** and **for** have no such limitations and they allow to compose and
 test complex condition. And here is why:
 - In terms of _**assembler**_ output, **if** and **switch** 
@@ -119,8 +118,8 @@ In all code examples, I omit the namespace prefixes for names in the **eswitch_v
 
 --------------------------------------------
 
-As I have mentioned that I've tried within my implementation to resemble _C++_ **switch statement** syntax. And I think I was able to achieve this, except the places where I was either limited by language
-or intentionally tried to avoid certain behavior of **switch statement** in _C++_ like default **fallthrough**. Compare:  
+As I have mentioned that I've tried within my implementation to resemble C++ **switch statement** syntax. And I think I was able to achieve this, except the places where I was either limited by language
+or intentionally tried to avoid certain behavior of **switch statement** in C++ like default **fallthrough**. Compare:  
 
 ```cpp
 switch( num )
@@ -237,28 +236,36 @@ eswitch( __arguments__ )
         <span style="color:blue">__conditions__</span>
     <td>
         <div align="left">
-            Case( <b>_1</b> == smth1 || <b>_2</b> == smth2 || ... )<br>
-            Case( smth1 || smth2 || ... )<br>
-            Case( <b>_1</b> == <b>any_from</b>( smth1, smth1, ... ) )<br>
-            Case( <b>any_from</b>( smth1, smth1, ... ) )<br>
-            Case( ( pred1, <b>_1</b> ) && ( pred2, <b>_2</b> ) && ... )
-        </div>
-    <td>
-        <ol>
-            <li>
-            <li>
-            <li>
-            <li>
-            <li>
-        </ol>
+        It is a _lazy expression_, where indexes <b>_1</b>, <b>_2</b>, ... represent<br> one-to-one correspondance with arguments in **eswitch**. Consider following<br>
+        code:<br>
+```cpp
+eswitch(arg_1, arg_2, ..., arg_n)
+// _1 refer to arg_1
+// _2 refer to arg_2
+// ...
+```
+
+**For example:**
+```cpp
+Case( _1 == smth1 && _2 == smth2 && ... )                        (1)
+
+Case( smth1, smth2, ... )                                        (2)
+
+Case( _1 == any_from( smth1, smth2, ... ) )                      (3)
+
+Case( any_from( smth1, smth2, ... ) )                            (4)
+
+Case( ( pred1, _1 ) && ( pred2, _2 ) && ... )                    (5)
+```      
+</div>
 <tr>
     <td>
         <div align="left">
         <ol>
             <li>Match **in order**<br> 
-            <li>Same as <b>1st</b> one, but less verbose<br> 
+            <li>Same as the <b>1st</b> one, but less verbose<br> 
             <li>Match via **any_from**<br>
-            <li>Same as <b>3rd</b> one, but less verbose<br> 
+            <li>Same as the <b>3rd</b> one, but less verbose<br> 
             <li>Match via **predicate**
         </ol>
         </div>
@@ -323,9 +330,6 @@ eswitch( p1, p2 )
     Case( _1 == true && _2 == true ) {...},
     Case( _2 != true || _1 == true ) {...}
 );   
-// i.e.
-     if( p1 == true && p2 == true ) {...}
-else if( p1 == true || p2 == true ) {...}
 ```
 
 
@@ -347,10 +351,6 @@ eswitch( p1, p2 )
     Case( ( is_odd, _1 ) && ( is_odd, _2 ) ) {...},
     Case( ( is_negative( _1, _2 ) ){...}
 );
-    
-// i.e.
-     if( is_odd( p1 ) && is_odd( p2) ) {...}
-else if( is_negative( p1, p2 ) ) {...}
 ```
 
 #### Check in range
@@ -367,10 +367,6 @@ eswitch( p1 )
     Case( _1 > 1 && _1 < 10 ) {...},
     Case( _1 >= 11 && _1 <= 20 ) ) {...}
 );
-
-// i.e.
-     if( p1 >  1  && p1 < 10 )  {...}
-else if( p1 >= 11 && p1 <= 20 ) {...}
 ```
 
 #### any_from helper function
@@ -555,7 +551,7 @@ eswitch( 2 - 0.7000000001 )
 
 --------------------------------------------
 
-- Using macroses for **Case** and **Default** allowed me to be as close as possible to **C++ switch statement** regarding syntax, otherwise there was no way to hide **lambda** declaration. 
+- Using macroses for **Case** and **Default** allowed me to be as close as possible to C++ **switch statement** regarding syntax, otherwise there was no way to hide **lambda** declaration. 
 - Setting properties via `operator^` - It is the only `operator` which is used to set 
 certain properties for **values/matrices**( in **matlab** ), which I find reasonable. Thus I used this notation in my library, like this:
 ```cpp 
