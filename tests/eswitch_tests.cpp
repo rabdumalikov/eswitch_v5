@@ -26,7 +26,7 @@ TEST_CASE( "eswitch_v5::range", "" )
         auto r = 
         eswitch( 6 )
         (
-            Case( _1.in( 1, 10 ) ) { return true; },
+            Case( _1.between( 1, 10 ) ) { return true; },
             Default   { return false; } 
         );
 
@@ -38,7 +38,7 @@ TEST_CASE( "eswitch_v5::range", "" )
         auto r = 
         eswitch( 10 )
         (
-            Case( _1.in( 1, 10 ) ) { return true; },
+            Case( _1.between( 1, 10 ) ) { return true; },
             Default   { return false; } 
         );
 

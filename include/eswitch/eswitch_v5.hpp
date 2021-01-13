@@ -147,7 +147,7 @@ namespace eswitch_v5
         /// \brief Helper method which defines **open set** of **integers**.
         /// Then this **set** is used to determine whether certain _value_
         /// is **in** that **set**.
-        auto in( const std::size_t start, const std::size_t end ) const
+        auto between( const std::size_t start, const std::size_t end ) const
         {
             using namespace extension;
             

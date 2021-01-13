@@ -22,8 +22,8 @@ int main()
 
         eswitch( someVal )
         (
-            Case(  _1.in( 6, 10 ) ) { assert( false ); },
-            Case(  _1.in( 9, 25 ) ) { executed = true; },
+            Case(  _1.between( 6, 10 ) ) { assert( false ); },
+            Case(  _1.between( 9, 25 ) ) { executed = true; },
             Default { assert( false ); }
         );
 

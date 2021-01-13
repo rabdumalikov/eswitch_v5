@@ -169,7 +169,7 @@ int __attribute__ ((noinline)) E_SWITCH_range_check_made_easy( const int value )
 
     return eswitch( value )
     (
-        Case( _1.in( 1, 10 ) ) { return 0; },
+        Case( _1.between( 1, 10 ) ) { return 0; },
         Case( _1.within( 10, 20 ) ) { return 11; },
         Case( _1 > 30 && _1 <= 50 ) { return 40; }
     );

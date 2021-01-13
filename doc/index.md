@@ -16,33 +16,6 @@ User Manual       {#mainpage}
  Additionally, my library allows to match for **std::any, std::variant<...>, polymorphic type match** and
  **std::regex**. Also it allows to withdraw values from those types, of course if the match was successful.
 
-\subsection tutorial-installation Installation
-
---------------------------------------------
-Since this library is header-only and on top of that whole library was implemented within single file,
-thus you can get that file from **eswitch_v5** repository on [github](https://github.com/rabdumalikov/eswitch_v5/blob/main/include/eswitch/eswitch_v5.hpp). And in order to compile with eswitch_v5, just `#include <eswitch_v5.hpp>`.
-
-\subsection tutorial-license License
-
---------------------------------------------
-This code is distributed under the Boost Software License, Version 1.0. (See
-accompanying file [LICENSE.txt](https://github.com/rabdumalikov/eswitch_v5/blob/main/LICENSE.txt) or copy at http://www.boost.org/LICENSE_1_0.txt)
-
-
-\subsection tutorial-compilers Supported Compilers
-
---------------------------------------------------------------------------------
-Should work on all major compilers which support **C++20**. I personally tested on following:
-
-- **clang++-11** (or later)
-- **g++-10.2** (or later)
-- **Visual Studio 2019** - isn't supported for now, just because [familiar template syntax for generic lambdas](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0428r2.pdf) from **C++20** wasn't implemented by _Microsoft_ compiler.
-
-\section tutorial-implementation-details Implementation Details
-
---------------------------------------------------------------------------------
-This section contains all the details, which user need to know in order to use this library successfully.
-
 ### Motivation
 
 --------------------------------------------
@@ -76,97 +49,99 @@ statements give the same [output](https://godbolt.org/z/G3Woj6), thus the perfor
  ============================================================================                                
 ```
 
-- Also I don't think that limitation related to compatibility with **C**, since syntax of **if statement** is still compatible with **C** even though it was extended in **C++17**, this extension allows to declare variable  within **if statement** like this: 
+- Also I don't think that limitations related to compatibility with **C**, since syntax of **if statement** is still compatible with **C** even though it was extended in **C++17**, this extension allows to declare variable  within **if statement** like this: 
 ```cpp
 if( std::smatch mt; std::regex( text, mt, rgx ) ) {...}
 ```
-- And there was even the [proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html) for **C++ standard committee**: ''To allow to use _complex types_( like **strings**, **complex numbers**, etc ) within **switch statement**''. And **committee** <span style="color:green"> *agreed* </span> about **importance of this topic**. 
+Moreover this situation seem unfortunate for other people as well:
+
+- There was the [proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html) for **C++ standard committee**: ''To allow to use _complex types_( like **strings**, **complex numbers**, etc ) within **switch statement**''. And **committee** <span style="color:green"> *agreed* </span> about **importance of this topic**. 
 But somehow the author stopped his work toward this direction.
 
 
-- There is more, compilers such as **clang** and **gcc** have non-standard extension for matching [**case ranges**](https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html).
+- Compilers such as **clang** and **gcc** have non-standard extension for matching [**case ranges**](https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html).\n
+**For example**:
 ```cpp
-switch( num )                              switch( ch )
-{                                          {
-    case 1 ... 5: break;                       case 'A' ... 'Z': break;          
-    case 10 ... 99: break;                     case 'a' ... 'z': break;      
-};                                         };
+switch( num )               |    switch( ch )
+{                           |    {
+    case 1 ... 5:   break;  |        case 'A' ... 'Z': break;          
+    case 10 ... 99: break;  |        case 'a' ... 'z': break;      
+};                          |    };
 ```
 
-On top of that the internet is full of questions:
+- On top of that the internet is full of questions with over million views:
     - [Why strings cannot be used in **switch statement**?](https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings)
     - [How to compose complex condition in **switch statement**?](https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement)
-    - etc.
 
-The evidence above tell us that people don't like limitations of **switch statement**, and they were trying to overcome 
+- Programming language **swift** has pretty advanced **switch statement**.
+
+The evidence above tell us that people don't like inconsistency and limitations of **switch statement**, and they were trying to overcome 
 them with different approaches( by implementing **non-standard extension**, writing **proposals** or just **searching for the solution/workaround in the internet** ).
 
-For modern language like **swift** it is not an issue, because they have pretty advanced **switch statement**.
-
 Based on those factors I decided to write my own implementation of **enhanced switch**( or just **eswitch** ).
-In my implementation I tried to aim all the **limitations** and leave the syntax of **eswitch** as close as 
-possible to *native C++* **switch statement**. And last but not least, another my priority was the performance 
-of **eswitch**, which shouldn't differ by much from **native switch**. 
+In my implementation I tried:
+1. to address all the decribed **limitations**
+2. leave the syntax of **eswitch** as close as possible to C++ **switch statement**. Compare:\n 
+@code{cpp}
+    switch( num )             |    eswitch( num )                                                        
+    {                         |    (                       
+        case 1:  {...} break; |        Case( 1 ) {...},                                               
+        case 2:  {...} break; |        Case( 2 ) {...},                                               
+        default: {...} break; |        Default   {...}                                               
+    };                        |    );                        
+@endcode\n
+Pretty close, huh? Except the places where I was either limited by language or intentionally tried to avoid certain behavior of **switch statement** in C++ like default **fallthrough**.\n
+\n
+@note **Switch statement** in C++ has _explicit_ **break** and _implicit_ **fallthrough**.
+
+\n
+This behavior is considered to be error-prone. Since developers sometimes forget to use 
+**break** and because of this their code doesn't work the way it was intended.
+Thus in my implementation I reversed this concept i.e. **eswitch** has _implicit_ **break** 
+and _explicit_ **fallthrough**. Compare:\n
+@code{cpp}
+switch( num )               |    eswitch( num )     
+{                           |    (     
+    case 1:  {...}          |        Case( 1 ){...} ^ fallthrough_, 
+    case 2:  {...} break;   |        Case( 2 ){...},     
+    default: {...} break;   |        Default  {...}     
+};                          |    );     
+@endcode
+
+3. And last but not least, another my priority was the performance 
+of **eswitch**, which shouldn't differ by much from **native switch**.
+
+\subsection tutorial-installation Installation
+
+--------------------------------------------
+Since this library is header-only and on top of that whole library was implemented within single file,
+thus you can get that file from **eswitch_v5** repository on [github](https://github.com/rabdumalikov/eswitch_v5/blob/main/include/eswitch/eswitch_v5.hpp). And in order to compile with eswitch_v5, just `#include <eswitch_v5.hpp>`.
+
+\subsection tutorial-license License
+
+--------------------------------------------
+This code is distributed under the Boost Software License, Version 1.0. (See
+accompanying file [LICENSE.txt](https://github.com/rabdumalikov/eswitch_v5/blob/main/LICENSE.txt) or copy at http://www.boost.org/LICENSE_1_0.txt)
+
+
+\subsection tutorial-compilers Supported Compilers
+
+--------------------------------------------------------------------------------
+Should work on all major compilers which support **C++20**. I personally tested on following:
+
+- **clang++-11** (or later)
+- **g++-10.2** (or later)
+- **Visual Studio 2019** - isn't supported for now, just because [familiar template syntax for generic lambdas](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0428r2.pdf) from **C++20** wasn't implemented by _Microsoft_ compiler.
 
 ### Conventions used in this document
 
 --------------------------------------------
-
 In all code examples, I omit the namespace prefixes for names in the **eswitch_v5** and **std** namespaces.
 
-### Similarities
+\section tutorial-implementation-details Implementation Details
 
---------------------------------------------
-
-As I have mentioned that I've tried within my implementation to resemble C++ **switch statement** syntax. And I think I was able to achieve this, except the places where I was either limited by language
-or intentionally tried to avoid certain behavior of **switch statement** in C++ like default **fallthrough**. Compare:  
-
-```cpp
-switch( num )
-{
-    case 1:  {...} break;
-    case 2:  {...} break;
-    default: {...} break;
-};
-```
-
-with
-
-```cpp
-eswitch( num )
-(
-    Case( 1 ) {...},
-    Case( 2 ) {...},
-    Default   {...}
-);
-```
-@note
- _Native_ **switch statement** in _C++_ has _explicit_ **break** and _implicit_ **fallthrough** 
-which was proven to be an error-prone approach. Since developers sometimes forget to use 
-**break** and because of this their code doesn't work the way it was intended. 
-
-Thus in my implementation I reversed this concept i.e. **eswitch** has _implicit_ **break** 
-and _explicit_ **fallthrough**. Compare:
-
-```cpp
-switch( num )                    
-{                                
-    case 1:  {...}           
-    case 2:  {...} break;        
-    default: {...} break;        
-};                               
-```
-
-with 
-
-```cpp
-eswitch( num )
-(
-	Case( 1 ){...} ^ fallthrough_,
-	Case( 2 ){...},
-	Default  {...}
-);
-```
+--------------------------------------------------------------------------------
+This section contains all the details, which user need to know in order to use this library successfully.
 
 ### Keywords
 
@@ -236,16 +211,18 @@ eswitch( __arguments__ )
         <span style="color:blue">__conditions__</span>
     <td>
         <div align="left">
-        It is a _lazy expression_, where indexes <b>_1</b>, <b>_2</b>, ... represent<br> one-to-one correspondance with arguments in **eswitch**. Consider following<br>
-        code:<br>
-```cpp
+        It is a _lazy expression_, where indexes <b>_1</b>, <b>_2</b>, ... represent one-to-one<br> correspondance with arguments in **eswitch**. Consider following code:
+```cpp 
 eswitch(arg_1, arg_2, ..., arg_n)
+(
+    Case( _1 == smth_1 || _2 == smth_2 || ... ) {...}
+);
 // _1 refer to arg_1
 // _2 refer to arg_2
 // ...
 ```
 
-**For example:**
+**Possible usages:**
 ```cpp
 Case( _1 == smth1 && _2 == smth2 && ... )                        (1)
 
@@ -309,93 +286,13 @@ Case( ( pred1, _1 ) && ( pred2, _2 ) && ... )                    (5)
 ### Features
 
 --------------------------------------------
-
-- **implicit break** - it is default behavior,  which doesn't require explicit declaration.
-
-- **explicit fallthrough** - required explicit declaration.
-
-- **composing condition** with: '`&&`', '`||`', '`==`', '`!=`', '`>`', '`<`', '`<=`', '`>=`' 
-- **argument matching with and without explicit indexing**
-- **easy check in range**
-- **match for**: _std::any, std::variant, std::regex_
-- **match and withdraw value from**: _std::any, std::variant, std::regex_
-- **match for individual entries of**: _std::pair, std::tuple_
-- **return value from Case**
- 
-#### Params referencing via indexes
-
-```cpp
-eswitch( p1, p2 )
-(
-    Case( _1 == true && _2 == true ) {...},
-    Case( _2 != true || _1 == true ) {...}
-);   
-```
-
-
-#### If indexes aren't provided, then it is assumed that they're sequential
-
-```cpp
-eswitch( p1, p2 )
-(
-    Case( true, false ) {...}, // same as "Case( _1 == true && _2 == false )" 
-    Case( false ){...}
-);
-```
-
-#### Matching via predicates:(it could be either a lambda or a free function)
-
-```cpp
-eswitch( p1, p2 )
-(
-    Case( ( is_odd, _1 ) && ( is_odd, _2 ) ) {...},
-    Case( ( is_negative( _1, _2 ) ){...}
-);
-```
-
-#### Check in range
-
-```cpp
-eswitch( p1 )
-(
-    Case( _1.in( 1, 10 ) ) {...},
-    Case( _1.within( 11, 20 ) ) {...}
-);
-// OR
-eswitch( p1 )
-(
-    Case( _1 > 1 && _1 < 10 ) {...},
-    Case( _1 >= 11 && _1 <= 20 ) ) {...}
-);
-```
-
 #### any_from helper function
-
 ```cpp
 eswitch( file_extension )
 (
-    Case( any_from( "cpp", "cc", "c++", "cxx", "C" ) ) {...},
-    Case( any_from( "h", "hpp", "hh", "h++", "hxx", "H" ) ) {...},
-    Default {...}
-);
-```
-
-#### Default case
-
-```cpp
-eswitch( p1 )
-(
-    Case( false ) {...},
-    Default {...}
-);
-```
-
-#### Return value from Case
-
-```cpp
-bool val = eswitch( p1 ) 
-(
-    Case( 1 ) { return true; }
+    Case( any_from( "cpp", "cc", "c++", "cxx", "C" ) )      { return "source"; },
+    Case( any_from( "h", "hpp", "hh", "h++", "hxx", "H" ) ) { return "header"; },
+    Default { return "unknown"; }
 );
 ```
 
@@ -404,8 +301,8 @@ bool val = eswitch( p1 )
 ```cpp
 eswitch( any_or_variant ) 
 (
-    Case( is< int >{} ) {...}, // will be executed in 'std::any' contain 'int'
-    Case( is< string >{} ) {...} // will be executed in 'std::any' contain 'std::string'
+    Case( is< int >{} )    {...},
+    Case( is< string >{} ) {...} 
 );
 ```
 
@@ -414,7 +311,7 @@ eswitch( any_or_variant )
 ```cpp
 eswitch( any_or_variant ) 
 (
-    Case( is< int >{} )( const int value ) {...}, // Note That: keyword 'auto' isn't allowed( i.e. code won't compile )
+    Case( is< int >{} )   ( const int value )      {...}, // Note That: keyword 'auto' isn't allowed( i.e. code won't compile )
     Case( is< string >{} )( const string & value ) {...}
 );
 ```
@@ -475,6 +372,84 @@ eswitch( std::make_tuple( 1, 0, 0, 1 ) )
 );
 ```
 
+#### Check in range
+
+```cpp
+eswitch( p1 )
+(
+    Case( _1.between( 1, 10 ) ) {...},
+    Case( _1.within( 11, 20 ) ) {...}
+);
+// OR
+eswitch( p1 )
+(
+    Case( _1 >  1  && _1 <  10 ) {...},
+    Case( _1 >= 11 && _1 <= 20 ) {...}
+);
+```
+
+#### Arguments referencing via indexes
+
+```cpp
+eswitch( p1, p2 )
+(
+    Case( _1 == true && _2 == true ) {...},
+    Case( _2 != true || _1 == true ) {...}
+);   
+```
+
+#### If indexes aren't provided, then it is assumed that they're sequential
+
+```cpp
+eswitch( p1, p2 )
+(
+    Case( true, false ) {...}, // same as "Case( _1 == true && _2 == false )" 
+    Case( false ){...}
+);
+```
+
+#### Matching via predicates:(it could be either a lambda or a free function)
+
+```cpp
+eswitch( p1, p2 )
+(
+    Case( ( is_odd, _1 ) && ( is_odd, _2 ) ) {...},
+    Case( ( is_negative( _1, _2 ) ){...}
+);
+```
+
+#### Default case
+
+```cpp
+eswitch( p1 )
+(
+    Case( false ) {...},
+    Default {...}
+);
+```
+
+#### Return value from Case
+
+```cpp
+bool val = eswitch( p1 ) 
+(
+    Case( 1 ) { return true; }
+);
+```
+
+
+- **implicit break** - it is default behavior,  which doesn't require explicit declaration.
+
+- **explicit fallthrough** - required explicit declaration.
+
+- **composing condition** with: '`&&`', '`||`', '`==`', '`!=`', '`>`', '`<`', '`<=`', '`>=`' 
+- **argument matching with and without explicit indexing**
+- **easy check in range**
+- **match for**: _std::any, std::variant, std::regex_
+- **match and withdraw value from**: _std::any, std::variant, std::regex_
+- **match for individual entries of**: _std::pair, std::tuple_
+- **return value from Case**
+ 
 ## How to write Custom extensions?
 
 --------------------------------------------
