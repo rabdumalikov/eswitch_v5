@@ -29,7 +29,7 @@ statements give the same [output](https://godbolt.org/z/G3Woj6), thus the perfor
 <tr>
 <td colspan="2">
 <div align="left">
-<b>clang -O3</b>
+<b>compiler: clang, flags: -O3</b>
 </div>
 <tr>
     <td>
@@ -98,7 +98,7 @@ But somehow the author stopped his work toward this direction.
 ```cpp
 switch( num )
 {
-    case 1 ... 9:   break;
+    case  1 ... 9:  break;
     case 10 ... 99: break;
 };                         
 ```
@@ -180,181 +180,9 @@ eswitch( num )
 3. And last but not least, another my priority was the performance 
 of **eswitch**, which shouldn't differ by much from **native switch**.
 
-\subsection tutorial-installation Installation
-
---------------------------------------------
-Since this library is header-only and on top of that whole library was implemented within single file,
-thus you can get that file from **eswitch_v5** repository on [github](https://github.com/rabdumalikov/eswitch_v5/blob/main/include/eswitch/eswitch_v5.hpp). And in order to compile with eswitch_v5, just `#include <eswitch_v5.hpp>`.
-
-\subsection tutorial-license License
-
---------------------------------------------
-This code is distributed under the Boost Software License, Version 1.0. (See
-accompanying file [LICENSE.txt](https://github.com/rabdumalikov/eswitch_v5/blob/main/LICENSE.txt) or copy at http://www.boost.org/LICENSE_1_0.txt)
-
-
-\subsection tutorial-compilers Supported Compilers
-
---------------------------------------------------------------------------------
-Should work on all major compilers which support **C++20**. I personally tested on following:
-
-- **clang++-11** (or later)
-- **g++-10.2** (or later)
-- **Visual Studio 2019** - isn't supported for now, just because [familiar template syntax for generic lambdas](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0428r2.pdf) from **C++20** wasn't implemented by _Microsoft_ compiler.
-
-### Conventions used in this document
-
---------------------------------------------
-In all code examples, I omit the namespace prefixes for names in the **eswitch_v5** and **std** namespaces.
-
-\section tutorial-implementation-details Implementation Details
-
---------------------------------------------------------------------------------
-This section contains all the details, which user need to know in order to use this library successfully.
-
-### Keywords
-
---------------------------------------------
-
-| Name | Description |
-| :---: | :---: |
-| ***eswitch*** | _accepts list of arguments_ |
-| ***Case*** | _accepts **condition** to check and body next to it will be executed if **condition** matched_ |
-| ***Default*** | _body next to it will be executed if nothing else matched_ |
-| ***fallthrough_*** | _next body will be executed without checking its **condition**_ |
-| ***any_from*** | _accepts values to choose from_ |
-| ***is<sometype>*** | _used within **Case** for matching types like **std::any**, **std::variant<...>** and **polymorphic type match**_ |
-| ***_r*** | _user defined literal for **std::regex**_ |
-
-
-
-### Syntax {#syntax}
-
---------------------------------------------
-
-**1. Full declaration**
-```cpp
-eswitch( __arguments__ )
-( 
-    Case( __conditions__ )( __param__ ) { __body__ } ^ __options__,
-    Default { __body__ }
-);
-```
-**2. Omitted parameter**: same as lambda without **parameter**.
-```cpp
-eswitch( __arguments__ )
-( 
-    Case( __conditions__ ) { __body__ } ^ __options__,
-    Default { __body__ }
-);
-```
-**3. Omitted setting options**: default option( **break** ) will be used.
-```cpp
-eswitch( __arguments__ )
-( 
-    Case( __conditions__ ) { __body__ },
-    Default { __body__ }
-);
-```
-**4. Omitted 'Default'**: no fallback
-```cpp
-eswitch( __arguments__ )
-( 
-    Case( __conditions__ ) { __body__ }
-);
-```
-
-**Explanation**
-
-<table>
-<tr><th>Name<th>Details
-<tr>
-    <td>
-        <span style="color:blue">__arguments__</span>
-    <td>
-        <div align="left">
-            The list of arguments( i.e. <b>arg_1</b>, <b>arg_2</b>, ..., <b>arg_n</b> )
-        </div>
-<tr>
-    <td rowspan="2">
-        <span style="color:blue">__conditions__</span>
-    <td>
-        <div align="left">
-        It is a _lazy expression_, where indexes <b>_1</b>, <b>_2</b>, ... represent one-to-one<br> correspondance with arguments in **eswitch**. Consider following code:
-```cpp 
-eswitch(arg_1, arg_2, ..., arg_n)
-(
-    Case( _1 == smth_1 || _2 == smth_2 || ... ) {...}
-);
-// _1 refer to arg_1
-// _2 refer to arg_2
-// ...
-```
-
-**Possible usages:**
-```cpp
-Case( _1 == smth1 && _2 == smth2 && ... )                        (1)
-
-Case( smth1, smth2, ... )                                        (2)
-
-Case( _1 == any_from( smth1, smth2, ... ) )                      (3)
-
-Case( any_from( smth1, smth2, ... ) )                            (4)
-
-Case( ( pred1, _1 ) && ( pred2, _2 ) && ... )                    (5)
-```      
-</div>
-<tr>
-    <td>
-        <div align="left">
-        <ol>
-            <li>Match **in order**<br> 
-            <li>Same as the <b>1st</b> one, but less verbose<br> 
-            <li>Match via **any_from**<br>
-            <li>Same as the <b>3rd</b> one, but less verbose<br> 
-            <li>Match via **predicate**
-        </ol>
-        </div>
-<tr>
-    <td>
-        <div align="center">
-            <span style="color:blue">__body__</span>
-        </div>
-    <td>
-        <div align="left">
-            Function body
-        </div>
-<tr>
-    <td>
-        <div align="center">
-            <i><b>Optional:</b></i><br>
-            <span style="color:blue">__param__</span>
-        </div>
-    <td>
-        <div align="left">Correspond to withdrawn value from: **std::any**, **std::variant<...>**,<br> 
-            **polymorphic match** or **std::regex match**. But also it correspond to<br>
-            **returned value** wrapped into `std::optional<...>` from custom extensions.<br>
-            @note
-            Keyword [_auto_](https://en.cppreference.com/w/cpp/language/auto) here is forbidden,<br>
-            i.e. type of <b>__param__</b> should be specified explicitly.
-        </div>
-<tr>
-    <td>
-        <div align="center">
-            <i><b>Optional:</b></i><br>
-            <span style="color:blue">__options__</span>
-        </div>
-    <td>
-        <div align="left">
-            [**left empty** => _break_] or<br>
-            [**fallthrough_** => _execute body of the following case_] or<br>
-            [**likely_** which will be introduced in future]
-        </div>
-</table>
-
 ### Comparison
 Since full comparison of **eswitch** vs **switch statement** isn't possible due to the limitations of
-the latter. Thus I going to do comparison with **if statement** instead.
+the latter. Thus I'm going to do comparison with **if statement** instead.
 
 --------------------------------------------
 <table>
@@ -691,23 +519,177 @@ bool val = eswitch( p1 )
     Case( 1 ) { return true; }
 );
 ```
+
+\subsection tutorial-installation Installation
+
+--------------------------------------------
+Since this library is header-only and on top of that whole library was implemented within single file,
+thus you can get that file from **eswitch_v5** repository on [github](https://github.com/rabdumalikov/eswitch_v5/blob/main/include/eswitch/eswitch_v5.hpp). And in order to compile with eswitch_v5, just `#include <eswitch_v5.hpp>`.
+
+\subsection tutorial-license License
+
+--------------------------------------------
+This code is distributed under the Boost Software License, Version 1.0. (See
+accompanying file [LICENSE.txt](https://github.com/rabdumalikov/eswitch_v5/blob/main/LICENSE.txt) or copy at http://www.boost.org/LICENSE_1_0.txt)
+
+
+\subsection tutorial-compilers Supported Compilers
+
+--------------------------------------------------------------------------------
+Should work on all major compilers which support **C++20**. I personally tested on following:
+
+- **clang++-11** (or later)
+- **g++-10.2** (or later)
+- **Visual Studio 2019** - isn't supported for now, just because [familiar template syntax for generic lambdas](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0428r2.pdf) from **C++20** wasn't implemented by _Microsoft_ compiler.
+
+### Conventions used in this document
+
+--------------------------------------------
+In all code examples, I omit the namespace prefixes for names in the **eswitch_v5** and **std** namespaces.
+
+\section tutorial-implementation-details Implementation Details
+
+--------------------------------------------------------------------------------
+This section contains all the details, which user need to know in order to use this library successfully.
+
+### Keywords
+
+--------------------------------------------
+
+| Name | Description |
+| :---: | :---: |
+| ***eswitch*** | _accepts list of arguments_ |
+| ***Case*** | _accepts **condition** to check and body next to it will be executed if **condition** matched_ |
+| ***Default*** | _body next to it will be executed if nothing else matched_ |
+| ***fallthrough_*** | _next body will be executed without checking its **condition**_ |
+| ***any_from*** | _accepts values to choose from_ |
+| ***is<sometype>*** | _used within **Case** for matching types like **std::any**, **std::variant<...>** and **polymorphic type match**_ |
+| ***_r*** | _user defined literal for **std::regex**_ |
+
+
+
+### Syntax {#syntax}
+
+--------------------------------------------
+
+**1. Full declaration**
+```cpp
+eswitch( __arguments__ )
+( 
+    Case( __conditions__ )( __param__ ) { __body__ } ^ __options__,
+    Default { __body__ }
+);
+```
+**2. Omitted parameter**: same as lambda without **parameter**.
+```cpp
+eswitch( __arguments__ )
+( 
+    Case( __conditions__ ) { __body__ } ^ __options__,
+    Default { __body__ }
+);
+```
+**3. Omitted setting options**: default option( **break** ) will be used.
+```cpp
+eswitch( __arguments__ )
+( 
+    Case( __conditions__ ) { __body__ },
+    Default { __body__ }
+);
+```
+**4. Omitted 'Default'**: no fallback
+```cpp
+eswitch( __arguments__ )
+( 
+    Case( __conditions__ ) { __body__ }
+);
+```
+
+**Explanation**
+
 <table>
-<tr><th>After<th>Before
+<tr><th>Name<th>Details
 <tr>
     <td>
-```cpp
-    bool val = eswitch( p1 ) 
-    (
-        Case( 1 ) { return true; }
-    );
+        <span style="color:blue">__arguments__</span>
+    <td>
+        <div align="left">
+            The list of arguments( i.e. <b>arg_1</b>, <b>arg_2</b>, ..., <b>arg_n</b> )
+        </div>
+<tr>
+    <td rowspan="2">
+        <span style="color:blue">__conditions__</span>
+    <td>
+        <div align="left">
+        It is a _lazy expression_, where indexes <b>_1</b>, <b>_2</b>, ... represent one-to-one<br> correspondance with arguments in **eswitch**. Consider following code:
+```cpp 
+eswitch(arg_1, arg_2, ..., arg_n)
+(
+    Case( _1 == smth_1 || _2 == smth_2 || ... ) {...}
+);
+// _1 refer to arg_1
+// _2 refer to arg_2
+// ...
 ```
-<td>
+
+**Possible usages:**
 ```cpp
-    bool val = eswitch( p1 ) 
-    (
-        Case( 1 ) { return true; }
-    );
-```
+Case( _1 == smth1 && _2 == smth2 && ... )                        (1)
+
+Case( smth1, smth2, ... )                                        (2)
+
+Case( _1 == any_from( smth1, smth2, ... ) )                      (3)
+
+Case( any_from( smth1, smth2, ... ) )                            (4)
+
+Case( ( pred1, _1 ) && ( pred2, _2 ) && ... )                    (5)
+```      
+</div>
+<tr>
+    <td>
+        <div align="left">
+        <ol>
+            <li>Match **in order**<br> 
+            <li>Same as the <b>1st</b> one, but less verbose<br> 
+            <li>Match via **any_from**<br>
+            <li>Same as the <b>3rd</b> one, but less verbose<br> 
+            <li>Match via **predicate**
+        </ol>
+        </div>
+<tr>
+    <td>
+        <div align="center">
+            <span style="color:blue">__body__</span>
+        </div>
+    <td>
+        <div align="left">
+            Function body
+        </div>
+<tr>
+    <td>
+        <div align="center">
+            <i><b>Optional:</b></i><br>
+            <span style="color:blue">__param__</span>
+        </div>
+    <td>
+        <div align="left">Correspond to withdrawn value from: **std::any**, **std::variant<...>**,<br> 
+            **polymorphic match** or **std::regex match**. But also it correspond to<br>
+            **returned value** wrapped into `std::optional<...>` from custom extensions.<br>
+            @note
+            Keyword [_auto_](https://en.cppreference.com/w/cpp/language/auto) here is forbidden,<br>
+            i.e. type of <b>__param__</b> should be specified explicitly.
+        </div>
+<tr>
+    <td>
+        <div align="center">
+            <i><b>Optional:</b></i><br>
+            <span style="color:blue">__options__</span>
+        </div>
+    <td>
+        <div align="left">
+            [**left empty** => _break_] or<br>
+            [**fallthrough_** => _execute body of the following case_] or<br>
+            [**likely_** which will be introduced in future]
+        </div>
 </table>
 
 ## How to write Custom extensions?
