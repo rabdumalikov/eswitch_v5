@@ -83,12 +83,12 @@ In my implementation I tried:
 1. to address all the decribed **limitations**
 2. leave the syntax of **eswitch** as close as possible to C++ **switch statement**. Compare:\n 
 @code{cpp}
-    switch( num )             |    eswitch( num )                                                        
-    {                         |    (                       
-        case 1:  {...} break; |        Case( 1 ) {...},                                               
-        case 2:  {...} break; |        Case( 2 ) {...},                                               
-        default: {...} break; |        Default   {...}                                               
-    };                        |    );                        
+    switch( num )                |    eswitch( num )                                                        
+    {                            |    (                       
+        case 1:  {...} break;    |        Case( 1 ) {...},                                               
+        case 2:  {...} break;    |        Case( 2 ) {...},                                               
+        default: {...} break;    |        Default   {...}                                               
+    };                           |    );                        
 @endcode\n
 Pretty close, huh? Except the places where I was either limited by language or intentionally tried to avoid certain behavior of **switch statement** in C++ like default **fallthrough**.\n
 \n
@@ -100,12 +100,12 @@ This behavior is considered to be error-prone. Since developers sometimes forget
 Thus in my implementation I reversed this concept i.e. **eswitch** has _implicit_ **break** 
 and _explicit_ **fallthrough**. Compare:\n
 @code{cpp}
-switch( num )               |    eswitch( num )     
-{                           |    (     
-    case 1:  {...}          |        Case( 1 ){...} ^ fallthrough_, 
-    case 2:  {...} break;   |        Case( 2 ){...},     
-    default: {...} break;   |        Default  {...}     
-};                          |    );     
+switch( num )                |    eswitch( num )     
+{                            |    (     
+    case 1:  {...}           |        Case( 1 ){...} ^ fallthrough_, 
+    case 2:  {...} break;    |        Case( 2 ){...},     
+    default: {...} break;    |        Default  {...}     
+};                           |    );     
 @endcode
 
 3. And last but not least, another my priority was the performance 
@@ -284,103 +284,206 @@ Case( ( pred1, _1 ) && ( pred2, _2 ) && ... )                    (5)
 </table>
 
 ### Features
-
+   
 --------------------------------------------
-#### any_from helper function
-```cpp
-eswitch( file_extension )
-(
-    Case( any_from( "cpp", "cc", "c++", "cxx", "C" ) )      { return "source"; },
-    Case( any_from( "h", "hpp", "hh", "h++", "hxx", "H" ) ) { return "header"; },
-    Default { return "unknown"; }
-);
+<table>
+<tr><th>After<th>Before
+<tr>
+<td colspan="2">
+<div align="left">
+<b>any_from helper function</b> - This helper function allows to match for one of its entry.
+</div>
+<tr>
+    <td>
+```cpp                                                                                                                                                        
+eswitch( file_extension )                                   
+(                                                           
+    Case( any_from( "cpp", "c++", "cxx", "cc", "C" ) )                  
+    {                                                       
+        return "source";                                    
+    },                                                      
+    Case( any_from( "hpp", "h++", "hxx", "hh", "h", "H" ) )             
+    {                                                       
+        return "header";                                    
+    },                                                      
+    Default                                                 
+    {                                                       
+        return "unknown";                                   
+    }                                                       
+);                                                          
+``` 
+<td>
+```cpp                                                                   
+if( file_extension == "cpp" ||                                                                                                      
+    file_extension == "c++" ||                                          
+    file_extension == "cxx" ||                                                                                                    
+    file_extension == "cc"  ||                                             
+    file_extension == "C" )                                                                  
+{                                              
+    return "source";                                                                                                    
+}                                              
+else if(                                                                  
+    file_extension == "hpp" ||                                               
+    file_extension == "h++" ||                                                     
+    file_extension == "hxx" ||                                              
+    file_extension == "hh"  ||                                                                  
+    file_extension == "h"   ||                                              
+    file_extension == "H" )                                                         
+{                                                                 
+    return "header";                                                 
+}                                                                                     
+else                                                                   
+    return "unknown";                                                                                                                      
 ```
-
-#### Match for std::any or std::variant
-
-```cpp
-eswitch( any_or_variant ) 
+<tr>
+<td colspan="2">
+<div align="left">
+<b>Match and withdraw value from std::any and std::variant<></b> - In term of my implementation the usage for matching type in either of those objects is unified, whereas in raw C++ usage is different.
+</div>
+<tr>
+<td rowspan="2" >
+```cpp                                                                                                                                                        
+eswitch( any_or_variant_obj )
 (
-    Case( is< int >{} )    {...},
-    Case( is< string >{} ) {...} 
-);
+    Case( is< int >{} )( const int value )
+    {
+        ...
+    },
+    Case( is< string >{} )( const string & value )
+    {
+        ...
+    }
+);                                                                                                                                                                                                                                                                                                  
+``` 
+<td>
+```cpp                                                                   
+// std::any type match                                  
+if( auto * value = any_cast< int >( &any_obj ) )        
+{                                                       
+    ...                                                 
+}                                                       
+else if( auto * value = any_cast< string >( &any_obj ) )
+{                                                       
+    ...                                                 
+}                                                                                                                                                                          
 ```
+<tr>
+<td>
+```cpp                                                                   
+// std::variant<> type match                              
+if( auto * value = get_if< int >( &variant_obj ) )        
+{                                                         
+    ...                                                   
+}                                                         
+else if( auto * value = get_if< string >( &variant_obj ) )
+{                                                         
+    ...                                                   
+}                                                                                                                                                                                                                              
+``` 
+</table>
 
-#### Match and withdraw value from std::any or std::variant
+#### Match for polymorphic types where base object is pointer
 
 ```cpp
-eswitch( any_or_variant ) 
-(
-    Case( is< int >{} )   ( const int value )      {...}, // Note That: keyword 'auto' isn't allowed( i.e. code won't compile )
-    Case( is< string >{} )( const string & value ) {...}
-);
-```
-
-#### Match for polymorphic types
-
-```cpp
-eswitch( base_ptr ) 
-(
-    Case( is< circle >{} )( circle * c ) { c->draw(); },
-    Case( is< square >{} )( square * s ) { s->draw(); }
-);
-// OR
-eswitch( base_ref ) 
-(
-    Case( is< circle >{} )( circle & c ) { c.draw(); },
-    Case( is< square >{} )( square & s ) { s.draw(); }
-);
+eswitch( base_ptr )                                            |                                                                                                                                                                                                                                                                                                                                                      
+(                                                              |    if( auto * c = dynamic_cast< circle* >( base_ptr ) )                                                                                                                                                                                                                       
+    Case( is< circle >{} )( circle * c )                       |    {                                                                                                                                                            
+    {                                                          |        c->draw();                                                                                                            
+        c->draw();                                             |    }                                                                                                                                      
+    },                                                         |    else if( auto * s = dynamic_cast< square* >( base_ptr ) )                                                                                                                                                                                                                                    
+    Case( is< square >{} )( square * s )                       |    {                                                                                                                                                            
+    {                                                          |        s->draw();                                                                                                            
+        s->draw();                                             |    }                                                                                                                    
+    }                                                          |                                                                                                                                                                                                        
+);                                                             |  
+```                                                           
+                                                                     
+#### Match for polymorphic types where base object is reference
+```cpp                                                         
+                                                               |    try                                                                                         
+eswitch( base_ref )                                            |    {                           
+(                                                              |        auto & c = dynamic_cast< circle& >( base_ptr );                                                                                 
+    Case( is< circle >{} )( circle & c )                       |        c.draw();                                                                                
+    {                                                          |        return;                            
+        c.draw();                                              |    }                          
+    },                                                         |    catch( const bad_cast & ) { ... }                   
+    Case( is< square >{} )( square & s )                       |                              
+    {                                                          |    try                          
+        s.draw();                                              |    {                          
+    }                                                          |        auto & s = dynamic_cast< square& >( base_ptr );                          
+);                                                             |        s.draw();                          
+                                                               |        return;                          
+                                                               |    }                          
+                                                               |    catch( const bad_cast & ) { ... }                                             
 ```
 
 #### Match for std::regex
-
+                                                       
 ```cpp
-eswitch( text ) 
-(
-    Case( R"(\w*)"_r ) { return "message"; },
-    Case( R"(\d*)"_r ) { return "number"; }
-);
+                                                               |    smatch match;                                                                  
+eswitch( text )                                                |    if( regex_match( text, match, regex( R"(\w*)" ) ) )                 
+(                                                              |    {                                                             
+    Case( R"(\w*)"_r ) { return "message"; },                  |        return "message";                                                           
+    Case( R"(\d*)"_r ) { return "number"; }                    |    }                  
+);                                                             |    else if( regex_match( text, match, regex( R"(\d*)" ) ) )                
+                                                               |    {                
+                                                               |        return "number";                
+                                                               |    }                
 ```
 
 #### Match and withdraw values from std::regex
 
 ```cpp
-eswitch( text ) 
-(
-    /// NOTE that "vector<string>"" and "std::smatch" contain same values
-    Case( R"((\w*))"_r )( vector< string > && match ){ return match[1]; } 
-    Case( R"((\d*))"_r )( vector< string > && match ){ return match[1]; } 
-);
+eswitch( text )                                                |                                                                         
+(                                                              |    smatch match;                                                           
+    /* NOTE: "vector<string>" same as "std::smatch" */         |    if( regex_match( text, match, regex( R"((\w*))" ) ) )                                                                   
+    Case( R"((\w*))"_r )( vector< string > && match )          |    {                                                                                                                            
+    {                                                          |        return match[1];                                                            
+        return match[1];                                       |    }                                                    
+    }                                                          |    else if( regex_match( text, match, regex( R"((\d*))" ) ) )                
+    Case( R"((\d*))"_r )( vector< string > && match )          |    {                                                                               
+    {                                                          |        return match[1];                                
+        return match[1];                                       |    }                                                      
+    }                                                          |
+);                                                             |
 ```
 
-#### Match for entries in std::pair
+#### Match for individual entries in std::pair
 
 ```cpp
-eswitch( std::make_pair( 10, string{"Text"} ) ) 
-(    
-    Case( 10, "Text" ){ ... }
-);
+eswitch( make_pair( 10, string{"Text"} ) )                     |    auto pr = make_pair( 10, string{"Text"} );                                                              
+(                                                              |        
+    Case( 10, "Text" ){ ... }                                  |    if( pr.first == 10 && pr.second == "Text" ) { ... }
+);                                                             |
 ```
 
-#### Match for entries in std::tuple
+#### Match for individual entries in std::tuple                                         
 
 ```cpp
-eswitch( std::make_tuple( 1, 0, 0, 1 ) ) 
-(    
-    Case( 1, 0, 0, 1 ) { return 9; },
-    Case( 1, 1, 1, 1 ) { return 15; }
-);
+                                                               |    auto tup = make_tuple( 1, 0, 0, 1 );                                                                                          
+eswitch( std::make_tuple( 1, 0, 0, 1 ) )                       |                                                                                                                
+(                                                              |    auto [x,y,z,k] = tup;                                                                                              
+    Case( 1, 0, 0, 1 ) { return 9; },                          |                                                                                                        
+    Case( 1, 1, 1, 1 ) { return 15; }                          |    if( x == 1 && y == 0 && z == 0 && k == 1 )                                                                                                                                    
+);                                                             |    {                                                                                                        
+                                                               |        return 9;                                                                  
+                                                               |    }                                                                                                       
+                                                               |    else if( x == 1 && y == 1 && z == 1 && k == 1 )                                                                
+                                                               |    {                                                                                                                                                          
+                                                               |       return 15;          
+                                                               |    }                                       
 ```
 
 #### Check in range
 
 ```cpp
-eswitch( p1 )
-(
-    Case( _1.between( 1, 10 ) ) {...},
-    Case( _1.within( 11, 20 ) ) {...}
-);
-// OR
+eswitch( p1 )                                                  |
+(                                                              |    if     ( num >   1 && num <  10 ) { ... }                 
+    Case( _1.between( 1, 10 ) ) {...},                         |    else if( num >= 11 && num <= 20 ) { ... }            
+    Case( _1.within( 11, 20 ) ) {...}                          |                                          
+);                                                             |       
+```
+```cpp
 eswitch( p1 )
 (
     Case( _1 >  1  && _1 <  10 ) {...},
@@ -404,17 +507,17 @@ eswitch( p1, p2 )
 eswitch( p1, p2 )
 (
     Case( true, false ) {...}, // same as "Case( _1 == true && _2 == false )" 
-    Case( false ){...}
+    Case( false ) {...}
 );
 ```
 
-#### Matching via predicates:(it could be either a lambda or a free function)
+#### Matching via predicates( it could be either a lambda or a free function ):
 
 ```cpp
 eswitch( p1, p2 )
 (
     Case( ( is_odd, _1 ) && ( is_odd, _2 ) ) {...},
-    Case( ( is_negative( _1, _2 ) ){...}
+    Case( ( is_negative( _1, _2 ) ) {...}
 );
 ```
 
@@ -428,7 +531,7 @@ eswitch( p1 )
 );
 ```
 
-#### Return value from Case
+#### Returning value from Case
 
 ```cpp
 bool val = eswitch( p1 ) 
@@ -436,20 +539,25 @@ bool val = eswitch( p1 )
     Case( 1 ) { return true; }
 );
 ```
+<table>
+<tr><th>After<th>Before
+<tr>
+    <td>
+```cpp
+    bool val = eswitch( p1 ) 
+    (
+        Case( 1 ) { return true; }
+    );
+```
+<td>
+```cpp
+    bool val = eswitch( p1 ) 
+    (
+        Case( 1 ) { return true; }
+    );
+```
+</table>
 
-
-- **implicit break** - it is default behavior,  which doesn't require explicit declaration.
-
-- **explicit fallthrough** - required explicit declaration.
-
-- **composing condition** with: '`&&`', '`||`', '`==`', '`!=`', '`>`', '`<`', '`<=`', '`>=`' 
-- **argument matching with and without explicit indexing**
-- **easy check in range**
-- **match for**: _std::any, std::variant, std::regex_
-- **match and withdraw value from**: _std::any, std::variant, std::regex_
-- **match for individual entries of**: _std::pair, std::tuple_
-- **return value from Case**
- 
 ## How to write Custom extensions?
 
 --------------------------------------------
@@ -536,3 +644,6 @@ eswitch( some_var )
     Case( some_value_2 ) {} ^ fallthrough_
 );
 ```
+- I can use hash in order to use string within **switch statement**:
+
+- Why do we need another statement? That's is reasonable questions to ask.
