@@ -111,11 +111,11 @@ VERBATIM_HEADERS        = YES
 # HTML output
 HTML_OUTPUT             = html
 HTML_FILE_EXTENSION     = .html
-HTML_HEADER             =
-HTML_FOOTER             =
-HTML_EXTRA_STYLESHEET   =
+HTML_HEADER             = @eswitch_docs_SOURCE_DIR@/../doc/header.html 
+HTML_FOOTER             = @eswitch_docs_SOURCE_DIR@/../doc/footer.html 
+HTML_EXTRA_STYLESHEET   = @eswitch_docs_SOURCE_DIR@/../doc/customdoxygen.css 
 HTML_EXTRA_FILES        =
-HTML_COLORSTYLE_HUE     = 75  # 0 - 359
+HTML_COLORSTYLE_HUE     = 222  # 0 - 359 #150 - good one
 HTML_COLORSTYLE_SAT     = 100 # 0 - 255
 HTML_COLORSTYLE_GAMMA   = 80
 HTML_TIMESTAMP          = NO
@@ -125,7 +125,7 @@ DISABLE_INDEX           = YES
 GENERATE_TREEVIEW       = YES
 TREEVIEW_WIDTH          = 270
 EXT_LINKS_IN_WINDOW     = NO
-FORMULA_FONTSIZE        = 10
+FORMULA_FONTSIZE        = 20
 FORMULA_TRANSPARENT     = YES
 SEARCHENGINE            = YES
 
