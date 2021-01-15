@@ -6,24 +6,20 @@ User Manual       {#mainpage}
 \section tutorial-overview Overview
 
 --------------------------------------------
-**eswitch_v5** is a library, which is an improved version of **switch statement** in C++(or just **native switch**). The main idea behind this library is to be able to overcome **native switch** limitations, such as:
-- one _argument_ per **native switch**
-- the _argument_ restricted to only _integral_ types( <span style="color:orange">int</span>, <span style="color:orange">char</span>, <span style="color:orange">enum</span> ... )
-- impossibility to _compose complex conditions_, as opposed to other **statements** like <span style="color:orange">if</span>, <span style="color:orange">else if</span>, along with *loops* such as <span style="color:orange">while</span> and <span style="color:orange">for</span>.
+**eswitch_v5** is a library, which is an improved version of <span class="keywordflow">`switch`</span> statement in C++( or just **native switch** ). The main idea behind this library is to be able to overcome **native switch** limitations, such as:
+- one argument per **native switch**
+- the argument restricted to only _integral_ types( <span class="keyword">`int`</span>, <span class="keyword">`char`</span>, <span class="keyword">`enum`</span> ... )
+- impossibility to _compose complex conditions_, as opposed to other **statements** and **loops** in C++
 
-**eswitch_v5** supports any number of _arguments_ and almost without restriction on their _type_
- as long as the _type_ is **comparable**( i.e. has <span style="color:orange">operator==</span>, <span style="color:orange">operator!=</span> and so on ).
- Additionally, my library allows to match for **std::any, std::variant<...>, polymorphic type match** and
- **std::regex**. Also it allows to withdraw values from those types, of course if the match was successful.
+**eswitch_v5** supports **any number** of arguments and almost without restriction on their _type_ as long as the _type_ is **comparable**( i.e. has `operator==`, `operator!=` and so on ). Additionally, my library went beyond overcoming limitations of **native switch** e.g. I introduced more expressive way for **matching** and **withdrawing** values from `std::any`, `std::variant`, **polymorphic types** and
+`std::regex`.
 
 ### Motivation
 
 --------------------------------------------
 
-I don't see any good reason why **switch statement** in C++ is so limited, whereas other 
-statements such as **if, else if** including _loops_ **while** and **for** have no such limitations and they allow to compose and
-test complex condition. And here is why:
-- In terms of _**assembler**_ output, **if** and **switch** 
+I don't see any good reason why <span class="keywordflow">`switch`</span> statement in C++ is so limited, whereas other statements such as <span class="keywordflow">`if`</span>, <span class="keywordflow">`else if`</span> including **loops** <span class="keywordflow">`while`</span> and <span class="keywordflow">`for`</span> have no such limitations and they allow to compose and test complex condition. And here is why:
+- In terms of **assembler** output, <span class="keywordflow">`if`</span> and <span class="keywordflow">`switch`</span> 
 statements give the same [output](https://godbolt.org/z/G3Woj6), thus the performance also the same.
 <table>
 <tr>
@@ -34,7 +30,7 @@ statements give the same [output](https://godbolt.org/z/G3Woj6), thus the perfor
 <tr>
     <td>
 ```cpp
-int foo(int num)
+int foo( int num )
 {
          if( num == 10 ) return 1;
     else if( num == 15 ) return 2;
@@ -56,7 +52,7 @@ foo(int):            # @foo(int)
 <tr>
     <td>
 ```cpp
-int bar(int num)
+int bar( int num )
 {
     switch( num )
     {
@@ -68,7 +64,7 @@ int bar(int num)
 ```
 <td>
 ```asm
-foo(int):            # @foo(int)
+bar(int):            # @bar(int)
     xor     ecx, ecx            
     cmp     edi, 15             
     sete    cl                  
@@ -80,9 +76,9 @@ foo(int):            # @foo(int)
 ```
 </table>
 
-- Also I don't think that limitations related to compatibility with **C**, since syntax of **if statement** is still compatible with **C** even though it was extended in **C++17**, this extension allows to declare variable  within **if statement** like this: 
+- Also I don't think that limitations related to compatibility with **C**, since syntax of <span class="keywordflow">`if`</span> statement is still compatible with **C** even though it was extended in **C++17**, this extension allows to declare variable  within <span class="keywordflow">`if`</span> statement like this: 
 ```cpp
-if( std::smatch mt; std::regex( text, mt, rgx ) ) {...}
+if( std::smatch mt; std::regex_match( text, mt, rgx ) ) {...}
 ```
 Moreover this situation seem unfortunate for other people as well:
 
@@ -113,18 +109,18 @@ switch( ch )
 </table>
 
 - On top of that the internet is full of questions with over million views:
-    - [Why strings cannot be used in **switch statement**?](https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings)
-    - [How to compose complex condition in **switch statement**?](https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement)
+    - [Why **strings** cannot be used in **switch statement**?](https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings)
+    - [How to compose **complex condition** in **switch statement**?](https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement)
 
-- Programming language **swift** has pretty advanced **switch statement**.
+- Programming language **swift** has pretty advanced <span class="keywordflow">`switch`</span> statement.
 
-The evidence above tell us that people don't like inconsistency and limitations of **switch statement**, and they were trying to overcome 
+The evidence above tell us that people don't like inconsistency and limitations of <span class="keywordflow">`switch`</span> statement, and they were trying to overcome 
 them with different approaches( by implementing **non-standard extension**, writing **proposals** or just **searching for the solution/workaround in the internet** ).
 
-Based on those factors I decided to write my own implementation of **enhanced switch**( or just **eswitch** ).
+Based on those factors I decided to write my own implementation of **enhanced** <span class="keywordflow">`switch`</span> statement( or just **eswitch** ).
 In my implementation I tried:
 1. to address all the decribed **limitations**
-2. leave the syntax of **eswitch** as close as possible to C++ **switch statement**. Compare:
+2. leave the syntax of **eswitch** as close as possible to <span class="keywordflow">`switch`</span> statement. Compare:
 <table cellspacing="0" cellpadding="0" >
 <tr>
     <td>
@@ -146,15 +142,13 @@ eswitch( num )
 );  
 ```
 </table>
-Pretty close, huh? Except the places where I was either limited by language or intentionally tried to avoid certain behavior of **switch statement** in C++ like default **fallthrough**.\n
+Pretty close, huh? Except the places where I was either limited by language or intentionally tried to avoid certain behavior of <span class="keywordflow">`switch`</span> statement like default **fallthrough**.\n
 \n
-@note **Switch statement** in C++ has _explicit_ **break** and _implicit_ **fallthrough**.
+@note In C++ <span class="keywordflow">`switch`</span> statement has _explicit_ <span class="keywordflow">`break`</span> and _implicit_ **fallthrough**.
 
 \n
 This behavior is considered to be error-prone. Since developers sometimes forget to use 
-**break** and because of this their code doesn't work the way it was intended.
-Thus in my implementation I reversed this concept i.e. **eswitch** has _implicit_ **break** 
-and _explicit_ **fallthrough**. Compare:
+<span class="keywordflow">`break`</span> and because of this their code doesn't work the way it was intended. Thus in my implementation I reversed this concept i.e. **eswitch** has _implicit_ <span class="keywordflow">`break`</span> and _explicit_ **fallthrough**. Compare:
 <table cellspacing="0" cellpadding="0">
 <tr>
     <td>
@@ -178,13 +172,14 @@ eswitch( num )
 </table>
 
 3. And last but not least, another my priority was the performance 
-of **eswitch**, which shouldn't differ by much from **native switch**.
+of **eswitch**, which shouldn't differ by much from <span class="keywordflow">`switch`</span> statement.
 
 ### Comparison
-Since full comparison of **eswitch** vs **switch statement** isn't possible due to the limitations of
-the latter. Thus I'm going to do comparison with **if statement** instead.
 
 --------------------------------------------
+Since full comparison of **eswitch** vs <span class="keywordflow">`switch`</span> statement isn't possible due to the limitations of
+the latter. Thus I'm going to do comparison with <span class="keywordflow">`if`</span> statement instead.
+
 <table>
 <tr><th>After<th>Before
 <tr>
@@ -204,10 +199,6 @@ eswitch( file_extension )
     Case( any_from( "hpp", "h++", "hxx", "hh", "h", "H" ) )
     {  
         return "header";
-    },
-    Default 
-    {
-        return "unknown";
     }
 );
 ``` 
@@ -231,17 +222,15 @@ else if(
 {
     return "header";
 }
-else
-    return "unknown";
 ```
 <tr>
 <td colspan="2">
 <div align="left">
-<b>Match and withdraw value from std::any and std::variant<></b> - in term of my implementation<br> the usage for matching type in either of those objects is unified, whereas in raw C++ usage is different.
+<b>Match and withdraw value from `std::any` and `std::variant`</b> - in terms of this  library the usage for matching type in either of those objects is unified, whereas in raw C++ usage is different.
 </div>
 <tr>
 <td rowspan="2" >
-```cpp 
+```cpp
 eswitch( any_or_variant_obj )
 (
     Case( is< int >{} )( const int value )
@@ -256,7 +245,8 @@ eswitch( any_or_variant_obj )
 ```
 <td>
 ```cpp
-// std::any type match
+std::any any_obj = ...;
+
 if( auto * value = any_cast< int >( &any_obj ) )
 {
     ...
@@ -269,7 +259,8 @@ else if( auto * value = any_cast< string >( &any_obj ) )
 <tr>
 <td>
 ```cpp
-// std::variant<> type match
+std::variant< int, string > variant_obj = ...;
+
 if( auto * value = get_if< int >( &variant_obj ) )
 {
     ...
@@ -438,7 +429,7 @@ eswitch( make_tuple( 1, 0, 0, 1 ) )
 ```cpp
 auto tup = make_tuple( 1, 0, 0, 1 );
 
-auto [x,y,z,k] = tup;
+auto [ x, y, z, k ] = tup;
 
 if( x == 1 && y == 0 && z == 0 && k == 1 )
 {
@@ -469,56 +460,6 @@ if     ( num >   1 && num <  10 ) { ... }
 else if( num >= 11 && num <= 20 ) { ... }
 ```
 </table>
-
-
-#### Arguments referencing via indexes
-
-```cpp
-eswitch( p1, p2 )
-(
-    Case( _1 == true && _2 == true ) {...},
-    Case( _2 != true || _1 == true ) {...}
-);   
-```
-
-#### If indexes aren't provided, then it is assumed that they're sequential
-
-```cpp
-eswitch( p1, p2 )
-(
-    Case( true, false ) {...}, // same as "Case( _1 == true && _2 == false )" 
-    Case( false ) {...}
-);
-```
-
-#### Matching via predicates( it could be either a lambda or a free function ):
-
-```cpp
-eswitch( p1, p2 )
-(
-    Case( ( is_odd, _1 ) && ( is_odd, _2 ) ) {...},
-    Case( ( is_negative( _1, _2 ) ) {...}
-);
-```
-
-#### Default case
-
-```cpp
-eswitch( p1 )
-(
-    Case( false ) {...},
-    Default {...}
-);
-```
-
-#### Returning value from Case
-
-```cpp
-bool val = eswitch( p1 ) 
-(
-    Case( 1 ) { return true; }
-);
-```
 
 \subsection tutorial-installation Installation
 
@@ -563,8 +504,8 @@ This section contains all the details, which user need to know in order to use t
 | ***Default*** | _body next to it will be executed if nothing else matched_ |
 | ***fallthrough_*** | _next body will be executed without checking its **condition**_ |
 | ***any_from*** | _accepts values to choose from_ |
-| ***is<sometype>*** | _used within **Case** for matching types like **std::any**, **std::variant<...>** and **polymorphic type match**_ |
-| ***_r*** | _user defined literal for **std::regex**_ |
+| ***is<sometype>*** | _used within **Case** for matching types like `std::any`, `std::variant` and **polymorphic type match**_ |
+| ***_r*** | _user defined literal for `std::regex`_ |
 
 
 
@@ -580,7 +521,7 @@ eswitch( __arguments__ )
     Default { __body__ }
 );
 ```
-**2. Omitted parameter**: same as lambda without **parameter**.
+**2. Omitted parameter**: same as lambda without **parameter**
 ```cpp
 eswitch( __arguments__ )
 ( 
@@ -588,7 +529,7 @@ eswitch( __arguments__ )
     Default { __body__ }
 );
 ```
-**3. Omitted setting options**: default option( **break** ) will be used.
+**3. Omitted setting options**: default option( **break** ) will be used
 ```cpp
 eswitch( __arguments__ )
 ( 
@@ -621,6 +562,7 @@ eswitch( __arguments__ )
     <td>
         <div align="left">
         It is a _lazy expression_, where indexes <b>_1</b>, <b>_2</b>, ... represent one-to-one<br> correspondance with arguments in **eswitch**. Consider following code:
+        </div>
 ```cpp 
 eswitch(arg_1, arg_2, ..., arg_n)
 (
@@ -643,7 +585,7 @@ Case( any_from( smth1, smth2, ... ) )                            (4)
 
 Case( ( pred1, _1 ) && ( pred2, _2 ) && ... )                    (5)
 ```      
-</div>
+
 <tr>
     <td>
         <div align="left">
@@ -671,11 +613,11 @@ Case( ( pred1, _1 ) && ( pred2, _2 ) && ... )                    (5)
             <span style="color:blue">__param__</span>
         </div>
     <td>
-        <div align="left">Correspond to withdrawn value from: **std::any**, **std::variant<...>**,<br> 
-            **polymorphic match** or **std::regex match**. But also it correspond to<br>
-            **returned value** wrapped into `std::optional<...>` from custom extensions.<br>
+        <div align="left">Correspond to withdrawn value from: `std::any`, `std::variant`,<br> 
+            **polymorphic match** or `std::regex` **match**. But also it correspond to<br>
+            **returned value** wrapped into `std::optional` from custom extensions.<br>
             @note
-            Keyword [_auto_](https://en.cppreference.com/w/cpp/language/auto) here is forbidden,<br>
+            Keyword <span class="keyword">`auto`</span> here is forbidden,<br>
             i.e. type of <b>__param__</b> should be specified explicitly.
         </div>
 <tr>
@@ -718,7 +660,7 @@ eswitch( 2 - 0.7000000001 )
     }
 );
 ```
-So standard way of comparing **floating points** doesn't work properly. On top of that, simple overloading `operator==` for primitives is [forbidden](https://eel.is/c++draft/over.oper#general-7).
+So standard way of comparing **floating points** doesn't work properly. On top of that, simple overloading of `operator==` for primitives is [forbidden](https://eel.is/c++draft/over.oper#general-7).
 
 ```cpp
 bool operator==( const double d1, const double d1 )
@@ -734,7 +676,7 @@ struct double_value
     double value;
 };
 ```
-Then we can use **double_value** in our `operator==` :
+Then we can use **double_value** in our overloaded `operator==` :
 ```cpp
 bool operator==( const double d1, const double_value d2 )
 {
@@ -762,13 +704,13 @@ eswitch( 2 - 0.7000000001 )
 
 - Also example below demonstrate if certain value should be returned from custom `operator` and transferred to **Case** as [input parameter](#syntax), then the value should be wrapped into `std::optional`. 
 
-**For example:** [Value and Type transferring](@ref example-value-and-type-transferring)
+**Example:** [Value and Type transferring](@ref example-value-and-type-transferring)
 
 ## Rationalities
 
 --------------------------------------------
 
-- Using macroses for **Case** and **Default** allowed me to be as close as possible to C++ **switch statement** regarding syntax, otherwise there was no way to hide **lambda** declaration. 
+- Using macroses for **Case** and **Default** allowed me to be as close as possible to <span class="keywordflow">`switch`</span> statement regarding syntax, otherwise there was no way to hide **lambda** declaration. 
 - Setting properties via `operator^` - It is the only `operator` which is used to set 
 certain properties for **values/matrices**( in **matlab** ), which I find reasonable. Thus I used this notation in my library, like this:
 ```cpp 
@@ -778,6 +720,6 @@ eswitch( some_var )
     Case( some_value_2 ) {} ^ fallthrough_
 );
 ```
-- I can use hash in order to use string within **switch statement**:
+- I can use hash in order to use string within <span class="keywordflow">`switch`</span> statement:
 
 - Why do we need another statement? That's is reasonable questions to ask.
