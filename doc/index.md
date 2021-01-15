@@ -6,19 +6,19 @@ User Manual       {#mainpage}
 \section tutorial-overview Overview
 
 --------------------------------------------
-**eswitch_v5** is a library, which is an improved version of <span class="keywordflow">`switch`</span> statement in C++( or just **native switch** ). The main idea behind this library is to be able to overcome **native switch** limitations, such as:
-- one argument per **native switch**
+**eswitch_v5** is a library, which is an improved version of <span class="keywordflow">`switch`</span> statement in C++. The main idea behind this library is to be able to overcome <span class="keywordflow">`switch`</span> statement limitations, such as:
+- one argument per <span class="keywordflow">`switch`</span> statement
 - the argument restricted to only _integral_ types( <span class="keyword">`int`</span>, <span class="keyword">`char`</span>, <span class="keyword">`enum`</span> ... )
-- impossibility to _compose complex conditions_, as opposed to other **statements** and **loops** in C++
+- impossibility to _compose complex conditions_, as opposed to other _statements_ and _loops_ in C++
 
-**eswitch_v5** supports **any number** of arguments and almost without restriction on their _type_ as long as the _type_ is **comparable**( i.e. has `operator==`, `operator!=` and so on ). Additionally, my library went beyond overcoming limitations of **native switch** e.g. I introduced more expressive way for **matching** and **withdrawing** values from `std::any`, `std::variant`, **polymorphic types** and
+**eswitch_v5** supports any number of arguments and almost without restriction on their _type_ as long as the _type_ is **comparable**( i.e. has `operator==`, `operator!=` and so on ). Additionally, my library went beyond overcoming limitations of <span class="keywordflow">`switch`</span> statement e.g. I introduced more expressive way for matching and withdrawing values from `std::any`, `std::variant`, `polymorphic types` and
 `std::regex`.
 
 ### Motivation
 
 --------------------------------------------
 
-I don't see any good reason why <span class="keywordflow">`switch`</span> statement in C++ is so limited, whereas other statements such as <span class="keywordflow">`if`</span>, <span class="keywordflow">`else if`</span> including **loops** <span class="keywordflow">`while`</span> and <span class="keywordflow">`for`</span> have no such limitations and they allow to compose and test complex condition. And here is why:
+I don't see any good reason why <span class="keywordflow">`switch`</span> statement in C++ is so limited, whereas other statements such as <span class="keywordflow">`if`</span>, <span class="keywordflow">`else if`</span> including loops <span class="keywordflow">`while`</span> and <span class="keywordflow">`for`</span> have no such limitations and they allow to compose and test complex condition. And here is why:
 - In terms of **assembler** output, <span class="keywordflow">`if`</span> and <span class="keywordflow">`switch`</span> 
 statements give the same [output](https://godbolt.org/z/G3Woj6), thus the performance also the same.
 <table>
@@ -82,11 +82,11 @@ if( std::smatch mt; std::regex_match( text, mt, rgx ) ) {...}
 ```
 Moreover this situation seem unfortunate for other people as well:
 
-- There was the [proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html) for **C++ standard committee**: ''To allow to use _complex types_( like **strings**, **complex numbers**, etc ) within **switch statement**''. And **committee** <span style="color:green"> *agreed* </span> about **importance of this topic**. 
+- There was the [proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html) for C++ standard committee: ''To allow to use _complex types_( like **strings**, **complex numbers**, etc ) within <span class="keywordflow">`switch`</span> statement''. And committee agreed about importance of this topic. 
 But somehow the author stopped his work toward this direction.
 
 
-- Compilers such as **clang** and **gcc** have non-standard extension for matching [**case ranges**](https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html).\n
+- Compilers such as **clang** and **gcc** have non-standard extension for matching [case ranges](https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html).\n
 **For example**:
 <table cellspacing="0" cellpadding="0">
 <tr>
@@ -109,17 +109,17 @@ switch( ch )
 </table>
 
 - On top of that the internet is full of questions with over million views:
-    - [Why **strings** cannot be used in **switch statement**?](https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings)
-    - [How to compose **complex condition** in **switch statement**?](https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement)
+    - [Why strings cannot be used in switch statement?](https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings)
+    - [How to compose complex condition in switch statement?](https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement)
 
 - Programming language **swift** has pretty advanced <span class="keywordflow">`switch`</span> statement.
 
 The evidence above tell us that people don't like inconsistency and limitations of <span class="keywordflow">`switch`</span> statement, and they were trying to overcome 
-them with different approaches( by implementing **non-standard extension**, writing **proposals** or just **searching for the solution/workaround in the internet** ).
+them with different approaches( by implementing non-standard extension, writing proposals or just searching for the solution/workaround in the internet ).
 
 Based on those factors I decided to write my own implementation of **enhanced** <span class="keywordflow">`switch`</span> statement( or just **eswitch** ).
 In my implementation I tried:
-1. to address all the decribed **limitations**
+1. to address all the decribed limitations
 2. leave the syntax of **eswitch** as close as possible to <span class="keywordflow">`switch`</span> statement. Compare:
 <table cellspacing="0" cellpadding="0" >
 <tr>
@@ -144,11 +144,11 @@ eswitch( num )
 </table>
 Pretty close, huh? Except the places where I was either limited by language or intentionally tried to avoid certain behavior of <span class="keywordflow">`switch`</span> statement like default **fallthrough**.\n
 \n
-@note In C++ <span class="keywordflow">`switch`</span> statement has _explicit_ <span class="keywordflow">`break`</span> and _implicit_ **fallthrough**.
+@note In C++ <span class="keywordflow">`switch`</span> statement has explicit <span class="keywordflow">`break`</span> and implicit **fallthrough**.
 
 \n
 This behavior is considered to be error-prone. Since developers sometimes forget to use 
-<span class="keywordflow">`break`</span> and because of this their code doesn't work the way it was intended. Thus in my implementation I reversed this concept i.e. **eswitch** has _implicit_ <span class="keywordflow">`break`</span> and _explicit_ **fallthrough**. Compare:
+<span class="keywordflow">`break`</span> and because of this their code doesn't work the way it was intended. Thus in my implementation I reversed this concept i.e. **eswitch** has implicit <span class="keywordflow">`break`</span> and explicit **fallthrough**. Compare:
 <table cellspacing="0" cellpadding="0">
 <tr>
     <td>
@@ -500,11 +500,11 @@ This section contains all the details, which user need to know in order to use t
 | Name | Description |
 | :---: | :---: |
 | ***eswitch*** | _accepts list of arguments_ |
-| ***Case*** | _accepts **condition** to check and body next to it will be executed if **condition** matched_ |
+| ***Case*** | _accepts condition to check and body next to it will be executed if condition matched_ |
 | ***Default*** | _body next to it will be executed if nothing else matched_ |
-| ***fallthrough_*** | _next body will be executed without checking its **condition**_ |
+| ***fallthrough_*** | _next body will be executed without checking its condition_ |
 | ***any_from*** | _accepts values to choose from_ |
-| ***is<sometype>*** | _used within **Case** for matching types like `std::any`, `std::variant` and **polymorphic type match**_ |
+| ***is<sometype>*** | _used within **Case** for matching types like `std::any`, `std::variant` and `polymorphic types match`_ |
 | ***_r*** | _user defined literal for `std::regex`_ |
 
 
@@ -521,7 +521,7 @@ eswitch( __arguments__ )
     Default { __body__ }
 );
 ```
-**2. Omitted parameter**: same as lambda without **parameter**
+**2. Omitted parameter**: same as lambda without parameter
 ```cpp
 eswitch( __arguments__ )
 ( 
@@ -529,7 +529,7 @@ eswitch( __arguments__ )
     Default { __body__ }
 );
 ```
-**3. Omitted setting options**: default option( **break** ) will be used
+**3. Omitted setting options**: default option( <span class="keywordflow">`break`</span> ) will be used
 ```cpp
 eswitch( __arguments__ )
 ( 
@@ -590,11 +590,11 @@ Case( ( pred1, _1 ) && ( pred2, _2 ) && ... )                    (5)
     <td>
         <div align="left">
         <ol>
-            <li>Match **in order**<br> 
-            <li>Same as the <b>1st</b> one, but less verbose<br> 
-            <li>Match via **any_from**<br>
-            <li>Same as the <b>3rd</b> one, but less verbose<br> 
-            <li>Match via **predicate**
+            <li>Match in order<br> 
+            <li>Same as the 1st one, but less verbose<br> 
+            <li>Match via `any_from`<br>
+            <li>Same as the 3rd one, but less verbose<br> 
+            <li>Match via predicate
         </ol>
         </div>
 <tr>
@@ -614,8 +614,8 @@ Case( ( pred1, _1 ) && ( pred2, _2 ) && ... )                    (5)
         </div>
     <td>
         <div align="left">Correspond to withdrawn value from: `std::any`, `std::variant`,<br> 
-            **polymorphic match** or `std::regex` **match**. But also it correspond to<br>
-            **returned value** wrapped into `std::optional` from custom extensions.<br>
+            `polymorphic match` or `std::regex` match. But also it correspond to<br>
+            returned value wrapped into `std::optional` from custom extensions.<br>
             @note
             Keyword <span class="keyword">`auto`</span> here is forbidden,<br>
             i.e. type of <b>__param__</b> should be specified explicitly.
@@ -638,11 +638,11 @@ Case( ( pred1, _1 ) && ( pred2, _2 ) && ... )                    (5)
 
 --------------------------------------------
 
-This guide is about how to <u>use</u> _custom types_ in **Case** or <u>define</u> _custom behavior_ for some types. We will implement **custom extension** and I walk you through all the steps and details.
+This guide is about how to <u>use</u> _custom types_ in **Case** or <u>define</u> _custom behavior_ for some types. We will implement custom extension and I walk you through all the steps and details.
 
 **Thing to know:**
 
-The only things which we can be customized are all the **comparison** `operators` such as '==', '!=', '>', '<' and so on.
+The only things which we can be customized are all the comparison `operators` such as '==', '!=', '>', '<' and so on.
 
 **Let's begin:**
 
