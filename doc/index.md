@@ -3,6 +3,13 @@ User Manual       {#mainpage}
 
 \tableofcontents
 
+@htmlonly
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<a class="github-button" href="https://github.com/rabdumalikov/eswitch_v5" data-color-scheme="no-preference: light; light: light; dark: light;" data-size="large" aria-label="View on github">View on github</a>
+@endhtmlonly
+
 \section tutorial-overview Overview
 
 --------------------------------------------
