@@ -1,4 +1,4 @@
-## Motivation:
+## Overview:
 
 `eswitch_v5` is a library, which is an improved version of <span class="keywordflow">`switch`</span> statement in C++. The main idea behind this library is to be able to overcome <span class="keywordflow">`switch`</span> statement limitations, such as:
 - one argument per <span class="keywordflow">`switch`</span> statement
