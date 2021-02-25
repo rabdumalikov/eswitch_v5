@@ -1,83 +1,29 @@
 ## Motivation:
 
-To overcome **native switch** limitations:
+`eswitch_v5` is a library, which is an improved version of <span class="keywordflow">`switch`</span> statement in C++. The main idea behind this library is to be able to overcome <span class="keywordflow">`switch`</span> statement limitations, such as:
+- one argument per <span class="keywordflow">`switch`</span> statement
+- the argument restricted to only _integral_ types( <span class="keyword">`int`</span>, <span class="keyword">`char`</span>, <span class="keyword">`enum`</span> ... )
+- impossibility to compose complex conditions, as opposed to other _statements_ and _loops_ in C++
 
-- one parameter per **native switch**
-- the parameter restricted to only _integral_ types( **int**, **char**, **enum** ... ).
-
-**eswitch** supports any number of _parameters_ and almost without restriction on their _type_
- as long as the _type_ is **comparable**( i.e. has **operator==**, **operator!=** and so on ).
+`eswitch_v5` supports any number of arguments and almost without restriction on their type as long as the type is comparable( i.e. has `operator==`, `operator!=` and so on ). Additionally, my library went beyond overcoming limitations of <span class="keywordflow">`switch`</span> statement e.g. I introduced more expressive way for matching and withdrawing values from `std::any`, `std::variant`, `polymorphic types` and
+`std::regex`.
 
 ## Build status:
 
-[![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/clang%20CI/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
-[![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/clang%20TESTS/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
-
 [![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/gcc%20CI/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
 [![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/gcc%20TESTS/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
-
 [![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/Docs%20generation/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
+
+[![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/clang%20CI/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
+[![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/clang%20TESTS/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
 [![eswitch_v5](https://github.com/rabdumalikov/eswitch_v5/workflows/clang%20Examples/badge.svg?branch=main)](https://github.com/rabdumalikov/eswitch_v5/actions)
 
 
-## Feature comparison:
+## Documentation:
 
-| Feature | eswitch | native switch |
-| :---: | :---: | :---: |
-| *fallthrough* | yes | yes |
-| *break* | yes | yes |
-| *default*| yes | yes |
-| *return* | yes | yes |
-| _**or** cmp_ | yes| yes |
-| _**and** cmp_ | yes | no |
-| _(params > 1) per **switch**_ | yes | no |
-| _(conditions > 1) per **case**_ | yes | no |
-| std::any match | yes | no |
-| std::variant<...> match | yes | no |
-| polymorphic match | yes | no |
-| std::regex match | yes | no |
+https://rabdumalikov.github.io/eswitch_v5
 
 # Examples:
-
-## _implicit break_
-``` cpp
-enum Place { washington, california, ... };
-
-void foo( const Place place )
-{
-    eswitch( place )
-    (
-        Case( washington ) { Print('w'); },
-        Case( california ) { Print('c'); },
-        Default            { Print('?'); }
-    );
-}
-```
--  #### Output:
-    ```
-    foo( washington ); // w
-    foo( california ); // c
-    foo( new_jersey ); // ?
-    ```
-
-## _explicit fallthrough_
-``` cpp
-void foo( const Place place )
-{
-    eswitch( place )
-    (
-        Case( washington ) { Print('w'); } ^ fallthrough_,
-        Case( california ) { Print('c'); },
-        Default            { Print('?'); }
-    );
-}
-```
--  #### Output:
-    ```
-    foo( washington ); // wc
-    foo( california ); // c
-    foo( new_jersey ); // ?
-    ```
 
 ## _String as a param_
 ``` cpp
@@ -100,42 +46,25 @@ void foo( std::string_view str )
     foo( "gt" );  // >
 	```
 
-## _Comparison_
+## _stringify enum_
 ``` cpp
-void foo( const int value ) 
+std::string foo( Place place )
 {
-    eswitch( value )
+    return eswitch( place )
     (
-        Case( _1 >  0  && _1 <  16 ) { Print("Value inside range(0,16)"); },
-        Case( _1 >= 16 && _1 <= 20 ) { Print("Value within range[16,20]"); },
-        Default                      { Print('?'); }
+        Case( washington ) { return "washington"; },
+        Case( california ) { return "california"; },
+        Case( new_york )   { return "new_york"; },
+        Default            { return "???"; }
     );
 }
 ```
 -  #### Output:
     ```
-    foo( 15 ); // Value inside range(0,16)
-    foo( 16 ); // Value within range[16,20]
-	```
-    
-## _Comparison made easy_
-``` cpp
-void foo( const int value ) 
-{
-    eswitch( value ) 
-    (
-        Case( _1.between( 0, 16 ) ) { Print("Value inside range(0,16)"); },
-        Case( _1.within( 16, 20 ) ) { Print("Value within range[16,20]"); },
-        Default                     { Print('?'); }
-    );
-}
-```
--  #### Output:
+    auto result1 = foo( washington ); // result1 == "washington"
+    auto result2 = foo( new_york );   // result2 == "new_york"
     ```
-    foo( 15 ); // Value inside range(0,16)
-    foo( 16 ); // Value within range[16,20]
-	```
-	
+
 ## _std::any_
 ``` cpp
 void foo( const std::any a )
@@ -149,7 +78,7 @@ void foo( const std::any a )
             Print("Integer"); 
         },
         Default { 
-            Print("Some other type"); 
+            Print("Something else"); 
         }
     );
 }
@@ -158,7 +87,7 @@ void foo( const std::any a )
     ```
     foo( std::string{"Hello"} ); // Str=Hello
     foo( 15 ); // Integer
-    foo( true ); // Some other type
+    foo( true ); // Something else
     ```
 
 ## _std::variant_
@@ -171,7 +100,7 @@ void foo( const std::variant< int, double, char > & var )
             Print( "Double=%f", d ); 
         },
         Case( is<char>{} )( char ch ) { 
-            Print( "Char=%c", ch ); 
+            Print( "Character=%c", ch ); 
         },
         Case( is<int>{} )( int i ) { 
             Print( "Integer=%d", i ); 
@@ -185,7 +114,7 @@ void foo( const std::variant< int, double, char > & var )
 -  #### Output:
     ```
     foo( 5.5 ); // Dbl=5.5
-    foo( 'c' ); // Char=c
+    foo( 'c' ); // Character=c
     foo( 223 ); // Integer=223
     foo( {} );  // Varient is empty
     ```
@@ -230,12 +159,6 @@ auto foo( std::pair< int, std::string > pr )
         Case( 10, "Hi!" ) { 
             return true; 
         },
-        Case( 10, _2 != "Hi!" ) { 
-            return false; 
-        },
-        Case( _1 != 10, "Hi!" ) { 
-            return false; 
-        },
         Default { 
             return false; 
         }
@@ -246,7 +169,6 @@ auto foo( std::pair< int, std::string > pr )
     ```
     auto result1 = foo( std::make_pair( 10, "Hi!"_s );    // result1 == true
     auto result2 = foo( std::make_pair( 10, "Hello!"_s ); // result2 == false
-    auto result3 = foo( std::make_pair( 11, "Hi!"_s );    // result3 == false
     ```
 
 ## _std::tuple_
@@ -266,52 +188,6 @@ auto foo( std::tuple< int, int, int, int > tup )
     ```
     foo( std::make_tuple( 1, 0, 0, 0 ) ); // Result=8
     foo( std::make_tuple( 1, 1, 1, 1 ) ); // Result=15
-    ```
-
-## _stringify enum_
-``` cpp
-std::string foo( Place place )
-{
-    return eswitch( place )
-    (
-        Case( washington ) { return "washington"; },
-        Case( california ) { return "california"; },
-        Case( new_york )   { return "new_york"; },
-        Default            { return "???"; }
-    );
-}
-```
--  #### Output:
-    ```
-    auto result1 = foo( washington ); // result1 == "washington"
-    auto result2 = foo( new_york );   // result2 == "new_york"
-    ```
-
-## _Params match by predicate_
-``` cpp
-int isalpha( int ){...}
-int isdigit( int ){...}
-
-int amountAlphas = 0;
-int amountDigits = 0;
-int amountOthers = 0;
-
-for( const char ch : "Nimbus 2000!"_s ) 
-{    
-    eswitch( ch )
-    (
-        Case( ( isalpha, _1 ) ) { ++amountAlphas; },
-        Case( ( isdigit, _1 ) ) { ++amountDigits; },
-        Default                 { ++amountOthers; }
-    );
-}
-
-printf( "amountAlphas=%d, amountDigits=%d, amountOthers=%d", 
-    amountAlphas, amountDigits, amountOthers );
-```
--  #### Output:
-    ```
-    amountAlphas=6, amountDigits=4, amountOthers=2
     ```
 
 ## _Regex cases_
