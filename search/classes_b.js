@@ -1,16 +1,18 @@
 var searchData=
 [
-  ['lconv_1904',['lconv',['http://en.cppreference.com/w/cpp/locale/lconv.html',1,'std']]],
-  ['length_5ferror_1905',['length_error',['http://en.cppreference.com/w/cpp/error/length_error.html',1,'std']]],
-  ['less_1906',['less',['http://en.cppreference.com/w/cpp/utility/functional/less.html',1,'std']]],
-  ['less_5fequal_1907',['less_equal',['http://en.cppreference.com/w/cpp/utility/functional/less_equal.html',1,'std']]],
-  ['linear_5fcongruential_5fengine_1908',['linear_congruential_engine',['http://en.cppreference.com/w/cpp/numeric/random/linear_congruential_engine.html',1,'std']]],
-  ['list_1909',['list',['http://en.cppreference.com/w/cpp/container/list.html',1,'std']]],
-  ['locale_1910',['locale',['http://en.cppreference.com/w/cpp/locale/locale.html',1,'std']]],
-  ['lock_5fguard_1911',['lock_guard',['http://en.cppreference.com/w/cpp/thread/lock_guard.html',1,'std']]],
-  ['logic_5ferror_1912',['logic_error',['http://en.cppreference.com/w/cpp/error/logic_error.html',1,'std']]],
-  ['logical_5fand_1913',['logical_and',['http://en.cppreference.com/w/cpp/utility/functional/logical_and.html',1,'std']]],
-  ['logical_5fnot_1914',['logical_not',['http://en.cppreference.com/w/cpp/utility/functional/logical_not.html',1,'std']]],
-  ['logical_5for_1915',['logical_or',['http://en.cppreference.com/w/cpp/utility/functional/logical_or.html',1,'std']]],
-  ['lognormal_5fdistribution_1916',['lognormal_distribution',['http://en.cppreference.com/w/cpp/numeric/random/lognormal_distribution.html',1,'std']]]
+  ['lconv_2686',['lconv',['http://en.cppreference.com/w/cpp/locale/lconv.html',1,'std']]],
+  ['ldiv_5ft_2687',['ldiv_t',['http://en.cppreference.com/w/cpp/numeric/math/div.html',1,'std']]],
+  ['length_5ferror_2688',['length_error',['http://en.cppreference.com/w/cpp/error/length_error.html',1,'std']]],
+  ['less_2689',['less',['http://en.cppreference.com/w/cpp/utility/functional/less.html',1,'std::less'],['http://en.cppreference.com/w/cpp/utility/functional/ranges/less.html',1,'std::ranges::less']]],
+  ['less_5fequal_2690',['less_equal',['http://en.cppreference.com/w/cpp/utility/functional/less_equal.html',1,'std::less_equal'],['http://en.cppreference.com/w/cpp/utility/functional/ranges/less_equal.html',1,'std::ranges::less_equal']]],
+  ['linear_5fcongruential_5fengine_2691',['linear_congruential_engine',['http://en.cppreference.com/w/cpp/numeric/random/linear_congruential_engine.html',1,'std']]],
+  ['list_2692',['list',['http://en.cppreference.com/w/cpp/container/list.html',1,'std::list&lt; T &gt;'],['http://en.cppreference.com/w/cpp/container/list.html',1,'std::pmr::list']]],
+  ['lldiv_5ft_2693',['lldiv_t',['http://en.cppreference.com/w/cpp/numeric/math/div.html',1,'std']]],
+  ['locale_2694',['locale',['http://en.cppreference.com/w/cpp/locale/locale.html',1,'std']]],
+  ['lock_5fguard_2695',['lock_guard',['http://en.cppreference.com/w/cpp/thread/lock_guard.html',1,'std']]],
+  ['logic_5ferror_2696',['logic_error',['http://en.cppreference.com/w/cpp/error/logic_error.html',1,'std']]],
+  ['logical_5fand_2697',['logical_and',['http://en.cppreference.com/w/cpp/utility/functional/logical_and.html',1,'std']]],
+  ['logical_5fnot_2698',['logical_not',['http://en.cppreference.com/w/cpp/utility/functional/logical_not.html',1,'std']]],
+  ['logical_5for_2699',['logical_or',['http://en.cppreference.com/w/cpp/utility/functional/logical_or.html',1,'std']]],
+  ['lognormal_5fdistribution_2700',['lognormal_distribution',['http://en.cppreference.com/w/cpp/numeric/random/lognormal_distribution.html',1,'std']]]
 ];

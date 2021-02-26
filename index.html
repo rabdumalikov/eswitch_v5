@@ -1,3 +1,4 @@
+<!-- HTML header for doxygen 1.8.17-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -22,6 +23,7 @@
 /* @license-end */
 </script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -30,7 +32,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">eswitch-v5
+   <div id="projectname"><strong>eswitch-v5</strong>
    </div>
    <div id="projectbrief">Advanced counterpart for switch statement in C++</div>
   </td>
@@ -97,51 +99,426 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </div><!--header-->
 <div class="contents">
 <div class="toc"><h3>Table of Contents</h3>
-<ul><li class="level1"><a href="#tutorial-overview">Overview</a><ul><li class="level2"><a href="#tutorial-installation">Installation</a></li>
+<ul><li class="level1"><a href="#tutorial-overview">Overview</a><ul><li class="level2"><a href="#autotoc_md1">Motivation</a></li>
+<li class="level2"><a href="#autotoc_md3">Comparison</a></li>
+<li class="level2"><a href="#tutorial-installation">Installation</a></li>
 <li class="level2"><a href="#tutorial-license">License</a></li>
 <li class="level2"><a href="#tutorial-compilers">Supported Compilers</a></li>
+<li class="level2"><a href="#autotoc_md8">Conventions used in this document</a></li>
 </ul>
 </li>
-<li class="level1"><a href="#tutorial-implementation-details">Implementation Details</a><ul><li class="level2"><a href="#autotoc_md5">Motivation</a></li>
-<li class="level2"><a href="#autotoc_md7">Conventions used in this document</a></li>
-<li class="level2"><a href="#autotoc_md9">Similarities</a></li>
-<li class="level2"><a href="#autotoc_md11">Keywords</a></li>
+<li class="level1"><a href="#tutorial-implementation-details">Implementation Details</a><ul><li class="level2"><a href="#autotoc_md11">Keywords</a></li>
 <li class="level2"><a href="#syntax">Syntax</a></li>
-<li class="level2"><a href="#autotoc_md14">Features</a><ul><li class="level3"><a href="#autotoc_md16">Params referencing via indexes</a></li>
-<li class="level3"><a href="#autotoc_md17">If indexes aren&#39;t provided, then it is assumed that they&#39;re sequential</a></li>
-<li class="level3"><a href="#autotoc_md18">Matching via predicates:(it could be either a lambda or a free function)</a></li>
-<li class="level3"><a href="#autotoc_md19">Check in range</a></li>
-<li class="level3"><a href="#autotoc_md20">any_from helper function</a></li>
-<li class="level3"><a href="#autotoc_md21">Default case</a></li>
-<li class="level3"><a href="#autotoc_md22">Return value from Case</a></li>
-<li class="level3"><a href="#autotoc_md23">Match for std::any or std::variant</a></li>
-<li class="level3"><a href="#autotoc_md24">Match and withdraw value from std::any or std::variant</a></li>
-<li class="level3"><a href="#autotoc_md25">Match for polymorphic types</a></li>
-<li class="level3"><a href="#autotoc_md26">Match for std::regex</a></li>
-<li class="level3"><a href="#autotoc_md27">Match and withdraw values from std::regex</a></li>
-<li class="level3"><a href="#autotoc_md28">Match for entries in std::pair</a></li>
-<li class="level3"><a href="#autotoc_md29">Match for entries in std::tuple</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="level1"><a href="#autotoc_md30">How to write Custom extensions?</a></li>
-<li class="level1"><a href="#autotoc_md32">Rationalities</a></li>
+<li class="level1"><a href="#autotoc_md14">How to write Custom extensions?</a></li>
+<li class="level1"><a href="#autotoc_md16">Rationalities</a></li>
 </ul>
 </div>
-<div class="textblock"><h1><a class="anchor" id="tutorial-overview"></a>
+<div class="textblock"><p> 
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<a class="github-button" href="https://github.com/rabdumalikov/eswitch_v5" data-color-scheme="no-preference: light; light: light; dark: light;" data-size="large" aria-label="View on github">View on github</a>
+</p>
+<h1><a class="anchor" id="tutorial-overview"></a>
 Overview</h1>
 <hr  />
-<p><b><a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a></b> is a library, which is an improved version of <b>switch statement</b> in <b>C++</b>( or just <b>native switch</b>). The main idea behind this library is to be able to overcome <b>native switch</b> limitations, such as:</p><ul>
-<li>one <em>argument</em> per <b>native switch</b></li>
-<li>the <em>argument</em> restricted to only <em>integral</em> types( <b>int</b>, <b>char</b>, <b>enum</b> ... )</li>
-<li>impossibility to <em>compose complex conditions</em>, as opposed to other <b>statements</b> like <b>if</b>, <b>else if</b>, along with <b>loops</b> such as <b>while</b> and <b>for</b>.</li>
+<p> <code><a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a></code> is a library, which is an improved version of <span class="keywordflow"><code>switch</code></span> statement in C++. The main idea behind this library is to be able to overcome <span class="keywordflow"><code>switch</code></span> statement limitations, such as:</p><ul>
+<li>one argument per <span class="keywordflow"><code>switch</code></span> statement</li>
+<li>the argument restricted to only <em>integral</em> types( <span class="keyword"><code>int</code></span>, <span class="keyword"><code>char</code></span>, <span class="keyword"><code>enum</code></span> ... )</li>
+<li>impossibility to compose complex conditions, as opposed to other <em>statements</em> and <em>loops</em> in C++</li>
 </ul>
-<p><b><a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a></b> supports any number of <em>arguments</em> and almost without restriction on their <em>type</em> as long as the <em>type</em> is <b>comparable</b>( i.e. has <b>operator==</b>, <b>operator!=</b> and so on ). Additionally, my library allows to match for <b>std::any, std::variant&lt;...&gt;, polymorphic type match</b> and <b><a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></b>. Also it allows to withdraw values from those types, of course if the match was successful.</p>
+<p><code><a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a></code> supports any number of arguments and almost without restriction on their type as long as the type is comparable( i.e. has <code>operator==</code>, <code>operator!=</code> and so on ). Additionally, my library went beyond overcoming limitations of <span class="keywordflow"><code>switch</code></span> statement e.g. I introduced more expressive way for matching and withdrawing values from <code><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/any.html">std::any</a></code>, <code><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/variant.html">std::variant</a></code>, <code>polymorphic types</code> and <code><a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></code>.</p>
+<h2><a class="anchor" id="autotoc_md1"></a>
+Motivation</h2>
+<hr  />
+<p> Let's start with a little bit of backstory. As you may know in C++ the <span class="keywordflow"><code>switch</code></span> statement is quite limited( in comparison with other statements ) and there are few reasons for this, which are mainly related to optimization. Compiler can use <b>jump table</b> or <b>binary search</b> to optimize the <span class="keywordflow"><code>switch</code></span> statement, but nothing comes without a price as such optimizations are only possible for compile-time data. In C++98 only primitives such as <span class="keyword"><code>int</code></span>, <span class="keyword"><code>char</code></span>, <span class="keyword"><code>enum</code></span> and <span class="keyword"><code>bool</code></span> could be data known at compile time. That's why the <span class="keywordflow"><code>switch</code></span> statement was restricted to primitive-only. However, in C++11 the new keyword <span class="keyword"><code>constexpr</code></span> was introduced. Which opened the doors for compile-time custom types. So now it has become possible to overcome the primitive-only limitation. There was even the <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html">proposal</a> for this. Unfortunately, for whatever reason, the author decided to bail out, even though the feedback from the committee was positive. Nonetheless, even if this proposal was accepted in the C++ standard the <span class="keywordflow"><code>switch</code></span> statement still wouldn't be as powerful as the <span class="keywordflow"><code>if</code></span> statement.</p>
+<p>Let us now examine the <span class="keywordflow"><code>if</code></span> statement closely. It can be used for various data types that are known at compile time and at runtime. In addition to this, it allows to compose and test complex conditions. Wait wait wait, if the <span class="keywordflow"><code>if</code></span> statement can work with data known at compile-time, then why can't compiler optimize this statement just like the <span class="keywordflow"><code>switch</code></span> statement? In theory, it can. Let me even say that there is a compiler that is capable of doing so and this is clang.</p>
+<p><b>For example</b>:  
+<button onclick="location.href='https://godbolt.org/z/rq7fzn'" type="button">
+         View on <strong>CompilerExplorer</strong></button>
+ </p><table class="doxtable">
+<tr>
+<td><div class="fragment"><div class="line"><span class="keywordtype">int</span> foo(<span class="keywordtype">int</span> num) </div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">if</span>     ( num == 10 ) <span class="keywordflow">return</span> 1;</div>
+<div class="line">    <span class="keywordflow">else</span> <span class="keywordflow">if</span>( num == 13 ) <span class="keywordflow">return</span> 2;</div>
+<div class="line">    <span class="keywordflow">else</span> <span class="keywordflow">if</span>( num == 11 ) <span class="keywordflow">return</span> 3;</div>
+<div class="line">    <span class="keywordflow">else</span> <span class="keywordflow">if</span>( num == 19 ) <span class="keywordflow">return</span> 4;</div>
+<div class="line">    <span class="keywordflow">else</span> <span class="keywordflow">if</span>( num == 12 ) <span class="keywordflow">return</span> 5;</div>
+<div class="line">    <span class="keywordflow">else</span>                 <span class="keywordflow">return</span> 6;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"> </div>
+<div class="line"> </div>
+<div class="line"> </div>
+<div class="line"> </div>
+<div class="line"> </div>
+<div class="line"> </div>
+<div class="line"> </div>
+<div class="line"> </div>
+<div class="line"> </div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> bar(<span class="keywordtype">int</span> num) {</div>
+<div class="line">    <span class="keywordflow">switch</span>( num )</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">case</span> 19: <span class="keywordflow">return</span> 4;</div>
+<div class="line">        <span class="keywordflow">case</span> 10: <span class="keywordflow">return</span> 1;</div>
+<div class="line">        <span class="keywordflow">case</span> 13: <span class="keywordflow">return</span> 2;</div>
+<div class="line">        <span class="keywordflow">case</span> 11: <span class="keywordflow">return</span> 3;</div>
+<div class="line">        <span class="keywordflow">case</span> 12: <span class="keywordflow">return</span> 5;</div>
+<div class="line">        <span class="keywordflow">default</span>: <span class="keywordflow">return</span> 6;</div>
+<div class="line">    };</div>
+<div class="line">}                     </div>
+</div><!-- fragment --><p class="endtd"></p>
+</td><td><div class="fragment"><div class="line">foo(<span class="keywordtype">int</span>):                                # @foo(int)</div>
+<div class="line">        add     edi, -10</div>
+<div class="line">        cmp     edi, 9</div>
+<div class="line">        ja      .LBB0_2</div>
+<div class="line">        movsxd  rax, edi</div>
+<div class="line">        mov     eax, dword ptr [4*rax + .Lswitch.table.bar(int)]</div>
+<div class="line">        ret</div>
+<div class="line">.LBB0_2:</div>
+<div class="line">        mov     eax, 6</div>
+<div class="line">        ret</div>
+<div class="line">bar(int):                                # @bar(int)</div>
+<div class="line">        add     edi, -10</div>
+<div class="line">        cmp     edi, 9</div>
+<div class="line">        ja      .LBB1_2</div>
+<div class="line">        movsxd  rax, edi</div>
+<div class="line">        mov     eax, dword ptr [4*rax + .Lswitch.table.bar(int)]</div>
+<div class="line">        ret</div>
+<div class="line">.LBB1_2:</div>
+<div class="line">        mov     eax, 6</div>
+<div class="line">        ret</div>
+<div class="line">.Lswitch.table.bar(int):</div>
+<div class="line">        .long   1                               # 0x1</div>
+<div class="line">        .long   3                               # 0x3</div>
+<div class="line">        .long   5                               # 0x5</div>
+<div class="line">        .long   2                               # 0x2</div>
+<div class="line">        .long   6                               # 0x6</div>
+<div class="line">        .long   6                               # 0x6</div>
+<div class="line">        .long   6                               # 0x6</div>
+<div class="line">        .long   6                               # 0x6</div>
+<div class="line">        .long   6                               # 0x6</div>
+<div class="line">        .long   4                               # 0x4                        </div>
+</div><!-- fragment --><p class="endtd"></p>
+</td></tr>
+</table>
+<p>If this optimization is possible, then it means that the limitations of the <span class="keywordflow"><code>switch</code></span> statement make no sense and never had, considering the fact that even clang-3.0 was able to do that kind of optimization. Clang has shown us that to both of those statements can be applied similar optimizations. However, the <span class="keywordflow"><code>if</code></span> statement can also work with runtime data, whereas the <span class="keywordflow"><code>switch</code></span> statement cannot.</p>
+<p>And this situation is unfortunate for me and the others. As I can see all over the internet a lot of attempts to overcome this situation in some way or another:</p>
+<ul>
+<li>Compilers such as clang and gcc have non-standard extension for matching <a href="https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html">case ranges</a>.<br  />
+<b>For example</b>: <table cellspacing="0" cellpadding="0">
+<tr>
+<td><div class="fragment"><div class="line"><span class="keywordflow">switch</span>( num )</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">case</span>  1 ... 9:  <span class="keywordflow">break</span>;</div>
+<div class="line">    <span class="keywordflow">case</span> 10 ... 99: <span class="keywordflow">break</span>;</div>
+<div class="line">};                         </div>
+</div><!-- fragment --><p class="endtd"></p>
+</td><td><div class="fragment"><div class="line"><span class="keywordflow">switch</span>( ch )</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">case</span> <span class="charliteral">&#39;A&#39;</span> ... <span class="charliteral">&#39;Z&#39;</span>: <span class="keywordflow">break</span>;</div>
+<div class="line">    <span class="keywordflow">case</span> <span class="charliteral">&#39;a&#39;</span> ... <span class="charliteral">&#39;z&#39;</span>: <span class="keywordflow">break</span>;</div>
+<div class="line">};                         </div>
+</div><!-- fragment --><p class="endtd"></p>
+</td></tr>
+</table>
+</li>
+<li>The internet is full of questions(with over million views) of people whose trying to find an insight or workaround:<ul>
+<li><a href="https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings">Why strings cannot be used in switch statement?</a></li>
+<li><a href="https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement">How to compose complex condition in switch statement?</a></li>
+</ul>
+</li>
+<li>Programming language Swift has pretty advanced the <span class="keywordflow"><code>switch</code></span> statement.</li>
+</ul>
+<p>Turns out, the <span class="keywordflow"><code>switch</code></span> statement can also be as powerful as the <span class="keywordflow"><code>if</code></span> statement. This insight became my motivation to start this project. Where I've tried:</p><ol type="1">
+<li>to address all the limitations</li>
+<li>leave the syntax of <code>eswitch</code> as close as possible to <span class="keywordflow"><code>switch</code></span> statement. Compare: <table cellspacing="0" cellpadding="0">
+<tr>
+<td><div class="fragment"><div class="line"><span class="keywordflow">switch</span>( num )</div>
+<div class="line">{ </div>
+<div class="line">    <span class="keywordflow">case</span> 1:  {...} <span class="keywordflow">break</span>;</div>
+<div class="line">    <span class="keywordflow">case</span> 2:  {...} <span class="keywordflow">break</span>;</div>
+<div class="line">    <span class="keywordflow">default</span>: {...} <span class="keywordflow">break</span>;</div>
+<div class="line">};          </div>
+</div><!-- fragment --><p class="endtd"></p>
+</td><td><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( num )</div>
+<div class="line">(              </div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1 ) {...},</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 2 ) {...},</div>
+<div class="line">    <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a>   {...}</div>
+<div class="line">);  </div>
+</div><!-- fragment --><p class="endtd"></p>
+</td></tr>
+</table>
+Pretty close, huh? Except the places where I was either limited by language or intentionally tried to avoid certain behavior of <span class="keywordflow"><code>switch</code></span> statement like default fallthrough.<br  />
+<br  />
+<dl class="section note"><dt>Note</dt><dd>In C++ <span class="keywordflow"><code>switch</code></span> statement has explicit <span class="keywordflow"><code>break</code></span> and implicit fallthrough.</dd></dl>
+<br  />
+This behavior is considered to be error-prone. Since developers sometimes forget to use <span class="keywordflow"><code>break</code></span> and because of this their code doesn't work the way it was intended. Thus in my implementation I reversed this concept i.e. <code>eswitch</code> has implicit <span class="keywordflow"><code>break</code></span> and explicit fallthrough. Compare: <table cellspacing="0" cellpadding="0">
+<tr>
+<td><div class="fragment"><div class="line"><span class="keywordflow">switch</span>( num )            </div>
+<div class="line">{                        </div>
+<div class="line">    <span class="keywordflow">case</span> 1:  {...}       </div>
+<div class="line">    <span class="keywordflow">case</span> 2:  {...} <span class="keywordflow">break</span>;</div>
+<div class="line">    <span class="keywordflow">default</span>: {...} <span class="keywordflow">break</span>;</div>
+<div class="line">};                               </div>
+</div><!-- fragment --><p class="endtd"></p>
+</td><td><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( num )     </div>
+<div class="line">(     </div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1 ){...} ^ <a class="code" href="group__other-variables.html#ga23e83b648756cadca9232aaf9d7d3d03">fallthrough_</a>,</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 2 ){...},     </div>
+<div class="line">    <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a>  {...}     </div>
+<div class="line">);      </div>
+</div><!-- fragment --><p class="endtd"></p>
+</td></tr>
+</table>
+</li>
+<li>And last but not least, another my priority was the performance of <code>eswitch</code>. I worked so hard in order to be as close as possible to the performance of <span class="keywordflow"><code>switch</code></span> statement.</li>
+</ol>
+<h2><a class="anchor" id="autotoc_md3"></a>
+Comparison</h2>
+<hr  />
+<p> Since full comparison of <code>eswitch</code> vs <span class="keywordflow"><code>switch</code></span> statement isn't possible due to the limitations of the latter. Thus I'm going to do comparison with <span class="keywordflow"><code>if</code></span> statement instead.</p>
+<table class="doxtable">
+<tr>
+<th>eswitch</th><th>if statement </th></tr>
+<tr>
+<td colspan="2"><div align="left"> <b>any_from helper function</b> </div> </td></tr>
+<tr>
+<td><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( file_extension )</div>
+<div class="line">( </div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">any_from</a>( <span class="stringliteral">&quot;cpp&quot;</span>, <span class="stringliteral">&quot;c++&quot;</span>, <span class="stringliteral">&quot;cxx&quot;</span>, <span class="stringliteral">&quot;cc&quot;</span>, <span class="stringliteral">&quot;C&quot;</span> ) )</div>
+<div class="line">    {</div>
+<div class="line">        <span class="keywordflow">return</span> <span class="stringliteral">&quot;source&quot;</span>;</div>
+<div class="line">    },</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">any_from</a>( <span class="stringliteral">&quot;hpp&quot;</span>, <span class="stringliteral">&quot;h++&quot;</span>, <span class="stringliteral">&quot;hxx&quot;</span>, <span class="stringliteral">&quot;hh&quot;</span>, <span class="stringliteral">&quot;h&quot;</span>, <span class="stringliteral">&quot;H&quot;</span> ) )</div>
+<div class="line">    {  </div>
+<div class="line">        <span class="keywordflow">return</span> <span class="stringliteral">&quot;header&quot;</span>;</div>
+<div class="line">    }</div>
+<div class="line">);</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td><td><div class="fragment"><div class="line"><span class="keywordflow">if</span>( file_extension == <span class="stringliteral">&quot;cpp&quot;</span> ||</div>
+<div class="line">    file_extension == <span class="stringliteral">&quot;c++&quot;</span> ||</div>
+<div class="line">    file_extension == <span class="stringliteral">&quot;cxx&quot;</span> ||</div>
+<div class="line">    file_extension == <span class="stringliteral">&quot;cc&quot;</span>  ||</div>
+<div class="line">    file_extension == <span class="stringliteral">&quot;C&quot;</span> )</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <span class="stringliteral">&quot;source&quot;</span>;</div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span>(</div>
+<div class="line">    file_extension == <span class="stringliteral">&quot;hpp&quot;</span> ||</div>
+<div class="line">    file_extension == <span class="stringliteral">&quot;h++&quot;</span> ||</div>
+<div class="line">    file_extension == <span class="stringliteral">&quot;hxx&quot;</span> ||</div>
+<div class="line">    file_extension == <span class="stringliteral">&quot;hh&quot;</span>  ||</div>
+<div class="line">    file_extension == <span class="stringliteral">&quot;h&quot;</span>   ||</div>
+<div class="line">    file_extension == <span class="stringliteral">&quot;H&quot;</span> )</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <span class="stringliteral">&quot;header&quot;</span>;</div>
+<div class="line">}</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td></tr>
+<tr>
+<td colspan="2"><div align="left"> <b>Match and withdraw value from <code><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/any.html">std::any</a></code> and <code><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/variant.html">std::variant</a></code></b> - in terms of this library the usage for matching type in either of<br  />
+ those objects is unified, whereas in raw C++ usage is different. </div> </td></tr>
+<tr>
+<td rowspan="2"><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( any_or_variant_obj )</div>
+<div class="line">(</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; int &gt;{} )( <span class="keyword">const</span> <span class="keywordtype">int</span> value )</div>
+<div class="line">    {</div>
+<div class="line">        ...</div>
+<div class="line">    },</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; string &gt;{} )( <span class="keyword">const</span> <span class="keywordtype">string</span> &amp; value )</div>
+<div class="line">    {</div>
+<div class="line">        ...</div>
+<div class="line">    }</div>
+<div class="line">);</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td><td><div class="fragment"><div class="line"><a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/any.html">std::any</a> any_obj = ...;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span>( <span class="keyword">auto</span> * value = any_cast&lt; int &gt;( &amp;any_obj ) )</div>
+<div class="line">{</div>
+<div class="line">    ...</div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span>( <span class="keyword">auto</span> * value = any_cast&lt; string &gt;( &amp;any_obj ) )</div>
+<div class="line">{</div>
+<div class="line">    ...</div>
+<div class="line">}</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td></tr>
+<tr>
+<td><div class="fragment"><div class="line"><a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/variant.html">std::variant&lt; int, string &gt;</a> variant_obj = ...;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span>( <span class="keyword">auto</span> * value = get_if&lt; int &gt;( &amp;variant_obj ) )</div>
+<div class="line">{</div>
+<div class="line">    ...</div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span>( <span class="keyword">auto</span> * value = get_if&lt; string &gt;( &amp;variant_obj ) )</div>
+<div class="line">{</div>
+<div class="line">    ...</div>
+<div class="line">}</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td></tr>
+<tr>
+<td colspan="2"><div align="left"> <b>Match for polymorphic types</b> </div> </td></tr>
+<tr>
+<td><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( base_ptr )</div>
+<div class="line">(</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; circle &gt;{} )( circle * c )</div>
+<div class="line">    {</div>
+<div class="line">        c-&gt;draw();</div>
+<div class="line">    },</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; square &gt;{} )( square * s )</div>
+<div class="line">    {</div>
+<div class="line">        s-&gt;draw();</div>
+<div class="line">    }</div>
+<div class="line">);</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td><td><div class="fragment"><div class="line"><span class="keywordflow">if</span>( <span class="keyword">auto</span> * c = <span class="keyword">dynamic_cast&lt;</span> circle* <span class="keyword">&gt;</span>( base_ptr ) )</div>
+<div class="line">{</div>
+<div class="line">    c-&gt;draw();</div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span>( <span class="keyword">auto</span> * s = <span class="keyword">dynamic_cast&lt;</span> square* <span class="keyword">&gt;</span>( base_ptr ) )</div>
+<div class="line">{</div>
+<div class="line">    s-&gt;draw();</div>
+<div class="line">}</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td></tr>
+<tr>
+<td><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( base_ref )</div>
+<div class="line">(</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; circle &gt;{} )( circle &amp; c )</div>
+<div class="line">    {</div>
+<div class="line">        c.draw();</div>
+<div class="line">    },</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; square &gt;{} )( square &amp; s )</div>
+<div class="line">    {</div>
+<div class="line">        s.draw();</div>
+<div class="line">    }</div>
+<div class="line">);</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td><td><div class="fragment"><div class="line"><span class="keywordflow">try</span></div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">auto</span> &amp; c = <span class="keyword">dynamic_cast&lt;</span> circle&amp; <span class="keyword">&gt;</span>( base_ptr );</div>
+<div class="line">    c.draw();</div>
+<div class="line">    <span class="keywordflow">return</span>;</div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">catch</span>( <span class="keyword">const</span> bad_cast &amp; ) { ... }</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">try</span></div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">auto</span> &amp; s = <span class="keyword">dynamic_cast&lt;</span> square&amp; <span class="keyword">&gt;</span>( base_ptr );</div>
+<div class="line">    s.draw();</div>
+<div class="line">    <span class="keywordflow">return</span>;</div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">catch</span>( <span class="keyword">const</span> bad_cast &amp; ) { ... }</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td></tr>
+<tr>
+<td colspan="2"><div align="left"> <b>Match for <a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></b> </div> </td></tr>
+<tr>
+<td><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( text )</div>
+<div class="line">(</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;(\w*)&quot;_r ) { </span><span class="keywordflow">return</span> <span class="stringliteral">&quot;message&quot;</span>; },</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;(\d*)&quot;_r ) { </span><span class="keywordflow">return</span> <span class="stringliteral">&quot;number&quot;</span>; }</div>
+<div class="line">);</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td><td><div class="fragment"><div class="line">smatch match;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/regex_match.html">regex_match</a>( text, match, regex( R<span class="stringliteral">&quot;(\w*)&quot; ) ) )</span></div>
+<div class="line"><span class="stringliteral">{  </span></div>
+<div class="line"><span class="stringliteral">    </span><span class="keywordflow">return</span> <span class="stringliteral">&quot;message&quot;</span>;</div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/regex_match.html">regex_match</a>( text, match, regex( R<span class="stringliteral">&quot;(\d*)&quot; ) ) )</span></div>
+<div class="line"><span class="stringliteral">{</span></div>
+<div class="line"><span class="stringliteral">    </span><span class="keywordflow">return</span> <span class="stringliteral">&quot;number&quot;</span>;</div>
+<div class="line">}</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td></tr>
+<tr>
+<td colspan="2"><div align="left"> <b>Match and withdraw values from <a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></b> </div> </td></tr>
+<tr>
+<td><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( text )</div>
+<div class="line">(</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;((\w*))&quot;_r )( vector&lt; string &gt; &amp;&amp; match )</span></div>
+<div class="line"><span class="stringliteral">    {</span></div>
+<div class="line"><span class="stringliteral">        </span><span class="keywordflow">return</span> match[1];</div>
+<div class="line">    }</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;((\d*))&quot;_r )( vector&lt; string &gt; &amp;&amp; match )</span></div>
+<div class="line"><span class="stringliteral">    { </span></div>
+<div class="line"><span class="stringliteral">        </span><span class="keywordflow">return</span> match[1];</div>
+<div class="line">    }</div>
+<div class="line">);</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td><td><div class="fragment"><div class="line">smatch match;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/regex_match.html">regex_match</a>( text, match, regex( R<span class="stringliteral">&quot;((\w*))&quot; ) ) )</span></div>
+<div class="line"><span class="stringliteral">{</span></div>
+<div class="line"><span class="stringliteral">    </span><span class="keywordflow">return</span> match[1];</div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/regex_match.html">regex_match</a>( text, match, regex( R<span class="stringliteral">&quot;((\d*))&quot; ) ) )</span></div>
+<div class="line"><span class="stringliteral">{</span></div>
+<div class="line"><span class="stringliteral">    </span><span class="keywordflow">return</span> match[1];</div>
+<div class="line">}</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td></tr>
+<tr>
+<td colspan="2"><div align="left"> <b>Match for individual entries in <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair</a></b> </div> </td></tr>
+<tr>
+<td><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/pair/make_pair.html">make_pair</a>( 10, <span class="keywordtype">string</span>{<span class="stringliteral">&quot;Text&quot;</span>} ) )</div>
+<div class="line">(</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 10, <span class="stringliteral">&quot;Text&quot;</span> ){ ... }</div>
+<div class="line">);</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td><td><div class="fragment"><div class="line"><span class="keyword">auto</span> pr = <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/pair/make_pair.html">make_pair</a>( 10, <span class="keywordtype">string</span>{<span class="stringliteral">&quot;Text&quot;</span>} );</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span>( pr.first == 10 &amp;&amp; pr.second == <span class="stringliteral">&quot;Text&quot;</span> ) { ... }</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td></tr>
+<tr>
+<td colspan="2"><div align="left"> <b>Match for individual entries in <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/tuple.html">std::tuple</a></b> </div> </td></tr>
+<tr>
+<td><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">make_tuple</a>( 1, 0, 0, 1 ) )</div>
+<div class="line">(</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1, 0, 0, 1 ) { <span class="keywordflow">return</span> 9; },</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1, 1, 1, 1 ) { <span class="keywordflow">return</span> 15; }</div>
+<div class="line">);</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td><td><div class="fragment"><div class="line"><span class="keyword">auto</span> tup = <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">make_tuple</a>( 1, 0, 0, 1 );</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">auto</span> [ x, y, z, k ] = tup;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">if</span>( x == 1 &amp;&amp; y == 0 &amp;&amp; z == 0 &amp;&amp; k == 1 )</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> 9;</div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span>( x == 1 &amp;&amp; y == 1 &amp;&amp; z == 1 &amp;&amp; k == 1 )</div>
+<div class="line">{</div>
+<div class="line">   <span class="keywordflow">return</span> 15;</div>
+<div class="line">}</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td></tr>
+<tr>
+<td colspan="2"><div align="left"> <b>Check in range</b> </div> </td></tr>
+<tr>
+<td><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1 )</div>
+<div class="line">(</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a>.between( 1, 10 ) ) {...},</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a>.within( 11, 20 ) ) {...}</div>
+<div class="line">);</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td><td><div class="fragment"><div class="line"><span class="keywordflow">if</span>     ( num &gt;   1 &amp;&amp; num &lt;  10 ) { ... }</div>
+<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span>( num &gt;= 11 &amp;&amp; num &lt;= 20 ) { ... }</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td></tr>
+</table>
 <h2><a class="anchor" id="tutorial-installation"></a>
 Installation</h2>
 <hr  />
-<p> Since this library is header-only and on top of that whole library was implemented within single file, thus you can get that file from <b><a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a></b> repository on <a href="https://github.com/rabdumalikov/eswitch_v5/blob/main/include/eswitch/eswitch_v5.hpp">github</a>. And in order to compile with <a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a>, just <code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html" title="implementation which enhance switch statement">eswitch_v5.hpp</a>&gt;</code>.</p>
+<p> Since this library is header-only and on top of that whole library was implemented within single file, thus you can get that file from <code><a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a></code> repository on <a href="https://github.com/rabdumalikov/eswitch_v5/blob/main/include/eswitch/eswitch_v5.hpp">github</a> and just <code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html" title="implementation which enhance switch statement">eswitch_v5.hpp</a>&gt;</code>.</p>
 <h2><a class="anchor" id="tutorial-license"></a>
 License</h2>
 <hr  />
@@ -149,117 +526,40 @@ License</h2>
 <h2><a class="anchor" id="tutorial-compilers"></a>
 Supported Compilers</h2>
 <hr  />
-<p> Should work on all major compilers which support <b>C++20</b>. I personally tested on following:</p>
+<p> Should work on all major compilers which support C++20. I personally tested on following:</p>
 <ul>
 <li><b>clang++-11</b> (or later)</li>
 <li><b>g++-10.2</b> (or later)</li>
-<li><b>Visual Studio 2019</b> - isn't supported for now, just because <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0428r2.pdf">familiar template syntax for generic lambdas</a> from <b>C++20</b> wasn't implemented by <em>Microsoft</em> compiler.</li>
+<li><b>Visual Studio 2019</b> - isn't supported for now, just because <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0428r2.pdf">familiar template syntax for generic lambdas</a> from C++20 wasn't implemented by <em>Microsoft</em> compiler.</li>
 </ul>
+<h2><a class="anchor" id="autotoc_md8"></a>
+Conventions used in this document</h2>
+<hr  />
+<p> In all code examples, I omit the namespace prefixes for names in the <code><a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a></code> and <code>std</code> namespaces.</p>
 <h1><a class="anchor" id="tutorial-implementation-details"></a>
 Implementation Details</h1>
 <hr  />
 <p> This section contains all the details, which user need to know in order to use this library successfully.</p>
-<h2><a class="anchor" id="autotoc_md5"></a>
-Motivation</h2>
-<hr  />
-<p>I don't see any good reason why <b>switch statement</b> in <b>C++</b> is so limited, whereas other statements such as <b>if, else if</b> including <em>loops</em> <b>while</b> and <b>for</b> have no such limitations and they allow to compose and test complex condition. And here is why:</p><ul>
-<li>In terms of <em><b>assembler</b></em> output, <b>if</b> and <b>switch</b> statements give the same <a href="https://godbolt.org/z/G3Woj6">output</a>, thus the performance also the same. <div class="fragment"><div class="line"> ============================================================================                          </div>
-<div class="line">|                                       |   foo(<span class="keywordtype">int</span>):            # @foo(int) |                           </div>
-<div class="line">|  int foo(int num)                     |       xor     ecx, ecx             |               </div>
-<div class="line">|  {                                    |       cmp     edi, 15              |              </div>
-<div class="line">|      <span class="keywordflow">if</span>     ( num == 10 ) <span class="keywordflow">return</span> 1;   |       sete    cl                   |         </div>
-<div class="line">|      <span class="keywordflow">else</span> <span class="keywordflow">if</span>( num == 15 ) <span class="keywordflow">return</span> 2;   |       xor     ecx, 3               |             </div>
-<div class="line">|      <span class="keywordflow">else</span>                 <span class="keywordflow">return</span> 3;   |       cmp     edi, 10              |              </div>
-<div class="line">|  }                                    |       mov     eax, 1               |             </div>
-<div class="line">|                                       |       cmovne  eax, ecx             |               </div>
-<div class="line">|                                       |       ret                          |                            </div>
-<div class="line">|=======================================+====================================|                                </div>
-<div class="line">|  <span class="keywordtype">int</span> bar(<span class="keywordtype">int</span> num)                     |    bar(<span class="keywordtype">int</span>):           # @bar(int) |                                                                    </div>
-<div class="line">|  {                                    |       xor     ecx, ecx             |                   </div>
-<div class="line">|      <span class="keywordflow">switch</span>( num )                    |       cmp     edi, 15              |                                  </div>
-<div class="line">|      {                                |       sete    cl                   |                 </div>
-<div class="line">|          <span class="keywordflow">case</span> 10: <span class="keywordflow">return</span> 1;           |       xor     ecx, 3               |                                          </div>
-<div class="line">|          <span class="keywordflow">case</span> 15: <span class="keywordflow">return</span> 2;           |       cmp     edi, 10              |                                           </div>
-<div class="line">|          <span class="keywordflow">default</span>: <span class="keywordflow">return</span> 3;           |       mov     eax, 1               |                                          </div>
-<div class="line">|      };                               |       cmovne  eax, ecx             |                        </div>
-<div class="line">|  }                                    |       ret                          |      </div>
-<div class="line"> ============================================================================                                </div>
-</div><!-- fragment --></li>
-<li>Also I don't think that limitation related to compatibility with <b>C</b>, since syntax of <b>if statement</b> is still compatible with <b>C</b> even though it was extended in <b>C++17</b>, this extension allows to declare variable within <b>if statement</b> like this: <div class="fragment"><div class="line"><span class="keywordflow">if</span>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/match_results.html">std::smatch</a> mt; <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a>( text, mt, rgx ) ) {...}</div>
-</div><!-- fragment --></li>
-<li>And there was even the <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html">proposal</a> for <b>C++ standard committee</b>: ''To allow to use <em>complex types</em>( like <b>strings</b>, <b>complex numbers</b>, etc ) within <b>switch statement</b>''. And <b>committee</b> <span style="color:green"> <em>agreed</em> </span> about <b>importance of this topic</b>. But somehow the author stopped his work toward this direction.</li>
-<li>There is more, compilers such as <b>clang</b> and <b>gcc</b> have non-standard extension for matching <a href="https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html"><b>case ranges</b></a>. <div class="fragment"><div class="line"><span class="keywordflow">switch</span>( num )                              <span class="keywordflow">switch</span>( ch )</div>
-<div class="line">{                                          {</div>
-<div class="line">    <span class="keywordflow">case</span> 1 ... 5: <span class="keywordflow">break</span>;                       <span class="keywordflow">case</span> <span class="charliteral">&#39;A&#39;</span> ... <span class="charliteral">&#39;Z&#39;</span>: <span class="keywordflow">break</span>;          </div>
-<div class="line">    <span class="keywordflow">case</span> 10 ... 99: <span class="keywordflow">break</span>;                     <span class="keywordflow">case</span> <span class="charliteral">&#39;a&#39;</span> ... <span class="charliteral">&#39;z&#39;</span>: <span class="keywordflow">break</span>;      </div>
-<div class="line">};                                         };</div>
-</div><!-- fragment --></li>
-</ul>
-<p>On top of that the internet is full of questions:</p><ul>
-<li><a href="https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings">Why strings cannot be used in <b>switch statement</b>?</a></li>
-<li><a href="https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement">How to compose complex condition in <b>switch statement</b>?</a></li>
-<li>etc.</li>
-</ul>
-<p>The evidence above tell us that people don't like limitations of <b>switch statement</b>, and they were trying to overcome them with different approaches( by implementing <b>non-standard extension</b>, writing <b>proposals</b> or just <b>searching for the solution/workaround in the internet</b> ).</p>
-<p>For modern language like <b>swift</b> it is not an issue, because they have pretty advanced <b>switch statement</b>.</p>
-<p>Based on those factors I decided to write my own implementation of <b>enhanced switch</b>( or just <b>eswitch</b> ). In my implementation I tried to aim all the <b>limitations</b> and leave the syntax of <b>eswitch</b> as close as possible to <em>native C++</em> <b>switch statement</b>. And last but not least, another my priority was the performance of <b>eswitch</b>, which shouldn't differ by much from <b>native switch</b>.</p>
-<h2><a class="anchor" id="autotoc_md7"></a>
-Conventions used in this document</h2>
-<hr  />
-<p>In all code examples, I omit the namespace prefixes for names in the <b><a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a></b> and <b>std</b> namespaces.</p>
-<h2><a class="anchor" id="autotoc_md9"></a>
-Similarities</h2>
-<hr  />
-<p>As I have mentioned that I've tried within my implementation to resemble <em>C++</em> <b>switch statement</b> syntax. And I think I was able to achieve this, except the places where I was either limited by language or intentionally tried to avoid certain behavior of <b>switch statement</b> in <em>C++</em> like default <b>fallthrough</b>. Compare: <br  />
-</p>
-<div class="fragment"><div class="line"><span class="keywordflow">switch</span>( num )</div>
-<div class="line">{</div>
-<div class="line">    <span class="keywordflow">case</span> 1:  {...} <span class="keywordflow">break</span>;</div>
-<div class="line">    <span class="keywordflow">case</span> 2:  {...} <span class="keywordflow">break</span>;</div>
-<div class="line">    <span class="keywordflow">default</span>: {...} <span class="keywordflow">break</span>;</div>
-<div class="line">};</div>
-</div><!-- fragment --><p>with</p>
-<div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( num )</div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1 ) {...},</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 2 ) {...},</div>
-<div class="line">    <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a>   {...}</div>
-<div class="line">);</div>
-</div><!-- fragment --><dl class="section note"><dt>Note</dt><dd><em>Native</em> <b>switch statement</b> in <em>C++</em> has <em>explicit</em> <b>break</b> and <em>implicit</em> <b>fallthrough</b> which was proven to be an error-prone approach. Since developers sometimes forget to use <b>break</b> and because of this their code doesn't work the way it was intended.</dd></dl>
-<p>Thus in my implementation I reversed this concept i.e. <b>eswitch</b> has <em>implicit</em> <b>break</b> and <em>explicit</em> <b>fallthrough</b>. Compare:</p>
-<div class="fragment"><div class="line"><span class="keywordflow">switch</span>( num )                    </div>
-<div class="line">{                                </div>
-<div class="line">    <span class="keywordflow">case</span> 1:  {...}           </div>
-<div class="line">    <span class="keywordflow">case</span> 2:  {...} <span class="keywordflow">break</span>;        </div>
-<div class="line">    <span class="keywordflow">default</span>: {...} <span class="keywordflow">break</span>;        </div>
-<div class="line">};                               </div>
-</div><!-- fragment --><p>with</p>
-<div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( num )</div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1 ){...} ^ <a class="code" href="group__other-variables.html#ga23e83b648756cadca9232aaf9d7d3d03">fallthrough_</a>,</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 2 ){...},</div>
-<div class="line">    <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a>  {...}</div>
-<div class="line">);</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md11"></a>
+<h2><a class="anchor" id="autotoc_md11"></a>
 Keywords</h2>
 <hr  />
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadCenter">Name </th><th class="markdownTableHeadCenter">Description  </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyCenter"><em><b>eswitch</b></em> </td><td class="markdownTableBodyCenter"><em>accepts list of arguments</em>  </td></tr>
+<td class="markdownTableBodyCenter"><code>eswitch</code> </td><td class="markdownTableBodyCenter">accepts list of arguments  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyCenter"><em><b>Case</b></em> </td><td class="markdownTableBodyCenter"><em>accepts <b>condition</b> to check and body next to it will be executed if <b>condition</b> matched</em>  </td></tr>
+<td class="markdownTableBodyCenter"><code>Case</code> </td><td class="markdownTableBodyCenter">accepts condition to check and body next to it will be executed if condition matched  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyCenter"><em><b>Default</b></em> </td><td class="markdownTableBodyCenter"><em>body next to it will be executed if nothing else matched</em>  </td></tr>
+<td class="markdownTableBodyCenter"><code>Default</code> </td><td class="markdownTableBodyCenter">body next to it will be executed if nothing else matched  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyCenter"><em><b>fallthrough_</b></em> </td><td class="markdownTableBodyCenter"><em>next body will be executed without checking its <b>condition</b></em>  </td></tr>
+<td class="markdownTableBodyCenter"><code>fallthrough_</code> </td><td class="markdownTableBodyCenter">next body will be executed without checking its condition  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyCenter"><em><b>any_from</b></em> </td><td class="markdownTableBodyCenter"><em>accepts values to choose from</em>  </td></tr>
+<td class="markdownTableBodyCenter"><code>any_from</code> </td><td class="markdownTableBodyCenter">accepts values to choose from  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyCenter"><em><b>is&lt;sometype&gt;</b></em> </td><td class="markdownTableBodyCenter"><em>used within <b>Case</b> for matching types like <b>std::any</b>, <b>std::variant&lt;...&gt;</b> and <b>polymorphic type match</b></em>  </td></tr>
+<td class="markdownTableBodyCenter"><code>is&lt;sometype&gt;</code> </td><td class="markdownTableBodyCenter">used within <code>Case</code> for matching types like <code><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/any.html">std::any</a></code>, <code><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/variant.html">std::variant</a></code> and <code>polymorphic types match</code>  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyCenter"><em><b>_r</b></em> </td><td class="markdownTableBodyCenter"><em>user defined literal for <b><a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></b></em>  </td></tr>
+<td class="markdownTableBodyCenter"><code>_r</code> </td><td class="markdownTableBodyCenter">user defined literal for <code><a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></code>  </td></tr>
 </table>
 <h2><a class="anchor" id="syntax"></a>
 Syntax</h2>
@@ -269,12 +569,12 @@ Syntax</h2>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( __conditions__ )( __param__ ) { __body__ } ^ __options__,</div>
 <div class="line">    <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { __body__ }</div>
 <div class="line">);</div>
-</div><!-- fragment --><p><b>2. Omitted parameter</b>: same as lambda without <b>parameter</b>. </p><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( __arguments__ )</div>
+</div><!-- fragment --><p><b>2. Omitted parameter</b>: same as lambda without parameter </p><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( __arguments__ )</div>
 <div class="line">( </div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( __conditions__ ) { __body__ } ^ __options__,</div>
 <div class="line">    <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { __body__ }</div>
 <div class="line">);</div>
-</div><!-- fragment --><p><b>3. Omitted setting options</b>: default option( <b>break</b> ) will be used. </p><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( __arguments__ )</div>
+</div><!-- fragment --><p><b>3. Omitted setting options</b>: default option( <span class="keywordflow"><code>break</code></span> ) will be used </p><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( __arguments__ )</div>
 <div class="line">( </div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( __conditions__ ) { __body__ },</div>
 <div class="line">    <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> { __body__ }</div>
@@ -288,197 +588,77 @@ Syntax</h2>
 <tr>
 <th>Name</th><th>Details </th></tr>
 <tr>
-<td><span style="color:blue">__arguments__</span> </td><td><div align="left"> The list of arguments( i.e. <b>arg_1</b>, <b>arg_2</b>, ..., <b>arg_n</b> ) </div> </td></tr>
+<td><span style="color:blue">__arguments__</span> </td><td><div align="left"> The list of arguments( i.e. <code>arg_1, arg_2, ..., arg_n</code> ) </div> </td></tr>
 <tr>
-<td rowspan="2"><span style="color:blue">__conditions__</span> </td><td><div align="left"> Case( <b>_1</b> == smth1 || <b>_2</b> == smth2 || ... )<br  />
- Case( smth1 || smth2 || ... )<br  />
- Case( <b>_1</b> == <b>any_from</b>( smth1, smth1, ... ) )<br  />
- Case( <b>any_from</b>( smth1, smth1, ... ) )<br  />
- Case( ( pred1, <b>_1</b> ) &amp;&amp; ( pred2, <b>_2</b> ) &amp;&amp; ... ) </div> </td><td><ol>
-<li>
-</li>
-<li>
-</li>
-<li>
-</li>
-<li>
-</li>
-<li>
-</li>
-</ol>
+<td rowspan="2"><span style="color:blue">__conditions__</span> </td><td><div align="left"> It is a <em>lazy expression</em>, where indexes <code>_1, _2, ...</code> represent one-to-one<br  />
+ correspondance with arguments in <code>eswitch</code>. Consider following code: </div> <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>(arg_1, arg_2, ..., arg_n)</div>
+<div class="line">(</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == smth_1 || <a class="code" href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> == smth_2 || ... ) {...}</div>
+<div class="line">);</div>
+<div class="line"><span class="comment">// _1 refer to arg_1</span></div>
+<div class="line"><span class="comment">// _2 refer to arg_2</span></div>
+<div class="line"><span class="comment">// ...</span></div>
+</div><!-- fragment --><p class="intertd"><b>Possible usages:</b> </p><div class="fragment"><div class="line"><a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == smth1 &amp;&amp; <a class="code" href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> == smth2 &amp;&amp; ... )                    (1)</div>
+<div class="line">________________________________________________________________</div>
+<div class="line"> </div>
+<div class="line"><a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( smth1, smth2, ... )                                    (2)</div>
+<div class="line">________________________________________________________________</div>
+<div class="line"> </div>
+<div class="line"><a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == <a class="code" href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">any_from</a>( smth1, smth2, ... ) )                  (3)</div>
+<div class="line">________________________________________________________________</div>
+<div class="line"> </div>
+<div class="line"><a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">any_from</a>( smth1, smth2, ... ) )                        (4)</div>
+<div class="line">________________________________________________________________</div>
+<div class="line"> </div>
+<div class="line"><a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( ( pred1, <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> ) &amp;&amp; ( pred2, <a class="code" href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> ) &amp;&amp; ... )                (5)</div>
+<div class="line">________________________________________________________________</div>
+</div><!-- fragment --><p class="endtd"></p>
 </td></tr>
 <tr>
 <td><div align="left"> <ol>
 <li>
-Match <b>in order</b><br  />
+Match in order<br  />
  </li>
 <li>
-Same as <b>1st</b> one, but less verbose<br  />
+Same as the 1st one, but less verbose<br  />
  </li>
 <li>
-Match via <b>any_from</b><br  />
+Match via <code>any_from</code><br  />
  </li>
 <li>
-Same as <b>3rd</b> one, but less verbose<br  />
+Same as the 3rd one, but less verbose<br  />
  </li>
 <li>
-Match via <b>predicate</b> </li>
+Match via predicate </li>
 </ol>
 </div> </td></tr>
 <tr>
 <td><div align="center"> <span style="color:blue">__body__</span> </div> </td><td><div align="left"> Function body </div> </td></tr>
 <tr>
-<td><div align="center"> <em><b>Optional:</b></em><br  />
- <span style="color:blue">__param__</span> </div> </td><td><div align="left">Correspond to withdrawn value from: <b>std::any</b>, <b>std::variant&lt;...&gt;</b>,<br  />
- <b>polymorphic match</b> or <b><a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a> match</b>. But also it correspond to<br  />
- <b>returned value</b> wrapped into <code>std::optional&lt;...&gt;</code> from custom extensions.<br  />
- <dl class="section note"><dt>Note</dt><dd>Keyword <a href="https://en.cppreference.com/w/cpp/language/auto"><em>auto</em></a> here is forbidden,<br  />
- i.e. type of <b>__param__</b> should be specified explicitly.  </dd></dl>
+<td><div align="center"> Optional:<br  />
+ <span style="color:blue">__param__</span> </div> </td><td><div align="left">Correspond to withdrawn value from: <code><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/any.html">std::any</a></code>, <code><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/variant.html">std::variant</a></code>,<br  />
+ <code>polymorphic match</code> or <code><a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></code> match. But also it correspond to<br  />
+ returned value wrapped into <code><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/optional.html">std::optional</a></code> from custom extensions.<br  />
+ <dl class="section note"><dt>Note</dt><dd>Keyword <span class="keyword"><code>auto</code></span> here is forbidden,<br  />
+ i.e. type of <span style="color:blue">__param__</span> should be specified explicitly.  </dd></dl>
 </div></td></tr>
 <tr>
-<td><div align="left"> <div align="center"> <em><b>Optional:</b></em><br  />
- <span style="color:blue">__options__</span> </div> </div></td><td><div align="left"> <div align="left"> [<b>left empty</b> =&gt; <em>break</em>] or<br  />
- [<b>fallthrough_</b> =&gt; <em>execute body of the following case</em>] or<br  />
- [<b>likely_</b> which will be introduced in future] </div> </div></td></tr>
+<td><div align="left"> <div align="center"> Optional:<br  />
+ <span style="color:blue">__options__</span> </div> </div></td><td><div align="left"> <table class="doxtable">
+<tr>
+<td>-</td><td>following <code>Case</code>'s won't be executed </td></tr>
+<tr>
+<td>fallthrough_</td><td>execute body of the following <code>Case</code> </td></tr>
+<tr>
+<td>likely_</td><td>messing with branch predictions<br  />
+ ( will be introduced in future ) </td></tr>
 </table>
-<div align="left"></div><h2><a class="anchor" id="autotoc_md14"></a>
-Features</h2>
-<div align="left"> <hr  />
-</div><div align="left"><ul>
-<li><b>implicit break</b> - it is default behavior, which doesn't require explicit declaration.</li>
-<li><b>explicit fallthrough</b> - required explicit declaration.</li>
-<li><b>composing condition</b> with: '<code>&amp;&amp;</code>', '<code>||</code>', '<code>==</code>', '<code>!=</code>', '<code>&gt;</code>', '<code>&lt;</code>', '<code>&lt;=</code>', '<code>&gt;=</code>'</li>
-<li><b>argument matching with and without explicit indexing</b></li>
-<li><b>easy check in range</b></li>
-<li><b>match for</b>: <em>std::any, std::variant, <a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></em></li>
-<li><b>match and withdraw value from</b>: <em>std::any, std::variant, <a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></em></li>
-<li><b>match for individual entries of</b>: <em><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/pair.html">std::pair</a>, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/tuple.html">std::tuple</a></em></li>
-<li><b>return value from Case</b></li>
-</ul>
-</div><div align="left"></div><h3><a class="anchor" id="autotoc_md16"></a>
-Params referencing via indexes</h3>
-<div align="left"> <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1, p2 )</div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == <span class="keyword">true</span> &amp;&amp; <a class="code" href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> == <span class="keyword">true</span> ) {...},</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> != <span class="keyword">true</span> || <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == <span class="keyword">true</span> ) {...}</div>
-<div class="line">);   </div>
-<div class="line"><span class="comment">// i.e.</span></div>
-<div class="line">     <span class="keywordflow">if</span>( p1 == <span class="keyword">true</span> &amp;&amp; p2 == <span class="keyword">true</span> ) {...}</div>
-<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span>( p1 == <span class="keyword">true</span> || p2 == <span class="keyword">true</span> ) {...}</div>
-</div><!-- fragment --></div><div align="left"></div><h3><a class="anchor" id="autotoc_md17"></a>
-If indexes aren't provided, then it is assumed that they're sequential</h3>
-<div align="left"> <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1, p2 )</div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <span class="keyword">true</span>, <span class="keyword">false</span> ) {...}, <span class="comment">// same as &quot;Case( _1 == true &amp;&amp; _2 == false )&quot; </span></div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <span class="keyword">false</span> ){...}</div>
-<div class="line">);</div>
-</div><!-- fragment --></div><div align="left"></div><h3><a class="anchor" id="autotoc_md18"></a>
-Matching via predicates:(it could be either a lambda or a free function)</h3>
-<div align="left"> <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1, p2 )</div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( ( is_odd, <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> ) &amp;&amp; ( is_odd, <a class="code" href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> ) ) {...},</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( ( is_negative( <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a>, <a class="code" href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">_2</a> ) ){...}</div>
-<div class="line">);</div>
-<div class="line">    </div>
-<div class="line"><span class="comment">// i.e.</span></div>
-<div class="line">     <span class="keywordflow">if</span>( is_odd( p1 ) &amp;&amp; is_odd( p2) ) {...}</div>
-<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span>( is_negative( p1, p2 ) ) {...}</div>
-</div><!-- fragment --></div><div align="left"></div><h3><a class="anchor" id="autotoc_md19"></a>
-Check in range</h3>
-<div align="left"> <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1 )</div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a>.in( 1, 10 ) ) {...},</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a>.within( 11, 20 ) ) {...}</div>
-<div class="line">);</div>
-<div class="line"><span class="comment">// OR</span></div>
-<div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1 )</div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> &gt; 1 &amp;&amp; <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> &lt; 10 ) {...},</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> &gt;= 11 &amp;&amp; <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> &lt;= 20 ) ) {...}</div>
-<div class="line">);</div>
-<div class="line"> </div>
-<div class="line"><span class="comment">// i.e.</span></div>
-<div class="line">     <span class="keywordflow">if</span>( p1 &gt;  1  &amp;&amp; p1 &lt; 10 )  {...}</div>
-<div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span>( p1 &gt;= 11 &amp;&amp; p1 &lt;= 20 ) {...}</div>
-</div><!-- fragment --></div><div align="left"></div><h3><a class="anchor" id="autotoc_md20"></a>
-any_from helper function</h3>
-<div align="left"> <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( file_extension )</div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">any_from</a>( <span class="stringliteral">&quot;cpp&quot;</span>, <span class="stringliteral">&quot;cc&quot;</span>, <span class="stringliteral">&quot;c++&quot;</span>, <span class="stringliteral">&quot;cxx&quot;</span>, <span class="stringliteral">&quot;C&quot;</span> ) ) {...},</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">any_from</a>( <span class="stringliteral">&quot;h&quot;</span>, <span class="stringliteral">&quot;hpp&quot;</span>, <span class="stringliteral">&quot;hh&quot;</span>, <span class="stringliteral">&quot;h++&quot;</span>, <span class="stringliteral">&quot;hxx&quot;</span>, <span class="stringliteral">&quot;H&quot;</span> ) ) {...},</div>
-<div class="line">    <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> {...}</div>
-<div class="line">);</div>
-</div><!-- fragment --></div><div align="left"></div><h3><a class="anchor" id="autotoc_md21"></a>
-Default case</h3>
-<div align="left"> <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1 )</div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <span class="keyword">false</span> ) {...},</div>
-<div class="line">    <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> {...}</div>
-<div class="line">);</div>
-</div><!-- fragment --></div><div align="left"></div><h3><a class="anchor" id="autotoc_md22"></a>
-Return value from Case</h3>
-<div align="left"> <div class="fragment"><div class="line"><span class="keywordtype">bool</span> val = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1 ) </div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1 ) { <span class="keywordflow">return</span> <span class="keyword">true</span>; }</div>
-<div class="line">);</div>
-</div><!-- fragment --></div><div align="left"></div><h3><a class="anchor" id="autotoc_md23"></a>
-Match for std::any or std::variant</h3>
-<div align="left"> <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( any_or_variant ) </div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; int &gt;{} ) {...}, <span class="comment">// will be executed in &#39;std::any&#39; contain &#39;int&#39;</span></div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; string &gt;{} ) {...} <span class="comment">// will be executed in &#39;std::any&#39; contain &#39;std::string&#39;</span></div>
-<div class="line">);</div>
-</div><!-- fragment --></div><div align="left"></div><h3><a class="anchor" id="autotoc_md24"></a>
-Match and withdraw value from std::any or std::variant</h3>
-<div align="left"> <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( any_or_variant ) </div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; int &gt;{} )( <span class="keyword">const</span> <span class="keywordtype">int</span> value ) {...}, <span class="comment">// Note That: keyword &#39;auto&#39; isn&#39;t allowed( i.e. code won&#39;t compile )</span></div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; string &gt;{} )( <span class="keyword">const</span> <span class="keywordtype">string</span> &amp; value ) {...}</div>
-<div class="line">);</div>
-</div><!-- fragment --></div><div align="left"></div><h3><a class="anchor" id="autotoc_md25"></a>
-Match for polymorphic types</h3>
-<div align="left"> <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( base_ptr ) </div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; circle &gt;{} )( circle * c ) { c-&gt;draw(); },</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; square &gt;{} )( square * s ) { s-&gt;draw(); }</div>
-<div class="line">);</div>
-<div class="line"><span class="comment">// OR</span></div>
-<div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( base_ref ) </div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; circle &gt;{} )( circle &amp; c ) { c.draw(); },</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( is&lt; square &gt;{} )( square &amp; s ) { s.draw(); }</div>
-<div class="line">);</div>
-</div><!-- fragment --></div><div align="left"></div><h3><a class="anchor" id="autotoc_md26"></a>
-Match for std::regex</h3>
-<div align="left"> <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( text ) </div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;(\w*)&quot;_r ) { </span><span class="keywordflow">return</span> <span class="stringliteral">&quot;message&quot;</span>; },</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;(\d*)&quot;_r ) { </span><span class="keywordflow">return</span> <span class="stringliteral">&quot;number&quot;</span>; }</div>
-<div class="line">);</div>
-</div><!-- fragment --></div><div align="left"></div><h3><a class="anchor" id="autotoc_md27"></a>
-Match and withdraw values from std::regex</h3>
-<div align="left"> <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( text ) </div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;((\w*))&quot;_r )( vector&lt; string &gt; &amp;&amp; match ){ </span><span class="keywordflow">return</span> match[1]; } </div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;((\d*))&quot;_r )( vector&lt; string &gt; &amp;&amp; match ){ </span><span class="keywordflow">return</span> match[1]; } </div>
-<div class="line">);</div>
-</div><!-- fragment --></div><div align="left"></div><h3><a class="anchor" id="autotoc_md28"></a>
-Match for entries in std::pair</h3>
-<div align="left"> <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/pair/make_pair.html">std::make_pair</a>( 10, <span class="keywordtype">string</span>{<span class="stringliteral">&quot;Text&quot;</span>} ) ) </div>
-<div class="line">(    </div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 10, <span class="stringliteral">&quot;Text&quot;</span> ){ ... }</div>
-<div class="line">);</div>
-</div><!-- fragment --></div><div align="left"></div><h3><a class="anchor" id="autotoc_md29"></a>
-Match for entries in std::tuple</h3>
-<div align="left"> <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>( 1, 0, 0, 1 ) ) </div>
-<div class="line">(    </div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1, 0, 0, 1 ) { <span class="keywordflow">return</span> 9; },</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1, 1, 1, 1 ) { <span class="keywordflow">return</span> 15; }</div>
-<div class="line">);</div>
-</div><!-- fragment --></div><div align="left"></div><h1><a class="anchor" id="autotoc_md30"></a>
+</div></td></tr>
+</table>
+<div align="left"></div><h1><a class="anchor" id="autotoc_md14"></a>
 How to write Custom extensions?</h1>
 <div align="left"> <hr  />
-</div><div align="left">This guide is about how to <u>use</u> <em>custom types</em> in <b>Case</b> or <u>define</u> <em>custom behavior</em> for some types. We will implement <b>custom extension</b> and I walk you through all the steps and details.</div><div align="left"><b>Thing to know:</b></div><div align="left">The only things which we can be customized are all the <b>comparison</b> <code>operators</code> such as '==', '!=', '&gt;', '&lt;' and so on.</div><div align="left"><b>Let's begin:</b></div><div align="left">As you may already know that comparing <b>floating points</b> is a tricky thing. <b>For example</b> following code fails( because of the <em>precision</em> ). <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 2 - 0.7000000001 )</div>
+</div><div align="left">This guide is about how to use <em>custom types</em> or define <em>custom behavior</em> in <code>Case</code> for certain types. We will implement custom extension and I walk you through all the steps and details.</div><div align="left"><b>Thing to know:</b></div><div align="left">The only things which we can be customized are all the comparison <code>operators</code> such as <code>==</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;</code> and so on.</div><div align="left"><b>Let's begin:</b></div><div align="left">As you may already know that comparing floating points is a tricky thing, e.g. following code fails due to inaccurate precision: <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 2 - 0.7000000001 )</div>
 <div class="line">(</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1.3 )</div>
 <div class="line">    {</div>
@@ -489,20 +669,20 @@ How to write Custom extensions?</h1>
 <div class="line">        assert( <span class="keyword">false</span> ); </div>
 <div class="line">    }</div>
 <div class="line">);</div>
-</div><!-- fragment --></div><div align="left">So standard way of comparing <b>floating points</b> doesn't work properly. On top of that, simple overloading <code>operator==</code> for primitives is <a href="https://eel.is/c++draft/over.oper#general-7">forbidden</a>.</div><div align="left"><div class="fragment"><div class="line"><span class="keywordtype">bool</span> <a class="code" href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">operator==</a>( <span class="keyword">const</span> <span class="keywordtype">double</span> d1, <span class="keyword">const</span> <span class="keywordtype">double</span> d1 )</div>
+</div><!-- fragment --></div><div align="left">So standard way of comparing floating points doesn't work properly. On top of that, simple overloading of <code>operator==</code> for primitives is <a href="https://eel.is/c++draft/over.oper#general-7">forbidden</a>.</div><div align="left"><div class="fragment"><div class="line"><span class="keywordtype">bool</span> <a class="code" href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">operator==</a>( <span class="keyword">const</span> <span class="keywordtype">double</span> d1, <span class="keyword">const</span> <span class="keywordtype">double</span> d1 )</div>
 <div class="line">{</div>
 <div class="line">    ...</div>
 <div class="line">}</div>
 <div class="line"><span class="comment">/// Compilation ERROR: overloaded &#39;operator==&#39; must have at least one parameter of class or enumeration type</span></div>
-</div><!-- fragment --></div><div align="left">To overcome this we need to use an <b>intermediate class</b> which will hold our value. Like that: <div class="fragment"><div class="line"><span class="keyword">struct </span>double_value</div>
+</div><!-- fragment --></div><div align="left">To overcome this we need to use an intermediate class which will hold our value. Like that: <div class="fragment"><div class="line"><span class="keyword">struct </span>double_value</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordtype">double</span> value;</div>
 <div class="line">};</div>
-</div><!-- fragment --></div><div align="left">Then we can use <b>double_value</b> in our <code>operator==</code> : <div class="fragment"><div class="line"><span class="keywordtype">bool</span> <a class="code" href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">operator==</a>( <span class="keyword">const</span> <span class="keywordtype">double</span> d1, <span class="keyword">const</span> double_value d2 )</div>
+</div><!-- fragment --></div><div align="left">Then we can use <code>double_value</code> in our overloaded <code>operator==</code> : <div class="fragment"><div class="line"><span class="keywordtype">bool</span> <a class="code" href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">operator==</a>( <span class="keyword">const</span> <span class="keywordtype">double</span> d1, <span class="keyword">const</span> double_value d2 )</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/numeric/math/fabs.html">fabs</a>( d1 - d2.value ) &lt; __FLT_EPSILON__;</div>
 <div class="line">}</div>
-</div><!-- fragment --></div><div align="left">And now code below will work as we desired( since using <b>double_value</b> allows for compiler through <b>name lookup</b> to find our custom <code>operator==</code> ). <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 2 - 0.7000000001 )</div>
+</div><!-- fragment --></div><div align="left">And now code below will work as we desired( since using <code>double_value</code> allows for compiler through <a href="https://en.cppreference.com/w/cpp/language/lookup">name lookup</a> to find our custom <code>operator==</code> ). <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 2 - 0.7000000001 )</div>
 <div class="line">(</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( double_value{ 1.3 } ) </div>
 <div class="line">    {</div>
@@ -514,21 +694,23 @@ How to write Custom extensions?</h1>
 <div class="line">    }</div>
 <div class="line">);</div>
 </div><!-- fragment --></div><div align="left"><b>Full example</b>: <a class="el" href="md_examples.html#example-floating-point-comparison">Floating point comparison</a></div><div align="left"><dl class="section note"><dt>Note</dt><dd><ul>
-<li>An <b>intermediate class</b> should be used all the time( not only for primitives due to compiler restrictions ), otherwise it won't be possible for compiler to find custom <code>operator</code>( unless this <code>operator</code> will be defined before <code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html" title="implementation which enhance switch statement">eswitch_v5.hpp</a>&gt;</code>, only then <b>intermediate class</b> won't be needed ).</li>
-<li>Also example below demonstrate if certain value should be returned from custom <code>operator</code> and transferred to <b>Case</b> as <a href="#syntax">input parameter</a>, then the value should be wrapped into <code>std::optional</code>.</li>
+<li>An intermediate class should be used all the time( not only for primitives due to compiler restrictions ), otherwise it won't be possible for compiler to find custom <code>operator</code>( unless this <code>operator</code> will be defined before <code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html" title="implementation which enhance switch statement">eswitch_v5.hpp</a>&gt;</code>, only then intermediate class won't be needed ).</li>
+<li>Also example below demonstrate if certain value should be returned from custom <code>operator</code> and transferred to <code>Case</code> as <a href="#syntax">input parameter</a>, then the value should be wrapped into <code><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/optional.html">std::optional</a></code>.</li>
 </ul>
 </dd></dl>
-<b>For example:</b> <a class="el" href="md_examples.html#example-value-and-type-transferring">Value and Type transferring</a></div><div align="left"></div><h1><a class="anchor" id="autotoc_md32"></a>
+<b>Example:</b> <a class="el" href="md_examples.html#example-value-and-type-transferring">Value and Type transferring</a></div><div align="left"></div><h1><a class="anchor" id="autotoc_md16"></a>
 Rationalities</h1>
 <div align="left"> <hr  />
 </div><div align="left"><ul>
-<li>Using macroses for <b>Case</b> and <b>Default</b> allowed me to be as close as possible to <b>C++ switch statement</b> regarding syntax, otherwise there was no way to hide <b>lambda</b> declaration.</li>
-<li>Setting properties via <code>operator^</code> - It is the only <code>operator</code> which is used to set certain properties for <b>values/matrices</b>( in <b>matlab</b> ), which I find reasonable. Thus I used this notation in my library, like this: <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( some_var )</div>
+<li>Using macroses for <code>Case</code> and <code>Default</code> allowed me to be as close as possible to <span class="keywordflow"><code>switch</code></span> statement regarding syntax, otherwise there was no way to hide verbose lambda declaration.</li>
+<li>Setting properties via <code>operator^</code> - It is the only <code>operator</code> which is used to set certain properties for values/matrices( in matlab ), and which I find reasonable. Thus I used this notation in my library, like this: <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( some_var )</div>
 <div class="line">(</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( some_value_1 ) {} ^ likely_,</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( some_value_2 ) {} ^ <a class="code" href="group__other-variables.html#ga23e83b648756cadca9232aaf9d7d3d03">fallthrough_</a></div>
 <div class="line">);</div>
-</div><!-- fragment --> </li>
+</div><!-- fragment --></li>
+<li>I can use hash in order to use string within <span class="keywordflow"><code>switch</code></span> statement:</li>
+<li>Why do we need another statement? That's is reasonable questions to ask. </li>
 </ul>
 </div></div></div><!-- PageDoc -->
 </div><!-- contents -->
@@ -537,22 +719,19 @@ Rationalities</h1>
 <div class="ttc" id="agroup__index-variables_html_ga0467e341724f219d72f18c1c0885442a"><div class="ttname"><a href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">eswitch_v5::_1</a></div><div class="ttdeci">constexpr Index_&lt; 0 &gt; _1</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00174">eswitch_v5.hpp:174</a></div></div>
 <div class="ttc" id="afabs_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/numeric/math/fabs.html">std::fabs</a></div><div class="ttdeci">T fabs(T... args)</div></div>
 <div class="ttc" id="agroup__other-variables_html_ga23e83b648756cadca9232aaf9d7d3d03"><div class="ttname"><a href="group__other-variables.html#ga23e83b648756cadca9232aaf9d7d3d03">eswitch_v5::fallthrough_</a></div><div class="ttdeci">static constexpr Fallthrough fallthrough_</div><div class="ttdoc">Indicates fall through from previous Case without testing condition of following Case.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01016">eswitch_v5.hpp:1016</a></div></div>
+<div class="ttc" id="aregex_match_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/regex/regex_match.html">std::regex_match</a></div><div class="ttdeci">T regex_match(T... args)</div></div>
+<div class="ttc" id="aany_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/any.html">std::any</a></div></div>
 <div class="ttc" id="agroup__main-components_html_ga11dfab51a8955d42153603db05629b59"><div class="ttname"><a href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">eswitch_v5::any_from</a></div><div class="ttdeci">static constexpr auto any_from(Args &amp;&amp;... args)</div><div class="ttdoc">Helper function which allows to find if something is within the list( passed arguments ).</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00991">eswitch_v5.hpp:991</a></div></div>
-<div class="ttc" id="abasic_regex_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></div></div>
 <div class="ttc" id="agroup__macroses_html_gaff2b0c246e6111e260e650b0ff4a8eb5"><div class="ttname"><a href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a></div><div class="ttdeci">#define Default</div><div class="ttdoc">Declares body which will be executed in case of no other matches.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01029">eswitch_v5.hpp:1029</a></div></div>
 <div class="ttc" id="agroup__macroses_html_gae733eb4e00d6306a21422f02ef7e8ca4"><div class="ttname"><a href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a></div><div class="ttdeci">#define Case(...)</div><div class="ttdoc">Accepts conditions of various forms.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01026">eswitch_v5.hpp:1026</a></div></div>
 <div class="ttc" id="agroup__main-components_html_ga82f93fb22725d76bb016b488742331d1"><div class="ttname"><a href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch_v5::eswitch</a></div><div class="ttdeci">static constexpr auto eswitch(Ts &amp;&amp;... ts)</div><div class="ttdoc">This function is responsible for passing arguments for class eswitch_impl with overloaded operator(),...</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00838">eswitch_v5.hpp:838</a></div></div>
 <div class="ttc" id="amake_pair_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/pair/make_pair.html">std::make_pair</a></div><div class="ttdeci">T make_pair(T... args)</div></div>
-<div class="ttc" id="amatch_results_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/regex/match_results.html">std::smatch</a></div></div>
 <div class="ttc" id="agroup__modules_html_ga620be0eec7b29eb300458a049bde6abe"><div class="ttname"><a href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">eswitch_v5::operator==</a></div><div class="ttdeci">static auto operator==(const std::string &amp;tuple_entry, const regexter &amp;value)</div><div class="ttdoc">CaseModule to support for matching and withdrawing of values for and from regular expression.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00413">eswitch_v5.hpp:413</a></div></div>
 <div class="ttc" id="agroup__index-variables_html_gacc83659898439dd14b78fc60be68ce28"><div class="ttname"><a href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">eswitch_v5::_2</a></div><div class="ttdeci">constexpr Index_&lt; 1 &gt; _2</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00175">eswitch_v5.hpp:175</a></div></div>
+<div class="ttc" id="avariant_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/variant.html">std::variant</a></div></div>
+<!-- HTML footer for doxygen 1.8.17-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="footer">Generated by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
-  </ul>
 </div>
 </body>
 </html>

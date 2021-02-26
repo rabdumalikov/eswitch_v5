@@ -1,3 +1,4 @@
+<!-- HTML header for doxygen 1.8.17-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -22,6 +23,7 @@
 /* @license-end */
 </script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -30,7 +32,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">eswitch-v5
+   <div id="projectname"><strong>eswitch-v5</strong>
    </div>
    <div id="projectbrief">Advanced counterpart for switch statement in C++</div>
   </td>
@@ -129,7 +131,7 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This structure is used as a reference to a specific parameter inside <b>eswitch</b>.  <a href="structeswitch__v5_1_1Index__.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structeswitch__v5_1_1is.html">is</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to match for type of active entry in <b>std::any</b>, <b>std::variant&lt;...&gt;</b> and <b>polymorphic types</b>.  <a href="structeswitch__v5_1_1is.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to match for type of active entry in <b><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/any.html">std::any</a></b>, <b>std::variant&lt;...&gt;</b> and <b>polymorphic types</b>.  <a href="structeswitch__v5_1_1is.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeswitch__v5_1_1predicate__condition.html">predicate_condition</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -320,10 +322,10 @@ Variables</h2></td></tr>
 <tr class="memitem:ga97cd9ea2f8d399b75092fe3518e5a3b8"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga97cd9ea2f8d399b75092fe3518e5a3b8">has_value</a> = requires{ T::value; }</td></tr>
 <tr class="separator:ga97cd9ea2f8d399b75092fe3518e5a3b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga20fabd0691af6078dca8748791786828"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ga20fabd0691af6078dca8748791786828"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga20fabd0691af6078dca8748791786828">Index</a> = requires( T ){ std::decay_t&lt; T &gt;::eswitch_index; }</td></tr>
+<tr class="memitem:ga20fabd0691af6078dca8748791786828"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga20fabd0691af6078dca8748791786828">Index</a> = requires( T ){ <a class="elRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t</a>&lt; T &gt;::eswitch_index; }</td></tr>
 <tr class="separator:ga20fabd0691af6078dca8748791786828"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga12592032b6c450dafe7d579482bbf438"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ga12592032b6c450dafe7d579482bbf438"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga12592032b6c450dafe7d579482bbf438">IsCndPredicate</a> = <a class="el" href="group__utilities.html#ga7cde63bb56ed1fd1c60b8ba540b60261">details::is_predicate_v</a>&lt; std::decay_t&lt; T &gt; &gt;</td></tr>
+<tr class="memitem:ga12592032b6c450dafe7d579482bbf438"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga12592032b6c450dafe7d579482bbf438">IsCndPredicate</a> = <a class="el" href="group__utilities.html#ga7cde63bb56ed1fd1c60b8ba540b60261">details::is_predicate_v</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t</a>&lt; T &gt; &gt;</td></tr>
 <tr class="separator:ga12592032b6c450dafe7d579482bbf438"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga942e389b540a1c2cb0e11c2b264561d3"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga942e389b540a1c2cb0e11c2b264561d3"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga942e389b540a1c2cb0e11c2b264561d3">IsNotCndPredicate</a> = !<a class="el" href="group__concepts.html#ga12592032b6c450dafe7d579482bbf438">IsCndPredicate</a>&lt; T &gt;</td></tr>
@@ -343,14 +345,9 @@ Variables</h2></td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->
+<!-- HTML footer for doxygen 1.8.17-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a></li>
-    <li class="footer">Generated by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
-  </ul>
 </div>
 </body>
 </html>

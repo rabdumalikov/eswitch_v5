@@ -1,3 +1,4 @@
+<!-- HTML header for doxygen 1.8.17-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -22,6 +23,7 @@
 /* @license-end */
 </script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -30,7 +32,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">eswitch-v5
+   <div id="projectname"><strong>eswitch-v5</strong>
    </div>
    <div id="projectbrief">Advanced counterpart for switch statement in C++</div>
   </td>
@@ -156,7 +158,7 @@ Functions</h2></td></tr>
 <tr class="memitem:ga81c33f35da5aaf24a656eec3a2397bd4"><td class="memTemplItemLeft" align="right" valign="top">static constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__utilities.html#ga81c33f35da5aaf24a656eec3a2397bd4">eswitch_v5::details::create_indexed_condition</a> (Tup &amp;&amp;values)</td></tr>
 <tr class="separator:ga81c33f35da5aaf24a656eec3a2397bd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadd17437f989797eb234ea8219cd1db58"><td class="memTemplParams" colspan="2">template&lt;typename ... Ts&gt; </td></tr>
-<tr class="memitem:gadd17437f989797eb234ea8219cd1db58"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="elRef" href="http://en.cppreference.com/w/cpp/types/integral_constant.html">std::true_type</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__utilities.html#gadd17437f989797eb234ea8219cd1db58">eswitch_v5::details::is_std_variant</a> (std::variant&lt; Ts... &gt; &amp;&amp;)</td></tr>
+<tr class="memitem:gadd17437f989797eb234ea8219cd1db58"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="elRef" href="http://en.cppreference.com/w/cpp/types/integral_constant.html">std::true_type</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__utilities.html#gadd17437f989797eb234ea8219cd1db58">eswitch_v5::details::is_std_variant</a> (<a class="elRef" href="http://en.cppreference.com/w/cpp/utility/variant.html">std::variant</a>&lt; Ts... &gt; &amp;&amp;)</td></tr>
 <tr class="separator:gadd17437f989797eb234ea8219cd1db58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8d92160197cac2b12155f0197060be4a"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga8d92160197cac2b12155f0197060be4a"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="elRef" href="http://en.cppreference.com/w/cpp/types/integral_constant.html">std::false_type</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__utilities.html#ga8d92160197cac2b12155f0197060be4a">eswitch_v5::details::is_std_variant</a> (T &amp;&amp;)</td></tr>
@@ -185,16 +187,16 @@ Variables</h2></td></tr>
 <tr class="memitem:ga7cde63bb56ed1fd1c60b8ba540b60261"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__utilities.html#ga7cde63bb56ed1fd1c60b8ba540b60261">eswitch_v5::details::is_predicate_v</a> = <a class="el" href="structeswitch__v5_1_1details_1_1is__predicate.html">is_predicate</a>&lt; T &gt;::value</td></tr>
 <tr class="separator:ga7cde63bb56ed1fd1c60b8ba540b60261"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4c22ce49610f19becce833380da7c81e"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ga4c22ce49610f19becce833380da7c81e"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__utilities.html#ga4c22ce49610f19becce833380da7c81e">eswitch_v5::details::is_std_any_v</a> = std::is_same_v&lt; std::decay_t&lt; T &gt;, std::any &gt;</td></tr>
+<tr class="memitem:ga4c22ce49610f19becce833380da7c81e"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__utilities.html#ga4c22ce49610f19becce833380da7c81e">eswitch_v5::details::is_std_any_v</a> = <a class="elRef" href="http://en.cppreference.com/w/cpp/types/is_same.html">std::is_same_v</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t</a>&lt; T &gt;, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/any.html">std::any</a> &gt;</td></tr>
 <tr class="separator:ga4c22ce49610f19becce833380da7c81e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaea70a88b4ab06c94ae445cca7f12fb8e"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:gaea70a88b4ab06c94ae445cca7f12fb8e"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__utilities.html#gaea70a88b4ab06c94ae445cca7f12fb8e">eswitch_v5::details::is_std_pair_v</a> = <a class="el" href="structeswitch__v5_1_1details_1_1is__std__pair.html">is_std_pair</a>&lt; std::decay_t&lt; T &gt; &gt;::value</td></tr>
+<tr class="memitem:gaea70a88b4ab06c94ae445cca7f12fb8e"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__utilities.html#gaea70a88b4ab06c94ae445cca7f12fb8e">eswitch_v5::details::is_std_pair_v</a> = <a class="el" href="structeswitch__v5_1_1details_1_1is__std__pair.html">is_std_pair</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t</a>&lt; T &gt; &gt;::value</td></tr>
 <tr class="separator:gaea70a88b4ab06c94ae445cca7f12fb8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6532f8ea21409d319d64aa28e25a68f2"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ga6532f8ea21409d319d64aa28e25a68f2"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__utilities.html#ga6532f8ea21409d319d64aa28e25a68f2">eswitch_v5::details::is_std_tuple_v</a> = <a class="el" href="structeswitch__v5_1_1details_1_1is__std__tuple.html">is_std_tuple</a>&lt; std::decay_t&lt; T &gt; &gt;::value</td></tr>
+<tr class="memitem:ga6532f8ea21409d319d64aa28e25a68f2"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__utilities.html#ga6532f8ea21409d319d64aa28e25a68f2">eswitch_v5::details::is_std_tuple_v</a> = <a class="el" href="structeswitch__v5_1_1details_1_1is__std__tuple.html">is_std_tuple</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t</a>&lt; T &gt; &gt;::value</td></tr>
 <tr class="separator:ga6532f8ea21409d319d64aa28e25a68f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga63edf72eef64ec5d3521b21332dd7ab8"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ga63edf72eef64ec5d3521b21332dd7ab8"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__utilities.html#ga63edf72eef64ec5d3521b21332dd7ab8">eswitch_v5::details::is_std_variant_v</a> = decltype( <a class="el" href="group__utilities.html#ga8d92160197cac2b12155f0197060be4a">is_std_variant</a>( <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/declval.html">std::declval</a>&lt; std::decay_t&lt; T &gt; &gt;() ) )()</td></tr>
+<tr class="memitem:ga63edf72eef64ec5d3521b21332dd7ab8"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__utilities.html#ga63edf72eef64ec5d3521b21332dd7ab8">eswitch_v5::details::is_std_variant_v</a> = decltype( <a class="el" href="group__utilities.html#ga8d92160197cac2b12155f0197060be4a">is_std_variant</a>( <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/declval.html">std::declval</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t</a>&lt; T &gt; &gt;() ) )()</td></tr>
 <tr class="separator:ga63edf72eef64ec5d3521b21332dd7ab8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
@@ -260,7 +262,7 @@ template&lt;std::size_t ... Is, typename Tup &gt; </div>
 <div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;                    <span class="keywordflow">return</span> std::forward&lt; T1 &gt;( t1 ) == std::forward&lt; T2 &gt;( t2 );</div>
 <div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;            };</div>
 <div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;            </div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;            <span class="keywordflow">return</span> ( combine( Index_&lt; Is &gt;{}, std::get&lt; Is &gt;( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( values ) ) ) &amp;&amp; ... );</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;            <span class="keywordflow">return</span> ( combine( Index_&lt; Is &gt;{}, std::get&lt; Is &gt;( std::move( values ) ) ) &amp;&amp; ... );</div>
 <div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        }        </div>
 </div><!-- fragment -->
 </div>
@@ -279,7 +281,7 @@ template&lt;typename ... Ts&gt; </div>
         <tr>
           <td class="memname">constexpr <a class="elRef" href="http://en.cppreference.com/w/cpp/types/integral_constant.html">std::true_type</a> eswitch_v5::details::is_std_variant </td>
           <td>(</td>
-          <td class="paramtype">std::variant&lt; Ts... &gt; &amp;&amp;&#160;</td>
+          <td class="paramtype"><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/variant.html">std::variant</a>&lt; Ts... &gt; &amp;&amp;&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
@@ -409,7 +411,7 @@ template&lt;typename ... TupleCnds, typename Cnd , typename ... Cnds&gt; </div>
 <div class="fragment"><div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        {</div>
 <div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;            <span class="keywordflow">if</span> constexpr( <a class="code" href="group__utilities.html#gad8d9b4cca0303f9eb8af0e8ea7d3af45">is_default_case_v</a>&lt; decltype( std::declval&lt; Cnd &gt;().cnd ) &gt; )</div>
 <div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;            {</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;                <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/tuple_cat.html">std::tuple_cat</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( tup ), </div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;                <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/tuple_cat.html">std::tuple_cat</a>( std::move( tup ), </div>
 <div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;                    <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>( </div>
 <div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;                        std::forward&lt; Cnds &gt;( cnds )..., </div>
 <div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;                        std::forward&lt; Cnd &gt;( cnd ) ) );</div>
@@ -417,12 +419,12 @@ template&lt;typename ... TupleCnds, typename Cnd , typename ... Cnds&gt; </div>
 <div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;            <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr( <span class="keyword">sizeof</span>...( Cnds ) &gt; 0 )</div>
 <div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;            {</div>
 <div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="group__utilities.html#ga180f8c6763e98b8d9996d6b57610910c">move_default_case_to_the_end_impl</a>( </div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;                    <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/tuple_cat.html">std::tuple_cat</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( tup ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>( std::forward&lt; Cnd &gt;( cnd ) ) ), </div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;                    <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/tuple_cat.html">std::tuple_cat</a>( std::move( tup ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>( std::forward&lt; Cnd &gt;( cnd ) ) ), </div>
 <div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;                    std::forward&lt; Cnds &gt;( cnds )... );</div>
 <div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;            }</div>
 <div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;            <span class="keywordflow">else</span></div>
 <div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;            {</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/tuple_cat.html">std::tuple_cat</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( tup ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>( std::forward&lt; Cnd &gt;( cnd ) ) );</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/tuple_cat.html">std::tuple_cat</a>( std::move( tup ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>( std::forward&lt; Cnd &gt;( cnd ) ) );</div>
 <div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;            }                        </div>
 <div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;        }</div>
 </div><!-- fragment -->
@@ -455,7 +457,7 @@ template&lt;typename ... TupleCnds, typename Cnd , typename ... Cnds&gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00248">248</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 <div class="fragment"><div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        { </div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;            <span class="keywordflow">if</span>( !std::is_constant_evaluated() ) assert( <span class="keyword">false</span> ); </div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;            <span class="keywordflow">if</span>( !<a class="codeRef" href="http://en.cppreference.com/w/cpp/types/is_constant_evaluated.html">std::is_constant_evaluated</a>() ) assert( <span class="keyword">false</span> ); </div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>; </div>
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        }</div>
@@ -587,7 +589,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr bool eswitch_v5::details::is_std_any_v = std::is_same_v&lt; std::decay_t&lt; T &gt;, std::any &gt;</td>
+          <td class="memname">constexpr bool eswitch_v5::details::is_std_any_v = <a class="elRef" href="http://en.cppreference.com/w/cpp/types/is_same.html">std::is_same_v</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t</a>&lt; T &gt;, <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/any.html">std::any</a> &gt;</td>
         </tr>
       </table>
   </td>
@@ -615,7 +617,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr bool eswitch_v5::details::is_std_pair_v = <a class="el" href="structeswitch__v5_1_1details_1_1is__std__pair.html">is_std_pair</a>&lt; std::decay_t&lt; T &gt; &gt;::value</td>
+          <td class="memname">constexpr bool eswitch_v5::details::is_std_pair_v = <a class="el" href="structeswitch__v5_1_1details_1_1is__std__pair.html">is_std_pair</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t</a>&lt; T &gt; &gt;::value</td>
         </tr>
       </table>
   </td>
@@ -643,7 +645,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr bool eswitch_v5::details::is_std_tuple_v = <a class="el" href="structeswitch__v5_1_1details_1_1is__std__tuple.html">is_std_tuple</a>&lt; std::decay_t&lt; T &gt; &gt;::value</td>
+          <td class="memname">constexpr bool eswitch_v5::details::is_std_tuple_v = <a class="el" href="structeswitch__v5_1_1details_1_1is__std__tuple.html">is_std_tuple</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t</a>&lt; T &gt; &gt;::value</td>
         </tr>
       </table>
   </td>
@@ -671,7 +673,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr bool eswitch_v5::details::is_std_variant_v = decltype( <a class="el" href="group__utilities.html#ga8d92160197cac2b12155f0197060be4a">is_std_variant</a>( <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/declval.html">std::declval</a>&lt; std::decay_t&lt; T &gt; &gt;() ) )()</td>
+          <td class="memname">constexpr bool eswitch_v5::details::is_std_variant_v = decltype( <a class="el" href="group__utilities.html#ga8d92160197cac2b12155f0197060be4a">is_std_variant</a>( <a class="elRef" href="http://en.cppreference.com/w/cpp/utility/declval.html">std::declval</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t</a>&lt; T &gt; &gt;() ) )()</td>
         </tr>
       </table>
   </td>
@@ -691,16 +693,12 @@ template&lt;typename T &gt; </div>
 </div><!-- doc-content -->
 <div class="ttc" id="amake_tuple_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a></div><div class="ttdeci">T make_tuple(T... args)</div></div>
 <div class="ttc" id="agroup__utilities_html_ga180f8c6763e98b8d9996d6b57610910c"><div class="ttname"><a href="group__utilities.html#ga180f8c6763e98b8d9996d6b57610910c">eswitch_v5::details::move_default_case_to_the_end_impl</a></div><div class="ttdeci">constexpr auto move_default_case_to_the_end_impl(std::tuple&lt; TupleCnds... &gt; &amp;&amp;tup, Cnd &amp;&amp;cnd, Cnds &amp;&amp;...cnds)</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00319">eswitch_v5.hpp:319</a></div></div>
-<div class="ttc" id="amove_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a></div><div class="ttdeci">T move(T... args)</div></div>
 <div class="ttc" id="agroup__utilities_html_gad8d9b4cca0303f9eb8af0e8ea7d3af45"><div class="ttname"><a href="group__utilities.html#gad8d9b4cca0303f9eb8af0e8ea7d3af45">eswitch_v5::details::is_default_case_v</a></div><div class="ttdeci">constexpr bool is_default_case_v</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00198">eswitch_v5.hpp:198</a></div></div>
+<div class="ttc" id="ais_constant_evaluated_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/types/is_constant_evaluated.html">std::is_constant_evaluated</a></div><div class="ttdeci">T is_constant_evaluated(T... args)</div></div>
 <div class="ttc" id="atuple_cat_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/tuple/tuple_cat.html">std::tuple_cat</a></div><div class="ttdeci">T tuple_cat(T... args)</div></div>
+<!-- HTML footer for doxygen 1.8.17-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="footer">Generated by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
-  </ul>
 </div>
 </body>
 </html>

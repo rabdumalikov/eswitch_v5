@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['eswitch_5findex_3455',['eswitch_index',['../structeswitch__v5_1_1Index__.html#a7c4d800aa94d37f8a2a3ac29dc6718db',1,'eswitch_v5::Index_']]]
+  ['disjunction_5fv_4794',['disjunction_v',['http://en.cppreference.com/w/cpp/types/disjunction.html',1,'std']]]
 ];

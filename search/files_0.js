@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['eswitch_5fv5_2ehpp_2170',['eswitch_v5.hpp',['../eswitch__v5_8hpp.html',1,'']]],
-  ['examples_2emd_2171',['examples.md',['../examples_8md.html',1,'']]]
+  ['algorithm_3034',['algorithm',['http://en.cppreference.com/w/cpp/header/algorithm.html',1,'']]],
+  ['any_3035',['any',['http://en.cppreference.com/w/cpp/header/any.html',1,'']]],
+  ['array_3036',['array',['http://en.cppreference.com/w/cpp/header/array.html',1,'']]],
+  ['atomic_3037',['atomic',['http://en.cppreference.com/w/cpp/header/atomic.html',1,'']]]
 ];

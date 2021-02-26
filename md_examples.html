@@ -1,3 +1,4 @@
+<!-- HTML header for doxygen 1.8.17-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -22,6 +23,7 @@
 /* @license-end */
 </script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -30,7 +32,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">eswitch-v5
+   <div id="projectname"><strong>eswitch-v5</strong>
    </div>
    <div id="projectbrief">Advanced counterpart for switch statement in C++</div>
   </td>
@@ -101,7 +103,7 @@ Matching</h1>
 <hr  />
  <h2><a class="anchor" id="example-default"></a>
 Default case match</h2>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">enum</span> Place{ california, washington, new_york, new_jersey, las_vegas };</div>
@@ -127,8 +129,8 @@ Default case match</h2>
 <div class="line">}</div>
 </div><!-- fragment --> <h2><a class="anchor" id="example-multiple-args"></a>
 Match by multiple parameters</h2>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/memory.html">memory</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">enum</span> Place{ california, washington, new_york, new_jersey, las_vegas };</div>
@@ -173,7 +175,7 @@ Match by multiple parameters</h2>
 <div class="line">}</div>
 </div><!-- fragment --> <h2><a class="anchor" id="example-out-of-order"></a>
 Out of order match</h2>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">enum</span> Place{ california, washington, new_york, new_jersey, las_vegas };</div>
@@ -224,7 +226,7 @@ Out of order match</h2>
 <div class="line">}</div>
 </div><!-- fragment --> <h2><a class="anchor" id="example-partial-match"></a>
 Partial match</h2>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">enum</span> Place{ california, washington, new_york, new_jersey, las_vegas };</div>
@@ -237,7 +239,7 @@ Partial match</h2>
 <div class="line">    <span class="keyword">const</span> Place p2 = washington;</div>
 <div class="line">    <span class="keyword">const</span> Place p3 = new_york;</div>
 <div class="line"> </div>
-<div class="line">    <span class="keyword">auto</span> status = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1, p2, p3 )</div>
+<div class="line">    <span class="keyword">auto</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/experimental/fs/status.html">status</a> = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( p1, p2, p3 )</div>
 <div class="line">    (</div>
 <div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#gaeae650f6542c704d82a19ee6a16b7b9f">_3</a> == new_york )                                        { <span class="keywordflow">return</span> <span class="keyword">true</span>; },</div>
 <div class="line">        <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( <a class="code" href="group__index-variables.html#ga0467e341724f219d72f18c1c0885442a">_1</a> == california &amp;&amp; <a class="code" href="group__index-variables.html#gaeae650f6542c704d82a19ee6a16b7b9f">_3</a> == new_york )                    { <span class="keywordflow">return</span> <span class="keyword">false</span>; },       </div>
@@ -251,7 +253,7 @@ Partial match</h2>
 <div class="line">}</div>
 </div><!-- fragment --> <h2><a class="anchor" id="example-mixed-condition"></a>
 Mixed conditions</h2>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">enum</span> Place{ california, washington, new_york, new_jersey, las_vegas };</div>
@@ -278,8 +280,8 @@ Individual entries</h2>
 <hr  />
  <h3><a class="anchor" id="example-match-for-std-pair"></a>
 Match for std::pair</h3>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/string.html">string</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
@@ -324,8 +326,8 @@ Match for std::pair</h3>
 <div class="line">}</div>
 </div><!-- fragment --> <h3><a class="anchor" id="example-match-for-std-tuple"></a>
 Match for std::tuple</h3>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/string.html">string</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
@@ -375,7 +377,7 @@ Predicates</h2>
 <hr  />
  <h3><a class="anchor" id="example-predicate-free-function"></a>
 Free function predicate</h3>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">enum</span> Place{ california, washington, new_york, new_jersey, las_vegas };</div>
@@ -414,7 +416,7 @@ Free function predicate</h3>
 <div class="line">}</div>
 </div><!-- fragment --> <h3><a class="anchor" id="example-predicates"></a>
 Lambda predicate</h3>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">enum</span> Place{ california, washington, new_york, new_jersey, las_vegas };</div>
@@ -468,8 +470,8 @@ Regex</h2>
 <hr  />
  <h3><a class="anchor" id="example-regex"></a>
 Just match</h3>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/string.html">string</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
@@ -506,8 +508,8 @@ Just match</h3>
 <div class="line">}</div>
 </div><!-- fragment --> <h3><a class="anchor" id="example-regex-withdraw"></a>
 Match and withdraw</h3>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;map&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/map.html">map</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><a class="codeRef" href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector&lt; std::string &gt;</a> get_tokenized_http_response()</div>
@@ -554,8 +556,8 @@ Withdrawing underlying value</h2>
 <hr  />
  <h3><a class="anchor" id="example-std-any-match"></a>
 Match for std::any</h3>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;any&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/any.html">any</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
@@ -563,7 +565,7 @@ Match for std::any</h3>
 <div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
 <div class="line"> </div>
 <div class="line">    { <span class="comment">// match</span></div>
-<div class="line">    std::any a = 888;</div>
+<div class="line">    <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/any.html">std::any</a> a = 888;</div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">auto</span> result = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( a )</div>
 <div class="line">    (</div>
@@ -582,7 +584,7 @@ Match for std::any</h3>
 <div class="line">    }</div>
 <div class="line"> </div>
 <div class="line">    { <span class="comment">// no-match</span></div>
-<div class="line">    std::any a = <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>{<span class="stringliteral">&quot;Hello&quot;</span>};</div>
+<div class="line">    <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/any.html">std::any</a> a = <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>{<span class="stringliteral">&quot;Hello&quot;</span>};</div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">auto</span> result = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( a )</div>
 <div class="line">    (</div>
@@ -602,15 +604,15 @@ Match for std::any</h3>
 <div class="line">}</div>
 </div><!-- fragment --> <h3><a class="anchor" id="example-std-variant-match"></a>
 Match for std::variant&lt;...&gt;</h3>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;variant&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/variant.html">variant</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main()</div>
 <div class="line">{</div>
 <div class="line">    <span class="keyword">using namespace </span><a class="code" href="namespaceeswitch__v5.html">eswitch_v5</a>;</div>
 <div class="line"> </div>
-<div class="line">    std::variant&lt; int, std::string &gt; var = <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>{<span class="stringliteral">&quot;Hello&quot;</span>};</div>
+<div class="line">    <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/variant.html">std::variant&lt; int, std::string &gt;</a> var = <a class="codeRef" href="http://en.cppreference.com/w/cpp/string/basic_string.html">std::string</a>{<span class="stringliteral">&quot;Hello&quot;</span>};</div>
 <div class="line"> </div>
 <div class="line">    <span class="keyword">auto</span> result = <a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( var )</div>
 <div class="line">    (</div>
@@ -629,7 +631,7 @@ Match for std::variant&lt;...&gt;</h3>
 <div class="line">}</div>
 </div><!-- fragment --> <h3><a class="anchor" id="example-polymorphic-types-match"></a>
 Match for polymorphic types</h3>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">struct </span>base</div>
@@ -667,7 +669,7 @@ Falling properties</h1>
 <hr  />
  <h2><a class="anchor" id="example-fallthrough"></a>
 Explicit fallthrough</h2>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">enum</span> Place{ california, washington, new_york, new_jersey, las_vegas };</div>
@@ -710,7 +712,7 @@ Explicit fallthrough</h2>
 <div class="line">}</div>
 </div><!-- fragment --> <h2><a class="anchor" id="example-break"></a>
 Implicit break</h2>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">enum</span> Place{ california, washington, new_york, new_jersey, las_vegas };</div>
@@ -733,7 +735,7 @@ Utilities</h1>
 <hr  />
  <h2><a class="anchor" id="example-any-from"></a>
 any_from</h2>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">enum</span> Place{ california, washington, new_york, new_jersey, las_vegas };</div>
@@ -760,8 +762,8 @@ Stringification</h1>
 <hr  />
  <h2><a class="anchor" id="example-enum-to-string"></a>
 Enum to string</h2>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/string.html">string</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">enum</span> Place{ california, washington, new_york, new_jersey, las_vegas };</div>
@@ -795,8 +797,8 @@ Customization</h1>
 <hr  />
  <h2><a class="anchor" id="example-floating-point-comparison"></a>
 Floating point comparison</h2>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;cmath&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cmath.html">cmath</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">struct </span>double_value</div>
@@ -826,8 +828,8 @@ Floating point comparison</h2>
 <div class="line">}</div>
 </div><!-- fragment --> <h2><a class="anchor" id="example-value-and-type-transferring"></a>
 Value and Type transferring</h2>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;cassert&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;cmath&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="codeRef" href="http://en.cppreference.com/w/cpp/header/cmath.html">cmath</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">template</span>&lt; <span class="keyword">typename</span> T &gt;</div>
@@ -850,10 +852,10 @@ Value and Type transferring</h2>
 <div class="line"><span class="keyword">template</span>&lt; eswitch_v5::NoneIndex T &gt;</div>
 <div class="line"><span class="keyword">auto</span> <a class="code" href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">operator==</a>( T&amp;&amp;, <span class="keyword">const</span> Has_value )</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">using</span> T_ = std::decay_t&lt; T &gt;;</div>
+<div class="line">    <span class="keyword">using</span> T_ = <a class="codeRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t&lt; T &gt;</a>;</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">if</span> constexpr( requires{ T_::value; } ) </div>
-<div class="line">        <span class="keywordflow">return</span> std::make_optional( T_::value );</div>
+<div class="line">        <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/optional/make_optional.html">std::make_optional</a>( T_::value );</div>
 <div class="line">    <span class="keywordflow">else</span></div>
 <div class="line">        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line">}</div>
@@ -861,10 +863,10 @@ Value and Type transferring</h2>
 <div class="line"><span class="keyword">template</span>&lt; eswitch_v5::NoneIndex T &gt;</div>
 <div class="line"><span class="keyword">auto</span> <a class="code" href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">operator==</a>( T&amp;&amp;, <span class="keyword">const</span> Has_type )</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">using</span> T_ = std::decay_t&lt; T &gt;;</div>
+<div class="line">    <span class="keyword">using</span> T_ = <a class="codeRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t&lt; T &gt;</a>;</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">if</span> constexpr( requires{ <span class="keyword">typename</span> T_::type; } )</div>
-<div class="line">        <span class="keywordflow">return</span> std::make_optional( Holder&lt; typename T_::type &gt;{} );</div>
+<div class="line">        <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/optional/make_optional.html">std::make_optional</a>( Holder&lt; typename T_::type &gt;{} );</div>
 <div class="line">    <span class="keywordflow">else</span></div>
 <div class="line">        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line">}</div>
@@ -897,14 +899,20 @@ Value and Type transferring</h2>
 <div class="ttc" id="afabs_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/numeric/math/fabs.html">std::fabs</a></div><div class="ttdeci">T fabs(T... args)</div></div>
 <div class="ttc" id="avector_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/vector.html">std::vector</a></div><div class="ttdoc">STL class.</div></div>
 <div class="ttc" id="asize_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/map/size.html">std::map::size</a></div><div class="ttdeci">T size(T... args)</div></div>
+<div class="ttc" id="amake_optional_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/optional/make_optional.html">std::make_optional</a></div><div class="ttdeci">T make_optional(T... args)</div></div>
 <div class="ttc" id="agroup__other-variables_html_ga23e83b648756cadca9232aaf9d7d3d03"><div class="ttname"><a href="group__other-variables.html#ga23e83b648756cadca9232aaf9d7d3d03">eswitch_v5::fallthrough_</a></div><div class="ttdeci">static constexpr Fallthrough fallthrough_</div><div class="ttdoc">Indicates fall through from previous Case without testing condition of following Case.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01016">eswitch_v5.hpp:1016</a></div></div>
 <div class="ttc" id="agroup__index-variables_html_gaeae650f6542c704d82a19ee6a16b7b9f"><div class="ttname"><a href="group__index-variables.html#gaeae650f6542c704d82a19ee6a16b7b9f">eswitch_v5::_3</a></div><div class="ttdeci">constexpr Index_&lt; 2 &gt; _3</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00176">eswitch_v5.hpp:176</a></div></div>
+<div class="ttc" id="aany_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/header/any.html">any</a></div></div>
+<div class="ttc" id="acmath_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/header/cmath.html">cmath</a></div></div>
 <div class="ttc" id="astructeswitch__v5_1_1is_html"><div class="ttname"><a href="structeswitch__v5_1_1is.html">eswitch_v5::is</a></div><div class="ttdoc">Used to match for type of active entry in std::any, std::variant&lt;...&gt; and polymorphic types.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00060">eswitch_v5.hpp:60</a></div></div>
 <div class="ttc" id="agroup__main-components_html_ga11dfab51a8955d42153603db05629b59"><div class="ttname"><a href="group__main-components.html#ga11dfab51a8955d42153603db05629b59">eswitch_v5::any_from</a></div><div class="ttdeci">static constexpr auto any_from(Args &amp;&amp;... args)</div><div class="ttdoc">Helper function which allows to find if something is within the list( passed arguments ).</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00991">eswitch_v5.hpp:991</a></div></div>
 <div class="ttc" id="ato_string_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/string/basic_string/to_string.html">std::to_string</a></div><div class="ttdeci">T to_string(T... args)</div></div>
-<div class="ttc" id="amap_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/container/map.html">std::map</a></div><div class="ttdoc">STL class.</div></div>
-<div class="ttc" id="adecay_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay</a></div></div>
+<div class="ttc" id="amap_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/header/map.html">map</a></div></div>
+<div class="ttc" id="amemory_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/header/memory.html">memory</a></div></div>
+<div class="ttc" id="astatus_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/experimental/fs/status.html">std::experimental::filesystem::status</a></div><div class="ttdeci">T status(T... args)</div></div>
+<div class="ttc" id="adecay_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t</a></div></div>
 <div class="ttc" id="agroup__macroses_html_gaff2b0c246e6111e260e650b0ff4a8eb5"><div class="ttname"><a href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a></div><div class="ttdeci">#define Default</div><div class="ttdoc">Declares body which will be executed in case of no other matches.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01029">eswitch_v5.hpp:1029</a></div></div>
+<div class="ttc" id="acassert_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/header/cassert.html">cassert</a></div></div>
 <div class="ttc" id="agroup__macroses_html_gae733eb4e00d6306a21422f02ef7e8ca4"><div class="ttname"><a href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a></div><div class="ttdeci">#define Case(...)</div><div class="ttdoc">Accepts conditions of various forms.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01026">eswitch_v5.hpp:1026</a></div></div>
 <div class="ttc" id="agroup__main-components_html_ga82f93fb22725d76bb016b488742331d1"><div class="ttname"><a href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch_v5::eswitch</a></div><div class="ttdeci">static constexpr auto eswitch(Ts &amp;&amp;... ts)</div><div class="ttdoc">This function is responsible for passing arguments for class eswitch_impl with overloaded operator(),...</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00838">eswitch_v5.hpp:838</a></div></div>
 <div class="ttc" id="amake_pair_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/pair/make_pair.html">std::make_pair</a></div><div class="ttdeci">T make_pair(T... args)</div></div>
@@ -913,13 +921,11 @@ Value and Type transferring</h2>
 <div class="ttc" id="anamespaceeswitch__v5_html"><div class="ttname"><a href="namespaceeswitch__v5.html">eswitch_v5</a></div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00027">eswitch_v5.hpp:27</a></div></div>
 <div class="ttc" id="aeswitch__v5_8hpp_html"><div class="ttname"><a href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a></div><div class="ttdoc">implementation which enhance switch statement</div></div>
 <div class="ttc" id="agroup__index-variables_html_gacc83659898439dd14b78fc60be68ce28"><div class="ttname"><a href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">eswitch_v5::_2</a></div><div class="ttdeci">constexpr Index_&lt; 1 &gt; _2</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00175">eswitch_v5.hpp:175</a></div></div>
+<div class="ttc" id="avariant_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/header/variant.html">variant</a></div></div>
+<div class="ttc" id="astring_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/header/string.html">string</a></div></div>
+<!-- HTML footer for doxygen 1.8.17-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="footer">Generated by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
-  </ul>
 </div>
 </body>
 </html>

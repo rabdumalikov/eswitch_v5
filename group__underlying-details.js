@@ -14,7 +14,7 @@ var group__underlying_details =
       [ "Range", "classeswitch__v5_1_1extension_1_1Range.html#a1b370a04c51ee9fa3be6c26b974d4572", null ]
     ] ],
     [ "Index_", "structeswitch__v5_1_1Index__.html", [
-      [ "in", "structeswitch__v5_1_1Index__.html#ad1e9a5a161d29e8aaaa79bf79a56c525", null ],
+      [ "between", "structeswitch__v5_1_1Index__.html#a10f2aa9a474614b6d863ce1a906dff91", null ],
       [ "within", "structeswitch__v5_1_1Index__.html#a023d657d247c28a69e9cb6acfe870635", null ],
       [ "eswitch_index", "structeswitch__v5_1_1Index__.html#a7c4d800aa94d37f8a2a3ac29dc6718db", null ]
     ] ],

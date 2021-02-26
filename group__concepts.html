@@ -1,3 +1,4 @@
+<!-- HTML header for doxygen 1.8.17-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -22,6 +23,7 @@
 /* @license-end */
 </script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -30,7 +32,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">eswitch-v5
+   <div id="projectname"><strong>eswitch-v5</strong>
    </div>
    <div id="projectbrief">Advanced counterpart for switch statement in C++</div>
   </td>
@@ -118,10 +120,10 @@ Variables</h2></td></tr>
 <tr class="memitem:ga97cd9ea2f8d399b75092fe3518e5a3b8"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga97cd9ea2f8d399b75092fe3518e5a3b8">eswitch_v5::has_value</a> = requires{ T::value; }</td></tr>
 <tr class="separator:ga97cd9ea2f8d399b75092fe3518e5a3b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga20fabd0691af6078dca8748791786828"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ga20fabd0691af6078dca8748791786828"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga20fabd0691af6078dca8748791786828">eswitch_v5::Index</a> = requires( T ){ std::decay_t&lt; T &gt;::eswitch_index; }</td></tr>
+<tr class="memitem:ga20fabd0691af6078dca8748791786828"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga20fabd0691af6078dca8748791786828">eswitch_v5::Index</a> = requires( T ){ <a class="elRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t</a>&lt; T &gt;::eswitch_index; }</td></tr>
 <tr class="separator:ga20fabd0691af6078dca8748791786828"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga12592032b6c450dafe7d579482bbf438"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ga12592032b6c450dafe7d579482bbf438"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga12592032b6c450dafe7d579482bbf438">eswitch_v5::IsCndPredicate</a> = <a class="el" href="group__utilities.html#ga7cde63bb56ed1fd1c60b8ba540b60261">details::is_predicate_v</a>&lt; std::decay_t&lt; T &gt; &gt;</td></tr>
+<tr class="memitem:ga12592032b6c450dafe7d579482bbf438"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga12592032b6c450dafe7d579482bbf438">eswitch_v5::IsCndPredicate</a> = <a class="el" href="group__utilities.html#ga7cde63bb56ed1fd1c60b8ba540b60261">details::is_predicate_v</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t</a>&lt; T &gt; &gt;</td></tr>
 <tr class="separator:ga12592032b6c450dafe7d579482bbf438"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga942e389b540a1c2cb0e11c2b264561d3"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ga942e389b540a1c2cb0e11c2b264561d3"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__concepts.html#ga942e389b540a1c2cb0e11c2b264561d3">eswitch_v5::IsNotCndPredicate</a> = !<a class="el" href="group__concepts.html#ga12592032b6c450dafe7d579482bbf438">IsCndPredicate</a>&lt; T &gt;</td></tr>
@@ -205,7 +207,7 @@ template&lt;typename T &gt; </div>
 <b>Initial value:</b><div class="fragment"><div class="line">= requires( T t )</div>
 <div class="line">    { </div>
 <div class="line">        t( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a>() ); </div>
-<div class="line">        std::decay_t&lt; T &gt;::template is_out_of_range&lt; <a class="codeRef" href="http://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a>{} &gt;(); </div>
+<div class="line">        <a class="codeRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t&lt; T &gt;::template</a> is_out_of_range&lt; <a class="codeRef" href="http://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a>{} &gt;(); </div>
 <div class="line">    }</div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00039">39</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
@@ -261,7 +263,7 @@ template&lt;typename T &gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">concept eswitch_v5::Index = requires( T ){ std::decay_t&lt; T &gt;::eswitch_index; }</td>
+          <td class="memname">concept eswitch_v5::Index = requires( T ){ <a class="elRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t</a>&lt; T &gt;::eswitch_index; }</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -281,7 +283,7 @@ template&lt;typename T &gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">concept eswitch_v5::IsCndPredicate = <a class="el" href="group__utilities.html#ga7cde63bb56ed1fd1c60b8ba540b60261">details::is_predicate_v</a>&lt; std::decay_t&lt; T &gt; &gt;</td>
+          <td class="memname">concept eswitch_v5::IsCndPredicate = <a class="el" href="group__utilities.html#ga7cde63bb56ed1fd1c60b8ba540b60261">details::is_predicate_v</a>&lt; <a class="elRef" href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t</a>&lt; T &gt; &gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -347,8 +349,8 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p><code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html">eswitch_v5.hpp</a>&gt;</code></p>
-<b>Initial value:</b><div class="fragment"><div class="line">= std::is_same_v&lt; </div>
-<div class="line">        std::invoke_result_t&lt; std::remove_reference_t&lt; T &gt; &gt;,</div>
+<b>Initial value:</b><div class="fragment"><div class="line">= <a class="codeRef" href="http://en.cppreference.com/w/cpp/types/is_same.html">std::is_same_v</a>&lt; </div>
+<div class="line">        <a class="codeRef" href="http://en.cppreference.com/w/cpp/types/result_of.html">std::invoke_result_t&lt; std::remove_reference_t&lt; T &gt;</a> &gt;,</div>
 <div class="line">        <span class="keywordtype">void</span> </div>
 <div class="line">    &gt;</div>
 </div><!-- fragment -->
@@ -398,15 +400,14 @@ template&lt;typename T &gt; </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="ais_same_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/types/is_same.html">std::is_same_v</a></div><div class="ttdeci">T is_same_v</div></div>
 <div class="ttc" id="amake_tuple_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/tuple/make_tuple.html">std::make_tuple</a></div><div class="ttdeci">T make_tuple(T... args)</div></div>
+<div class="ttc" id="adecay_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/types/decay.html">std::decay_t</a></div></div>
+<div class="ttc" id="aresult_of_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/types/result_of.html">std::invoke_result_t</a></div></div>
 <div class="ttc" id="asize_t_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/types/size_t.html">std::size_t</a></div></div>
+<!-- HTML footer for doxygen 1.8.17-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="footer">Generated by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
-  </ul>
 </div>
 </body>
 </html>

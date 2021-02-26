@@ -1,3 +1,4 @@
+<!-- HTML header for doxygen 1.8.17-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -22,6 +23,7 @@
 /* @license-end */
 </script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -30,7 +32,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">eswitch-v5
+   <div id="projectname"><strong>eswitch-v5</strong>
    </div>
    <div id="projectbrief">Advanced counterpart for switch statement in C++</div>
   </td>
@@ -118,7 +120,7 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structeswitch__v5_1_1Fallthrough.html">eswitch_v5::Fallthrough</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structeswitch__v5_1_1is.html">eswitch_v5::is&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to match for type of active entry in <b>std::any</b>, <b>std::variant&lt;...&gt;</b> and <b>polymorphic types</b>.  <a href="structeswitch__v5_1_1is.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to match for type of active entry in <b><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/any.html">std::any</a></b>, <b>std::variant&lt;...&gt;</b> and <b>polymorphic types</b>.  <a href="structeswitch__v5_1_1is.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classeswitch__v5_1_1predicate__condition.html">eswitch_v5::predicate_condition&lt; TPred, Is &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -345,7 +347,7 @@ template&lt;Condition Cnd&gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00968">968</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 <div class="fragment"><div class="line"><a name="l00969"></a><span class="lineno">  969</span>&#160;    { </div>
-<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160;        <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( cnd ); </div>
+<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160;        <span class="keywordflow">return</span> std::move( cnd ); </div>
 <div class="line"><a name="l00971"></a><span class="lineno">  971</span>&#160;    }</div>
 </div><!-- fragment -->
 </div>
@@ -380,7 +382,7 @@ template&lt;typename ... Ts&gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00974">974</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 <div class="fragment"><div class="line"><a name="l00975"></a><span class="lineno">  975</span>&#160;    {</div>
-<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;        <span class="keyword">auto</span> lmbd = []&lt; <span class="keyword">typename</span> T, T ... ints &gt;( std::index_sequence&lt; ints... &gt;&amp;&amp;, <span class="keyword">auto</span> &amp;&amp;... values )</div>
+<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;        <span class="keyword">auto</span> lmbd = []&lt; <span class="keyword">typename</span> T, T ... ints &gt;( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/integer_sequence.html">std::index_sequence</a>&lt; ints... &gt;&amp;&amp;, <span class="keyword">auto</span> &amp;&amp;... values )</div>
 <div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160;        {</div>
 <div class="line"><a name="l00978"></a><span class="lineno">  978</span>&#160;            <span class="comment">// I intentionally avoided std::make_tuple, because the former change type of string literals</span></div>
 <div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;            <span class="comment">// from &quot;const char[some_size]&amp;&quot; to &quot;const char*&quot; and this significantly impacts the performance.</span></div>
@@ -388,7 +390,7 @@ template&lt;typename ... Ts&gt; </div>
 <div class="line"><a name="l00981"></a><span class="lineno">  981</span>&#160;                <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/tuple.html">std::tuple</a>&lt; Ts... &gt;( std::forward&lt; Ts &gt;( values )... ) ); </div>
 <div class="line"><a name="l00982"></a><span class="lineno">  982</span>&#160;        };</div>
 <div class="line"><a name="l00983"></a><span class="lineno">  983</span>&#160; </div>
-<div class="line"><a name="l00984"></a><span class="lineno">  984</span>&#160;        <span class="keywordflow">return</span> lmbd( std::make_index_sequence&lt; <span class="keyword">sizeof</span>...(Ts) &gt;{},</div>
+<div class="line"><a name="l00984"></a><span class="lineno">  984</span>&#160;        <span class="keywordflow">return</span> lmbd( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/integer_sequence.html">std::make_index_sequence</a>&lt; <span class="keyword">sizeof</span>...(Ts) &gt;{},</div>
 <div class="line"><a name="l00985"></a><span class="lineno">  985</span>&#160;            std::forward&lt; Ts &gt;( values )... );</div>
 <div class="line"><a name="l00986"></a><span class="lineno">  986</span>&#160;    }</div>
 </div><!-- fragment -->
@@ -460,7 +462,7 @@ template&lt;StdPair T&gt; </div>
 <div class="fragment"><div class="line"><a name="l00849"></a><span class="lineno">  849</span>&#160;    {</div>
 <div class="line"><a name="l00850"></a><span class="lineno">  850</span>&#160;        <span class="keywordflow">if</span> constexpr( std::is_rvalue_reference_v&lt; T&amp;&amp; &gt; )</div>
 <div class="line"><a name="l00851"></a><span class="lineno">  851</span>&#160;        {</div>
-<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="group__deduction-guides.html#ga88f11e36da0e7895491526fef8499c8e">eswitch_impl</a>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( pair.first ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( pair.second ) );</div>
+<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="group__deduction-guides.html#ga88f11e36da0e7895491526fef8499c8e">eswitch_impl</a>( std::move( pair.first ), std::move( pair.second ) );</div>
 <div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160;        }</div>
 <div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;        <span class="keywordflow">else</span></div>
 <div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;        {</div>
@@ -629,7 +631,7 @@ template&lt;Condition T, Callable Func&gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00894">894</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 <div class="fragment"><div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160;    {</div>
-<div class="line"><a name="l00896"></a><span class="lineno">  896</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__deduction-guides.html#ga32b9970a4858478ace77bf9f1ef29b81">condition_with_predicate</a>{ <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( cnd ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( f ) };</div>
+<div class="line"><a name="l00896"></a><span class="lineno">  896</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__deduction-guides.html#ga32b9970a4858478ace77bf9f1ef29b81">condition_with_predicate</a>{ std::move( cnd ), std::move( f ) };</div>
 <div class="line"><a name="l00897"></a><span class="lineno">  897</span>&#160;    }</div>
 </div><!-- fragment -->
 </div>
@@ -674,7 +676,7 @@ template&lt;Condition Cnd1, Condition Cnd2&gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00645">645</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 <div class="fragment"><div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;    {</div>
-<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;        <span class="keywordflow">return</span> conditions&lt; Logical_operators::and_, Cnd1, Cnd2 &gt;( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( cnd1 ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( cnd2 ) );</div>
+<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;        <span class="keywordflow">return</span> conditions&lt; Logical_operators::and_, Cnd1, Cnd2 &gt;( std::move( cnd1 ), std::move( cnd2 ) );</div>
 <div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;    }</div>
 </div><!-- fragment -->
 </div>
@@ -720,7 +722,7 @@ template&lt;Condition ... Cnds, Condition Cnd&gt; </div>
 <p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00638">638</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 <div class="fragment"><div class="line"><a name="l00639"></a><span class="lineno">  639</span>&#160;    {</div>
 <div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160;        <span class="keywordflow">return</span> conditions&lt; Logical_operators::and_, Cnds..., Cnd &gt;( </div>
-<div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;            <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( cnds ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( cnd ) );</div>
+<div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;            std::move( cnds ), std::move( cnd ) );</div>
 <div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160;    }</div>
 </div><!-- fragment -->
 </div>
@@ -1083,7 +1085,7 @@ template&lt;typename Cnd , ReturnValueNoneVoid Func&gt; </div>
 <div class="fragment"><div class="line"><a name="l00903"></a><span class="lineno">  903</span>&#160;    {</div>
 <div class="line"><a name="l00904"></a><span class="lineno">  904</span>&#160;        cp.fallthrough = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00905"></a><span class="lineno">  905</span>&#160; </div>
-<div class="line"><a name="l00906"></a><span class="lineno">  906</span>&#160;        <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( cp );</div>
+<div class="line"><a name="l00906"></a><span class="lineno">  906</span>&#160;        <span class="keywordflow">return</span> std::move( cp );</div>
 <div class="line"><a name="l00907"></a><span class="lineno">  907</span>&#160;    }</div>
 </div><!-- fragment -->
 </div>
@@ -1128,7 +1130,7 @@ template&lt;Condition Cnd1, Condition Cnd2&gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00658">658</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 <div class="fragment"><div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;    {</div>
-<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;        <span class="keywordflow">return</span> conditions&lt; Logical_operators::or_, Cnd1, Cnd2 &gt;( <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( cnd1 ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( cnd2 ) );</div>
+<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;        <span class="keywordflow">return</span> conditions&lt; Logical_operators::or_, Cnd1, Cnd2 &gt;( std::move( cnd1 ), std::move( cnd2 ) );</div>
 <div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;    }</div>
 </div><!-- fragment -->
 </div>
@@ -1174,7 +1176,7 @@ template&lt;Condition ... Cnds, Condition Cnd&gt; </div>
 <p class="definition">Definition at line <a class="el" href="eswitch__v5_8hpp_source.html#l00651">651</a> of file <a class="el" href="eswitch__v5_8hpp_source.html">eswitch_v5.hpp</a>.</p>
 <div class="fragment"><div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;    {</div>
 <div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;        <span class="keywordflow">return</span> conditions&lt; Logical_operators::or_, Cnds..., Cnd &gt;( </div>
-<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;            <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( cnds ), <a class="codeRef" href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a>( cnd ) );</div>
+<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;            std::move( cnds ), std::move( cnd ) );</div>
 <div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;    }</div>
 </div><!-- fragment -->
 </div>
@@ -1182,7 +1184,7 @@ template&lt;Condition ... Cnds, Condition Cnd&gt; </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="aequal_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/algorithm/equal.html">std::equal</a></div><div class="ttdeci">T equal(T... args)</div></div>
-<div class="ttc" id="amove_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/move.html">std::move</a></div><div class="ttdeci">T move(T... args)</div></div>
+<div class="ttc" id="ainteger_sequence_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/integer_sequence.html">std::index_sequence</a></div></div>
 <div class="ttc" id="atuple_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/tuple.html">std::tuple</a></div></div>
 <div class="ttc" id="agroup__main-components_html_gga177cf4f9fd463239ba586b6fad205f71acfc049a17faac959998820e7aaaf4329"><div class="ttname"><a href="group__main-components.html#gga177cf4f9fd463239ba586b6fad205f71acfc049a17faac959998820e7aaaf4329">eswitch_v5::Logical_operators::or_</a></div><div class="ttdeci">@ or_</div></div>
 <div class="ttc" id="agroup__deduction-guides_html_ga88f11e36da0e7895491526fef8499c8e"><div class="ttname"><a href="group__deduction-guides.html#ga88f11e36da0e7895491526fef8499c8e">eswitch_v5::eswitch_impl</a></div><div class="ttdeci">eswitch_impl(Ts &amp;&amp;...) -&gt; eswitch_impl&lt; Ts... &gt;</div></div>
@@ -1196,13 +1198,9 @@ template&lt;Condition ... Cnds, Condition Cnd&gt; </div>
 <div class="ttc" id="agroup__main-components_html_gga065825470db1706dabbf2b1205d7311da6fa344f3fbf8a030c5c0145d5dbaf23d"><div class="ttname"><a href="group__main-components.html#gga065825470db1706dabbf2b1205d7311da6fa344f3fbf8a030c5c0145d5dbaf23d">eswitch_v5::Comparison_operators::less_or_equal</a></div><div class="ttdeci">@ less_or_equal</div></div>
 <div class="ttc" id="agroup__deduction-guides_html_ga32b9970a4858478ace77bf9f1ef29b81"><div class="ttname"><a href="group__deduction-guides.html#ga32b9970a4858478ace77bf9f1ef29b81">eswitch_v5::condition_with_predicate</a></div><div class="ttdeci">condition_with_predicate(T, F) -&gt; condition_with_predicate&lt; T, F &gt;</div></div>
 <div class="ttc" id="agroup__main-components_html_gga177cf4f9fd463239ba586b6fad205f71aa195f8c413b580691c2daa246c1b16ce"><div class="ttname"><a href="group__main-components.html#gga177cf4f9fd463239ba586b6fad205f71aa195f8c413b580691c2daa246c1b16ce">eswitch_v5::Logical_operators::and_</a></div><div class="ttdeci">@ and_</div></div>
+<!-- HTML footer for doxygen 1.8.17-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="footer">Generated by
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
-  </ul>
 </div>
 </body>
 </html>

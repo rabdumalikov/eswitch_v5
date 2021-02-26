@@ -25,35 +25,19 @@ var NAVTREE =
   [ "eswitch-v5", "index.html", [
     [ "User Manual", "index.html", [
       [ "Overview", "index.html#tutorial-overview", [
+        [ "Motivation", "index.html#autotoc_md1", null ],
+        [ "Comparison", "index.html#autotoc_md3", null ],
         [ "Installation", "index.html#tutorial-installation", null ],
         [ "License", "index.html#tutorial-license", null ],
-        [ "Supported Compilers", "index.html#tutorial-compilers", null ]
+        [ "Supported Compilers", "index.html#tutorial-compilers", null ],
+        [ "Conventions used in this document", "index.html#autotoc_md8", null ]
       ] ],
       [ "Implementation Details", "index.html#tutorial-implementation-details", [
-        [ "Motivation", "index.html#autotoc_md5", null ],
-        [ "Conventions used in this document", "index.html#autotoc_md7", null ],
-        [ "Similarities", "index.html#autotoc_md9", null ],
         [ "Keywords", "index.html#autotoc_md11", null ],
-        [ "Syntax", "index.html#syntax", null ],
-        [ "Features", "index.html#autotoc_md14", [
-          [ "Params referencing via indexes", "index.html#autotoc_md16", null ],
-          [ "If indexes aren't provided, then it is assumed that they're sequential", "index.html#autotoc_md17", null ],
-          [ "Matching via predicates:(it could be either a lambda or a free function)", "index.html#autotoc_md18", null ],
-          [ "Check in range", "index.html#autotoc_md19", null ],
-          [ "any_from helper function", "index.html#autotoc_md20", null ],
-          [ "Default case", "index.html#autotoc_md21", null ],
-          [ "Return value from Case", "index.html#autotoc_md22", null ],
-          [ "Match for std::any or std::variant", "index.html#autotoc_md23", null ],
-          [ "Match and withdraw value from std::any or std::variant", "index.html#autotoc_md24", null ],
-          [ "Match for polymorphic types", "index.html#autotoc_md25", null ],
-          [ "Match for std::regex", "index.html#autotoc_md26", null ],
-          [ "Match and withdraw values from std::regex", "index.html#autotoc_md27", null ],
-          [ "Match for entries in std::pair", "index.html#autotoc_md28", null ],
-          [ "Match for entries in std::tuple", "index.html#autotoc_md29", null ]
-        ] ]
+        [ "Syntax", "index.html#syntax", null ]
       ] ],
-      [ "How to write Custom extensions?", "index.html#autotoc_md30", null ],
-      [ "Rationalities", "index.html#autotoc_md32", null ]
+      [ "How to write Custom extensions?", "index.html#autotoc_md14", null ],
+      [ "Rationalities", "index.html#autotoc_md16", null ]
     ] ],
     [ "Examples", "md_examples.html", [
       [ "Matching", "md_examples.html#example-matching", [
@@ -113,7 +97,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"index.html#autotoc_md16"
+"index.html#autotoc_md14"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
