@@ -9,19 +9,19 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install Clang 12 and libc++
-      id: install_clang_12
+    - name: Install Clang 11 and libc++
+      id: install_clang_11
       shell: bash
       working-directory: ${{ env.HOME }}
       run: |
         wget https://apt.llvm.org/llvm.sh
         chmod +x llvm.sh
-        sudo ./llvm.sh 12
-        sudo apt-get install libc++-12-dev libc++abi-12-dev
+        sudo ./llvm.sh 11
+        sudo apt-get install libc++-11-dev libc++abi-11-dev
         ls
 
     - name: CLANG check
-      run: clang++-12 -v
+      run: clang++-11 -v
 
     - name: Build clang
       working-directory: ${{ env.HOME }}
@@ -30,8 +30,8 @@ jobs:
            cmake . -DCMAKE_BUILD_TYPE=Release
            make
       env:
-        CXX: clang++-12
-        CC: clang-12         
+        CXX: clang++-11
+        CC: clang-11         
           
     - name: Test
       working-directory: ${{ env.HOME }}
