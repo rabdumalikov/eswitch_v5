@@ -43,6 +43,7 @@ enum estatus3 {
 };
 
 enum eprogress3 {
+    IDLE,
     RUNNING,
     IN_PROGRES,
     FINISHED
@@ -54,27 +55,23 @@ int __attribute__ ((noinline)) Native_Switch( const estatus3 es3, const eprogres
     case SUCCESS:
 
         switch (ep3) {
-        case RUNNING: break;
-        case IN_PROGRES: break;
-        case FINISHED: break;
-        default: return 31;
+            case IDLE: return 3;
+            case RUNNING: return 123;
+            case IN_PROGRES: return 2;
+            case FINISHED: return 0;
         }
-        return 0;
+
     case FAILED:
         switch (ep3) {
-        case RUNNING:
-            if (str == "Hello") return 1;
-            else 
-                return 2;
-        case IN_PROGRES: break;
-        case FINISHED: break;
-        default: return 32;
+            case RUNNING:
+                if (str == "Hello") return 1;
+                else 
+                    return 2;
+            case IDLE: return 34;
+            case IN_PROGRES: return 11;
+            case FINISHED: return 809;
         }
-
-        break;
     }
-
-    return 809;
 }
 
 int __attribute__ ((noinline)) _eswitch( const estatus3 es3, const eprogress3 ep3, const std::string& str )
@@ -83,10 +80,15 @@ int __attribute__ ((noinline)) _eswitch( const estatus3 es3, const eprogress3 ep
 
     return eswitch(es3, ep3, str)
     ( 
-        Case( _1 == SUCCESS) { return 0; },
-        Case( _1 == FAILED && _2 == RUNNING && _3 == "Hello") { return 1; },
-        Case( _1 == FAILED && _2 == RUNNING) { return 2; }, 
-        Default { return 33; }
+        Case( _1 == SUCCESS && _2 == IDLE ) { return 3; },
+        Case( _1 == SUCCESS && _2 == RUNNING ) { return 123; },
+        Case( _1 == SUCCESS && _2 == IN_PROGRES ) { return 2; },
+        Case( _1 == SUCCESS && _2 == FINISHED ) { return 0; },
+        Case( _1 == FAILED  && _2 == RUNNING && _3 == "Hello") { return 1; },
+        Case( _1 == FAILED  && _2 == RUNNING && _3 != "Hello") { return 2; },
+        Case( _1 == FAILED  && _2 == IDLE ) { return 34; }, 
+        Case( _1 == FAILED  && _2 == IN_PROGRES ) { return 11; }, 
+        Case( _1 == FAILED  && _2 == FINISHED ) { return 809; }
     );
 }
 

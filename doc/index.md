@@ -24,74 +24,90 @@ User Manual       {#mainpage}
 ### Motivation
 
 --------------------------------------------
+Let's start with a little bit of backstory. As you may know in C++ the <span class="keywordflow">`switch`</span> statement is quite limited( in comparison with other statements ) and there are few reasons for this, which are mainly related to optimization. Compiler can use **jump table** or **binary search** to optimize the <span class="keywordflow">`switch`</span> statement, but nothing comes without a price as such optimizations are only possible for compile-time data. In C++98 only primitives such as <span class="keyword">`int`</span>, <span class="keyword">`char`</span>, <span class="keyword">`enum`</span> and <span class="keyword">`bool`</span> could be data known at compile time. That's why the <span class="keywordflow">`switch`</span> statement was restricted to primitive-only. However, in C++11 the new keyword <span class="keyword">`constexpr`</span> was introduced. Which opened the doors for compile-time custom types. So now it has become possible to overcome the primitive-only limitation. There was even the [proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html) for this. Unfortunately, for whatever reason, the author decided to bail out, even though the feedback from the committee was positive. Nonetheless, even if this proposal was accepted in the C++ standard the <span class="keywordflow">`switch`</span> statement still wouldn't be as powerful as the <span class="keywordflow">`if`</span> statement.
 
-I don't see any good reason why <span class="keywordflow">`switch`</span> statement in C++ is so limited, whereas other statements such as <span class="keywordflow">`if`</span>, <span class="keywordflow">`else if`</span> including loops <span class="keywordflow">`while`</span> and <span class="keywordflow">`for`</span> have no such limitations and they allow to compose and test complex condition. And here is why:
-- In terms of the assembler output, <span class="keywordflow">`if`</span> and <span class="keywordflow">`switch`</span> 
-statements give the same [output](https://godbolt.org/z/G3Woj6), thus the performance also the same:
+Let us now examine the <span class="keywordflow">`if`</span> statement closely. It can be used for various data types that are known at compile time and at runtime. In addition to this, it allows to compose and test complex conditions. Wait wait wait, if the <span class="keywordflow">`if`</span> statement can work with data known at compile-time, then why can't compiler optimize this statement just like the <span class="keywordflow">`switch`</span> statement? In theory, it can. Let me even say that there is a compiler that is capable of doing so and this is clang.
+
+**For example**:
+@htmlonly
+<button onclick="location.href='https://godbolt.org/z/rq7fzn'" type="button">
+         View on <strong>CompilerExplorer</strong></button>
+@endhtmlonly
 <table>
 <tr>
-<td colspan="2">
-<div align="left">
-<b>compiler:</b> clang, <b>flags:</b> -O3
-</div>
-<tr>
     <td>
 ```cpp
-int foo( int num )
+int foo(int num) 
 {
-         if( num == 10 ) return 1;
-    else if( num == 15 ) return 2;
-    else                 return 3;
+    if     ( num == 10 ) return 1;
+    else if( num == 13 ) return 2;
+    else if( num == 11 ) return 3;
+    else if( num == 19 ) return 4;
+    else if( num == 12 ) return 5;
+    else                 return 6;
 }
-```
-<td>
-```cpp
-foo(int):            # @foo(int)
-    xor     ecx, ecx            
-    cmp     edi, 15             
-    sete    cl                  
-    xor     ecx, 3              
-    cmp     edi, 10             
-    mov     eax, 1              
-    cmovne  eax, ecx            
-    ret                         
-```
-<tr>
-    <td>
-```cpp
-int bar( int num )
-{
+
+
+
+
+
+
+
+
+
+
+
+int bar(int num) {
     switch( num )
     {
+        case 19: return 4;
         case 10: return 1;
-        case 15: return 2;
-        default: return 3;
-    } 
-}
+        case 13: return 2;
+        case 11: return 3;
+        case 12: return 5;
+        default: return 6;
+    };
+}                     
 ```
 <td>
 ```cpp
-bar(int):            # @bar(int)
-    xor     ecx, ecx            
-    cmp     edi, 15             
-    sete    cl                  
-    xor     ecx, 3              
-    cmp     edi, 10             
-    mov     eax, 1              
-    cmovne  eax, ecx            
-    ret                         
+foo(int):                                # @foo(int)
+        add     edi, -10
+        cmp     edi, 9
+        ja      .LBB0_2
+        movsxd  rax, edi
+        mov     eax, dword ptr [4*rax + .Lswitch.table.bar(int)]
+        ret
+.LBB0_2:
+        mov     eax, 6
+        ret
+bar(int):                                # @bar(int)
+        add     edi, -10
+        cmp     edi, 9
+        ja      .LBB1_2
+        movsxd  rax, edi
+        mov     eax, dword ptr [4*rax + .Lswitch.table.bar(int)]
+        ret
+.LBB1_2:
+        mov     eax, 6
+        ret
+.Lswitch.table.bar(int):
+        .long   1                               # 0x1
+        .long   3                               # 0x3
+        .long   5                               # 0x5
+        .long   2                               # 0x2
+        .long   6                               # 0x6
+        .long   6                               # 0x6
+        .long   6                               # 0x6
+        .long   6                               # 0x6
+        .long   6                               # 0x6
+        .long   4                               # 0x4                        
 ```
 </table>
 
-- Also I don't think that limitations related to compatibility with C, since syntax of <span class="keywordflow">`if`</span> statement is still compatible with C even though it was extended in C++17, this extension allows to declare variable  within <span class="keywordflow">`if`</span> statement like this: 
-```cpp
-if( std::smatch mt; std::regex_match( text, mt, rgx ) ) {...}
-```
-Moreover this situation seem unfortunate for other people as well:
+If this optimization is possible, then it means that the limitations of the <span class="keywordflow">`switch`</span> statement make no sense and never had, considering the fact that even clang-3.0 was able to do that kind of optimization. Clang has shown us that to both of those statements can be applied similar optimizations. However, the <span class="keywordflow">`if`</span> statement can also work with runtime data, whereas the <span class="keywordflow">`switch`</span> statement cannot.
 
-- There was the [proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html) for C++ standard committee: ''To allow to use complex types ( such as 'string literals', 'complex numbers', etc ) within <span class="keywordflow">`switch`</span> statement''. And committee agreed about importance of this topic. 
-But somehow the author stopped his work toward this direction.
-
+And this situation is unfortunate for me and the others. As I can see all over the internet a lot of attempts to overcome this situation in some way or another:
 
 - Compilers such as clang and gcc have non-standard extension for matching [case ranges](https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html).\n
 **For example**:
@@ -115,18 +131,14 @@ switch( ch )
 ```
 </table>
 
-- On top of that the internet is full of questions with over million views:
+- The internet is full of questions(with over million views) of people whose trying to find an insight or workaround:
     - [Why strings cannot be used in switch statement?](https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings)
     - [How to compose complex condition in switch statement?](https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement)
 
-- Programming language Swift has pretty advanced <span class="keywordflow">`switch`</span> statement.
+- Programming language Swift has pretty advanced the <span class="keywordflow">`switch`</span> statement.
 
-The evidence above tell us that people don't like inconsistency and limitations of <span class="keywordflow">`switch`</span> statement, and they were trying to overcome 
-them with different approaches( by implementing non-standard extension, writing proposals or just searching for the solution/workaround in the internet ).
-
-Based on those factors I decided to write my own implementation of enhanced <span class="keywordflow">`switch`</span> statement( or just `eswitch` ).
-In my implementation I tried:
-1. to address all the decribed limitations
+Turns out, the <span class="keywordflow">`switch`</span> statement can also be as powerful as the <span class="keywordflow">`if`</span> statement. This insight became my motivation to start this project. Where I've tried:
+1. to address all the limitations
 2. leave the syntax of `eswitch` as close as possible to <span class="keywordflow">`switch`</span> statement. Compare:
 <table cellspacing="0" cellpadding="0" >
 <tr>
@@ -179,7 +191,7 @@ eswitch( num )
 </table>
 
 3. And last but not least, another my priority was the performance 
-of `eswitch`, which shouldn't differ by much from <span class="keywordflow">`switch`</span> statement.
+of `eswitch`. I worked so hard in order to be as close as possible to the performance of <span class="keywordflow">`switch`</span> statement.
 
 ### Comparison
 
@@ -188,7 +200,7 @@ Since full comparison of `eswitch` vs <span class="keywordflow">`switch`</span> 
 the latter. Thus I'm going to do comparison with <span class="keywordflow">`if`</span> statement instead.
 
 <table>
-<tr><th>After<th>Before
+<tr><th>eswitch<th>if statement
 <tr>
 <td colspan="2">
 <div align="left">
@@ -727,9 +739,9 @@ eswitch( 2 - 0.7000000001 )
 
 --------------------------------------------
 
-- Using macroses for `Case` and `Default` allowed me to be as close as possible to <span class="keywordflow">`switch`</span> statement regarding syntax, otherwise there was no way to hide lambda declaration. 
+- Using macroses for `Case` and `Default` allowed me to be as close as possible to <span class="keywordflow">`switch`</span> statement regarding syntax, otherwise there was no way to hide verbose lambda declaration. 
 - Setting properties via `operator^` - It is the only `operator` which is used to set 
-certain properties for values/matrices( in matlab ), which I find reasonable. Thus I used this notation in my library, like this:
+certain properties for values/matrices( in matlab ), and which I find reasonable. Thus I used this notation in my library, like this:
 ```cpp 
 eswitch( some_var )
 (
