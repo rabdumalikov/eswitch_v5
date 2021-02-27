@@ -104,7 +104,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <li class="level2"><a href="#tutorial-installation">Installation</a></li>
 <li class="level2"><a href="#tutorial-license">License</a></li>
 <li class="level2"><a href="#tutorial-compilers">Supported Compilers</a></li>
-<li class="level2"><a href="#autotoc_md8">Conventions used in this document</a></li>
+<li class="level2"><a href="#autotoc_md8">Conventions used in this Document</a></li>
 </ul>
 </li>
 <li class="level1"><a href="#tutorial-implementation-details">Implementation Details</a><ul><li class="level2"><a href="#autotoc_md11">Keywords</a></li>
@@ -133,8 +133,8 @@ Overview</h1>
 <h2><a class="anchor" id="autotoc_md1"></a>
 Motivation</h2>
 <hr  />
-<p> Let's start with a little bit of backstory. As you may know in C++ the <span class="keywordflow"><code>switch</code></span> statement is quite limited( in comparison with other statements ) and there are few reasons for this, which are mainly related to optimization. Compiler can use <b>jump table</b> or <b>binary search</b> to optimize the <span class="keywordflow"><code>switch</code></span> statement, but nothing comes without a price as such optimizations are only possible for compile-time data. In C++98 only primitives such as <span class="keyword"><code>int</code></span>, <span class="keyword"><code>char</code></span>, <span class="keyword"><code>enum</code></span> and <span class="keyword"><code>bool</code></span> could be data known at compile time. That's why the <span class="keywordflow"><code>switch</code></span> statement was restricted to primitive-only. However, in C++11 the new keyword <span class="keyword"><code>constexpr</code></span> was introduced. Which opened the doors for compile-time custom types. So now it has become possible to overcome the primitive-only limitation. There was even the <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html">proposal</a> for this. Unfortunately, for whatever reason, the author decided to bail out, even though the feedback from the committee was positive. Nonetheless, even if this proposal was accepted in the C++ standard the <span class="keywordflow"><code>switch</code></span> statement still wouldn't be as powerful as the <span class="keywordflow"><code>if</code></span> statement.</p>
-<p>Let us now examine the <span class="keywordflow"><code>if</code></span> statement closely. It can be used for various data types that are known at compile time and at runtime. In addition to this, it allows to compose and test complex conditions. Wait wait wait, if the <span class="keywordflow"><code>if</code></span> statement can work with data known at compile-time, then why can't compiler optimize this statement just like the <span class="keywordflow"><code>switch</code></span> statement? In theory, it can. Let me even say that there is a compiler that is capable of doing so and this is clang.</p>
+<p> Let's start with a little bit of backstory. As you know in C++, the <span class="keywordflow"><code>switch</code></span> statement is quite limited( compared with other statements ) and there are few reasons for this, which are mainly related to optimization. Compiler can use <b>jump table</b> or <b>binary search</b> to optimize the <span class="keywordflow"><code>switch</code></span> statement, but nothing comes without a price as such optimizations are possible only for compile-time data. In C++98, only values of primitives like <span class="keyword"><code>int</code></span>, <span class="keyword"><code>char</code></span>, <span class="keyword"><code>enum</code></span> and <span class="keyword"><code>bool</code></span> can be known at compile time. That's why the <span class="keywordflow"><code>switch</code></span> statement was restricted to primitive-only. However, in C++11, the new keyword <span class="keyword"><code>constexpr</code></span> was introduced. Which opened the doors for compile-time custom types. So now it has become possible to overcome the primitive-only limitation. There was also the <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html">proposal</a> in this regard. Unfortunately, for whatever reason, the author decided to bail out, even though the feedback from the committee was positive. Nonetheless, even if this proposal was accepted in the C++ standard, the <span class="keywordflow"><code>switch</code></span> statement still wouldn't be as powerful as the <span class="keywordflow"><code>if</code></span> statement.</p>
+<p>Let us now carefully examine the <span class="keywordflow"><code>if</code></span> statement. It can be used for various data types that are known at compile time and at runtime. In addition to this, it allows to compose and test complex conditions. Wait wait wait, if the <span class="keywordflow"><code>if</code></span> statement can work with data known at compile-time, then why can't compiler optimize this statement just like the <span class="keywordflow"><code>switch</code></span> statement? In theory, it can. Let me even say that there is a compiler that is capable of doing so and this is clang.</p>
 <p><b>For example</b>:  
 <button onclick="location.href='https://godbolt.org/z/rq7fzn'" type="button">
          View on <strong>CompilerExplorer</strong></button>
@@ -206,11 +206,18 @@ Motivation</h2>
 </div><!-- fragment --><p class="endtd"></p>
 </td></tr>
 </table>
-<p>If this optimization is possible, then it means that the limitations of the <span class="keywordflow"><code>switch</code></span> statement make no sense and never had, considering the fact that even clang-3.0 was able to do that kind of optimization. Clang has shown us that to both of those statements can be applied similar optimizations. However, the <span class="keywordflow"><code>if</code></span> statement can also work with runtime data, whereas the <span class="keywordflow"><code>switch</code></span> statement cannot.</p>
-<p>And this situation is unfortunate for me and the others. As I can see all over the internet a lot of attempts to overcome this situation in some way or another:</p>
+<p>If those optimizations are possible, then it means that the limitations of the <span class="keywordflow"><code>switch</code></span> statement make no sense and never had, given that even 10 years old clang-3.0 could do such optimizations. Clang has shown us that similar optimizations can be applied to both of these statements. However, the <span class="keywordflow"><code>if</code></span> statement can also work with runtime data, whereas the <span class="keywordflow"><code>switch</code></span> statement cannot.</p>
+<p>And this situation is unfortunate for me and others. The Internet is filled with questions(over million views) from people who are trying to find an insight or a workaround:</p><ul>
+<li><a href="https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings">Why strings cannot be used in switch statement?</a></li>
+<li><a href="https://stackoverflow.com/questions/16388510/evaluate-a-string-with-a-switch-in-c">Evaluate a string with a switch in C++</a></li>
+<li><a href="https://stackoverflow.com/questions/5452188/switch-case-statement-in-c-with-a-qstring-type">switch/case statement in C++ with a QString type</a></li>
+<li><a href="https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement">How to compose complex condition in switch statement?</a></li>
+<li><a href="https://stackoverflow.com/questions/8644096/multiple-conditions-in-switch-case">Multiple conditions in switch case?</a></li>
+<li><a href="https://stackoverflow.com/questions/9432226/how-do-i-select-a-range-of-values-in-a-switch-statement/24133078">How do I select a range of values in a switch statement?</a></li>
+</ul>
+<p>Moreover, I can see all over the place many attempts to overcome those limitations in some way or another:</p>
 <ul>
-<li>Compilers such as clang and gcc have non-standard extension for matching <a href="https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html">case ranges</a>.<br  />
-<b>For example</b>: <table cellspacing="0" cellpadding="0">
+<li>Compilers such as clang and gcc implemented non-standard extension for matching <a href="https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html">case ranges</a>: <table cellspacing="0" cellpadding="0">
 <tr>
 <td><div class="fragment"><div class="line"><span class="keywordflow">switch</span>( num )</div>
 <div class="line">{</div>
@@ -227,16 +234,61 @@ Motivation</h2>
 </td></tr>
 </table>
 </li>
-<li>The internet is full of questions(with over million views) of people whose trying to find an insight or workaround:<ul>
-<li><a href="https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings">Why strings cannot be used in switch statement?</a></li>
-<li><a href="https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement">How to compose complex condition in switch statement?</a></li>
-</ul>
+<li>LLVM implemented <a href="https://llvm.org/doxygen/classllvm_1_1StringSwitch.html">StringSwitch</a>: <div class="fragment"><div class="line">Color color = StringSwitch&lt;Color&gt;(argv[i])</div>
+<div class="line">    .Case(<span class="stringliteral">&quot;red&quot;</span>, Red)</div>
+<div class="line">    .Case(<span class="stringliteral">&quot;orange&quot;</span>, Orange)</div>
+<div class="line">    .Case(<span class="stringliteral">&quot;yellow&quot;</span>, Yellow)</div>
+<div class="line">    .Case(<span class="stringliteral">&quot;green&quot;</span>, Green)</div>
+<div class="line">    .Case(<span class="stringliteral">&quot;blue&quot;</span>, Blue)</div>
+<div class="line">    .Case(<span class="stringliteral">&quot;indigo&quot;</span>, Indigo)</div>
+<div class="line">    .Cases(<span class="stringliteral">&quot;violet&quot;</span>, <span class="stringliteral">&quot;purple&quot;</span>, Violet)</div>
+<div class="line">    .Default(UnknownColor);</div>
+</div><!-- fragment --></li>
+<li>Apple created the programming language <a href="https://docs.swift.org/swift-book/LanguageGuide/ControlFlow.html#ID548">Swift</a> with advanced the <span class="keywordflow"><code>switch</code></span> statement: <table cellspacing="0" cellpadding="0">
+<tr>
+<td><div class="fragment"><div class="line"><span class="keywordflow">switch</span> num </div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">case</span> 1..&lt;10:</div>
+<div class="line">        print(<span class="stringliteral">&quot;range [1,10)&quot;</span>)</div>
+<div class="line">    case 10..&lt;100:</div>
+<div class="line">        print(&quot;<a class="code" href="group__underlying-details.html#ga7a5215c0c1466c28d549a94cddab1b7a">range</a> [10,100)&quot;)</div>
+<div class="line">    case 100..&lt;1000:</div>
+<div class="line">        print(&quot;<a class="code" href="group__underlying-details.html#ga7a5215c0c1466c28d549a94cddab1b7a">range</a> [100,1000)&quot;)</div>
+<div class="line">    default:</div>
+<div class="line">        print(&quot;unknown <a class="code" href="group__underlying-details.html#ga7a5215c0c1466c28d549a94cddab1b7a">range</a>&quot;)</div>
+<div class="line">}</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td><td><div class="fragment"><div class="line"><span class="keywordflow">switch</span> someCharacter </div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">case</span> <span class="stringliteral">&quot;a&quot;</span>, <span class="stringliteral">&quot;e&quot;</span>, <span class="stringliteral">&quot;i&quot;</span>, <span class="stringliteral">&quot;o&quot;</span>, <span class="stringliteral">&quot;u&quot;</span>:</div>
+<div class="line">        print(<span class="stringliteral">&quot;a vowel&quot;</span>)</div>
+<div class="line">    case &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;f&quot;, &quot;g&quot;, &quot;h&quot;, &quot;j&quot;,</div>
+<div class="line">         &quot;k&quot;, &quot;l&quot;, &quot;m&quot;, &quot;n&quot;, &quot;p&quot;, &quot;q&quot;, &quot;r&quot;, </div>
+<div class="line">         &quot;s&quot;, &quot;t&quot;, &quot;v&quot;, &quot;w&quot;, &quot;x&quot;, &quot;y&quot;, &quot;z&quot;:</div>
+<div class="line">        print(&quot;a consonant&quot;)</div>
+<div class="line">    default:</div>
+<div class="line">        print(&quot;neither a vowel nor a consonant&quot;)</div>
+<div class="line">}</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td><td><div class="fragment"><div class="line"><span class="keywordflow">switch</span> somePoint </div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">case</span> (0, 0): print(<span class="stringliteral">&quot;at the origin&quot;</span>)</div>
+<div class="line">    case (<a class="code" href="group__other-variables.html#ga4330972eb8a11e6d7848c7bae4582e69">_</a>, 0): print(&quot;on the x-axis&quot;)</div>
+<div class="line">    case (0, <a class="code" href="group__other-variables.html#ga4330972eb8a11e6d7848c7bae4582e69">_</a>): </div>
+<div class="line">        print(&quot;on the y-axis&quot;)</div>
+<div class="line">    case (-2...2, -2...2):</div>
+<div class="line">        print(&quot;inside the box&quot;)</div>
+<div class="line">    default:</div>
+<div class="line">        print(&quot;outside of the box&quot;)</div>
+<div class="line">}</div>
+</div><!-- fragment --><p class="endtd"></p>
+</td></tr>
+</table>
 </li>
-<li>Programming language Swift has pretty advanced the <span class="keywordflow"><code>switch</code></span> statement.</li>
 </ul>
-<p>Turns out, the <span class="keywordflow"><code>switch</code></span> statement can also be as powerful as the <span class="keywordflow"><code>if</code></span> statement. This insight became my motivation to start this project. Where I've tried:</p><ol type="1">
-<li>to address all the limitations</li>
-<li>leave the syntax of <code>eswitch</code> as close as possible to <span class="keywordflow"><code>switch</code></span> statement. Compare: <table cellspacing="0" cellpadding="0">
+<p>Apparently, the <span class="keywordflow"><code>switch</code></span> statement also can be as powerful as the <span class="keywordflow"><code>if</code></span> statement. This insight became my motivation to start this project. Where I tried:</p><ol type="1">
+<li>Address all the limitations</li>
+<li>Leave the syntax of <code>eswitch</code> as close as possible to the <span class="keywordflow"><code>switch</code></span> statement. Compare: <table cellspacing="0" cellpadding="0">
 <tr>
 <td><div class="fragment"><div class="line"><span class="keywordflow">switch</span>( num )</div>
 <div class="line">{ </div>
@@ -254,11 +306,11 @@ Motivation</h2>
 </div><!-- fragment --><p class="endtd"></p>
 </td></tr>
 </table>
-Pretty close, huh? Except the places where I was either limited by language or intentionally tried to avoid certain behavior of <span class="keywordflow"><code>switch</code></span> statement like default fallthrough.<br  />
+Pretty close, isn't it? Except the places where I've been either limited by the language or intentionally tried to avoid one particular behavior of the <span class="keywordflow"><code>switch</code></span> statement such as default fallthrough.<br  />
 <br  />
 <dl class="section note"><dt>Note</dt><dd>In C++ <span class="keywordflow"><code>switch</code></span> statement has explicit <span class="keywordflow"><code>break</code></span> and implicit fallthrough.</dd></dl>
 <br  />
-This behavior is considered to be error-prone. Since developers sometimes forget to use <span class="keywordflow"><code>break</code></span> and because of this their code doesn't work the way it was intended. Thus in my implementation I reversed this concept i.e. <code>eswitch</code> has implicit <span class="keywordflow"><code>break</code></span> and explicit fallthrough. Compare: <table cellspacing="0" cellpadding="0">
+This behavior is considered error-prone. Since developers occasionally forget to use <span class="keywordflow"><code>break</code></span> and because of this their code doesn't work as intended. Thus, in my implementation, I reversed this concept i.e. <code>eswitch</code> has an implicit <span class="keywordflow"><code>break</code></span> and an explicit fallthrough. Compare: <table cellspacing="0" cellpadding="0">
 <tr>
 <td><div class="fragment"><div class="line"><span class="keywordflow">switch</span>( num )            </div>
 <div class="line">{                        </div>
@@ -277,12 +329,12 @@ This behavior is considered to be error-prone. Since developers sometimes forget
 </td></tr>
 </table>
 </li>
-<li>And last but not least, another my priority was the performance of <code>eswitch</code>. I worked so hard in order to be as close as possible to the performance of <span class="keywordflow"><code>switch</code></span> statement.</li>
+<li>And last but not least, another my priority was the performance of <code>eswitch</code>. I worked so hard in order to be as close as possible to the performance of the <span class="keywordflow"><code>switch</code></span> statement.</li>
 </ol>
 <h2><a class="anchor" id="autotoc_md3"></a>
 Comparison</h2>
 <hr  />
-<p> Since full comparison of <code>eswitch</code> vs <span class="keywordflow"><code>switch</code></span> statement isn't possible due to the limitations of the latter. Thus I'm going to do comparison with <span class="keywordflow"><code>if</code></span> statement instead.</p>
+<p> Unfortunately, the full comparison of <code>eswitch</code> vs the <span class="keywordflow"><code>switch</code></span> statement isn't possible due to the limitations of the latter. Thus I'm going to make a comparison with the <span class="keywordflow"><code>if</code></span> statement instead.</p>
 <table class="doxtable">
 <tr>
 <th>eswitch</th><th>if statement </th></tr>
@@ -518,7 +570,7 @@ Comparison</h2>
 <h2><a class="anchor" id="tutorial-installation"></a>
 Installation</h2>
 <hr  />
-<p> Since this library is header-only and on top of that whole library was implemented within single file, thus you can get that file from <code><a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a></code> repository on <a href="https://github.com/rabdumalikov/eswitch_v5/blob/main/include/eswitch/eswitch_v5.hpp">github</a> and just <code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html" title="implementation which enhance switch statement">eswitch_v5.hpp</a>&gt;</code>.</p>
+<p> It is a header-only library. On top of that entire library was implemented within a single file, thus you can get that <a href="https://github.com/rabdumalikov/eswitch_v5/blob/main/include/eswitch/eswitch_v5.hpp">file</a> from the <a href="https://github.com/rabdumalikov/eswitch_v5">repository</a> and just include it.</p>
 <h2><a class="anchor" id="tutorial-license"></a>
 License</h2>
 <hr  />
@@ -526,14 +578,14 @@ License</h2>
 <h2><a class="anchor" id="tutorial-compilers"></a>
 Supported Compilers</h2>
 <hr  />
-<p> Should work on all major compilers which support C++20. I personally tested on following:</p>
+<p> Should work on all major compilers which support C++20. I personally tested on the following:</p>
 <ul>
 <li><b>clang++-11</b> (or later)</li>
 <li><b>g++-10.2</b> (or later)</li>
-<li><b>Visual Studio 2019</b> - isn't supported for now, just because <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0428r2.pdf">familiar template syntax for generic lambdas</a> from C++20 wasn't implemented by <em>Microsoft</em> compiler.</li>
+<li><b>Visual Studio 2019</b> - isn't supported for now, just because <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0428r2.pdf">familiar template syntax for generic lambdas</a> from C++20 wasn't implemented by <em>Microsoft</em> compiler. I reported about this <a href="https://developercommunity.visualstudio.com/t/keyword-requires-within-if-statement-doesnt-work/1287202">issue</a>, right now it is under investigation.</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md8"></a>
-Conventions used in this document</h2>
+Conventions used in this Document</h2>
 <hr  />
 <p> In all code examples, I omit the namespace prefixes for names in the <code><a class="el" href="namespaceeswitch__v5.html">eswitch_v5</a></code> and <code>std</code> namespaces.</p>
 <h1><a class="anchor" id="tutorial-implementation-details"></a>
@@ -637,7 +689,7 @@ Match via predicate </li>
 <tr>
 <td><div align="center"> Optional:<br  />
  <span style="color:blue">__param__</span> </div> </td><td><div align="left">Correspond to withdrawn value from: <code><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/any.html">std::any</a></code>, <code><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/variant.html">std::variant</a></code>,<br  />
- <code>polymorphic match</code> or <code><a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></code> match. But also it correspond to<br  />
+ <code>polymorphic match</code> or <code><a class="elRef" href="http://en.cppreference.com/w/cpp/regex/basic_regex.html">std::regex</a></code> match. But also it corresponds to the<br  />
  returned value wrapped into <code><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/optional.html">std::optional</a></code> from custom extensions.<br  />
  <dl class="section note"><dt>Note</dt><dd>Keyword <span class="keyword"><code>auto</code></span> here is forbidden,<br  />
  i.e. type of <span style="color:blue">__param__</span> should be specified explicitly.  </dd></dl>
@@ -658,7 +710,8 @@ Match via predicate </li>
 <div align="left"></div><h1><a class="anchor" id="autotoc_md14"></a>
 How to write Custom extensions?</h1>
 <div align="left"> <hr  />
-</div><div align="left">This guide is about how to use <em>custom types</em> or define <em>custom behavior</em> in <code>Case</code> for certain types. We will implement custom extension and I walk you through all the steps and details.</div><div align="left"><b>Thing to know:</b></div><div align="left">The only things which we can be customized are all the comparison <code>operators</code> such as <code>==</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;</code> and so on.</div><div align="left"><b>Let's begin:</b></div><div align="left">As you may already know that comparing floating points is a tricky thing, e.g. following code fails due to inaccurate precision: <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 2 - 0.7000000001 )</div>
+</div><div align="left">This guide deals with how to define the custom <code>Case</code> behavior for any types. We will implement a custom extension and I walk you through all steps and details.</div><div align="left"><dl class="section note"><dt>Note</dt><dd>The only things which we can be customized are all the comparison <code>operators</code> such as <code>==</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;</code> and so on.</dd></dl>
+<b>Let's begin:</b></div><div align="left">As you know, comparing floating points is a tricky, for example, the following code fails due to inaccurate precision: <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 2 - 0.7000000001 )</div>
 <div class="line">(</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( 1.3 )</div>
 <div class="line">    {</div>
@@ -666,15 +719,15 @@ How to write Custom extensions?</h1>
 <div class="line">    },</div>
 <div class="line">    <a class="code" href="group__macroses.html#gaff2b0c246e6111e260e650b0ff4a8eb5">Default</a> </div>
 <div class="line">    { </div>
-<div class="line">        assert( <span class="keyword">false</span> ); </div>
+<div class="line">        assert( <span class="keyword">false</span> );</div>
 <div class="line">    }</div>
 <div class="line">);</div>
-</div><!-- fragment --></div><div align="left">So standard way of comparing floating points doesn't work properly. On top of that, simple overloading of <code>operator==</code> for primitives is <a href="https://eel.is/c++draft/over.oper#general-7">forbidden</a>.</div><div align="left"><div class="fragment"><div class="line"><span class="keywordtype">bool</span> <a class="code" href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">operator==</a>( <span class="keyword">const</span> <span class="keywordtype">double</span> d1, <span class="keyword">const</span> <span class="keywordtype">double</span> d1 )</div>
+</div><!-- fragment --></div><div align="left">So the standard way of comparing floating points doesn't work properly. On top of that, simple overloading of <code>operator==</code> for primitives is <a href="https://eel.is/c++draft/over.oper#general-7">forbidden</a>.</div><div align="left"><div class="fragment"><div class="line"><span class="keywordtype">bool</span> <a class="code" href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">operator==</a>( <span class="keyword">const</span> <span class="keywordtype">double</span> d1, <span class="keyword">const</span> <span class="keywordtype">double</span> d1 )</div>
 <div class="line">{</div>
 <div class="line">    ...</div>
 <div class="line">}</div>
 <div class="line"><span class="comment">/// Compilation ERROR: overloaded &#39;operator==&#39; must have at least one parameter of class or enumeration type</span></div>
-</div><!-- fragment --></div><div align="left">To overcome this we need to use an intermediate class which will hold our value. Like that: <div class="fragment"><div class="line"><span class="keyword">struct </span>double_value</div>
+</div><!-- fragment --></div><div align="left">To overcome this, we must use an intermediate class that will hold our value. Like this:&#160; <div class="fragment"><div class="line"><span class="keyword">struct </span>double_value</div>
 <div class="line">{</div>
 <div class="line">    <span class="keywordtype">double</span> value;</div>
 <div class="line">};</div>
@@ -682,7 +735,7 @@ How to write Custom extensions?</h1>
 <div class="line">{</div>
 <div class="line">    <span class="keywordflow">return</span> <a class="codeRef" href="http://en.cppreference.com/w/cpp/numeric/math/fabs.html">fabs</a>( d1 - d2.value ) &lt; __FLT_EPSILON__;</div>
 <div class="line">}</div>
-</div><!-- fragment --></div><div align="left">And now code below will work as we desired( since using <code>double_value</code> allows for compiler through <a href="https://en.cppreference.com/w/cpp/language/lookup">name lookup</a> to find our custom <code>operator==</code> ). <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 2 - 0.7000000001 )</div>
+</div><!-- fragment --></div><div align="left">Now code below will work as we desired since using <code>double_value</code> allows for compiler through <a href="https://en.cppreference.com/w/cpp/language/lookup">name lookup</a> to find our custom <code>operator==</code>. <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( 2 - 0.7000000001 )</div>
 <div class="line">(</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( double_value{ 1.3 } ) </div>
 <div class="line">    {</div>
@@ -694,15 +747,15 @@ How to write Custom extensions?</h1>
 <div class="line">    }</div>
 <div class="line">);</div>
 </div><!-- fragment --></div><div align="left"><b>Full example</b>: <a class="el" href="md_examples.html#example-floating-point-comparison">Floating point comparison</a></div><div align="left"><dl class="section note"><dt>Note</dt><dd><ul>
-<li>An intermediate class should be used all the time( not only for primitives due to compiler restrictions ), otherwise it won't be possible for compiler to find custom <code>operator</code>( unless this <code>operator</code> will be defined before <code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html" title="implementation which enhance switch statement">eswitch_v5.hpp</a>&gt;</code>, only then intermediate class won't be needed ).</li>
-<li>Also example below demonstrate if certain value should be returned from custom <code>operator</code> and transferred to <code>Case</code> as <a href="#syntax">input parameter</a>, then the value should be wrapped into <code><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/optional.html">std::optional</a></code>.</li>
+<li>An intermediate class should be used all the time (not only for primitives due to compiler restrictions), otherwise it won't be possible for compiler to find custom <code>operator</code> (unless this <code>operator</code> will be defined before <code>#include &lt;<a class="el" href="eswitch__v5_8hpp.html" title="implementation which enhance switch statement">eswitch_v5.hpp</a>&gt;</code>, only then intermediate class won't be needed).</li>
+<li>Also the example below demonstrate if a certain value should be returned from custom <code>operator</code> and transferred to <code>Case</code> as <a href="#syntax">input parameter</a>, then the value should be wrapped into <code><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/optional.html">std::optional</a></code>.</li>
 </ul>
 </dd></dl>
 <b>Example:</b> <a class="el" href="md_examples.html#example-value-and-type-transferring">Value and Type transferring</a></div><div align="left"></div><h1><a class="anchor" id="autotoc_md16"></a>
 Rationalities</h1>
 <div align="left"> <hr  />
 </div><div align="left"><ul>
-<li>Using macroses for <code>Case</code> and <code>Default</code> allowed me to be as close as possible to <span class="keywordflow"><code>switch</code></span> statement regarding syntax, otherwise there was no way to hide verbose lambda declaration.</li>
+<li>Using macroses for <code>Case</code> and <code>Default</code> allowed me to be as close as possible to the <span class="keywordflow"><code>switch</code></span> statement regarding syntax, otherwise there was no way to hide verbose lambda declaration.</li>
 <li>Setting properties via <code>operator^</code> - It is the only <code>operator</code> which is used to set certain properties for values/matrices( in matlab ), and which I find reasonable. Thus I used this notation in my library, like this: <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( some_var )</div>
 <div class="line">(</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( some_value_1 ) {} ^ likely_,</div>
@@ -726,6 +779,8 @@ Rationalities</h1>
 <div class="ttc" id="agroup__macroses_html_gae733eb4e00d6306a21422f02ef7e8ca4"><div class="ttname"><a href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a></div><div class="ttdeci">#define Case(...)</div><div class="ttdoc">Accepts conditions of various forms.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01026">eswitch_v5.hpp:1026</a></div></div>
 <div class="ttc" id="agroup__main-components_html_ga82f93fb22725d76bb016b488742331d1"><div class="ttname"><a href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch_v5::eswitch</a></div><div class="ttdeci">static constexpr auto eswitch(Ts &amp;&amp;... ts)</div><div class="ttdoc">This function is responsible for passing arguments for class eswitch_impl with overloaded operator(),...</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00838">eswitch_v5.hpp:838</a></div></div>
 <div class="ttc" id="amake_pair_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/pair/make_pair.html">std::make_pair</a></div><div class="ttdeci">T make_pair(T... args)</div></div>
+<div class="ttc" id="agroup__other-variables_html_ga4330972eb8a11e6d7848c7bae4582e69"><div class="ttname"><a href="group__other-variables.html#ga4330972eb8a11e6d7848c7bae4582e69">eswitch_v5::_</a></div><div class="ttdeci">static constexpr extension::any _</div><div class="ttdoc">Used in Case to match for any input.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l01019">eswitch_v5.hpp:1019</a></div></div>
+<div class="ttc" id="agroup__underlying-details_html_ga7a5215c0c1466c28d549a94cddab1b7a"><div class="ttname"><a href="group__underlying-details.html#ga7a5215c0c1466c28d549a94cddab1b7a">eswitch_v5::extension::range</a></div><div class="ttdeci">range</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00067">eswitch_v5.hpp:67</a></div></div>
 <div class="ttc" id="agroup__modules_html_ga620be0eec7b29eb300458a049bde6abe"><div class="ttname"><a href="group__modules.html#ga620be0eec7b29eb300458a049bde6abe">eswitch_v5::operator==</a></div><div class="ttdeci">static auto operator==(const std::string &amp;tuple_entry, const regexter &amp;value)</div><div class="ttdoc">CaseModule to support for matching and withdrawing of values for and from regular expression.</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00413">eswitch_v5.hpp:413</a></div></div>
 <div class="ttc" id="agroup__index-variables_html_gacc83659898439dd14b78fc60be68ce28"><div class="ttname"><a href="group__index-variables.html#gacc83659898439dd14b78fc60be68ce28">eswitch_v5::_2</a></div><div class="ttdeci">constexpr Index_&lt; 1 &gt; _2</div><div class="ttdef"><b>Definition:</b> <a href="eswitch__v5_8hpp_source.html#l00175">eswitch_v5.hpp:175</a></div></div>
 <div class="ttc" id="avariant_html"><div class="ttname"><a href="http://en.cppreference.com/w/cpp/utility/variant.html">std::variant</a></div></div>

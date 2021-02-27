@@ -30,7 +30,7 @@ var NAVTREE =
         [ "Installation", "index.html#tutorial-installation", null ],
         [ "License", "index.html#tutorial-license", null ],
         [ "Supported Compilers", "index.html#tutorial-compilers", null ],
-        [ "Conventions used in this document", "index.html#autotoc_md8", null ]
+        [ "Conventions used in this Document", "index.html#autotoc_md8", null ]
       ] ],
       [ "Implementation Details", "index.html#tutorial-implementation-details", [
         [ "Keywords", "index.html#autotoc_md11", null ],
