@@ -227,7 +227,7 @@ Pretty close, isn't it? Except the places where I've been either limited by the 
 
 \n
 This behavior is considered error-prone. Since developers occasionally forget to use 
-<span class="keywordflow">`break`</span> and because of this their code doesn't work as intended. Thus, in my implementation, I reversed this concept i.e. `eswitch` has an implicit <span class="keywordflow">`break`</span> and an explicit fallthrough. Compare:
+<span class="keywordflow">`break`</span>. Thus, in my implementation, I reversed this concept i.e. `eswitch` has an implicit <span class="keywordflow">`break`</span> and an explicit fallthrough. Compare:
 <table cellspacing="0" cellpadding="0">
 <tr>
     <td>
@@ -422,7 +422,7 @@ catch( const bad_cast & ) { ... }
 ```cpp
 eswitch( text )
 (
-    Case( R"(\w*)"_r ) { return "message"; },
+    Case( R"(\w*)"_r ) { return "word"; },
     Case( R"(\d*)"_r ) { return "number"; }
 );
 ```
@@ -432,7 +432,7 @@ smatch match;
 
 if( regex_match( text, match, regex( R"(\w*)" ) ) )
 {  
-    return "message";
+    return "word";
 }
 else if( regex_match( text, match, regex( R"(\d*)" ) ) )
 {
@@ -798,15 +798,8 @@ eswitch( 2 - 0.7000000001 )
 --------------------------------------------
 
 - Using macroses for `Case` and `Default` allowed me to be as close as possible to the <span class="keywordflow">`switch`</span> statement regarding syntax, otherwise there was no way to hide verbose lambda declaration. 
-- Setting properties via `operator^` - It is the only `operator` which is used to set 
-certain properties for values/matrices( in matlab ), and which I find reasonable. Thus I used this notation in my library, like this:
-```cpp 
-eswitch( some_var )
-(
-    Case( some_value_1 ) {} ^ likely_,
-    Case( some_value_2 ) {} ^ fallthrough_
-);
-```
-- I can use hash in order to use string within <span class="keywordflow">`switch`</span> statement:
-
-- Why do we need another statement? That's is reasonable questions to ask.
+- **I can use compile-time hashing in order to use string within the <span class="keywordflow">`switch`</span> statement**. Yes you can. But there are several downsides. First of all, you need to implement it yourself since there is no standard implementation. Second of all, you need to deal with possible collisions. After all those steps you will solve just one limitation, it still won't be as powerful as the <span class="keywordflow">`if`</span> statement, nor my implementation. Which is much more advance since it allows:
+    - match for any types, 
+    - compose complex conditions, 
+    - write extensions and 
+    - `eswitch` can work at compile-time as long as the provided data known at compile-time, but there is one catch, now it is not working and the reason is that `std::reference_wrapper` isn't <span class="keyword">`constexpr`</span> althought it must be since C++20.
