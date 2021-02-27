@@ -310,7 +310,7 @@ Pretty close, isn't it? Except the places where I've been either limited by the 
 <br  />
 <dl class="section note"><dt>Note</dt><dd>In C++ <span class="keywordflow"><code>switch</code></span> statement has explicit <span class="keywordflow"><code>break</code></span> and implicit fallthrough.</dd></dl>
 <br  />
-This behavior is considered error-prone. Since developers occasionally forget to use <span class="keywordflow"><code>break</code></span> and because of this their code doesn't work as intended. Thus, in my implementation, I reversed this concept i.e. <code>eswitch</code> has an implicit <span class="keywordflow"><code>break</code></span> and an explicit fallthrough. Compare: <table cellspacing="0" cellpadding="0">
+This behavior is considered error-prone. Since developers occasionally forget to use <span class="keywordflow"><code>break</code></span>. Thus, in my implementation, I reversed this concept i.e. <code>eswitch</code> has an implicit <span class="keywordflow"><code>break</code></span> and an explicit fallthrough. Compare: <table cellspacing="0" cellpadding="0">
 <tr>
 <td><div class="fragment"><div class="line"><span class="keywordflow">switch</span>( num )            </div>
 <div class="line">{                        </div>
@@ -474,7 +474,7 @@ Comparison</h2>
 <tr>
 <td><div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( text )</div>
 <div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;(\w*)&quot;_r ) { </span><span class="keywordflow">return</span> <span class="stringliteral">&quot;message&quot;</span>; },</div>
+<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;(\w*)&quot;_r ) { </span><span class="keywordflow">return</span> <span class="stringliteral">&quot;word&quot;</span>; },</div>
 <div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( R<span class="stringliteral">&quot;(\d*)&quot;_r ) { </span><span class="keywordflow">return</span> <span class="stringliteral">&quot;number&quot;</span>; }</div>
 <div class="line">);</div>
 </div><!-- fragment --><p class="endtd"></p>
@@ -482,7 +482,7 @@ Comparison</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordflow">if</span>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/regex_match.html">regex_match</a>( text, match, regex( R<span class="stringliteral">&quot;(\w*)&quot; ) ) )</span></div>
 <div class="line"><span class="stringliteral">{  </span></div>
-<div class="line"><span class="stringliteral">    </span><span class="keywordflow">return</span> <span class="stringliteral">&quot;message&quot;</span>;</div>
+<div class="line"><span class="stringliteral">    </span><span class="keywordflow">return</span> <span class="stringliteral">&quot;word&quot;</span>;</div>
 <div class="line">}</div>
 <div class="line"><span class="keywordflow">else</span> <span class="keywordflow">if</span>( <a class="codeRef" href="http://en.cppreference.com/w/cpp/regex/regex_match.html">regex_match</a>( text, match, regex( R<span class="stringliteral">&quot;(\d*)&quot; ) ) )</span></div>
 <div class="line"><span class="stringliteral">{</span></div>
@@ -756,14 +756,13 @@ Rationalities</h1>
 <div align="left"> <hr  />
 </div><div align="left"><ul>
 <li>Using macroses for <code>Case</code> and <code>Default</code> allowed me to be as close as possible to the <span class="keywordflow"><code>switch</code></span> statement regarding syntax, otherwise there was no way to hide verbose lambda declaration.</li>
-<li>Setting properties via <code>operator^</code> - It is the only <code>operator</code> which is used to set certain properties for values/matrices( in matlab ), and which I find reasonable. Thus I used this notation in my library, like this: <div class="fragment"><div class="line"><a class="code" href="group__main-components.html#ga82f93fb22725d76bb016b488742331d1">eswitch</a>( some_var )</div>
-<div class="line">(</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( some_value_1 ) {} ^ likely_,</div>
-<div class="line">    <a class="code" href="group__macroses.html#gae733eb4e00d6306a21422f02ef7e8ca4">Case</a>( some_value_2 ) {} ^ <a class="code" href="group__other-variables.html#ga23e83b648756cadca9232aaf9d7d3d03">fallthrough_</a></div>
-<div class="line">);</div>
-</div><!-- fragment --></li>
-<li>I can use hash in order to use string within <span class="keywordflow"><code>switch</code></span> statement:</li>
-<li>Why do we need another statement? That's is reasonable questions to ask. </li>
+<li><b>I can use compile-time hashing in order to use string within the <span class="keywordflow"><code>switch</code></span> statement</b>. Yes you can. But there are several downsides. First of all, you need to implement it yourself since there is no standard implementation. Second of all, you need to deal with possible collisions. After all those steps you will solve just one limitation, it still won't be as powerful as the <span class="keywordflow"><code>if</code></span> statement, nor my implementation. Which is much more advance since it allows:<ul>
+<li>match for any types,</li>
+<li>compose complex conditions,</li>
+<li>write extensions and</li>
+<li><code>eswitch</code> can work at compile-time as long as the provided data known at compile-time, but there is one catch, now it is not working and the reason is that <code><a class="elRef" href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html">std::reference_wrapper</a></code> isn't <span class="keyword"><code>constexpr</code></span> althought it must be since C++20. </li>
+</ul>
+</li>
 </ul>
 </div></div></div><!-- PageDoc -->
 </div><!-- contents -->
