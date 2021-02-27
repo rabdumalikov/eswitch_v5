@@ -24,9 +24,9 @@ User Manual       {#mainpage}
 ### Motivation
 
 --------------------------------------------
-Let's start with a little bit of backstory. As you may know in C++ the <span class="keywordflow">`switch`</span> statement is quite limited( in comparison with other statements ) and there are few reasons for this, which are mainly related to optimization. Compiler can use **jump table** or **binary search** to optimize the <span class="keywordflow">`switch`</span> statement, but nothing comes without a price as such optimizations are only possible for compile-time data. In C++98 only primitives such as <span class="keyword">`int`</span>, <span class="keyword">`char`</span>, <span class="keyword">`enum`</span> and <span class="keyword">`bool`</span> could be data known at compile time. That's why the <span class="keywordflow">`switch`</span> statement was restricted to primitive-only. However, in C++11 the new keyword <span class="keyword">`constexpr`</span> was introduced. Which opened the doors for compile-time custom types. So now it has become possible to overcome the primitive-only limitation. There was even the [proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html) for this. Unfortunately, for whatever reason, the author decided to bail out, even though the feedback from the committee was positive. Nonetheless, even if this proposal was accepted in the C++ standard the <span class="keywordflow">`switch`</span> statement still wouldn't be as powerful as the <span class="keywordflow">`if`</span> statement.
+Let's start with a little bit of backstory. As you know in C++, the <span class="keywordflow">`switch`</span> statement is quite limited( compared with other statements ) and there are few reasons for this, which are mainly related to optimization. Compiler can use **jump table** or **binary search** to optimize the <span class="keywordflow">`switch`</span> statement, but nothing comes without a price as such optimizations are possible only for compile-time data. In C++98, only values of primitives like <span class="keyword">`int`</span>, <span class="keyword">`char`</span>, <span class="keyword">`enum`</span> and <span class="keyword">`bool`</span> can be known at compile time. That's why the <span class="keywordflow">`switch`</span> statement was restricted to primitive-only. However, in C++11, the new keyword <span class="keyword">`constexpr`</span> was introduced. Which opened the doors for compile-time custom types. So now it has become possible to overcome the primitive-only limitation. There was also the [proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3627.html) in this regard. Unfortunately, for whatever reason, the author decided to bail out, even though the feedback from the committee was positive. Nonetheless, even if this proposal was accepted in the C++ standard, the <span class="keywordflow">`switch`</span> statement still wouldn't be as powerful as the <span class="keywordflow">`if`</span> statement.
 
-Let us now examine the <span class="keywordflow">`if`</span> statement closely. It can be used for various data types that are known at compile time and at runtime. In addition to this, it allows to compose and test complex conditions. Wait wait wait, if the <span class="keywordflow">`if`</span> statement can work with data known at compile-time, then why can't compiler optimize this statement just like the <span class="keywordflow">`switch`</span> statement? In theory, it can. Let me even say that there is a compiler that is capable of doing so and this is clang.
+Let us now carefully examine the <span class="keywordflow">`if`</span> statement. It can be used for various data types that are known at compile time and at runtime. In addition to this, it allows to compose and test complex conditions. Wait wait wait, if the <span class="keywordflow">`if`</span> statement can work with data known at compile-time, then why can't compiler optimize this statement just like the <span class="keywordflow">`switch`</span> statement? In theory, it can. Let me even say that there is a compiler that is capable of doing so and this is clang.
 
 **For example**:
 @htmlonly
@@ -105,12 +105,19 @@ bar(int):                                # @bar(int)
 ```
 </table>
 
-If this optimization is possible, then it means that the limitations of the <span class="keywordflow">`switch`</span> statement make no sense and never had, considering the fact that even clang-3.0 was able to do that kind of optimization. Clang has shown us that to both of those statements can be applied similar optimizations. However, the <span class="keywordflow">`if`</span> statement can also work with runtime data, whereas the <span class="keywordflow">`switch`</span> statement cannot.
+If those optimizations are possible, then it means that the limitations of the <span class="keywordflow">`switch`</span> statement make no sense and never had, given that even 10 years old clang-3.0 could do such optimizations. Clang has shown us that similar optimizations can be applied to both of these statements. However, the <span class="keywordflow">`if`</span> statement can also work with runtime data, whereas the <span class="keywordflow">`switch`</span> statement cannot.
 
-And this situation is unfortunate for me and the others. As I can see all over the internet a lot of attempts to overcome this situation in some way or another:
+And this situation is unfortunate for me and others. The Internet is filled with questions(over million views) from people who are trying to find an insight or a workaround:
+    - [Why strings cannot be used in switch statement?](https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings)
+    - [Evaluate a string with a switch in C++](https://stackoverflow.com/questions/16388510/evaluate-a-string-with-a-switch-in-c)
+    - [switch/case statement in C++ with a QString type](https://stackoverflow.com/questions/5452188/switch-case-statement-in-c-with-a-qstring-type)
+    - [How to compose complex condition in switch statement?](https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement)
+    - [Multiple conditions in switch case?](https://stackoverflow.com/questions/8644096/multiple-conditions-in-switch-case)
+    - [How do I select a range of values in a switch statement?](https://stackoverflow.com/questions/9432226/how-do-i-select-a-range-of-values-in-a-switch-statement/24133078)
 
-- Compilers such as clang and gcc have non-standard extension for matching [case ranges](https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html).\n
-**For example**:
+Moreover, I can see all over the place many attempts to overcome those limitations in some way or another:
+
+- Compilers such as clang and gcc implemented non-standard extension for matching [case ranges](https://gcc.gnu.org/onlinedocs/gcc/Case-Ranges.html):
 <table cellspacing="0" cellpadding="0">
 <tr>
     <td>
@@ -131,15 +138,68 @@ switch( ch )
 ```
 </table>
 
-- The internet is full of questions(with over million views) of people whose trying to find an insight or workaround:
-    - [Why strings cannot be used in switch statement?](https://stackoverflow.com/questions/650162/why-the-switch-statement-cannot-be-applied-on-strings)
-    - [How to compose complex condition in switch statement?](https://stackoverflow.com/questions/68578/multiple-cases-in-switch-statement)
+- LLVM implemented [StringSwitch](https://llvm.org/doxygen/classllvm_1_1StringSwitch.html): 
+```cpp
+Color color = StringSwitch<Color>(argv[i])
+    .Case("red", Red)
+    .Case("orange", Orange)
+    .Case("yellow", Yellow)
+    .Case("green", Green)
+    .Case("blue", Blue)
+    .Case("indigo", Indigo)
+    .Cases("violet", "purple", Violet)
+    .Default(UnknownColor);
+```
+- Apple created the programming language [Swift](https://docs.swift.org/swift-book/LanguageGuide/ControlFlow.html#ID548) with advanced the <span class="keywordflow">`switch`</span> statement:
+<table cellspacing="0" cellpadding="0" >
+<tr>
+    <td>
+```cpp
+switch num 
+{
+    case 1..<10:
+        print("range [1,10)")
+    case 10..<100:
+        print("range [10,100)")
+    case 100..<1000:
+        print("range [100,1000)")
+    default:
+        print("unknown range")
+}
+```
+<td>
+```cpp
+switch someCharacter 
+{
+    case "a", "e", "i", "o", "u":
+        print("a vowel")
+    case "b", "c", "d", "f", "g", "h", "j",
+         "k", "l", "m", "n", "p", "q", "r", 
+         "s", "t", "v", "w", "x", "y", "z":
+        print("a consonant")
+    default:
+        print("neither a vowel nor a consonant")
+}
+```
+<td>
+```cpp
+switch somePoint 
+{
+    case (0, 0): print("at the origin")
+    case (_, 0): print("on the x-axis")
+    case (0, _): 
+        print("on the y-axis")
+    case (-2...2, -2...2):
+        print("inside the box")
+    default:
+        print("outside of the box")
+}
+```
+</table>
 
-- Programming language Swift has pretty advanced the <span class="keywordflow">`switch`</span> statement.
-
-Turns out, the <span class="keywordflow">`switch`</span> statement can also be as powerful as the <span class="keywordflow">`if`</span> statement. This insight became my motivation to start this project. Where I've tried:
-1. to address all the limitations
-2. leave the syntax of `eswitch` as close as possible to <span class="keywordflow">`switch`</span> statement. Compare:
+Apparently, the <span class="keywordflow">`switch`</span> statement also can be as powerful as the <span class="keywordflow">`if`</span> statement. This insight became my motivation to start this project. Where I tried:
+1. Address all the limitations
+2. Leave the syntax of `eswitch` as close as possible to the <span class="keywordflow">`switch`</span> statement. Compare:
 <table cellspacing="0" cellpadding="0" >
 <tr>
     <td>
@@ -161,13 +221,13 @@ eswitch( num )
 );  
 ```
 </table>
-Pretty close, huh? Except the places where I was either limited by language or intentionally tried to avoid certain behavior of <span class="keywordflow">`switch`</span> statement like default fallthrough.\n
+Pretty close, isn't it? Except the places where I've been either limited by the language or intentionally tried to avoid one particular behavior of the <span class="keywordflow">`switch`</span> statement such as default fallthrough.\n
 \n
 @note In C++ <span class="keywordflow">`switch`</span> statement has explicit <span class="keywordflow">`break`</span> and implicit fallthrough.
 
 \n
-This behavior is considered to be error-prone. Since developers sometimes forget to use 
-<span class="keywordflow">`break`</span> and because of this their code doesn't work the way it was intended. Thus in my implementation I reversed this concept i.e. `eswitch` has implicit <span class="keywordflow">`break`</span> and explicit fallthrough. Compare:
+This behavior is considered error-prone. Since developers occasionally forget to use 
+<span class="keywordflow">`break`</span> and because of this their code doesn't work as intended. Thus, in my implementation, I reversed this concept i.e. `eswitch` has an implicit <span class="keywordflow">`break`</span> and an explicit fallthrough. Compare:
 <table cellspacing="0" cellpadding="0">
 <tr>
     <td>
@@ -191,13 +251,12 @@ eswitch( num )
 </table>
 
 3. And last but not least, another my priority was the performance 
-of `eswitch`. I worked so hard in order to be as close as possible to the performance of <span class="keywordflow">`switch`</span> statement.
+of `eswitch`. I worked so hard in order to be as close as possible to the performance of the <span class="keywordflow">`switch`</span> statement.
 
 ### Comparison
 
 --------------------------------------------
-Since full comparison of `eswitch` vs <span class="keywordflow">`switch`</span> statement isn't possible due to the limitations of
-the latter. Thus I'm going to do comparison with <span class="keywordflow">`if`</span> statement instead.
+Unfortunately, the full comparison of `eswitch` vs the <span class="keywordflow">`switch`</span> statement isn't possible due to the limitations of the latter. Thus I'm going to make a comparison with the <span class="keywordflow">`if`</span> statement instead.
 
 <table>
 <tr><th>eswitch<th>if statement
@@ -485,7 +544,7 @@ else if( num >= 11 && num <= 20 ) { ... }
 \subsection tutorial-installation Installation
 
 --------------------------------------------
-Since this library is header-only and on top of that whole library was implemented within single file, thus you can get that file from `eswitch_v5` repository on [github](https://github.com/rabdumalikov/eswitch_v5/blob/main/include/eswitch/eswitch_v5.hpp) and just `#include <eswitch_v5.hpp>`.
+It is a header-only library. On top of that entire library was implemented within a single file, thus you can get that [file](https://github.com/rabdumalikov/eswitch_v5/blob/main/include/eswitch/eswitch_v5.hpp) from the [repository](https://github.com/rabdumalikov/eswitch_v5) and just include it.
 
 \subsection tutorial-license License
 
@@ -497,13 +556,13 @@ accompanying file [LICENSE.txt](https://github.com/rabdumalikov/eswitch_v5/blob/
 \subsection tutorial-compilers Supported Compilers
 
 --------------------------------------------------------------------------------
-Should work on all major compilers which support C++20. I personally tested on following:
+Should work on all major compilers which support C++20. I personally tested on the following:
 
 - **clang++-11** (or later)
 - **g++-10.2** (or later)
-- **Visual Studio 2019** - isn't supported for now, just because [familiar template syntax for generic lambdas](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0428r2.pdf) from C++20 wasn't implemented by _Microsoft_ compiler.
+- **Visual Studio 2019** - isn't supported for now, just because [familiar template syntax for generic lambdas](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0428r2.pdf) from C++20 wasn't implemented by _Microsoft_ compiler. I reported about this [issue](https://developercommunity.visualstudio.com/t/keyword-requires-within-if-statement-doesnt-work/1287202), right now it is under investigation.
 
-### Conventions used in this document
+### Conventions used in this Document
 
 --------------------------------------------
 In all code examples, I omit the namespace prefixes for names in the `eswitch_v5` and `std` namespaces.
@@ -639,7 +698,7 @@ ________________________________________________________________
         </div>
     <td>
         <div align="left">Correspond to withdrawn value from: `std::any`, `std::variant`,<br> 
-            `polymorphic match` or `std::regex` match. But also it correspond to<br>
+            `polymorphic match` or `std::regex` match. But also it corresponds to the<br>
             returned value wrapped into `std::optional` from custom extensions.<br>
             @note
             Keyword <span class="keyword">`auto`</span> here is forbidden,<br>
@@ -667,15 +726,14 @@ ________________________________________________________________
 
 --------------------------------------------
 
-This guide is about how to use _custom types_ or define _custom behavior_ in `Case` for certain types. We will implement custom extension and I walk you through all the steps and details.
+This guide deals with how to define the custom `Case` behavior for any types. We will implement a custom extension and I walk you through all steps and details.
 
-**Thing to know:**
-
+@note
 The only things which we can be customized are all the comparison `operators` such as `==`, `!=`, `>`, `<` and so on.
 
 **Let's begin:**
 
-As you may already know that comparing floating points is a tricky thing, e.g. following code fails due to inaccurate precision:
+As you know, comparing floating points is a tricky, for example, the following code fails due to inaccurate precision:
 ```cpp
 eswitch( 2 - 0.7000000001 )
 (
@@ -685,11 +743,11 @@ eswitch( 2 - 0.7000000001 )
     },
     Default 
     { 
-        assert( false ); 
+        assert( false );
     }
 );
 ```
-So standard way of comparing floating points doesn't work properly. On top of that, simple overloading of `operator==` for primitives is [forbidden](https://eel.is/c++draft/over.oper#general-7).
+So the standard way of comparing floating points doesn't work properly. On top of that, simple overloading of `operator==` for primitives is [forbidden](https://eel.is/c++draft/over.oper#general-7).
 
 ```cpp
 bool operator==( const double d1, const double d1 )
@@ -698,7 +756,7 @@ bool operator==( const double d1, const double d1 )
 }
 /// Compilation ERROR: overloaded 'operator==' must have at least one parameter of class or enumeration type
 ```
-To overcome this we need to use an intermediate class which will hold our value. Like that: 
+To overcome this, we must use an intermediate class that will hold our value. Like this: 
 ```cpp
 struct double_value
 {
@@ -712,7 +770,7 @@ bool operator==( const double d1, const double_value d2 )
     return fabs( d1 - d2.value ) < __FLT_EPSILON__;
 }
 ```
-And now code below will work as we desired( since using `double_value` allows for compiler through [name lookup](https://en.cppreference.com/w/cpp/language/lookup) to find our custom `operator==` ).
+Now code below will work as we desired since using `double_value` allows for compiler through [name lookup](https://en.cppreference.com/w/cpp/language/lookup) to find our custom `operator==`.
 ```cpp
 eswitch( 2 - 0.7000000001 )
 (
@@ -729,9 +787,9 @@ eswitch( 2 - 0.7000000001 )
 **Full example**: [Floating point comparison](@ref example-floating-point-comparison)
 
 @note
-- An intermediate class should be used all the time( not only for primitives due to compiler restrictions ), otherwise it won't be possible for compiler to find custom `operator`( unless this `operator` will be defined before `#include <eswitch_v5.hpp>`, only then intermediate class won't be needed ).
+- An intermediate class should be used all the time (not only for primitives due to compiler restrictions), otherwise it won't be possible for compiler to find custom `operator` (unless this `operator` will be defined before `#include <eswitch_v5.hpp>`, only then intermediate class won't be needed).
 
-- Also example below demonstrate if certain value should be returned from custom `operator` and transferred to `Case` as [input parameter](#syntax), then the value should be wrapped into `std::optional`. 
+- Also the example below demonstrate if a certain value should be returned from custom `operator` and transferred to `Case` as [input parameter](#syntax), then the value should be wrapped into `std::optional`. 
 
 **Example:** [Value and Type transferring](@ref example-value-and-type-transferring)
 
@@ -739,7 +797,7 @@ eswitch( 2 - 0.7000000001 )
 
 --------------------------------------------
 
-- Using macroses for `Case` and `Default` allowed me to be as close as possible to <span class="keywordflow">`switch`</span> statement regarding syntax, otherwise there was no way to hide verbose lambda declaration. 
+- Using macroses for `Case` and `Default` allowed me to be as close as possible to the <span class="keywordflow">`switch`</span> statement regarding syntax, otherwise there was no way to hide verbose lambda declaration. 
 - Setting properties via `operator^` - It is the only `operator` which is used to set 
 certain properties for values/matrices( in matlab ), and which I find reasonable. Thus I used this notation in my library, like this:
 ```cpp 
