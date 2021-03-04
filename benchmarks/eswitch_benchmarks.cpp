@@ -85,7 +85,7 @@ int __attribute__ ((noinline)) _eswitch( const estatus3 es3, const eprogress3 ep
         Case( _1 == SUCCESS && _2 == IN_PROGRES ) { return 2; },
         Case( _1 == SUCCESS && _2 == FINISHED ) { return 0; },
         Case( _1 == FAILED  && _2 == RUNNING && _3 == "Hello") { return 1; },
-        Case( _1 == FAILED  && _2 == RUNNING && _3 != "Hello") { return 2; },
+        Case( _1 == FAILED  && _2 == RUNNING ) { return 2; },
         Case( _1 == FAILED  && _2 == IDLE ) { return 34; }, 
         Case( _1 == FAILED  && _2 == IN_PROGRES ) { return 11; }, 
         Case( _1 == FAILED  && _2 == FINISHED ) { return 809; }

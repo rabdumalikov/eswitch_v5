@@ -1,11 +1,11 @@
 ## Overview:
 
-`eswitch_v5` is a library, which is an improved version of <span class="keywordflow">`switch`</span> statement in C++. The main idea behind this library is to be able to overcome <span class="keywordflow">`switch`</span> statement limitations, such as:
-- one argument per <span class="keywordflow">`switch`</span> statement
+`eswitch_v5` is a library, which is an improved version of the <span class="keywordflow">`switch`</span> statement in C++. The main idea behind this library is to be able to overcome <span class="keywordflow">`switch`</span> statement limitations, such as:
+- one argument per the <span class="keywordflow">`switch`</span> statement
 - the argument restricted to only _integral_ types( <span class="keyword">`int`</span>, <span class="keyword">`char`</span>, <span class="keyword">`enum`</span> ... )
-- impossibility to compose complex conditions, as opposed to other _statements_ and _loops_ in C++
+- impossibility of composing complex conditions, as opposed to other _statements_ and _loops_ in C++
 
-`eswitch_v5` supports any number of arguments and almost without restriction on their type as long as the type is comparable( i.e. has `operator==`, `operator!=` and so on ). Additionally, my library went beyond overcoming limitations of <span class="keywordflow">`switch`</span> statement e.g. I introduced more expressive way for matching and withdrawing values from `std::any`, `std::variant`, `polymorphic types` and
+`eswitch_v5` supports any number of arguments and almost without restriction on their type, provided that the type is comparable( i.e. has `operator==`, `operator!=` and so on ). Additionally, my library has gone beyond overcoming the limitations of the <span class="keywordflow">`switch`</span> statement e.g. I have introduced more expressive way for matching and withdrawing values from `std::any`, `std::variant`, `polymorphic types` and
 `std::regex`.
 
 ## Build status:
@@ -67,7 +67,7 @@ std::string foo( Place place )
 
 ## _std::any_
 ``` cpp
-void foo( const std::any a )
+void foo( const std::any & a )
 {
     eswitch( any )
     (
